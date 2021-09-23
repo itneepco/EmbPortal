@@ -1,0 +1,17 @@
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Persistence.deps.json
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Persistence.dll
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\ref\Persistence.dll
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Persistence.pdb
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Application.dll
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Domian.dll
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Domian.pdb
+D:\Projects\dotnet\EmbPortal\Persistence\bin\Debug\net5.0\Application.pdb
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.csproj.AssemblyReference.cache
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.AssemblyInfoInputs.cache
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.AssemblyInfo.cs
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.csproj.CoreCompileInputs.cache
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.csproj.CopyComplete
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.dll
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\ref\Persistence.dll
+D:\Projects\dotnet\EmbPortal\Persistence\obj\Debug\net5.0\Persistence.pdb

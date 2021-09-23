@@ -1,0 +1,12 @@
+D:\Projects\dotnet\EmbPortal\Domian\bin\Debug\net5.0\Domian.deps.json
+D:\Projects\dotnet\EmbPortal\Domian\bin\Debug\net5.0\Domian.dll
+D:\Projects\dotnet\EmbPortal\Domian\bin\Debug\net5.0\ref\Domian.dll
+D:\Projects\dotnet\EmbPortal\Domian\bin\Debug\net5.0\Domian.pdb
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.csproj.AssemblyReference.cache
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.AssemblyInfoInputs.cache
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.AssemblyInfo.cs
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.csproj.CoreCompileInputs.cache
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.dll
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\ref\Domian.dll
+D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.pdb
