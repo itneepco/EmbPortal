@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\dotnet\\EmbPortal\\Persistence\\Persistence.csproj": {}
+    "C:\\Users\\acer\\source\\repos\\EmbPortal\\Persistence\\Persistence.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\dotnet\\EmbPortal\\Application\\Application.csproj": {
+    "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\dotnet\\EmbPortal\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Application\\Application.csproj",
-        "packagesPath": "C:\\Users\\NEEPCO\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\dotnet\\EmbPortal\\Application\\obj\\",
+        "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\NEEPCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,8 +28,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj": {
-                "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj"
+              "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj": {
+                "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj"
               }
             }
           }
@@ -72,21 +72,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj": {
+    "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj",
         "projectName": "Domian",
-        "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj",
-        "packagesPath": "C:\\Users\\NEEPCO\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\dotnet\\EmbPortal\\Domian\\obj\\",
+        "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\NEEPCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -111,6 +111,12 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -126,21 +132,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Projects\\dotnet\\EmbPortal\\Persistence\\Persistence.csproj": {
+    "C:\\Users\\acer\\source\\repos\\EmbPortal\\Persistence\\Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\dotnet\\EmbPortal\\Persistence\\Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Persistence\\Persistence.csproj",
         "projectName": "Persistence",
-        "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Persistence\\Persistence.csproj",
-        "packagesPath": "C:\\Users\\NEEPCO\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\dotnet\\EmbPortal\\Persistence\\obj\\",
+        "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Persistence\\Persistence.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Persistence\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\NEEPCO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -154,11 +160,11 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\Projects\\dotnet\\EmbPortal\\Application\\Application.csproj": {
-                "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Application\\Application.csproj"
+              "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Application\\Application.csproj"
               },
-              "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj": {
-                "projectPath": "D:\\Projects\\dotnet\\EmbPortal\\Domian\\Domian.csproj"
+              "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj": {
+                "projectPath": "C:\\Users\\acer\\source\\repos\\EmbPortal\\Domian\\Domian.csproj"
               }
             }
           }
@@ -173,6 +179,18 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.9, )"
+            },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[5.0.10, )"
@@ -193,7 +211,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
         }
       }
     }

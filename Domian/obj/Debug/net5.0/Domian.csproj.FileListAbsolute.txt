@@ -10,3 +10,15 @@ D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.csproj.CoreCompileIn
 D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.dll
 D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\ref\Domian.dll
 D:\Projects\dotnet\EmbPortal\Domian\obj\Debug\net5.0\Domian.pdb
+C:\Users\acer\source\repos\EmbPortal\Domian\bin\Debug\net5.0\Domian.deps.json
+C:\Users\acer\source\repos\EmbPortal\Domian\bin\Debug\net5.0\Domian.dll
+C:\Users\acer\source\repos\EmbPortal\Domian\bin\Debug\net5.0\ref\Domian.dll
+C:\Users\acer\source\repos\EmbPortal\Domian\bin\Debug\net5.0\Domian.pdb
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.csproj.AssemblyReference.cache
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.AssemblyInfoInputs.cache
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.AssemblyInfo.cs
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.csproj.CoreCompileInputs.cache
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.dll
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\ref\Domian.dll
+C:\Users\acer\source\repos\EmbPortal\Domian\obj\Debug\net5.0\Domian.pdb

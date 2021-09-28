@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\NEEPCO\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\NEEPCO\\.nuget\\packages"
+      "C:\\Users\\acer\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\acer\\.nuget\\packages"
     ]
   }
 }
