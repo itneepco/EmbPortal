@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domian", "Domian\Domian.csproj", "{B3CDA983-17C7-4FA1-A514-2CD9978104B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAdmin", "WebAdmin\WebAdmin.csproj", "{4B0B4D23-45E2-4FF7-AB02-F7B72B692073}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAdmin", "WebAdmin\WebAdmin.csproj", "{4B0B4D23-45E2-4FF7-AB02-F7B72B692073}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

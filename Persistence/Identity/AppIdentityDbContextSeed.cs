@@ -1,4 +1,5 @@
-﻿using Domian.Identity;
+﻿using Domian.Enums;
+using Domian.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +33,8 @@ namespace Persistence.Identity
 
                 var roles = new List<AppRole>
                 {
-                    new AppRole { Name = "Admin"},
-                    new AppRole { Name = "Member" }
+                    new AppRole { Name = Role.Admin.ToString() },
+                    new AppRole { Name = Role.Member.ToString() }
                 };
 
                 foreach (var role in roles)
