@@ -3,6 +3,5 @@ bin
 appsettings.json
 *.rdb
 publish
-wwwroot
 .vs
 .vscode
