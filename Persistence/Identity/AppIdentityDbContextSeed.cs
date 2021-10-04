@@ -33,8 +33,10 @@ namespace Persistence.Identity
 
                 var roles = new List<AppRole>
                 {
-                    new AppRole { Name = Role.Admin.ToString() },
-                    new AppRole { Name = Role.Member.ToString() }
+                    new AppRole { Name = Role.ADMIN.ToString() },
+                    new AppRole { Name = Role.MANAGER.ToString() },
+                    new AppRole { Name = Role.COORDINATOR.ToString() },
+                    new AppRole { Name = Role.MEMBER.ToString() }
                 };
 
                 foreach (var role in roles)
@@ -45,11 +47,11 @@ namespace Persistence.Identity
                 foreach (var user in users)
                 {
                     await userManager.CreateAsync(user, "Pa$$w0rd");
-                    await userManager.AddToRoleAsync(user, "Member");
+                    await userManager.AddToRoleAsync(user, Role.MEMBER.ToString());
 
                     if (user.Email == "admin@test.com")
                     {
-                        await userManager.AddToRoleAsync(user, "Admin");
+                        await userManager.AddToRoleAsync(user, Role.ADMIN.ToString());
                     }
                 }
             }

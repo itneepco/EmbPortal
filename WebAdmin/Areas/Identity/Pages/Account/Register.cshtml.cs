@@ -96,7 +96,7 @@ namespace WebAdmin.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // Add member role to newly created users
-                    await _userManager.AddToRoleAsync(user, Role.Member.ToString());
+                    await _userManager.AddToRoleAsync(user, Role.MEMBER.ToString());
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

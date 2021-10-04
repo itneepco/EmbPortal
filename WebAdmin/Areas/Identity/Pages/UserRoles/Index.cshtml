@@ -2,10 +2,14 @@
 @model WebAdmin.Areas.Identity.Pages.UserRoles.IndexModel
 
 @{
-    ViewData["Title"] = "User Roles";
+    ViewData["Title"] = "Users";
 }
 
-<h1>User Roles</h1>
+<h1>Users & Roles</h1>
+<p>
+    <a asp-page="/Account/Register">Register a new user</a>
+</p>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -25,7 +29,7 @@
                 <td>@user.Email</td>
                 <td>@string.Join(" , ", user.Roles.ToList())</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
+                    <a class="btn btn-primary" asp-page="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
                 </td>
             </tr>
         }

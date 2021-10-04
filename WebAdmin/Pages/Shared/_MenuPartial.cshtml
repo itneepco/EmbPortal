@@ -1,20 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Domian.Identity
+@using Domian.Enums
 
 @inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Admin" asp-page="/projects/index">Projects</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Admin" asp-page="/uoms/index">UOMs</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Roles/Index">Roles</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/UserRoles/Index">User Roles</a>
-    </li>
+    @if (UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, Role.ADMIN.ToString()).Result)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Admin" asp-page="/projects/index">Projects</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Admin" asp-page="/uoms/index">UOMs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/UserRoles/Index">UserRoles</a>
+        </li>
+    }
 }
