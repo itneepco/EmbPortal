@@ -10,8 +10,7 @@ namespace Persistence.Configurations
         {
              builder.Property(p => p.OrderNo).IsRequired();
              builder.Property(p => p.OrderDate).IsRequired();
-             builder.Property(p => p.Title).IsRequired();
-             builder.Property(p => p.CompletionDate).IsRequired();            
+             builder.Property(p => p.Title).IsRequired();                      
         }
     }
 }

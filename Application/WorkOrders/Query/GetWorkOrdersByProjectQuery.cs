@@ -3,20 +3,20 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Application.WorkOrders.Response;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Response;
 
 namespace Application.WorkOrders.Query
 {
-   public record GetWorkOrdersByProjectQuery(int projectId) : IRequest<IReadOnlyList<WorkOrderHeaderDto>>
+   public record GetWorkOrdersByProjectQuery(int projectId) : IRequest<IReadOnlyList<WorkOrderHeaderResponse>>
    {
 
    }
 
-   public class GetWorkOrdersByProjectQueryHandler : IRequestHandler<GetWorkOrdersByProjectQuery, IReadOnlyList<WorkOrderHeaderDto>>
+   public class GetWorkOrdersByProjectQueryHandler : IRequestHandler<GetWorkOrdersByProjectQuery, IReadOnlyList<WorkOrderHeaderResponse>>
    {
       private readonly IAppDbContext _context;
       private readonly IMapper _mapper;
@@ -26,13 +26,13 @@ namespace Application.WorkOrders.Query
          _context = context;
       }
 
-      public async Task<IReadOnlyList<WorkOrderHeaderDto>> Handle(GetWorkOrdersByProjectQuery request, CancellationToken cancellationToken)
+      public async Task<IReadOnlyList<WorkOrderHeaderResponse>> Handle(GetWorkOrdersByProjectQuery request, CancellationToken cancellationToken)
       {
          return await _context.WorkOrders
                 .Where(p => p.ProjectId == request.projectId)
                 .Include(p => p.Project)
                 .Include(c => c.Contractor)
-                .ProjectTo<WorkOrderHeaderDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<WorkOrderHeaderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
       }

@@ -1,14 +1,14 @@
-using Application.Uoms.Response;
 using AutoMapper;
 using Domian;
+using Shared.Response;
 
 namespace Application.Mappings
 {
-    public class UomMappingProfile : Profile
+   public class UomMappingProfile : Profile
     {
         public UomMappingProfile()
         {
-            CreateMap<Uom, UomDto>()
+            CreateMap<Uom, UomResponse>()
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Dimension.ToString()));
         }
     }

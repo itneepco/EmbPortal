@@ -1,6 +1,6 @@
-using Application.Contractors.Response;
 using AutoMapper;
 using Domian;
+using Shared.Response;
 
 namespace Application.Mappings
 {
@@ -8,7 +8,7 @@ namespace Application.Mappings
    {
       public ContractorMappingProfile()
       {
-          CreateMap<Contractor, ContractorDto>();
+          CreateMap<Contractor, ContractorResponse>();
       }
    }
 }

@@ -3,20 +3,20 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Application.Projects.Response;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Response;
 
 namespace Application.Projects.Query
 {
-    public class GetProjectsQuery : IRequest<IReadOnlyList<ProjectDto>>
+   public class GetProjectsQuery : IRequest<IReadOnlyList<ProjectResponse>>
     {
 
     }
 
-    public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, IReadOnlyList<ProjectDto>>
+    public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, IReadOnlyList<ProjectResponse>>
     {
         private readonly IMapper _mapper;
         private readonly IAppDbContext _context;
@@ -26,11 +26,11 @@ namespace Application.Projects.Query
             _mapper = mapper;
         }
 
-        public async Task<IReadOnlyList<ProjectDto>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<ProjectResponse>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
         {
             return await _context.Projects
             .OrderBy(p => p.Name)
-            .ProjectTo<ProjectDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ProjectResponse>(_mapper.ConfigurationProvider)
             .AsNoTracking()
             .ToListAsync();
         }

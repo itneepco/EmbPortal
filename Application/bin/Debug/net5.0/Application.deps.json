@@ -11,7 +11,8 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
           "Domian": "1.0.0",
           "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
-          "Microsoft.EntityFrameworkCore": "5.0.10"
+          "Microsoft.EntityFrameworkCore": "5.0.10",
+          "Shared": "1.0.0"
         },
         "runtime": {
           "Application.dll": {}
@@ -192,6 +193,11 @@
         "runtime": {
           "Domian.dll": {}
         }
+      },
+      "Shared/1.0.0": {
+        "runtime": {
+          "Shared.dll": {}
+        }
       }
     }
   },
@@ -342,6 +348,11 @@
       "hashPath": "system.reflection.emit.4.7.0.nupkg.sha512"
     },
     "Domian/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Shared/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

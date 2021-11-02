@@ -24,7 +24,7 @@ namespace Domian.WorkOrderAggregate
         public int UomId { get; private set; } 
         public decimal Rate { get; set; }
         public Uom Uom { get; private set; }
-        public int PoQuantity { get; private set; }
+        public float PoQuantity { get; private set; }
 
         
     }

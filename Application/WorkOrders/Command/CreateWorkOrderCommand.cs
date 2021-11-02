@@ -1,13 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Application.WorkOrders.Response;
 using Domian.WorkOrderAggregate;
 using MediatR;
+using Shared.Request;
 
 namespace Application.WorkOrders.Command
 {
-   public class CreateWorkOrderCommand : CreateWorkOrderDto, IRequest<int>
+   public class CreateWorkOrderCommand : CreateWorkOrderRequest, IRequest<int>
    {
 
    }
@@ -31,7 +31,8 @@ namespace Application.WorkOrders.Command
             aggrementNo : request.AggrementNo,
             aggrementDate : request.AggrementDate,
             projectId : request.ProjectId,
-            contractorId : request.ContractorId
+            contractorId : request.ContractorId,
+            engineerInCharge : request.EngineerInCharge
         );
         _context.WorkOrders.Add(workOrder);
         await _context.SaveChangesAsync(cancellationToken);

@@ -44,6 +44,91 @@ namespace Persistence.Migrations
                     b.ToTable("Contractors");
                 });
 
+            modelBuilder.Entity("Domian.MeasurementBookAggregate.MBItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("CummulativeQuantity")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MeasurementBookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("No")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("PoQuantity")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Rate")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("UomId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeasurementBookId");
+
+                    b.HasIndex("UomId");
+
+                    b.ToTable("MBItem");
+                });
+
+            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MeasurementOfficer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ValidatingOfficer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("WorkOrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("MeasurementBooks");
+                });
+
             modelBuilder.Entity("Domian.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -115,9 +200,6 @@ namespace Persistence.Migrations
                     b.Property<string>("AggrementNo")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("CompletionDate")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ContractorId")
                         .HasColumnType("INTEGER");
 
@@ -125,6 +207,9 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EngineerInCharge")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsCompleted")
@@ -184,8 +269,8 @@ namespace Persistence.Migrations
                     b.Property<int>("No")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PoQuantity")
-                        .HasColumnType("INTEGER");
+                    b.Property<float>("PoQuantity")
+                        .HasColumnType("REAL");
 
                     b.Property<double>("Rate")
                         .HasColumnType("REAL");
@@ -203,6 +288,32 @@ namespace Persistence.Migrations
                     b.HasIndex("WorkOrderId");
 
                     b.ToTable("WorkOrderItem");
+                });
+
+            modelBuilder.Entity("Domian.MeasurementBookAggregate.MBItem", b =>
+                {
+                    b.HasOne("Domian.MeasurementBookAggregate.MeasurementBook", null)
+                        .WithMany("LineItems")
+                        .HasForeignKey("MeasurementBookId");
+
+                    b.HasOne("Domian.Uom", "Uom")
+                        .WithMany()
+                        .HasForeignKey("UomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Uom");
+                });
+
+            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+                {
+                    b.HasOne("Domian.WorkOrderAggregate.WorkOrder", "WorkOrder")
+                        .WithMany("MeasurementBooks")
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkOrder");
                 });
 
             modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrder", b =>
@@ -239,9 +350,16 @@ namespace Persistence.Migrations
                     b.Navigation("Uom");
                 });
 
+            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+                {
+                    b.Navigation("LineItems");
+                });
+
             modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("MeasurementBooks");
                 });
 #pragma warning restore 612, 618
         }

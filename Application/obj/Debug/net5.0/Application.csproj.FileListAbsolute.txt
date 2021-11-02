@@ -9,7 +9,8 @@ D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\ref\Application.dll
 D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\Application.pdb
 D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\Domian.dll
 D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\Domian.pdb
-D:\Projects\dotnet\EmbPortal\Application\obj\Debug\net5.0\Application.csproj.CopyComplete
 D:\Projects\dotnet\EmbPortal\Application\obj\Debug\net5.0\Application.dll
 D:\Projects\dotnet\EmbPortal\Application\obj\Debug\net5.0\ref\Application.dll
 D:\Projects\dotnet\EmbPortal\Application\obj\Debug\net5.0\Application.pdb
+D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\Shared.dll
+D:\Projects\dotnet\EmbPortal\Application\bin\Debug\net5.0\Shared.pdb

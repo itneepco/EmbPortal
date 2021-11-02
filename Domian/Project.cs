@@ -13,5 +13,9 @@ namespace Domian
         {
             Name = name;
         }
+
+        public void SetName(string name) {
+            this.Name = name;
+        }
     }
 }
