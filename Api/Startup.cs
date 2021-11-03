@@ -1,3 +1,4 @@
+using Api.Filter;
 using Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +24,8 @@ namespace Api
         {
             services.AddApplication();
             services.AddPersistence(Configuration);
-            //services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new ApiExceptionFilter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
