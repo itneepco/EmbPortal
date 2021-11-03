@@ -5,7 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Response;
+using Shared.Responses;
 
 namespace Application.Uoms.Query
 {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities.WorkOrderAggregate;
 using MediatR;
-using Shared.Request;
+using Shared.Requests;
 
 namespace Application.WorkOrders.Command
 {

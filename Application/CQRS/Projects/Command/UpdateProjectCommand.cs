@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Request;
+using Shared.Requests;
 
 namespace Application.Projects.Command
 {

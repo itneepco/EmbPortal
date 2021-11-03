@@ -1,5 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Persistence.Seed;
 
@@ -13,7 +15,6 @@ namespace Persistence
             {
                 await ProjectSeed.SeedAsync(context);                
                 await UomSeed.SeedAsync(context);
-
             }
             catch (Exception exception)
             {
@@ -21,6 +22,11 @@ namespace Persistence
                 log.LogError(exception.Message);
                 throw;
             }
+        }
+        public static async Task SeedUsersAsync(UserManager<AppUser> userManager,
+           RoleManager<IdentityRole> roleManager)
+        {
+            await IdentitySeed.SeedAsync(userManager, roleManager);
         }
     }
 }

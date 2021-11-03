@@ -1,12 +1,16 @@
-using Api.Filter;
+using Api.Extensions;
+using Api.Filters;
 using Application;
+using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using System.Linq;
 
 namespace Api
 {
@@ -24,14 +28,17 @@ namespace Api
         {
             services.AddApplication();
             services.AddPersistence(Configuration);
-            services.AddControllers(options =>
-                options.Filters.Add(new ApiExceptionFilter()));
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
-            });
-           services.AddControllersWithViews();
-           services.AddRazorPages();
+            services.AddInfrastructure();
+
+            services.AddControllers(options => options.Filters.Add(new ApiExceptionFilter()));
+
+            services.AddModelValidation();
+            services.AddIdentityServices(Configuration);
+            services.AddSwaggerDocumentation();
+
+            // for blazor
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,10 +47,9 @@ namespace Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
                 app.UseWebAssemblyDebugging();
 
+                app.UseSwaggerDocumention();
             }
              else
             {
@@ -54,7 +60,8 @@ namespace Api
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-            app.UseRouting();            
+            app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

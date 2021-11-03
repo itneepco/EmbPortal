@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Common;
 using Domain.Entities;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.WorkOrderAggregate;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Persistence
 {
-    public class AppDbContext : DbContext, IAppDbContext
+    public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
     {
         public AppDbContext( DbContextOptions options) : base(options)
         {
@@ -45,8 +47,6 @@ namespace Persistence
             }
 
             int result = await base.SaveChangesAsync(cancellationToken);
-
-           // await DispatchEvents(cancellationToken);
 
             return result;
         }

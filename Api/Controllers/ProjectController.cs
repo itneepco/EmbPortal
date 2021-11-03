@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Projects.Query;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Response;
+using Shared.Responses;
 
 namespace Api.Controllers
 {
