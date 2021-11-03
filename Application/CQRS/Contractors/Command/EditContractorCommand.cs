@@ -2,12 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Interfaces;
-using Domian.Enums;
 using MediatR;
 
 namespace Application.Contractors.Command
 {
-   public record EditContractorCommand(int id, string name) : IRequest
+    public record EditContractorCommand(int id, string name) : IRequest
     {
 
     }

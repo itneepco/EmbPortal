@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -8,7 +7,7 @@ using Shared.Request;
 
 namespace Application.Projects.Command
 {
-   public class UpdateProjectCommand : ProjectRequest, IRequest<int>
+    public class UpdateProjectCommand : ProjectRequest, IRequest<int>
    {
         
    }

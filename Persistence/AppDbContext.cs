@@ -4,17 +4,17 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Domian;
-using Domian.Common;
-using Domian.MeasurementBookAggregate;
-using Domian.WorkOrderAggregate;
+using Domain.Common;
+using Domain.Entities;
+using Domain.Entities.MeasurementBookAggregate;
+using Domain.Entities.WorkOrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Persistence
 {
-    public class AppDbContext : DbContext,IAppDbContext
+    public class AppDbContext : DbContext, IAppDbContext
     {
         public AppDbContext( DbContextOptions options) : base(options)
         {

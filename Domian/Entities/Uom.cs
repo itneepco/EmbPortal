@@ -1,7 +1,7 @@
-using Domian.Common;
-using Domian.Enums;
+using Domain.Common;
+using Domain.Enums;
 
-namespace Domian
+namespace Domain.Entities
 {
     public class Uom : AuditableEntity
     {

@@ -1,4 +1,4 @@
-using Domian.WorkOrderAggregate;
+using Domain.Entities.WorkOrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

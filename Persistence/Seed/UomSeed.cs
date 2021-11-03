@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domian;
-using Domian.Enums;
+using Domain.Entities;
+using Domain.Enums;
 
 namespace Persistence.Seed
 {

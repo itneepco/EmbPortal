@@ -1,7 +1,6 @@
-namespace Domian.Common
+namespace Domain.Common
 {
     public interface IAggregateRoot
     {
-        
     }
 }

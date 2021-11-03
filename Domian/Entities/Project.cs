@@ -1,6 +1,6 @@
-using Domian.Common;
+using Domain.Common;
 
-namespace Domian
+namespace Domain.Entities
 {
     public class Project : AuditableEntity
     {

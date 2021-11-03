@@ -1,6 +1,6 @@
 
 using AutoMapper;
-using Domian;
+using Domain.Entities;
 using Shared.Response;
 
 namespace Application.Mappings
@@ -9,7 +9,7 @@ namespace Application.Mappings
     {
         public ProjectMappingProfile()
         {
-            CreateMap<Project,ProjectResponse>();
+            CreateMap<Project, ProjectResponse>();
         }
     }
 }

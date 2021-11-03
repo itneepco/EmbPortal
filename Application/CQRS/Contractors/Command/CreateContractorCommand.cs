@@ -1,17 +1,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Domian;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Contractors.Command
 {
     public record CreateContractorCommand(string name) : IRequest<int>
     {
-        
+
     }
 
-     public class CraeteContractorCommandHandler : IRequestHandler<CreateContractorCommand, int>
+    public class CraeteContractorCommandHandler : IRequestHandler<CreateContractorCommand, int>
     {
         private readonly IAppDbContext _context;
         public CraeteContractorCommandHandler(IAppDbContext context)
@@ -23,8 +23,7 @@ namespace Application.Contractors.Command
         {
             var Contractor = new Contractor
             (
-                name : request.name
-                
+              name: request.name
             );
             _context.Contractors.Add(Contractor);
             await _context.SaveChangesAsync(cancellationToken);

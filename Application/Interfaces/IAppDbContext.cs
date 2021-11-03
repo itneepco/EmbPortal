@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Domian;
-using Domian.WorkOrderAggregate;
+using Domain.Entities;
+using Domain.Entities.WorkOrderAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Interfaces

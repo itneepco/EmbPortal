@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Domian.WorkOrderAggregate;
+using Domain.Entities.WorkOrderAggregate;
 using MediatR;
 using Shared.Request;
 
@@ -28,11 +28,11 @@ namespace Application.WorkOrders.Command
             orderNo : request.WorkOrderNo,
             orderDate : request.OrderDate,
             title : request.Title,
-            aggrementNo : request.AggrementNo,
-            aggrementDate : request.AggrementDate,
+            agreementNo : request.AggrementNo,
+            agreementDate : request.AggrementDate,
             projectId : request.ProjectId,
             contractorId : request.ContractorId,
-            engineerInCharge : request.EngineerInCharge
+            engineerInCharge : "Current User" //to be implemented
         );
         _context.WorkOrders.Add(workOrder);
         await _context.SaveChangesAsync(cancellationToken);

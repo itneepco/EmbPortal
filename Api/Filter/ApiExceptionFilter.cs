@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Api.Errors;
 using Application.Exceptions;
-using Domian.Exceptions;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,13 +11,13 @@ using Microsoft.Extensions.Hosting;
 
 namespace Api.Filter
 {
-   public class ApiExceptionFilter : ExceptionFilterAttribute
-   {
-      private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
-      public ApiExceptionFilter()
-      {
-         // Register known exception types and handlers.
-         _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
+    public class ApiExceptionFilter : ExceptionFilterAttribute
+    {
+        private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
+        public ApiExceptionFilter()
+        {
+            // Register known exception types and handlers.
+            _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
@@ -27,8 +27,8 @@ namespace Api.Filter
                 { typeof(DeleteFailureException), HandleBadRequestException }
             };
 
-      }
-              public override void OnException(ExceptionContext context)
+        }
+        public override void OnException(ExceptionContext context)
         {
             HandleException(context);
 

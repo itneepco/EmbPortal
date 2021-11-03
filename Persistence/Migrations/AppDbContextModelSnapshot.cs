@@ -16,7 +16,7 @@ namespace Persistence.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.10");
 
-            modelBuilder.Entity("Domian.Contractor", b =>
+            modelBuilder.Entity("Domain.Entities.Contractor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace Persistence.Migrations
                     b.ToTable("Contractors");
                 });
 
-            modelBuilder.Entity("Domian.MeasurementBookAggregate.MBItem", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,7 +92,7 @@ namespace Persistence.Migrations
                     b.ToTable("MBItem");
                 });
 
-            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,7 +129,7 @@ namespace Persistence.Migrations
                     b.ToTable("MeasurementBooks");
                 });
 
-            modelBuilder.Entity("Domian.Project", b =>
+            modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,7 +157,7 @@ namespace Persistence.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("Domian.Uom", b =>
+            modelBuilder.Entity("Domain.Entities.Uom", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -188,16 +188,16 @@ namespace Persistence.Migrations
                     b.ToTable("Uoms");
                 });
 
-            modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrder", b =>
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("AggrementDate")
+                    b.Property<long>("AgreementDate")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AggrementNo")
+                    b.Property<string>("AgreementNo")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ContractorId")
@@ -244,7 +244,7 @@ namespace Persistence.Migrations
                     b.ToTable("WorkOrders");
                 });
 
-            modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrderItem", b =>
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,23 +256,23 @@ namespace Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemNo")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("No")
-                        .HasColumnType("INTEGER");
-
                     b.Property<float>("PoQuantity")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("Rate")
+                    b.Property<double>("UnitRate")
                         .HasColumnType("REAL");
 
                     b.Property<int>("UomId")
@@ -290,13 +290,13 @@ namespace Persistence.Migrations
                     b.ToTable("WorkOrderItem");
                 });
 
-            modelBuilder.Entity("Domian.MeasurementBookAggregate.MBItem", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBItem", b =>
                 {
-                    b.HasOne("Domian.MeasurementBookAggregate.MeasurementBook", null)
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
                         .WithMany("LineItems")
                         .HasForeignKey("MeasurementBookId");
 
-                    b.HasOne("Domian.Uom", "Uom")
+                    b.HasOne("Domain.Entities.Uom", "Uom")
                         .WithMany()
                         .HasForeignKey("UomId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -305,9 +305,9 @@ namespace Persistence.Migrations
                     b.Navigation("Uom");
                 });
 
-            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
-                    b.HasOne("Domian.WorkOrderAggregate.WorkOrder", "WorkOrder")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
                         .WithMany("MeasurementBooks")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -316,15 +316,15 @@ namespace Persistence.Migrations
                     b.Navigation("WorkOrder");
                 });
 
-            modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrder", b =>
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
-                    b.HasOne("Domian.Contractor", "Contractor")
+                    b.HasOne("Domain.Entities.Contractor", "Contractor")
                         .WithMany()
                         .HasForeignKey("ContractorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domian.Project", "Project")
+                    b.HasOne("Domain.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -335,27 +335,27 @@ namespace Persistence.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrderItem", b =>
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.HasOne("Domian.Uom", "Uom")
+                    b.HasOne("Domain.Entities.Uom", "Uom")
                         .WithMany()
                         .HasForeignKey("UomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domian.WorkOrderAggregate.WorkOrder", null)
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId");
 
                     b.Navigation("Uom");
                 });
 
-            modelBuilder.Entity("Domian.MeasurementBookAggregate.MeasurementBook", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
                     b.Navigation("LineItems");
                 });
 
-            modelBuilder.Entity("Domian.WorkOrderAggregate.WorkOrder", b =>
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Navigation("Items");
 

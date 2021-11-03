@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Domian.Common;
-using Domian.MeasurementBookAggregate;
+using Domain.Common;
+using Domain.Entities.MeasurementBookAggregate;
 
-namespace Domian.WorkOrderAggregate
+namespace Domain.Entities.WorkOrderAggregate
 {
     public class WorkOrder : AuditableEntity, IAggregateRoot
     {
@@ -13,8 +13,8 @@ namespace Domian.WorkOrderAggregate
         public DateTime OrderDate { get; private set; }        
         public bool IsCompleted { get; private set; }
         public string Title { get; private set; }
-        public string AggrementNo { get; private set; }
-        public DateTime AggrementDate { get; private set; }
+        public string AgreementNo { get; private set; }
+        public DateTime AgreementDate { get; private set; }
         public int ProjectId { get; private set; }
         public Project Project { get; private set; }
         public int ContractorId { get; private set; }
@@ -29,14 +29,13 @@ namespace Domian.WorkOrderAggregate
         {
         }
 
-        public WorkOrder(string orderNo, DateTime orderDate, string title, string aggrementNo, DateTime aggrementDate, int projectId, int contractorId,string engineerInCharge)
+        public WorkOrder(string orderNo, DateTime orderDate, string title, string agreementNo, DateTime agreementDate, int projectId, int contractorId, string engineerInCharge)
         {
-
             OrderNo = orderNo;
             OrderDate = orderDate;
             Title = title;
-            AggrementNo = aggrementNo;
-            AggrementDate = aggrementDate;
+            AgreementNo = agreementNo;
+            AgreementDate = agreementDate;
             ProjectId = projectId;
             ContractorId = contractorId;
             IsCompleted = false;

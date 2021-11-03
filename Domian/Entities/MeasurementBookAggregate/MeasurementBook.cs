@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Domian.Common;
-using Domian.WorkOrderAggregate;
+using Domain.Common;
+using Domain.Entities.WorkOrderAggregate;
 
-namespace Domian.MeasurementBookAggregate
+namespace Domain.Entities.MeasurementBookAggregate
 {
-   public class MeasurementBook : AuditableEntity, IAggregateRoot
+    public class MeasurementBook : AuditableEntity, IAggregateRoot
    {
       public int Id { get; set; }
       public int WorkOrderId { get; set; }

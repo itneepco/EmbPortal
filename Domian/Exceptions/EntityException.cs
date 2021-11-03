@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Domian.Exceptions
+namespace Domain.Exceptions
 {
-   public class EntityException : Exception
+    public class EntityException : Exception
    {
       public EntityException()
          : base()

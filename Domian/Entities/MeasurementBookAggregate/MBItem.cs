@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Domian.Common;
+using Domain.Common;
 
-namespace Domian.MeasurementBookAggregate
+namespace Domain.Entities.MeasurementBookAggregate
 {
-   public class MBItem : AuditableEntity
+    public class MBItem : AuditableEntity
    {
       public int Id { get; private set; }
       public string Name { get; private set; }

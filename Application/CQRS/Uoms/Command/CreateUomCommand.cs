@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
-using Domian;
-using Domian.Enums;
+using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Uoms.Command
