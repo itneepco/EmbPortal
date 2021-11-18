@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -9,9 +10,8 @@ using Shared.Responses;
 
 namespace Application.Projects.Query
 {
-   public class GetProjectByIdQuery : IRequest<ProjectResponse>
+    public record GetProjectByIdQuery(int id) : IRequest<ProjectResponse>
     {
-        public int Id { get; set; }
     }
 
     public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, ProjectResponse>
@@ -25,9 +25,16 @@ namespace Application.Projects.Query
         }
         public async Task<ProjectResponse> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Projects
-            .ProjectTo<ProjectResponse>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(p => p.Id == request.Id);
+            var project = await _context.Projects
+                .ProjectTo<ProjectResponse>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(p => p.Id == request.id);
+
+            if (project == null)
+            {
+                throw new NotFoundException(nameof(project), request.id);
+            }
+
+            return project;
         }
     }
 }

@@ -3,13 +3,11 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
-using Shared.Requests;
 
 namespace Application.Projects.Command
 {
-    public class CreateProjectCommand : ProjectRequest, IRequest<int>
-    {
-        
+    public record CreateProjectCommand(string name) : IRequest<int>
+    {   
     }
 
    public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, int>
@@ -25,7 +23,7 @@ namespace Application.Projects.Command
       {
          var project = new Project 
          (
-             name : request.Name
+             name : request.name
          );
          _context.Projects.Add(project);
          await _context.SaveChangesAsync(cancellationToken);

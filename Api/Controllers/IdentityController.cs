@@ -17,7 +17,7 @@ namespace Api.Controllers
     {
         //[Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<UserDto>>> GetUsers([FromQuery] GetUsersQueryWithPagination query)
+        public async Task<ActionResult<PaginatedList<UserDto>>> GetUsers([FromQuery] GetUsersWithPaginationQuery query)
         {
             return Ok(await Mediator.Send(query));
         }

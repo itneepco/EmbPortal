@@ -16,23 +16,23 @@ using System.Threading.Tasks;
 
 namespace Application.Identity.Queries
 {
-    public class GetUsersQueryWithPagination : PagedRequest, IRequest<PaginatedList<UserDto>>
+    public class GetUsersWithPaginationQuery : PagedRequest, IRequest<PaginatedList<UserDto>>
     {
     }
 
-    public class GetUsersQueryWithPaginationHandler : IRequestHandler<GetUsersQueryWithPagination, PaginatedList<UserDto>>
+    public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetUsersWithPaginationQuery, PaginatedList<UserDto>>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
         private Expression<Func<AppUser, bool>> Criteria { set; get; }
 
-        public GetUsersQueryWithPaginationHandler(UserManager<AppUser> userManager, IMapper mapper)
+        public GetUsersWithPaginationQueryHandler(UserManager<AppUser> userManager, IMapper mapper)
         {
             _userManager = userManager;
             _mapper = mapper;
         }
 
-        public async Task<PaginatedList<UserDto>> Handle(GetUsersQueryWithPagination request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<UserDto>> Handle(GetUsersWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _userManager.Users.AsQueryable();
 

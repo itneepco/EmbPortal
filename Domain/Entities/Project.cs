@@ -1,4 +1,6 @@
 using Domain.Common;
+using Domain.Entities.WorkOrderAggregate;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -6,6 +8,7 @@ namespace Domain.Entities
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
+        public IReadOnlyList<WorkOrder> WorkOrders { get; set; }
 
         private Project() { }
 

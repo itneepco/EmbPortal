@@ -8,7 +8,6 @@ namespace Application.Contractors.Command
 {
     public record EditContractorCommand(int id, string name) : IRequest
     {
-
     }
 
     public class EditContractorCommandHandler : IRequestHandler<EditContractorCommand>
@@ -21,22 +20,19 @@ namespace Application.Contractors.Command
 
         public async Task<Unit> Handle(EditContractorCommand request, CancellationToken cancellationToken)
         {
-           
-                var contractor = await _context.Contractors.FindAsync(request.id);
-                
-                if (contractor == null)
-                {
-                    throw new NotFoundException(nameof(contractor), request.id);
-                }
 
-                contractor.SetName(request.name);
-                
-                await _context.SaveChangesAsync(cancellationToken);
+            var contractor = await _context.Contractors.FindAsync(request.id);
 
-                return Unit.Value;           
+            if (contractor == null)
+            {
+                throw new NotFoundException(nameof(contractor), request.id);
+            }
 
+            contractor.SetName(request.name);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
         }
-
-       
     }
 }

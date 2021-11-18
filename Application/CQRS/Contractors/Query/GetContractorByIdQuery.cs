@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -9,9 +10,8 @@ using Shared.Responses;
 
 namespace Application.Contractors.Query
 {
-   public record GetContractorByIdQuery(int id) : IRequest<ContractorResponse>
+    public record GetContractorByIdQuery(int id) : IRequest<ContractorResponse>
     {
-        
     }
 
     public class GetContractorByIdQueryHandler : IRequestHandler<GetContractorByIdQuery, ContractorResponse>
@@ -25,9 +25,16 @@ namespace Application.Contractors.Query
         }
         public async Task<ContractorResponse> Handle(GetContractorByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Uoms
-            .ProjectTo<ContractorResponse>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(p => p.Id == request.id);
+            var contractor = await _context.Contractors
+                .ProjectTo<ContractorResponse>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(p => p.Id == request.id);
+
+            if (contractor == null)
+            {
+                throw new NotFoundException(nameof(contractor), request.id);
+            }
+
+            return contractor;
         }
     }
 }
