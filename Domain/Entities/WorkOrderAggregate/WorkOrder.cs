@@ -42,10 +42,10 @@ namespace Domain.Entities.WorkOrderAggregate
             EngineerInCharge = engineerInCharge;
         }
 
-        public void AddLineItem(string name, int no, int uomId, decimal rate, int poQuantity)
+        public void AddLineItem(string desc, int no, int uomId, decimal rate, float poQuantity)
         {
             if(IsCompleted) return;
-           _items.Add(new WorkOrderItem(name,no,uomId,rate,poQuantity));
+           _items.Add(new WorkOrderItem(desc, no, uomId, rate, poQuantity));
         }
         
         public void MarkComplete() {

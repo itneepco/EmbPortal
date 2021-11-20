@@ -8,7 +8,7 @@ namespace Domain.Entities.WorkOrderAggregate
         {
         }
 
-        public WorkOrderItem(string description, int itemNo, int uomId,decimal unitRate, int poQuantity)
+        public WorkOrderItem(string description, int itemNo, int uomId,decimal unitRate, float poQuantity)
         {
             
             Description = description;
@@ -25,7 +25,5 @@ namespace Domain.Entities.WorkOrderAggregate
         public decimal UnitRate { get; set; }
         public Uom Uom { get; private set; }
         public float PoQuantity { get; private set; }
-
-        
     }
 }

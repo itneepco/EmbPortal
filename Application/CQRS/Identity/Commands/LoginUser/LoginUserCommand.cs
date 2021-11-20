@@ -48,6 +48,7 @@ namespace Application.Identity.Commands
                 Email = user.Email,
                 DisplayName = user.DisplayName,
                 EmployeeCode = user.UserName,
+                Designation = user.Designation,
                 Token = await _tokenService.CreateToken(user)
             };
         }

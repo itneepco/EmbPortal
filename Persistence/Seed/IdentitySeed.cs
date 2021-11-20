@@ -49,7 +49,7 @@ namespace Persistence.Seed
                     await userManager.CreateAsync(user, "Pa$$w0rd");
                     await userManager.AddToRoleAsync(user, "Member");
 
-                    if (user.Email == "admin@test.com")
+                    if (user.Email == "admin@neepco.com")
                     {
                         await userManager.AddToRoleAsync(user, "Admin");
                     }
