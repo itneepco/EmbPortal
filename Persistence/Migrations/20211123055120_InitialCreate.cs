@@ -275,12 +275,12 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    WorkOrderId = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     ItemNo = table.Column<int>(type: "INTEGER", nullable: false),
                     UomId = table.Column<int>(type: "INTEGER", nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     PoQuantity = table.Column<float>(type: "REAL", nullable: false),
-                    WorkOrderId = table.Column<int>(type: "INTEGER", nullable: true),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -300,7 +300,7 @@ namespace Persistence.Migrations
                         column: x => x.WorkOrderId,
                         principalTable: "WorkOrders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

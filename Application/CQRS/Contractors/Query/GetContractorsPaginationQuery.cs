@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.Contractors.Query
 {
-    public class GetContractorsWithPaginationQuery : PagedRequest, IRequest<PaginatedList<ContractorResponse>>
+    public record GetContractorsPaginationQuery(PagedRequest data) : IRequest<PaginatedList<ContractorResponse>>
     {
     }
 
-    public class GetUsersQueryWithPaginationHandler : IRequestHandler<GetContractorsWithPaginationQuery, PaginatedList<ContractorResponse>>
+    public class GetUsersQueryWithPaginationHandler : IRequestHandler<GetContractorsPaginationQuery, PaginatedList<ContractorResponse>>
     {
         private readonly IMapper _mapper;
         private readonly IAppDbContext _context;
@@ -31,14 +31,14 @@ namespace Application.CQRS.Contractors.Query
             _mapper = mapper;
         }
 
-        public async Task<PaginatedList<ContractorResponse>> Handle(GetContractorsWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ContractorResponse>> Handle(GetContractorsPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Contractors.AsQueryable();
 
-            if (!string.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrEmpty(request.data.Search))
             {
                 Criteria = (m =>
-                    m.Name.ToLower().Contains(request.Search.ToLower())
+                    m.Name.ToLower().Contains(request.data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);
@@ -47,7 +47,7 @@ namespace Application.CQRS.Contractors.Query
             return await query.OrderBy(p => p.Name)
                 .ProjectTo<ContractorResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+                .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);
         }
     }
 }

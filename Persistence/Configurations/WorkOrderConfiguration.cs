@@ -10,7 +10,11 @@ namespace Persistence.Configurations
         {
              builder.Property(p => p.OrderNo).IsRequired();
              builder.Property(p => p.OrderDate).IsRequired();
-             builder.Property(p => p.Title).IsRequired();                      
+             builder.Property(p => p.Title).IsRequired();
+
+            // Backing fields
+            builder.Navigation(p => p.Items).HasField("_items");
+            builder.Navigation(p => p.MeasurementBooks).HasField("_measurementBooks");
         }
     }
 }

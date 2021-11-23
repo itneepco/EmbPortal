@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211103103945_InitialCreate")]
+    [Migration("20211123055120_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -353,7 +353,7 @@ namespace Persistence.Migrations
                     b.Property<int>("UomId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("WorkOrderId")
+                    b.Property<int>("WorkOrderId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -522,13 +522,13 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.HasOne("Domain.Entities.Contractor", "Contractor")
-                        .WithMany()
+                        .WithMany("WorkOrders")
                         .HasForeignKey("ContractorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Project", "Project")
-                        .WithMany()
+                        .WithMany("WorkOrders")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -548,7 +548,9 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("Items")
-                        .HasForeignKey("WorkOrderId");
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Uom");
                 });
@@ -604,9 +606,19 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.Contractor", b =>
+                {
+                    b.Navigation("WorkOrders");
+                });
+
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
                     b.Navigation("LineItems");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Project", b =>
+                {
+                    b.Navigation("WorkOrders");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>

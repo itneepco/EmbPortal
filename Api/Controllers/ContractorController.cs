@@ -20,8 +20,10 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<ContractorResponse>>> GetContractorsWithPagination([FromQuery] GetContractorsWithPaginationQuery query)
+        public async Task<ActionResult<PaginatedList<ContractorResponse>>> GetContractorsWithPagination([FromQuery] PagedRequest request)
         {
+            var query = new GetContractorsPaginationQuery(request);
+
             return Ok(await Mediator.Send(query));
         }
 
