@@ -250,6 +250,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WorkOrderId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     ValidatingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Status = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -270,7 +271,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkOrderItems",
+                name: "WorkOrderItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -288,15 +289,15 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkOrderItems", x => x.Id);
+                    table.PrimaryKey("PK_WorkOrderItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkOrderItems_Uoms_UomId",
+                        name: "FK_WorkOrderItem_Uoms_UomId",
                         column: x => x.UomId,
                         principalTable: "Uoms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WorkOrderItems_WorkOrders_WorkOrderId",
+                        name: "FK_WorkOrderItem_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
                         principalTable: "WorkOrders",
                         principalColumn: "Id",
@@ -310,8 +311,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WorkOrderItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<float>(type: "REAL", nullable: false),
-                    MeasurementBookId = table.Column<int>(type: "INTEGER", nullable: true),
+                    MeasurementBookId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -325,11 +325,11 @@ namespace Persistence.Migrations
                         column: x => x.MeasurementBookId,
                         principalTable: "MeasurementBooks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MBookItem_WorkOrderItems_WorkOrderItemId",
+                        name: "FK_MBookItem_WorkOrderItem_WorkOrderItemId",
                         column: x => x.WorkOrderItemId,
-                        principalTable: "WorkOrderItems",
+                        principalTable: "WorkOrderItem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -379,7 +379,8 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_MBookItem_WorkOrderItemId",
                 table: "MBookItem",
-                column: "WorkOrderItemId");
+                column: "WorkOrderItemId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -387,13 +388,13 @@ namespace Persistence.Migrations
                 column: "WorkOrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderItems_UomId",
-                table: "WorkOrderItems",
+                name: "IX_WorkOrderItem_UomId",
+                table: "WorkOrderItem",
                 column: "UomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderItems_WorkOrderId",
-                table: "WorkOrderItems",
+                name: "IX_WorkOrderItem_WorkOrderId",
+                table: "WorkOrderItem",
                 column: "WorkOrderId");
 
             migrationBuilder.CreateIndex(
@@ -437,7 +438,7 @@ namespace Persistence.Migrations
                 name: "MeasurementBooks");
 
             migrationBuilder.DropTable(
-                name: "WorkOrderItems");
+                name: "WorkOrderItem");
 
             migrationBuilder.DropTable(
                 name: "Uoms");

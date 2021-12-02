@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
@@ -9,49 +10,48 @@ using Shared.Requests;
 
 namespace Application.CQRS.MeasurementBooks.Command
 {
-    public record CreateMBCommand(CreateMBookRequest data) : IRequest<int>
+    public record CreateMBookCommand(CreateMBookRequest data) : IRequest<int>
     {
     }
 
-    public class CreateWorkOrderCommandHandler : IRequestHandler<CreateMBCommand, int>
+    public class CreateWorkOrderCommandHandler : IRequestHandler<CreateMBookCommand, int>
     {
         private readonly IAppDbContext _context;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IWorkOrderItemService _itemService;
+        private readonly IWorkOrderService _orderService;
 
         public CreateWorkOrderCommandHandler(IAppDbContext context, 
-            ICurrentUserService currentUserService,
-            IWorkOrderItemService itemService)
+            IWorkOrderService orderService)
         {
             _context = context;
-            _itemService = itemService;
-            _currentUserService = currentUserService;
+            _orderService = orderService;
         }
 
-        public async Task<int> Handle(CreateMBCommand req, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateMBookCommand req, CancellationToken cancellationToken)
         {
             if (req.data.Items.Count == 0)
             {
                 throw new BadRequestException("Measurement book line items cannot be empty");
             }
 
+            var workOrder = await _orderService.GetWorkOrderWithItems(req.data.WorkOrderId);
+
             var measurementBook = new MeasurementBook
             (
                 workOrderId: req.data.WorkOrderId,
+                title: req.data.Title,
                 measurementOfficer: req.data.MeasurementOfficer,
                 validatingOfficer: req.data.ValidatingOfficer
             );
 
             foreach (var item in req.data.Items)
             {
-                var isAvailable = await _itemService.IsBalanceQtyAvailable(item.WorkOrderItemId, item.Quantity);
+                var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
 
-                if (!isAvailable)
-                {
-                    throw new BadRequestException("Insufficient balance quantity for item " + item.ItemNo);
-                }
+                if (workOrderItem == null) throw new NotFoundException($"WorkOrder does not have LineItem with Id: {item.WorkOrderItemId}");
 
-                measurementBook.AddUpdateLineItem(item.WorkOrderItemId, item.Quantity);
+                if (workOrderItem.MBookItem != null) throw new BadRequestException("LineItem already used in some other Measurement Book");
+                
+                measurementBook.AddUpdateLineItem(workOrderItem.Id);
             }
 
             _context.MeasurementBooks.Add(measurementBook);

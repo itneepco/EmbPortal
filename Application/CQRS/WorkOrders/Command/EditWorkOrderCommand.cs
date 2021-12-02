@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Command
 {
-    public record EditMBCommand(int id, WorkOrderRequest data) : IRequest
+    public record EditWorkOrderCommand(int id, WorkOrderRequest data) : IRequest
     {
     }
 
-    public class UpdateWorkOrderCommandHandler : IRequestHandler<EditMBCommand>
+    public class UpdateWorkOrderCommandHandler : IRequestHandler<EditWorkOrderCommand>
     {
         private readonly IAppDbContext _context;
 
@@ -20,7 +20,7 @@ namespace Application.CQRS.WorkOrders.Command
             _context = context;
         }
 
-        public async Task<Unit> Handle(EditMBCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(EditWorkOrderCommand request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders.FindAsync(request.id);
 

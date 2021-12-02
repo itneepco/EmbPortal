@@ -2,26 +2,25 @@
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.CQRS.MeasurementBooks.Command
 {
-    public record CreateMBItemCommand(int mBookId, MBookItemRequest data) : IRequest<int>
+    public record CreateMBItemCommand(int mBookId, int wOrderItemId) : IRequest<int>
     {
     }
 
     public class CreateMBItemCommandHandler : IRequestHandler<CreateMBItemCommand, int>
     {
         private readonly IAppDbContext _context;
-        private readonly IWorkOrderItemService _itemService;
+        private readonly IWorkOrderService _orderService;
 
-        public CreateMBItemCommandHandler(IAppDbContext context, IWorkOrderItemService itemService)
+        public CreateMBItemCommandHandler(IAppDbContext context, IWorkOrderService orderService)
         {
             _context = context;
-            _itemService = itemService;
+            _orderService = orderService;
         }
 
         public async Task<int> Handle(CreateMBItemCommand req, CancellationToken cancellationToken)
@@ -29,21 +28,23 @@ namespace Application.CQRS.MeasurementBooks.Command
             var measurementBook = await _context.MeasurementBooks
                 .Include(p => p.Items)
                 .FirstOrDefaultAsync(p => p.Id == req.mBookId);
-            
-            if (measurementBook == null) throw new NotFoundException(nameof(measurementBook), req.mBookId);
 
-            var isAvailable = await _itemService.IsBalanceQtyAvailable(req.data.WorkOrderItemId, req.data.Quantity);
-
-            if (!isAvailable)
+            if (measurementBook == null)
             {
-                throw new BadRequestException("Insufficient balance quantity for item " + req.data.ItemNo);
+                throw new NotFoundException(nameof(measurementBook), req.mBookId);
             }
 
-            measurementBook.AddUpdateLineItem(req.data.WorkOrderItemId, req.data.Quantity);
+            var workOrder = await _orderService.GetWorkOrderWithItems(measurementBook.WorkOrderId);
+            var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == req.wOrderItemId);
 
+            if (workOrderItem == null) throw new NotFoundException($"WorkOrder does not have LineItem with Id: {req.wOrderItemId}");
+
+            if (workOrderItem.MBookItem != null) throw new BadRequestException("LineItem already used in some other Measurement Book");
+
+            measurementBook.AddUpdateLineItem(req.wOrderItemId);
             await _context.SaveChangesAsync(cancellationToken);
 
-            var item = measurementBook.Items.FirstOrDefault(p => p.WorkOrderItemId == req.data.WorkOrderItemId);
+            var item = measurementBook.Items.FirstOrDefault(p => p.WorkOrderItemId == req.wOrderItemId);
             return item.Id;
         }
     }

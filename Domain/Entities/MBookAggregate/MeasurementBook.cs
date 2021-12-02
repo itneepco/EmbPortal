@@ -9,10 +9,11 @@ namespace Domain.Entities.MeasurementBookAggregate
     {
         public int Id { get; private set; }
         public int WorkOrderId { get; private set; }
-        public WorkOrder WorkOrder { get; private set; }
+        public string Title { get; private set; }
         public string MeasurementOfficer { get; private set; }
         public string ValidatingOfficer { get; private set; }
         public bool Status { get; private set; }
+        public WorkOrder WorkOrder { get; private set; }
 
         private readonly List<MBookItem> _items = new List<MBookItem>();
         public IReadOnlyList<MBookItem> Items => _items.AsReadOnly();
@@ -21,24 +22,24 @@ namespace Domain.Entities.MeasurementBookAggregate
         {
         }
 
-        public MeasurementBook(int workOrderId, string measurementOfficer, string validatingOfficer)
+        public MeasurementBook(int workOrderId, string title, string measurementOfficer, string validatingOfficer)
         {
+            Title = title;
             WorkOrderId = workOrderId;
             MeasurementOfficer = measurementOfficer;
             ValidatingOfficer = validatingOfficer;
         }
 
-        public void AddUpdateLineItem(int wOrderItemId, float quantity, int id=0)
+        public void AddUpdateLineItem(int wOrderItemId, int id=0)
         {
             if (id != 0)  // for item update
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
                 item.SetWorkOrderItemNo(wOrderItemId);
-                item.SetQuantity(quantity);;
             }
             else  // new item
             {
-                _items.Add(new MBookItem(wOrderItemId, quantity));
+                _items.Add(new MBookItem(wOrderItemId));
             }
         }
 
@@ -50,6 +51,11 @@ namespace Domain.Entities.MeasurementBookAggregate
             {
                 _items.Remove(item);
             }
+        }
+
+        public void SetTitle(string title)
+        {
+            Title = title;
         }
 
         public void SetWorkOrderId(int workOrderId)

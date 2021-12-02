@@ -1,12 +1,21 @@
 using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
     public class WorkOrderItem :AuditableEntity
     {
+        public int Id { get; private set; }
+        public int WorkOrderId { get; set; }
+        public string Description { get; private set; }
+        public int ItemNo { get; private set; }   
+        public int UomId { get; private set; } 
+        public decimal UnitRate { get; private set; }
+        public Uom Uom { get; private set; }
+        public float PoQuantity { get; private set; }
+        public WorkOrder WorkOrder { get; private set; }
+        public MBookItem MBookItem { get; private set; }
+
         private WorkOrderItem()
         {
         }
@@ -19,19 +28,6 @@ namespace Domain.Entities.WorkOrderAggregate
             UnitRate = unitRate;            
             PoQuantity = poQuantity;
         }
-
-        public int Id { get; private set; }
-        public int WorkOrderId { get; set; }
-        public string Description { get; private set; }
-        public int ItemNo { get; private set; }   
-        public int UomId { get; private set; } 
-        public decimal UnitRate { get; private set; }
-        public Uom Uom { get; private set; }
-        public float PoQuantity { get; private set; }
-
-        // Navigation Property
-        public IReadOnlyList<MBookItem> MBookItems { get; private set; }
-        public float BalQuantity => PoQuantity - MBookItems.Aggregate(0, (float acc, MBookItem cur) => acc + cur.Quantity);
 
         public void SetDescription(string description)
         {

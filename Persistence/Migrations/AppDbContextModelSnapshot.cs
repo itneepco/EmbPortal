@@ -139,11 +139,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("MeasurementBookId")
+                    b.Property<int>("MeasurementBookId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<float>("Quantity")
-                        .HasColumnType("REAL");
 
                     b.Property<int>("WorkOrderItemId")
                         .HasColumnType("INTEGER");
@@ -152,7 +149,8 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MeasurementBookId");
 
-                    b.HasIndex("WorkOrderItemId");
+                    b.HasIndex("WorkOrderItemId")
+                        .IsUnique();
 
                     b.ToTable("MBookItem");
                 });
@@ -184,6 +182,11 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ValidatingOfficer")
                         .IsRequired()
@@ -366,7 +369,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("WorkOrderItems");
+                    b.ToTable("WorkOrderItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -499,15 +502,19 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
                         .WithMany("Items")
-                        .HasForeignKey("MeasurementBookId");
-
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
-                        .WithMany("MBookItems")
-                        .HasForeignKey("WorkOrderItemId")
+                        .HasForeignKey("MeasurementBookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
+                        .WithOne("MBookItem")
+                        .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MBookItem", "WorkOrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MeasurementBook");
 
                     b.Navigation("WorkOrderItem");
                 });
@@ -550,13 +557,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Uom");
+
+                    b.Navigation("WorkOrder");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -634,7 +643,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.Navigation("MBookItems");
+                    b.Navigation("MBookItem");
                 });
 #pragma warning restore 612, 618
         }

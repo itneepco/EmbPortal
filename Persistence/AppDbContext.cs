@@ -29,7 +29,6 @@ namespace Persistence
         public DbSet<Uom> Uoms { get ; set ; }
         public DbSet<Contractor> Contractors {get; set;}
         public DbSet<WorkOrder> WorkOrders { get ; set ; }
-        public DbSet<WorkOrderItem> WorkOrderItems { get; set; }
         public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

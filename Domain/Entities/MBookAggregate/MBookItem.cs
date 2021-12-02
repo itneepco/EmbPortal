@@ -7,29 +7,22 @@ namespace Domain.Entities.MeasurementBookAggregate
     {
         public int Id { get; private set; }
         public int WorkOrderItemId { get; set; }
-        public float Quantity { get; set; }
-
-        // Navigation Property
+        public int MeasurementBookId { get; set; }
         public WorkOrderItem WorkOrderItem { get; set; }
+        public MeasurementBook MeasurementBook { get; set; }
 
         public MBookItem()
         {
         }
 
-        public MBookItem(int wOrderItemId, float quantity)
+        public MBookItem(int wOrderItemId)
         {
             WorkOrderItemId = wOrderItemId;
-            Quantity = quantity;
         }
 
         public void SetWorkOrderItemNo(int wOrderItemId)
         {
             WorkOrderItemId = wOrderItemId;
-        }
-
-        public void SetQuantity(float quantity)
-        {
-            Quantity = quantity;
         }
     }
 }

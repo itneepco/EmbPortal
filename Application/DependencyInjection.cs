@@ -13,7 +13,7 @@ namespace Application
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<IWorkOrderItemService, WorkOrderItemService>();
+            services.AddScoped<IWorkOrderService, WorkOrderService>();
 
             return services;
         }

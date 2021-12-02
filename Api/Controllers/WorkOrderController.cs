@@ -34,7 +34,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateWorkOrder(CreateWorkOrderRequest data)
         {
-            CreateMBCommand command = new CreateMBCommand(data);
+            CreateWorkOrderCommand command = new CreateWorkOrderCommand(data);
 
             return Ok(await Mediator.Send(command));
         }
@@ -44,7 +44,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateWorkOrder(int id, WorkOrderRequest data)
         {
-            EditMBCommand command = new EditMBCommand(id, data);
+            EditWorkOrderCommand command = new EditWorkOrderCommand(id, data);
             await Mediator.Send(command);
 
             return NoContent();
@@ -55,7 +55,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateWorkOrderItem(int workOrderId, WorkOrderItemRequest data)
         {
-            CreateMBItemCommand command = new CreateMBItemCommand(workOrderId, data);
+            CreateWorkOrderItemCommand command = new CreateWorkOrderItemCommand(workOrderId, data);
 
             return Ok(await Mediator.Send(command));
         }
@@ -65,7 +65,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateWorkOrderItem(int workOrderId, int id, WorkOrderItemRequest data)
         {
-            EditMBItemCommand command = new EditMBItemCommand(id, workOrderId, data);
+            EditWorkOrderItemCommand command = new EditWorkOrderItemCommand(id, workOrderId, data);
             await Mediator.Send(command);
 
             return NoContent();
@@ -76,7 +76,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteWorkOrderItem(int id, int workOrderId)
         {
-            var command = new DeleteMBItemCommand(id, workOrderId);
+            var command = new DeleteWorkOrderItemCommand(id, workOrderId);
             await Mediator.Send(command);
 
             return NoContent();
