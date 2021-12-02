@@ -17,7 +17,6 @@ namespace Application.Uoms.Command
       public DeleteUomCommandHandler(IAppDbContext context)
       {
          _context = context;
-
       }
 
       public async Task<Unit> Handle(DeleteUomCommand request, CancellationToken cancellationToken)
@@ -27,6 +26,7 @@ namespace Application.Uoms.Command
          {
             throw new NotFoundException(nameof(uom), request.id);
          }
+
          _context.Uoms.Remove(uom);
          await _context.SaveChangesAsync(cancellationToken);
          return Unit.Value;

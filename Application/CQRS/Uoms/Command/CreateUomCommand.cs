@@ -9,13 +9,12 @@ namespace Application.Uoms.Command
 {
     public record CreateUomCommand(string name, int dimension) : IRequest<int>
     {
-
     }
 
-    public class CraeteUomCommandHandler : IRequestHandler<CreateUomCommand, int>
+    public class CreateUomCommandHandler : IRequestHandler<CreateUomCommand, int>
     {
         private readonly IAppDbContext _context;
-        public CraeteUomCommandHandler(IAppDbContext context)
+        public CreateUomCommandHandler(IAppDbContext context)
         {
             _context = context;
         }
@@ -27,6 +26,7 @@ namespace Application.Uoms.Command
                 name : request.name,
                 dimension : (UomDimension) request.dimension
             );
+
             _context.Uoms.Add(uom);
             await _context.SaveChangesAsync(cancellationToken);
             return uom.Id;

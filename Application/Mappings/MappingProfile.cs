@@ -17,6 +17,7 @@ namespace Application.Mappings
             CreateMap<Project, ProjectResponse>();
 
             CreateMap<Uom, UomResponse>()
+                .ForMember(m => m.DimensionId, opt => opt.MapFrom(p => p.Dimension))
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Dimension.ToString()));
 
             CreateMap<Contractor, ContractorResponse>();

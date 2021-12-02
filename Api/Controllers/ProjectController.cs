@@ -21,7 +21,7 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProjectResponse>> Getproject(int id) 
+        public async Task<ActionResult<ProjectResponse>> GetProjectById(int id) 
         {
             return Ok(await Mediator.Send(new GetProjectByIdQuery(id)));
         }
@@ -39,7 +39,7 @@ namespace Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateProject(int id, ContractorRequest request)
+        public async Task<ActionResult> UpdateProject(int id, ProjectRequest request)
         {
             EditProjectCommand command = new EditProjectCommand(id: id, name: request.Name);
             await Mediator.Send(command);

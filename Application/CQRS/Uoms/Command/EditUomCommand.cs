@@ -9,7 +9,6 @@ namespace Application.Uoms.Command
 {
     public record EditUomCommand(int id, string name, int dimension) : IRequest
     {
-
     }
 
     public class EditUomCommandHandler : IRequestHandler<EditUomCommand>
@@ -35,9 +34,6 @@ namespace Application.Uoms.Command
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
-
         }
-
-
     }
 }

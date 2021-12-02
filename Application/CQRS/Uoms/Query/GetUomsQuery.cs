@@ -11,9 +11,8 @@ using Shared.Responses;
 
 namespace Application.Uoms.Query
 {
-   public class GetUomsQuery : IRequest<IReadOnlyList<UomResponse>>
+    public class GetUomsQuery : IRequest<IReadOnlyList<UomResponse>>
     {
-
     }
 
     public class GetUomsQueryHandler : IRequestHandler<GetUomsQuery, IReadOnlyList<UomResponse>>

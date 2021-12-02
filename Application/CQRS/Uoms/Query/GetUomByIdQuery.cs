@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -9,9 +10,8 @@ using Shared.Responses;
 
 namespace Application.Uoms.Query
 {
-   public class GetUomByIdQuery : IRequest<UomResponse>
+    public record GetUomByIdQuery(int id) : IRequest<UomResponse>
     {
-        public int Id { get; set; }
     }
 
     public class GetUomByIdQueryHandler : IRequestHandler<GetUomByIdQuery, UomResponse>
@@ -23,11 +23,19 @@ namespace Application.Uoms.Query
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<UomResponse> Handle(GetUomByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Uoms
-            .ProjectTo<UomResponse>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(p => p.Id == request.Id);
+            var uom = await _context.Uoms
+                .ProjectTo<UomResponse>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(p => p.Id == request.id);
+
+            if (uom == null)
+            {
+                throw new NotFoundException(nameof(uom), request.id);
+            }
+
+            return uom;
         }
     }
 }
