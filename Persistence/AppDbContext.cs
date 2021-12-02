@@ -9,6 +9,7 @@ using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.WorkOrderAggregate;
+using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -18,14 +19,17 @@ namespace Persistence
 {
     public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
     {
-        public AppDbContext( DbContextOptions options) : base(options)
+        private readonly ICurrentUserService _currentUserService;
+        public AppDbContext(DbContextOptions options, ICurrentUserService currentUserService) : base(options)
         {
+            _currentUserService = currentUserService;
         }
 
         public DbSet<Project> Projects { get ; set; }
         public DbSet<Uom> Uoms { get ; set ; }
         public DbSet<Contractor> Contractors {get; set;}
         public DbSet<WorkOrder> WorkOrders { get ; set ; }
+        public DbSet<WorkOrderItem> WorkOrderItems { get; set; }
         public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -35,12 +39,12 @@ namespace Persistence
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = "admin@neepco.com";//_currentUserService.Email;
+                        entry.Entity.CreatedBy = _currentUserService.EmployeeCode;
                         entry.Entity.Created = DateTime.Now;
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.LastModifiedBy = "admin@neepco.com";// _currentUserService.Email;
+                        entry.Entity.LastModifiedBy = _currentUserService.EmployeeCode;
                         entry.Entity.LastModified = DateTime.Now;
                         break;
                 }

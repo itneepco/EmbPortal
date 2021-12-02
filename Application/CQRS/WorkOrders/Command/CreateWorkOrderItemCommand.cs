@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared.Requests;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Command
 {
-    public record CreateWorkOrderItemCommand(int workOrderId, WorkOrderItemRequest data) : IRequest<int>
+    public record CreateMBItemCommand(int workOrderId, WorkOrderItemRequest data) : IRequest<int>
     {
     }
 
-    public class CreateWorkOrderItemCommandHandler : IRequestHandler<CreateWorkOrderItemCommand, int>
+    public class CreateWorkOrderItemCommandHandler : IRequestHandler<CreateMBItemCommand, int>
     {
         private readonly IAppDbContext _context;
 
@@ -21,11 +22,16 @@ namespace Application.CQRS.WorkOrders.Command
             _context = context;
         }
 
-        public async Task<int> Handle(CreateWorkOrderItemCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateMBItemCommand request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders
                 .Include(p => p.Items)
                 .FirstOrDefaultAsync(p => p.Id == request.workOrderId);
+
+            if (workOrder == null)
+            {
+                throw new NotFoundException(nameof(workOrder), request.workOrderId);
+            }
 
             workOrder.AddUpdateLineItem(
                 description: request.data.Description,
@@ -35,7 +41,6 @@ namespace Application.CQRS.WorkOrders.Command
                 poQuantity: request.data.PoQuantity
             );
 
-            _context.WorkOrders.Add(workOrder);
             await _context.SaveChangesAsync(cancellationToken);
 
             var item = workOrder.Items.FirstOrDefault(p => p.ItemNo == request.data.ItemNo);

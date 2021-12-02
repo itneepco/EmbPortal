@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Command
 {
-    public record DeleteWorkOrderItemCommand(int id, int workOrderId) : IRequest
+    public record DeleteWorkOrderItem(int id, int workOrderId) : IRequest
     {
     }
 
-    public record DeleteWorkOrderItemCommandHandler : IRequestHandler<DeleteWorkOrderItemCommand>
+    public class DeleteWorkOrderItemCommandHandler : IRequestHandler<DeleteWorkOrderItem>
     {
         private readonly IAppDbContext _context;
         public DeleteWorkOrderItemCommandHandler(IAppDbContext dbContext)
@@ -19,7 +19,7 @@ namespace Application.CQRS.WorkOrders.Command
             _context = dbContext;
         }
 
-        public async Task<Unit> Handle(DeleteWorkOrderItemCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteWorkOrderItem request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders
                 .Include(p => p.Items)

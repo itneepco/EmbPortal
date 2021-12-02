@@ -56,9 +56,9 @@ namespace Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,9 +73,9 @@ namespace Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,9 +91,9 @@ namespace Persistence.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
                     Dimension = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -222,9 +222,9 @@ namespace Persistence.Migrations
                     ContractorId = table.Column<int>(type: "INTEGER", nullable: false),
                     EngineerInCharge = table.Column<string>(type: "TEXT", nullable: true),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -250,13 +250,13 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WorkOrderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    MeasurementOfficer = table.Column<string>(type: "TEXT", nullable: true),
-                    ValidatingOfficer = table.Column<string>(type: "TEXT", nullable: true),
+                    MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    ValidatingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Status = table.Column<bool>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,7 +270,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WorkOrderItem",
+                name: "WorkOrderItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -282,21 +282,21 @@ namespace Persistence.Migrations
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     PoQuantity = table.Column<float>(type: "REAL", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkOrderItem", x => x.Id);
+                    table.PrimaryKey("PK_WorkOrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkOrderItem_Uoms_UomId",
+                        name: "FK_WorkOrderItems_Uoms_UomId",
                         column: x => x.UomId,
                         principalTable: "Uoms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WorkOrderItem_WorkOrders_WorkOrderId",
+                        name: "FK_WorkOrderItems_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
                         principalTable: "WorkOrders",
                         principalColumn: "Id",
@@ -304,36 +304,32 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MBItem",
+                name: "MBookItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    No = table.Column<int>(type: "INTEGER", nullable: false),
-                    UomId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Rate = table.Column<double>(type: "REAL", nullable: false),
-                    PoQuantity = table.Column<float>(type: "REAL", nullable: false),
-                    CummulativeQuantity = table.Column<float>(type: "REAL", nullable: false),
+                    WorkOrderItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quantity = table.Column<float>(type: "REAL", nullable: false),
                     MeasurementBookId = table.Column<int>(type: "INTEGER", nullable: true),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MBItem", x => x.Id);
+                    table.PrimaryKey("PK_MBookItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MBItem_MeasurementBooks_MeasurementBookId",
+                        name: "FK_MBookItem_MeasurementBooks_MeasurementBookId",
                         column: x => x.MeasurementBookId,
                         principalTable: "MeasurementBooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_MBItem_Uoms_UomId",
-                        column: x => x.UomId,
-                        principalTable: "Uoms",
+                        name: "FK_MBookItem_WorkOrderItems_WorkOrderItemId",
+                        column: x => x.WorkOrderItemId,
+                        principalTable: "WorkOrderItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -376,14 +372,14 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MBItem_MeasurementBookId",
-                table: "MBItem",
+                name: "IX_MBookItem_MeasurementBookId",
+                table: "MBookItem",
                 column: "MeasurementBookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MBItem_UomId",
-                table: "MBItem",
-                column: "UomId");
+                name: "IX_MBookItem_WorkOrderItemId",
+                table: "MBookItem",
+                column: "WorkOrderItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -391,13 +387,13 @@ namespace Persistence.Migrations
                 column: "WorkOrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderItem_UomId",
-                table: "WorkOrderItem",
+                name: "IX_WorkOrderItems_UomId",
+                table: "WorkOrderItems",
                 column: "UomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderItem_WorkOrderId",
-                table: "WorkOrderItem",
+                name: "IX_WorkOrderItems_WorkOrderId",
+                table: "WorkOrderItems",
                 column: "WorkOrderId");
 
             migrationBuilder.CreateIndex(
@@ -429,10 +425,7 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "MBItem");
-
-            migrationBuilder.DropTable(
-                name: "WorkOrderItem");
+                name: "MBookItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -442,6 +435,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "MeasurementBooks");
+
+            migrationBuilder.DropTable(
+                name: "WorkOrderItems");
 
             migrationBuilder.DropTable(
                 name: "Uoms");

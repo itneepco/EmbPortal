@@ -67,6 +67,8 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public void RemoveLineItem(int id)
         {
+            if (IsCompleted) return;
+
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if(item != null) // if item exists in the list

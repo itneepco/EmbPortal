@@ -31,7 +31,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateProject(ProjectRequest request)
         {
-            CreateProjectCommand command = new CreateProjectCommand(name: request.Name);
+            CreateMeasurementBookCommand command = new CreateMeasurementBookCommand(name: request.Name);
 
             return Ok(await Mediator.Send(command));
         }

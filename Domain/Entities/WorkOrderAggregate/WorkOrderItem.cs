@@ -1,4 +1,7 @@
 using Domain.Common;
+using Domain.Entities.MeasurementBookAggregate;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
@@ -25,6 +28,10 @@ namespace Domain.Entities.WorkOrderAggregate
         public decimal UnitRate { get; private set; }
         public Uom Uom { get; private set; }
         public float PoQuantity { get; private set; }
+
+        // Navigation Property
+        public IReadOnlyList<MBookItem> MBookItems { get; private set; }
+        public float BalQuantity => PoQuantity - MBookItems.Aggregate(0, (float acc, MBookItem cur) => acc + cur.Quantity);
 
         public void SetDescription(string description)
         {

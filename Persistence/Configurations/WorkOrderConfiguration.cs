@@ -8,9 +8,12 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkOrder> builder)
         {
-             builder.Property(p => p.OrderNo).IsRequired();
-             builder.Property(p => p.OrderDate).IsRequired();
-             builder.Property(p => p.Title).IsRequired();
+            builder.Property(p => p.OrderNo).IsRequired();
+            builder.Property(p => p.OrderDate).IsRequired();
+            builder.Property(p => p.Title).IsRequired();
+
+            builder.Property(p => p.CreatedBy).HasMaxLength(6);
+            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
 
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");

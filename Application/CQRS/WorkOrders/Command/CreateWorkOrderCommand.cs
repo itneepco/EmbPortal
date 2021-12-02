@@ -9,11 +9,11 @@ using Shared.Requests;
 
 namespace Application.WorkOrders.Command
 {
-    public record CreateWorkOrderCommand(CreateWorkOrderRequest data) : IRequest<int>
+    public record CreateMBCommand(CreateWorkOrderRequest data) : IRequest<int>
     {
     }
 
-    public class CreateWorkOrderCommandHandler : IRequestHandler<CreateWorkOrderCommand, int>
+    public class CreateWorkOrderCommandHandler : IRequestHandler<CreateMBCommand, int>
     {
         private readonly IAppDbContext _context;
         private readonly ICurrentUserService _currentUserService;
@@ -24,7 +24,7 @@ namespace Application.WorkOrders.Command
             _currentUserService = currentUserService;
         }
 
-        public async Task<int> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateMBCommand request, CancellationToken cancellationToken)
         {
             if (request.data.Items.Count == 0)
             {

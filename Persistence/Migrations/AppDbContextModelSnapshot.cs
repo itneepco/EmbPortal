@@ -26,12 +26,14 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -117,7 +119,7 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBItem", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,42 +129,32 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
-
-                    b.Property<float>("CummulativeQuantity")
-                        .HasColumnType("REAL");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("MeasurementBookId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("No")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("PoQuantity")
+                    b.Property<float>("Quantity")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("Rate")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("UomId")
+                    b.Property<int>("WorkOrderItemId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MeasurementBookId");
 
-                    b.HasIndex("UomId");
+                    b.HasIndex("WorkOrderItemId");
 
-                    b.ToTable("MBItem");
+                    b.ToTable("MBookItem");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
@@ -175,21 +167,27 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MeasurementOfficer")
+                        .IsRequired()
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ValidatingOfficer")
+                        .IsRequired()
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("WorkOrderId")
@@ -212,12 +210,14 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -240,6 +240,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Dimension")
@@ -249,6 +250,7 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -280,6 +282,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EngineerInCharge")
@@ -292,6 +295,7 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("OrderDate")
@@ -327,6 +331,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -340,6 +345,7 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<float>("PoQuantity")
@@ -360,7 +366,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("WorkOrderItem");
+                    b.ToTable("WorkOrderItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -491,19 +497,19 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBItem", b =>
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
-                        .WithMany("LineItems")
+                        .WithMany("Items")
                         .HasForeignKey("MeasurementBookId");
 
-                    b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany()
-                        .HasForeignKey("UomId")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
+                        .WithMany("MBookItems")
+                        .HasForeignKey("WorkOrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Uom");
+                    b.Navigation("WorkOrderItem");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
@@ -611,7 +617,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
-                    b.Navigation("LineItems");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
@@ -624,6 +630,11 @@ namespace Persistence.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("MeasurementBooks");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
+                {
+                    b.Navigation("MBookItems");
                 });
 #pragma warning restore 612, 618
         }
