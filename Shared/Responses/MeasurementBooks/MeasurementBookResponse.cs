@@ -4,6 +4,7 @@ namespace Shared.Responses
 {
     public class MeasurementBookResponse
     {
+        public int Id { get; set; }
         public int WorkOrderId { get; set; }
         public string Title { get; set; }
         public string MeasurementOfficer { get; set; }

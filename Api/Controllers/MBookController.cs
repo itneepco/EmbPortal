@@ -2,9 +2,6 @@
 using Application.CQRS.MeasurementBooks.Command;
 using Application.CQRS.MeasurementBooks.Query;
 using Application.CQRS.WorkOrders.Command;
-using Application.CQRS.WorkOrders.Query;
-using Application.WorkOrders.Command;
-using Application.WorkOrders.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Requests;
@@ -16,7 +13,7 @@ namespace Api.Controllers
     public class MBookController : ApiController
     {
         [HttpGet("WorkOrder/{orderId}")]
-        public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetMBookByOrderId(int orderId, [FromQuery] PagedRequest request)
+        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBookByOrderId(int orderId, [FromQuery] PagedRequest request)
         {
             var query = new GetMBByOrderIdPaginationQuery(orderId, request);
 
@@ -28,7 +25,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateMeasurementBook(CreateMBookRequest data)
         {
-            CreateMBookCommand command = new CreateMBookCommand(data);
+            var command = new CreateMBookCommand(data);
 
             return Ok(await Mediator.Send(command));
         }
@@ -38,7 +35,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateMeasurementBook(int id, MBookRequest data)
         {
-            EditMBookCommand command = new EditMBookCommand(id, data);
+            var command = new EditMBookCommand(id, data);
             await Mediator.Send(command);
 
             return NoContent();
@@ -49,7 +46,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateMeasurementBookItem(int mBookId, MBookItemRequest data)
         {
-            CreateMBItemCommand command = new CreateMBItemCommand(mBookId, data.WorkOrderItemId);
+            var command = new CreateMBItemCommand(mBookId, data.WorkOrderItemId);
 
             return Ok(await Mediator.Send(command));
         }
@@ -59,7 +56,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateWorkOrderItem(int mBookId, int id, MBookItemRequest data)
         {
-            EditMBItemCommand command = new EditMBItemCommand(id, mBookId, data.WorkOrderItemId);
+            var command = new EditMBItemCommand(id, mBookId, data.WorkOrderItemId);
             await Mediator.Send(command);
 
             return NoContent();

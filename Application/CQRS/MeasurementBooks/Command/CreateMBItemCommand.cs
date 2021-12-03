@@ -37,9 +37,14 @@ namespace Application.CQRS.MeasurementBooks.Command
             var workOrder = await _orderService.GetWorkOrderWithItems(measurementBook.WorkOrderId);
             var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == req.wOrderItemId);
 
-            if (workOrderItem == null) throw new NotFoundException($"WorkOrder does not have LineItem with Id: {req.wOrderItemId}");
-
-            if (workOrderItem.MBookItem != null) throw new BadRequestException("LineItem already used in some other Measurement Book");
+            if (workOrderItem == null)
+            {
+                throw new NotFoundException($"WorkOrder does not have LineItem with Id: {req.wOrderItemId}");
+            }
+            if (workOrderItem.MBookItem != null)
+            {
+                throw new BadRequestException($"LineItem with Id: {req.wOrderItemId} is being used in some other Measurement Book");
+            }
 
             measurementBook.AddUpdateLineItem(req.wOrderItemId);
             await _context.SaveChangesAsync(cancellationToken);

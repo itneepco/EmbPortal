@@ -38,7 +38,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateUom(UomRequest request)
         {
-            CreateUomCommand command = new CreateUomCommand(name: request.Name, dimension: request.Dimension);
+            var command = new CreateUomCommand(name: request.Name, dimension: request.Dimension);
 
             return Ok(await Mediator.Send(command));
         }
@@ -48,7 +48,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateUom(int id, UomRequest request)
         {
-            EditUomCommand command = new EditUomCommand(id: id, name: request.Name, dimension: request.Dimension);
+            var command = new EditUomCommand(id: id, name: request.Name, dimension: request.Dimension);
             await Mediator.Send(command);
 
             return NoContent();

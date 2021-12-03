@@ -5,23 +5,24 @@ namespace Shared.Requests
 {
     public class WorkOrderRequest
     {
-        [Required]
+        [Required, MaxLength(250)]
+        public string Title { get; set; }
+
+        [Required, MaxLength(60)]
         public string WorkOrderNo { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }
 
-        [Required]
-        public string Title { get; set; }
-
+        [MaxLength(60)]
         public string AgreementNo { get; set; }
 
         public DateTime AgreementDate { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int ProjectId { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int ContractorId { get; set; }
     }
 }

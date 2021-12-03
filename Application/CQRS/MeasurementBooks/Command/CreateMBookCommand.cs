@@ -47,10 +47,14 @@ namespace Application.CQRS.MeasurementBooks.Command
             {
                 var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
 
-                if (workOrderItem == null) throw new NotFoundException($"WorkOrder does not have LineItem with Id: {item.WorkOrderItemId}");
-
-                if (workOrderItem.MBookItem != null) throw new BadRequestException("LineItem already used in some other Measurement Book");
-                
+                if (workOrderItem == null)
+                {
+                    throw new NotFoundException($"WorkOrder does not have LineItem with Id: {item.WorkOrderItemId}");
+                }
+                if (workOrderItem.MBookItem != null)
+                {
+                    throw new BadRequestException($"LineItem with Id: {item.WorkOrderItemId} is being used in some other Measurement Book");
+                }
                 measurementBook.AddUpdateLineItem(workOrderItem.Id);
             }
 

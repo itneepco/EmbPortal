@@ -13,7 +13,7 @@ namespace Domain.Entities.WorkOrderAggregate
         public decimal UnitRate { get; private set; }
         public Uom Uom { get; private set; }
         public float PoQuantity { get; private set; }
-        public WorkOrder WorkOrder { get; private set; }
+
         public MBookItem MBookItem { get; private set; }
 
         private WorkOrderItem()

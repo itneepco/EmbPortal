@@ -9,7 +9,6 @@ namespace Domain.Entities.MeasurementBookAggregate
         public int WorkOrderItemId { get; set; }
         public int MeasurementBookId { get; set; }
         public WorkOrderItem WorkOrderItem { get; set; }
-        public MeasurementBook MeasurementBook { get; set; }
 
         public MBookItem()
         {

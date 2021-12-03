@@ -17,10 +17,11 @@ namespace Domain.Entities.WorkOrderAggregate
         public string AgreementNo { get; private set; }
         public DateTime AgreementDate { get; private set; }
         public int ProjectId { get; private set; }
-        public Project Project { get; private set; }
         public int ContractorId { get; private set; }
-        public Contractor Contractor { get; private set; }
         public string EngineerInCharge { get; private set; }
+
+        public Project Project { get; private set; }
+        public Contractor Contractor { get; private set; }
 
         private readonly List<WorkOrderItem> _items = new List<WorkOrderItem>();
         public IReadOnlyList<WorkOrderItem> Items => _items.AsReadOnly();

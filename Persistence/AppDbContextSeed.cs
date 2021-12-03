@@ -16,6 +16,8 @@ namespace Persistence
                 await ProjectSeed.SeedAsync(context);                
                 await UomSeed.SeedAsync(context);
                 await ContractorSeed.SeedAsync(context);
+                await WorkOrderSeed.SeedAsync(context);
+                await MBookItemSeed.SeedAsync(context);
             }
             catch (Exception exception)
             {

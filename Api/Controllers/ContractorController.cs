@@ -40,7 +40,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateContractor(ContractorRequest request)
         {
-            CreateContractorCommand command = new CreateContractorCommand(name: request.Name);
+            var command = new CreateContractorCommand(name: request.Name);
 
             return Ok(await Mediator.Send(command));
         }
@@ -50,7 +50,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateContractor(int id, ContractorRequest request)
         {
-            EditContractorCommand command = new EditContractorCommand(id: id, name: request.Name);
+            var command = new EditContractorCommand(id: id, name: request.Name);
             await Mediator.Send(command);
 
             return NoContent();

@@ -31,7 +31,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateProject(ProjectRequest request)
         {
-            CreateMeasurementBookCommand command = new CreateMeasurementBookCommand(name: request.Name);
+            var command = new CreateMeasurementBookCommand(name: request.Name);
 
             return Ok(await Mediator.Send(command));
         }
@@ -41,7 +41,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateProject(int id, ProjectRequest request)
         {
-            EditProjectCommand command = new EditProjectCommand(id: id, name: request.Name);
+            var command = new EditProjectCommand(id: id, name: request.Name);
             await Mediator.Send(command);
 
             return NoContent();
