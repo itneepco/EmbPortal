@@ -1,12 +1,8 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Client.Services;
 using Client.Services.Interfaces;
 
@@ -22,6 +18,8 @@ namespace Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IContractorService, ContractorService>();
+            builder.Services.AddScoped<IWorkOrderService, WorkOrderService>();
 
             await builder.Build().RunAsync();
         }

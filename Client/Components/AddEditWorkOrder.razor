@@ -1,8 +1,15 @@
 ﻿@using EmbPortal.Shared.Responses
 @using EmbPortal.Shared.Requests
 @inject IProjectService _projectService
+@inject IContractorService _contractorService
 
-<Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" @onclick="_=>open()">@ChildContent</Button>
+<Button 
+    Icon="@(IsEdit ? IconType.Outline.Edit : IconType.Outline.Plus)" 
+    Type="@(IsEdit ? ButtonType.Default : ButtonType.Primary)"
+    @onclick="_=>open()">
+        @ChildContent
+</Button>
+
 <Drawer Closable="true" Width="720" Visible="visible" Title='@ChildContent' OnClose="_=>close()">
     <Template style="height:90%">
         <Row Gutter="16">
@@ -75,11 +82,15 @@
 
 @code{
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool IsEdit { get; set; } = false;
 
     public WorkOrderResponse WorkOrderResponse { get; set; }
 
     public WorkOrderRequest WorkOrderRequest { get; set; }
+
 
     List<ProjectResponse> _projects = new();
     List<ContractorResponse> _contractors = new();
@@ -94,9 +105,15 @@
         _projects = await _projectService.GetAllProjects();
     }
 
+    async Task LoadContractors()
+    {
+        _contractors = await _contractorService.GetAllContractors();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await LoadProjects();
+        await LoadContractors();
     }
 
     void open()

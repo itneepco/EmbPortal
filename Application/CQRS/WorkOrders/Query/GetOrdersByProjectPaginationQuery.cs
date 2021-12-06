@@ -9,6 +9,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
+using System;
+using Domain.Entities.WorkOrderAggregate;
+using System.Linq.Expressions;
 
 namespace Application.WorkOrders.Query
 {
@@ -20,6 +23,8 @@ namespace Application.WorkOrders.Query
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
+        private Expression<Func<WorkOrder, bool>> Criteria { set; get; }
+
         public GetOrdersByProjectPaginationQueryHandler(IAppDbContext context, IMapper mapper)
         {
             _mapper = mapper;
@@ -28,12 +33,26 @@ namespace Application.WorkOrders.Query
 
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByProjectPaginationQuery request, CancellationToken cancellationToken)
         {
-            return await _context.WorkOrders
+            var query = _context.WorkOrders
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.SubItems)
                         .ThenInclude(s => s.Uom)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.data.Search))
+            {
+                Criteria = (m =>
+                    m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
+                    m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
+                    m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
+                );
+
+                query = query.Where(Criteria);
+            }
+
+            return await query
                 .Where(p => p.ProjectId == request.projectId)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

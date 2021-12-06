@@ -1,4 +1,4 @@
-using Client.Services.Interfaces;
+﻿using Client.Services.Interfaces;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Client.Services
 {
-    public class ProjectService : IProjectService
+    public class ContractorService : IContractorService
     {
         private readonly HttpClient _httpClient;
-        public ProjectService(HttpClient httpClient)
+        public ContractorService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<List<ProjectResponse>> GetAllProjects()
+        public async Task<List<ContractorResponse>> GetAllContractors()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<ProjectResponse>>($"/api/Project");
+            var result = await _httpClient.GetFromJsonAsync<List<ContractorResponse>>($"/api/Contractor/all");
             return result;
         }
     }

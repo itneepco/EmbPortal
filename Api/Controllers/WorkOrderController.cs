@@ -50,6 +50,17 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteWorkOrde(int id)
+        {
+            var command = new DeleteWorkOrderCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpPost("{workOrderId}/Item")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
