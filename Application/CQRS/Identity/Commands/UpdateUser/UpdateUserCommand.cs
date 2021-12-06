@@ -2,7 +2,7 @@
 using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Shared.Identity;
+using EmbPortal.Shared.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 

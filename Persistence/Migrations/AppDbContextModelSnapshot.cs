@@ -180,7 +180,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Status")
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -266,6 +266,52 @@ namespace Persistence.Migrations
                     b.ToTable("Uoms");
                 });
 
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("PoQuantity")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("UnitRate")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("UomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WorkOrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UomId");
+
+                    b.HasIndex("WorkOrderItemId");
+
+                    b.ToTable("SubItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Property<int>("Id")
@@ -276,7 +322,14 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AgreementNo")
+                        .HasMaxLength(60)
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("CommencementDate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("CompletionDate")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ContractorId")
                         .HasColumnType("INTEGER");
@@ -291,9 +344,6 @@ namespace Persistence.Migrations
                     b.Property<string>("EngineerInCharge")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
@@ -306,13 +356,18 @@ namespace Persistence.Migrations
 
                     b.Property<string>("OrderNo")
                         .IsRequired()
+                        .HasMaxLength(60)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -339,10 +394,8 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemNo")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
@@ -351,21 +404,10 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("PoQuantity")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("UnitRate")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("UomId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("WorkOrderId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UomId");
 
                     b.HasIndex("WorkOrderId");
 
@@ -502,19 +544,17 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
                         .WithMany("Items")
                         .HasForeignKey("MeasurementBookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.SubItem", "WorkOrderItem")
                         .WithOne("MBookItem")
                         .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MBookItem", "WorkOrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("MeasurementBook");
 
                     b.Navigation("WorkOrderItem");
                 });
@@ -528,6 +568,23 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("WorkOrder");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Uom", "Uom")
+                        .WithMany()
+                        .HasForeignKey("UomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", null)
+                        .WithMany("SubItems")
+                        .HasForeignKey("WorkOrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Uom");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
@@ -551,19 +608,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany()
-                        .HasForeignKey("UomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Uom");
 
                     b.Navigation("WorkOrder");
                 });
@@ -634,6 +683,11 @@ namespace Persistence.Migrations
                     b.Navigation("WorkOrders");
                 });
 
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
+                {
+                    b.Navigation("MBookItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Navigation("Items");
@@ -643,7 +697,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.Navigation("MBookItem");
+                    b.Navigation("SubItems");
                 });
 #pragma warning restore 612, 618
         }

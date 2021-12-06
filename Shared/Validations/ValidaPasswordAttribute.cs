@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace Shared.Validations
+namespace EmbPortal.Shared.Validations
 {
     public class ValidPasswordAttribute : ValidationAttribute
     {

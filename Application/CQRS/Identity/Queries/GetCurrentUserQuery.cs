@@ -3,7 +3,7 @@ using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared.Identity;
+using EmbPortal.Shared.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 

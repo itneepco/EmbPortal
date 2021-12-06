@@ -1,32 +1,46 @@
-using Domain.Common;
-using Domain.Entities.MeasurementBookAggregate;
+﻿using Domain.Common;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
-    public class WorkOrderItem :AuditableEntity
+    public class WorkOrderItem : AuditableEntity
     {
         public int Id { get; private set; }
-        public int WorkOrderId { get; set; }
+        public int WorkOrderId { get; private set; }
         public string Description { get; private set; }
-        public int ItemNo { get; private set; }   
-        public int UomId { get; private set; } 
-        public decimal UnitRate { get; private set; }
-        public Uom Uom { get; private set; }
-        public float PoQuantity { get; private set; }
 
-        public MBookItem MBookItem { get; private set; }
+        private readonly List<SubItem> _subItems = new List<SubItem>();
+        public IReadOnlyList<SubItem> SubItems => _subItems.AsReadOnly();
+        public WorkOrder WorkOrder { get; private set; }
 
-        private WorkOrderItem()
+        public WorkOrderItem()
         {
         }
 
-        public WorkOrderItem(string description, int itemNo, int uomId,decimal unitRate, float poQuantity)
+        public WorkOrderItem(string description, List<SubItem> subItems)
         {
             Description = description;
-            ItemNo = itemNo;
-            UomId = uomId;
-            UnitRate = unitRate;            
-            PoQuantity = poQuantity;
+            foreach (var item in subItems)
+            {
+                AddUpdateSubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity);
+            }
+        }
+
+        public void AddUpdateSubItem(string description, int uomId, decimal rate, float poQuantity, int id = 0)
+        {
+            if (id != 0) // for item update
+            {
+                var item = _subItems.FirstOrDefault(p => p.Id == id);
+                item.SetDescription(description);
+                item.SetUomId(uomId);
+                item.SetPoQuantity(poQuantity);
+                item.SetUnitRate(rate);
+            }
+            else // new item
+            {
+                _subItems.Add(new SubItem(description, uomId, rate, poQuantity));
+            }
         }
 
         public void SetDescription(string description)
@@ -34,24 +48,46 @@ namespace Domain.Entities.WorkOrderAggregate
             Description = description;
         }
 
-        public void SetItemNo(int itemNo)
+
+        public void SetSubItems(List<SubItem> subItems)
         {
-            ItemNo = itemNo;
+            foreach (var item in subItems)
+            {
+                AddUpdateSubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity, item.Id);
+            }
         }
 
-        public void SetUomId(int uomId)
+        public void RemoveSubItem(int id)
         {
-            UomId = uomId;
+            var item = _subItems.SingleOrDefault(p => p.Id == id);
+
+            if (item != null) // if item exists in the list
+            {
+                _subItems.Remove(item);
+            }
         }
 
-        public void SetUnitRate(decimal unitRate)
+        public void RemoveAllSubItems()
         {
-            UnitRate = unitRate;
+            _subItems.RemoveAll(p => true);
         }
 
-        public void SetPoQuantity(float poQuantity)
+
+        public float Quantity
         {
-            PoQuantity = poQuantity;
+            get
+            {
+                return _subItems.Aggregate(0, (float acc, SubItem item) => acc + item.PoQuantity);
+            }
         }
+
+        public float Amount
+        {
+            get
+            {
+                return _subItems.Aggregate(0, (float acc, SubItem item) => acc + (item.PoQuantity*(float)item.UnitRate));
+            }
+        }
+
     }
 }

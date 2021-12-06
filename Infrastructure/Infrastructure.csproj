@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared\EmbPortal.Shared.csproj" />
   </ItemGroup>
 
 </Project>

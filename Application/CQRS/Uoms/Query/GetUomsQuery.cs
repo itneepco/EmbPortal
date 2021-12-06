@@ -7,7 +7,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Responses;
+using EmbPortal.Shared.Responses;
 
 namespace Application.Uoms.Query
 {

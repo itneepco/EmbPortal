@@ -5,9 +5,9 @@ using Application.Identity.Commands.UpdateUser;
 using Application.Identity.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Extensions;
-using Shared.Identity;
-using Shared.Responses;
+using EmbPortal.Shared.Extensions;
+using EmbPortal.Shared.Identity;
+using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

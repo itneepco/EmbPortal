@@ -4,8 +4,8 @@ using Application.CQRS.MeasurementBooks.Query;
 using Application.CQRS.WorkOrders.Command;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Requests;
-using Shared.Responses;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 
 namespace Api.Controllers

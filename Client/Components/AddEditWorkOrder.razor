@@ -1,0 +1,111 @@
+﻿@using EmbPortal.Shared.Responses
+@using EmbPortal.Shared.Requests
+@inject IProjectService _projectService
+
+<Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" @onclick="_=>open()">@ChildContent</Button>
+<Drawer Closable="true" Width="720" Visible="visible" Title='@ChildContent' OnClose="_=>close()">
+    <Template style="height:90%">
+        <Row Gutter="16">
+            <AntDesign.Col Span="12">
+                <Text>Project</Text><br />
+                <Select DataSource="@_projects"
+                        Style="width: 100%"
+                        @bind-Value="@_selectedProject"
+                        ValueName="@nameof(ProjectResponse.Id)"
+                        LabelName="@nameof(ProjectResponse.Name)"
+                        Placeholder="Select a project"
+                        AllowClear>
+                </Select>
+            </AntDesign.Col>
+            <AntDesign.Col Span="12">
+                <Text>Contractor</Text><br />
+                <Select DataSource="@_contractors"
+                        @bind-Value="@_selectedContractor"
+                        ValueName="@nameof(ContractorResponse.Id)"
+                        LabelName="@nameof(ContractorResponse.Name)"
+                        Style="width: 100%"
+                        Placeholder="Select a contractor"
+                        AllowClear>
+                </Select>
+            </AntDesign.Col>
+        </Row>
+        <br />
+        <Row>
+            <AntDesign.Col Span="24">
+                <Text>Description</Text>
+                <TextArea Placeholder="Please enter work description" Rows="4" />
+            </AntDesign.Col>
+        </Row>
+        <br />
+        <Row Gutter="16">
+            <AntDesign.Col Span="16">
+                <Text>Work Order No</Text>
+                <Input Placeholder="Work Order No" TValue="string" />
+            </AntDesign.Col>
+            <AntDesign.Col Span="8">
+                <Text>Order Date</Text><br />
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" Style="width: 100%" />
+            </AntDesign.Col>
+        </Row>
+        <br />
+        <Row Gutter="16">
+            <AntDesign.Col Span="16">
+                <Text>Agreement No</Text>
+                <Input Placeholder="Work Order No" TValue="string" />
+            </AntDesign.Col>
+            <AntDesign.Col Span="8">
+                <Text>Agreement Date</Text><br />
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" Style="width: 100%" />
+            </AntDesign.Col>
+        </Row>
+
+        <br />
+        <Row>
+            <AntDesign.Col Span="18">
+
+            </AntDesign.Col>
+            <AntDesign.Col Span="6">
+                <Button Type="@ButtonType.Default" OnClick="close">Cancel</Button>
+                <Button Type="@ButtonType.Primary">Save</Button>
+            </AntDesign.Col>
+        </Row>
+    </Template>
+</Drawer>
+
+
+@code{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public WorkOrderResponse WorkOrderResponse { get; set; }
+
+    public WorkOrderRequest WorkOrderRequest { get; set; }
+
+    List<ProjectResponse> _projects = new();
+    List<ContractorResponse> _contractors = new();
+
+    int? _selectedProject;
+    int? _selectedContractor;
+
+    bool visible = false;
+
+    async Task LoadProjects()
+    {
+        _projects = await _projectService.GetAllProjects();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+    }
+
+    void open()
+    {
+        this.visible = true;
+    }
+
+    void close()
+    {
+        this.visible = false;
+    }
+}

@@ -1,4 +1,4 @@
-﻿namespace Shared.Identity
+﻿namespace EmbPortal.Shared.Identity
 {
     public class AuthUserDto
     {

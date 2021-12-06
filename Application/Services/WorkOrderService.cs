@@ -16,18 +16,18 @@ namespace Application.Services
 
         public async Task<WorkOrder> GetWorkOrderWithItems(int orderId)
         {
-            var workOrderItem = await _context.WorkOrders
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.MBookItem)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == orderId);
+            //var workOrderItem = await _context.WorkOrders
+            //    .Include(p => p.Items)
+            //        .ThenInclude(i => i.MBookItem)
+            //    .AsNoTracking()
+            //    .FirstOrDefaultAsync(p => p.Id == orderId);
 
-            if (workOrderItem == null)
-            {
-                throw new NotFoundException(nameof(workOrderItem), orderId);
-            }
+            //if (workOrderItem == null)
+            //{
+            //    throw new NotFoundException(nameof(workOrderItem), orderId);
+            //}
 
-            return workOrderItem;
+            return null;
         }
     }
 }

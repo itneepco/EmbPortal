@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using MediatR;
-using Shared.Requests;
+using EmbPortal.Shared.Requests;
 
 namespace Application.Contractors.Command
 {

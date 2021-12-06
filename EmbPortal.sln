@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{76014118-A8CF-421F-9F68-4CF7CA891ED7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{8C0934AE-637A-4EC7-86C9-727ACCC5FE30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmbPortal.Shared", "Shared\EmbPortal.Shared.csproj", "{8C0934AE-637A-4EC7-86C9-727ACCC5FE30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{76E6354F-85D3-41A4-954F-DD895A28D806}"
 EndProject

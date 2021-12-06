@@ -4,8 +4,8 @@ using Application.Uoms.Command;
 using Application.Uoms.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Requests;
-using Shared.Responses;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

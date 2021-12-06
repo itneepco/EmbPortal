@@ -5,8 +5,8 @@ using Application.WorkOrders.Command;
 using Application.WorkOrders.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Requests;
-using Shared.Responses;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
@@ -32,7 +32,7 @@ namespace Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateWorkOrder(CreateWorkOrderRequest data)
+        public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
         {
             var command = new CreateWorkOrderCommand(data);
 

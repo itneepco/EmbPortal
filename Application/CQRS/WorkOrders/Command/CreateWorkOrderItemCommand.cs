@@ -1,8 +1,10 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Domain.Entities.WorkOrderAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Requests;
+using EmbPortal.Shared.Requests;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,18 +35,21 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
 
+            List<SubItem> subItems = new();
+            foreach (var item in request.data.SubItems)
+            {
+                subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
+            }
+
             workOrder.AddUpdateLineItem(
                 description: request.data.Description,
-                itemNo: request.data.ItemNo,
-                uomId: request.data.UomId,
-                rate: request.data.UnitRate,
-                poQuantity: request.data.PoQuantity
+                subItems: subItems
             );
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            var item = workOrder.Items.FirstOrDefault(p => p.ItemNo == request.data.ItemNo);
-            return item.Id;
+            var wokrOrderitem = workOrder.Items.FirstOrDefault(p => p.Description == request.data.Description);
+            return wokrOrderitem.Id;
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shared.Requests
+namespace EmbPortal.Shared.Requests
 {
     public class CreateMBookRequest : MBookRequest
     {

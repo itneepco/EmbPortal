@@ -5,8 +5,8 @@ using Application.Projects.Command;
 using Application.Projects.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Requests;
-using Shared.Responses;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 
 namespace Api.Controllers
 {

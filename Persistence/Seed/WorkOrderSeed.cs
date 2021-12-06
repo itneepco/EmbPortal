@@ -26,9 +26,19 @@ namespace Persistence.Seed
                 engineerInCharge: "001234"
             );
 
-            workOrder.AddUpdateLineItem("Line item one", 10, 1, 200, 25);
-            workOrder.AddUpdateLineItem("Line item two", 20, 1, 200, 25);
-            workOrder.AddUpdateLineItem("Line item three", 20, 1, 200, 25);
+            var subItem1 = new SubItem("sub item1", 1, 200, 25);
+            var subItem2 = new SubItem("sub item1", 1, 200, 25);
+            var subItem3 = new SubItem("sub item1", 1, 200, 25);
+            var subItems = new List<SubItem>
+            {
+                subItem1,
+                subItem2,
+                subItem3
+            };
+
+            workOrder.AddUpdateLineItem("Line item one", subItems);
+            workOrder.AddUpdateLineItem("Line item two", subItems);
+            workOrder.AddUpdateLineItem("Line item three", subItems);
 
             context.WorkOrders.Add(workOrder);
             await context.SaveChangesAsync();

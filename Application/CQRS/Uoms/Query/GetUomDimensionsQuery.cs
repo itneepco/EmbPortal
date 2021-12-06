@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 using MediatR;
-using Shared.Responses;
+using EmbPortal.Shared.Responses;
 using System;
 using System.Collections.Generic;
 using System.Threading;

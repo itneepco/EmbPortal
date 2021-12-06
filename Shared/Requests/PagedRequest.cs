@@ -1,4 +1,4 @@
-﻿namespace Shared.Requests
+﻿namespace EmbPortal.Shared.Requests
 {
     public class PagedRequest
     {

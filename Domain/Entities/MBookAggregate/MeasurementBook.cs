@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
 using Domain.Entities.WorkOrderAggregate;
+using Domain.Enums;
 
 namespace Domain.Entities.MeasurementBookAggregate
 {
@@ -12,7 +14,7 @@ namespace Domain.Entities.MeasurementBookAggregate
         public string Title { get; private set; }
         public string MeasurementOfficer { get; private set; }
         public string ValidatingOfficer { get; private set; }
-        public bool Status { get; private set; }
+        public MBookStatus Status { get; private set; }
         public WorkOrder WorkOrder { get; private set; }
 
         private readonly List<MBookItem> _items = new List<MBookItem>();
@@ -28,10 +30,13 @@ namespace Domain.Entities.MeasurementBookAggregate
             WorkOrderId = workOrderId;
             MeasurementOfficer = measurementOfficer;
             ValidatingOfficer = validatingOfficer;
+            Status = MBookStatus.CREATED;
         }
 
         public void AddUpdateLineItem(int wOrderItemId, int id=0)
         {
+            if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
+
             if (id != 0)  // for item update
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
@@ -45,6 +50,8 @@ namespace Domain.Entities.MeasurementBookAggregate
 
         public void RemoveLineItem(int id)
         {
+            if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
+
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if (item != null) // if item exists in the list

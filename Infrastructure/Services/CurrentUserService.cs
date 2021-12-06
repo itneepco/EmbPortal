@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Shared.Extensions;
+using EmbPortal.Shared.Extensions;
 
 namespace Infrastructure.Services
 {

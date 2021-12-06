@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shared.Responses
+namespace EmbPortal.Shared.Responses
 {
     public class MeasurementBookResponse
     {
@@ -9,6 +9,7 @@ namespace Shared.Responses
         public string Title { get; set; }
         public string MeasurementOfficer { get; set; }
         public string ValidatingOfficer { get; set; }
+        public string Status { get; set; }
         public IReadOnlyList<MBookItemResponse> Items { get; set; }
     }
 }

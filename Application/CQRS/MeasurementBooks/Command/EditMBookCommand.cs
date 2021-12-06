@@ -1,7 +1,7 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
 using MediatR;
-using Shared.Requests;
+using EmbPortal.Shared.Requests;
 using System.Threading;
 using System.Threading.Tasks;
 

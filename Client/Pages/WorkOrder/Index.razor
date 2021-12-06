@@ -1,0 +1,73 @@
+﻿@page "/workorders"
+@inject HttpClient Http
+@using EmbPortal.Shared.Responses
+@using EmbPortal.Shared.Requests
+@using AntDesign.TableModels
+@using Client.Components
+
+<div style="margin-bottom: 10px">
+    <AddEditWorkOrder>New Work Order</AddEditWorkOrder>
+</div>
+
+<Table @ref="table"
+       Style="margin-top: 10px"
+       TItem="WorkOrderResponse"
+       DataSource="@forecasts"
+       Total="_total"
+       @bind-PageIndex="_pageIndex"
+       @bind-PageSize="_pageSize"
+       @bind-SelectedRows="selectedRows"
+       OnChange="OnChange">
+    <Selection Key="@(context.Id.ToString())" />
+    <Column @bind-Field="@context.Id" />
+    <Column @bind-Field="@context.OrderNo" />
+    <Column @bind-Field="@context.OrderDate" Format="yyyy-MM-dd" />
+    <Column @bind-Field="@context.Title" />
+    <Column @bind-Field="@context.ContractorName" />
+    <ActionColumn>
+        <Space>
+            <SpaceItem>
+                <AddEditWorkOrder>Edit Work Order</AddEditWorkOrder>
+            </SpaceItem>
+        </Space>
+    </ActionColumn>
+</Table>
+
+<br />
+<p>PageIndex: @_pageIndex | PageSize: @_pageSize | Total: @_total</p>
+
+@code {
+
+    List<WorkOrderResponse> forecasts;
+
+    IEnumerable<WorkOrderResponse> selectedRows;
+    ITable table;
+
+    int _pageIndex = 1;
+    int _pageSize = 1;
+    int _total = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/Project/1?pageNumber={_pageIndex}&pageSize={_pageSize}");
+        forecasts = response.Items;
+        _total = response.TotalCount;
+    }
+
+    public async Task OnChange(QueryModel<WorkOrderResponse> queryModel)
+    {
+        var response = await Http.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/Project/1?pageNumber={_pageIndex}&pageSize={_pageSize}");
+        forecasts = response.Items;
+        _total = response.TotalCount;
+    }
+
+    public void RemoveSelection(int id)
+    {
+        var selected = selectedRows.Where(x => x.Id != id);
+        selectedRows = selected;
+    }
+
+    private void Delete(int id)
+    {
+    }
+}

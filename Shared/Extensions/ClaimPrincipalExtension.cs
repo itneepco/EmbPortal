@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace Shared.Extensions
+namespace EmbPortal.Shared.Extensions
 {
     public static class ClaimsPrincipalExtension
     {

@@ -1,4 +1,4 @@
-﻿namespace Shared.Responses
+﻿namespace EmbPortal.Shared.Responses
 {
     public class MBookItemResponse
     {

@@ -7,8 +7,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Requests;
-using Shared.Responses;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 
 namespace Application.WorkOrders.Query
 {
@@ -32,7 +32,8 @@ namespace Application.WorkOrders.Query
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
                 .Include(p => p.Items)
-                    .ThenInclude(i => i.Uom)
+                    .ThenInclude(i => i.SubItems)
+                        .ThenInclude(s => s.Uom)
                 .Where(p => p.ProjectId == request.projectId)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

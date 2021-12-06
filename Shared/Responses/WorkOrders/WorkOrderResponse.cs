@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shared.Responses
+namespace EmbPortal.Shared.Responses
 {
    public class WorkOrderResponse
     {
         public int Id { get; set; }
         public string OrderNo { get; set; }
-        public DateTime OrderDate { get; set; }
-        public bool IsCompleted { get; set; }
+        public DateTime OrderDate { get; set; }      
         public string Title { get; set; }
         public string AgreementNo { get; set; }
         public DateTime AgreementDate { get; set; }
@@ -17,6 +16,7 @@ namespace Shared.Responses
         public int ContractorId { get; set; }
         public string ContractorName { get; set; }
         public string EngineerInCharge { get; set; }
+        public string Status { get; set; }
         public IReadOnlyList<WorkOrderItemResponse> Items { get; set; }
     }
 }

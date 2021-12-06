@@ -2,11 +2,11 @@
 using Application.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Requests;
-using Shared.Responses;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +36,8 @@ namespace Application.CQRS.WorkOrders.Query
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
                 .Include(p => p.Items)
-                    .ThenInclude(i => i.Uom)
+                    .ThenInclude(i => i.SubItems)
+                        .ThenInclude(s => s.Uom)
                 .Where(p => p.EngineerInCharge == _currentUserService.EmployeeCode)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Shared.Responses
+namespace EmbPortal.Shared.Responses
 {
     public class PaginatedList<T>
     {

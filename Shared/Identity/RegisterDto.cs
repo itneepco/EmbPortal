@@ -1,7 +1,7 @@
-﻿using Shared.Validations;
+﻿using EmbPortal.Shared.Validations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Shared.Identity
+namespace EmbPortal.Shared.Identity
 {
     public class UserFormDto
     {

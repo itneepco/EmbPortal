@@ -1,8 +1,10 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Domain.Entities.WorkOrderAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Shared.Requests;
+using EmbPortal.Shared.Requests;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,13 +34,16 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
 
+            List<SubItem> subItems = new();
+            foreach (var item in request.data.SubItems)
+            {
+                subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
+            }
+
             workOrder.AddUpdateLineItem(
                 id: request.id,
                 description: request.data.Description,
-                itemNo: request.data.ItemNo,
-                uomId: request.data.UomId,
-                rate: request.data.UnitRate,
-                poQuantity: request.data.PoQuantity
+                subItems: subItems
             );
 
             _context.WorkOrders.Add(workOrder);

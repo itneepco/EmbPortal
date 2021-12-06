@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
+using Domain.Enums;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
@@ -12,13 +13,15 @@ namespace Domain.Entities.WorkOrderAggregate
         public int Id { get; private set; }
         public string OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
-        public bool IsCompleted { get; private set; }
+        public WorkOrderStatus Status { get; private set; }
         public string Title { get; private set; }
         public string AgreementNo { get; private set; }
         public DateTime AgreementDate { get; private set; }
         public int ProjectId { get; private set; }
         public int ContractorId { get; private set; }
         public string EngineerInCharge { get; private set; }
+        public DateTime CommencementDate { get; private set; }
+        public DateTime CompletionDate { get; private set; }
 
         public Project Project { get; private set; }
         public Contractor Contractor { get; private set; }
@@ -42,44 +45,47 @@ namespace Domain.Entities.WorkOrderAggregate
             AgreementDate = agreementDate;
             ProjectId = projectId;
             ContractorId = contractorId;
-            IsCompleted = false;
+            Status = WorkOrderStatus.CREATED;
             EngineerInCharge = engineerInCharge;
         }
 
-        public void AddUpdateLineItem(string description, int itemNo, int uomId, decimal rate, float poQuantity, int id = 0)
+        public void AddUpdateLineItem(string description, List<SubItem> subItems, int id=0)
         {
-            if(IsCompleted) return;
+            if(Status == WorkOrderStatus.PUBLISHED || Status == WorkOrderStatus.COMPLETED) return;
 
             // for item update
             if (id != 0)
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
                 item.SetDescription(description);
-                item.SetItemNo(itemNo);
-                item.SetUomId(uomId);
-                item.SetPoQuantity(poQuantity);
-                item.SetUnitRate(rate);
+                item.SetSubItems(subItems);
             }
             else // new item
             {
-                _items.Add(new WorkOrderItem(description, itemNo, uomId, rate, poQuantity));
+                _items.Add(new WorkOrderItem(description, subItems));
             }
         }
 
         public void RemoveLineItem(int id)
         {
-            if (IsCompleted) return;
+            if (Status == WorkOrderStatus.PUBLISHED || Status == WorkOrderStatus.COMPLETED) return;
 
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if(item != null) // if item exists in the list
             {
+                item.RemoveAllSubItems();
                 _items.Remove(item);
             }
         }
         
-        public void MarkComplete() {
-            IsCompleted = true;
+        public void MarkCompleted() {
+            Status = WorkOrderStatus.COMPLETED;
+        }
+
+        public void MarkPublished()
+        {
+            Status = WorkOrderStatus.PUBLISHED;
         }
 
         public void SetOrderNo(string orderNo)
