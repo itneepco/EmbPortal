@@ -17,6 +17,5 @@ namespace EmbPortal.Shared.Responses
         public string ContractorName { get; set; }
         public string EngineerInCharge { get; set; }
         public string Status { get; set; }
-        public IReadOnlyList<WorkOrderItemResponse> Items { get; set; }
     }
 }

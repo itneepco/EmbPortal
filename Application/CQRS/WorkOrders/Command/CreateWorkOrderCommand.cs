@@ -5,6 +5,7 @@ using Domain.Entities.WorkOrderAggregate;
 using Infrastructure.Interfaces;
 using MediatR;
 using EmbPortal.Shared.Requests;
+using System;
 
 namespace Application.WorkOrders.Command
 {
@@ -27,11 +28,11 @@ namespace Application.WorkOrders.Command
         {
             var workOrder = new WorkOrder
             (
-                orderNo: request.data.WorkOrderNo,
-                orderDate: request.data.OrderDate,
+                orderNo: request.data.OrderNo,
+                orderDate: (DateTime)request.data.OrderDate,
                 title: request.data.Title,
                 agreementNo: request.data.AgreementNo,
-                agreementDate: request.data.AgreementDate,
+                agreementDate: (DateTime)request.data.AgreementDate,
                 projectId: request.data.ProjectId,
                 contractorId: request.data.ContractorId,
                 engineerInCharge: "001234" //_currentUserService.EmployeeCode

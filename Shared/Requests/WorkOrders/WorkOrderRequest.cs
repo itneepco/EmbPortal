@@ -9,20 +9,21 @@ namespace EmbPortal.Shared.Requests
         public string Title { get; set; }
 
         [Required, MaxLength(60)]
-        public string WorkOrderNo { get; set; }
+        public string OrderNo { get; set; }
 
         [Required]
-        public DateTime OrderDate { get; set; }
+        public DateTime? OrderDate { get; set; }
 
-        [MaxLength(60)]
+        [Required, MaxLength(60)]
         public string AgreementNo { get; set; }
 
-        public DateTime AgreementDate { get; set; }
+        [Required]
+        public DateTime? AgreementDate { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a project"), Required]
         public int ProjectId { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a contractor"), Required]
         public int ContractorId { get; set; }
     }
 }

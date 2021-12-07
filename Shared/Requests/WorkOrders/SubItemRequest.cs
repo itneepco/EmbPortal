@@ -5,6 +5,7 @@ namespace EmbPortal.Shared.Requests
 {
     public class SubItemRequest
     {
+        public int Id { get; set; }
         [Required, MaxLength(250)]
         public string Description { get; set; }
 

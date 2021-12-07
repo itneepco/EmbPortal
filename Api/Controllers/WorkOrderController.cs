@@ -29,6 +29,14 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(query));
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
+        {
+            var query = new GetWorkOrderByIdQuery(id);
+
+            return Ok(await Mediator.Send(query));
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

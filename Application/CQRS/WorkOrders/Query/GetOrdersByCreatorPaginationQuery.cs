@@ -35,9 +35,6 @@ namespace Application.CQRS.WorkOrders.Query
             return await _context.WorkOrders
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.SubItems)
-                        .ThenInclude(s => s.Uom)
                 .Where(p => p.EngineerInCharge == _currentUserService.EmployeeCode)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

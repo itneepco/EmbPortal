@@ -4,6 +4,7 @@ using MediatR;
 using EmbPortal.Shared.Requests;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 namespace Application.CQRS.WorkOrders.Command
 {
@@ -29,11 +30,11 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.id);
             }
 
-            workOrder.SetOrderNo(request.data.WorkOrderNo);
-            workOrder.SetOrderDate(request.data.OrderDate);
+            workOrder.SetOrderNo(request.data.OrderNo);
+            workOrder.SetOrderDate((DateTime)request.data.OrderDate);
             workOrder.SetTitle(request.data.Title);
             workOrder.SetAgreementNo(request.data.AgreementNo);
-            workOrder.SetAgreementDate(request.data.AgreementDate);
+            workOrder.SetAgreementDate((DateTime)request.data.AgreementDate);
             workOrder.SetProjectId(request.data.ProjectId);
             workOrder.SetContractorId(request.data.ContractorId);
 

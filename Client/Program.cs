@@ -20,6 +20,7 @@ namespace Client
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IContractorService, ContractorService>();
             builder.Services.AddScoped<IWorkOrderService, WorkOrderService>();
+            builder.Services.AddScoped<IUomService, UomService>();
 
             await builder.Build().RunAsync();
         }

@@ -1,0 +1,87 @@
+﻿@inject IUomService _uomService
+
+<div>
+    <Button OnClick="AddRow" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" Style="margin-bottom:16px">
+        Add Sub Item
+    </Button>
+    <Table DataSource="subItems" RowClassName="@(_=>"editable-row")" Bordered HidePagination>
+        <Column Width="40%" DataIndex="@nameof(context.Description)" TData="string">
+            <Input Type="text" Placeholder="Sub item description" @bind-Value="context.Description" AutoFocus />
+        </Column>
+        <Column Width="10%" DataIndex="@nameof(context.UnitRate)" TData="decimal">
+            <Input Type="text" @bind-Value="context.UnitRate" />
+        </Column>
+        <Column Width="10%" DataIndex="@nameof(context.PoQuantity)" TData="float">
+            <Input Type="text" @bind-Value="context.PoQuantity" />
+        </Column>
+        <Column Width="20%" DataIndex="@nameof(context.UomId)" TData="int">
+            <Select DataSource="@uoms"
+                @bind-Value="@context.UomId"
+                ValueName="@nameof(UomResponse.Id)"
+                LabelName="@nameof(UomResponse.Name)"
+                Placeholder="Select uom"
+                AllowClear>
+            </Select>
+        </Column>
+
+        <ActionColumn Title="Action">
+            <Popconfirm Title="Sure to delete?"
+                    OnConfirm="()=> DeleteRow(context.Id)"
+                    OkText="Yes"
+                    CancelText="No">
+                <a>Delete</a>
+            </Popconfirm>
+        </ActionColumn>
+    </Table>
+</div>
+
+<style>
+    .editable-cell {
+        position: relative;
+    }
+
+    .editable-cell-value-wrap {
+        padding: 5px 12px;
+        cursor: pointer;
+    }
+
+    .editable-row:hover .editable-cell-value-wrap {
+        padding: 4px 11px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+    }
+
+    [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
+        border: 1px solid #434343;
+    }
+</style>
+
+@code{
+    int index = 1;
+
+    List<SubItemRequest> subItems = new();
+
+    List<UomResponse> uoms = new();
+
+    void AddRow()
+    {
+        subItems.Add(new SubItemRequest() { Id = index });
+        index++;
+    }
+
+    void DeleteRow(int id)
+    {
+        subItems = subItems.Where(p => p.Id != id).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AddRow();
+        await LoadAllUoms();
+    }
+
+    async Task LoadAllUoms()
+    {
+        uoms = await _uomService.GetAllUoms();
+    }
+}

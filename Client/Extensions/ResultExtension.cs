@@ -36,7 +36,8 @@ namespace Client.Extensions
             return new Result<T>
             {
                 Data = responseObject,
-                Succeeded = true
+                Succeeded = true,
+                Message = "Completed the task successfully"
             };
         }
 

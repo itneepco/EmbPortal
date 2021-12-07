@@ -36,9 +36,6 @@ namespace Application.WorkOrders.Query
             var query = _context.WorkOrders
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.SubItems)
-                        .ThenInclude(s => s.Uom)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))
