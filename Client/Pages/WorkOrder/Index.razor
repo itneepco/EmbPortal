@@ -10,12 +10,12 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <AddEditWorkOrder>Add Order</AddEditWorkOrder>
+                <AddEditWorkOrderDrawer>Add Order</AddEditWorkOrderDrawer>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <AddEditWorkOrder IsEdit="@true" WorkOrder="selectedRows.First()">Edit Order</AddEditWorkOrder>
+                    <AddEditWorkOrderDrawer IsEdit="@true" WorkOrder="selectedRows.First()">Edit Order</AddEditWorkOrderDrawer>
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Are you sure delete this order?"

@@ -21,26 +21,7 @@ namespace Domain.Entities.WorkOrderAggregate
         public WorkOrderItem(string description, List<SubItem> subItems)
         {
             Description = description;
-            foreach (var item in subItems)
-            {
-                AddUpdateSubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity);
-            }
-        }
-
-        public void AddUpdateSubItem(string description, int uomId, decimal rate, float poQuantity, int id = 0)
-        {
-            if (id != 0) // for item update
-            {
-                var item = _subItems.FirstOrDefault(p => p.Id == id);
-                item.SetDescription(description);
-                item.SetUomId(uomId);
-                item.SetPoQuantity(poQuantity);
-                item.SetUnitRate(rate);
-            }
-            else // new item
-            {
-                _subItems.Add(new SubItem(description, uomId, rate, poQuantity));
-            }
+            AddSubItems(subItems);
         }
 
         public void SetDescription(string description)
@@ -48,12 +29,11 @@ namespace Domain.Entities.WorkOrderAggregate
             Description = description;
         }
 
-
-        public void SetSubItems(List<SubItem> subItems)
+        public void AddSubItems(List<SubItem> subItems)
         {
             foreach (var item in subItems)
             {
-                AddUpdateSubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity, item.Id);
+                _subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
             }
         }
 
@@ -71,23 +51,5 @@ namespace Domain.Entities.WorkOrderAggregate
         {
             _subItems.RemoveAll(p => true);
         }
-
-
-        public float Quantity
-        {
-            get
-            {
-                return _subItems.Aggregate(0, (float acc, SubItem item) => acc + item.PoQuantity);
-            }
-        }
-
-        public float Amount
-        {
-            get
-            {
-                return _subItems.Aggregate(0, (float acc, SubItem item) => acc + (item.PoQuantity*(float)item.UnitRate));
-            }
-        }
-
     }
 }

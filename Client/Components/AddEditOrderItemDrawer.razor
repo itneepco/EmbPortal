@@ -1,0 +1,101 @@
+﻿@using EmbPortal.Shared.Responses
+@using EmbPortal.Shared.Requests
+@inject MessageService _message
+@inject IWorkOrderService _workOrderService
+
+<Drawer Closable="true"
+        Width="750"
+        Title="@(LineItem == null ?  "Add Item" : "Edit Item")"
+        Visible="@Visible"
+        OnClose="_=> Close()">
+
+    <Form Model="@model" OnFinish="OnSubmit" Layout="@FormLayout.Vertical" Loading="loading">
+        <FormItem Label="Line Item Description">
+            <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" />
+        </FormItem>
+
+        <WorkOrderSubItems SubItems="@model.SubItems" />
+
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1"></AntDesign.Col>
+            <AntDesign.Col>
+                <Button Type="@ButtonType.Default" OnClick="Close">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+@code{
+    [Parameter]
+    public WorkOrderItemResponse LineItem { get; set; }
+
+    [Parameter]
+    public int WorkOrderId { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemUpdate { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    WorkOrderItemRequest model;
+
+    bool loading = false;
+
+    protected override void OnParametersSet()
+    {
+        if (LineItem == null) // for new line item addition
+        {
+            // initialize the model to default values
+            model = new();
+            model.SubItems = new List<SubItemRequest>();
+            return;
+        }
+
+        // for editing existing line item
+        model.Description = LineItem.Description;
+        model.SubItems = LineItem.SubItems.Select(item => new SubItemRequest
+        {
+            Id = item.Id,
+            PoQuantity = item.Id,
+            UnitRate = item.UnitRate,
+            Description = item.Description,
+            UomId = item.UomId
+        }).ToList();
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+
+    async Task OnSubmit()
+    {
+        loading = true;
+        dynamic result;
+        if (LineItem == null)
+        {
+            result = await _workOrderService.CreateWorkOrderItem(WorkOrderId, model);
+        }
+        else
+        {
+            result = await _workOrderService.UpdateWorkOrderItem(WorkOrderId, LineItem.Id, model);
+        }
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            Close();
+            await OnItemUpdate.InvokeAsync();
+            await _message.Success(result.Message);
+        }
+        else
+        {
+            await _message.Error(result.Message);
+        }
+    }
+}

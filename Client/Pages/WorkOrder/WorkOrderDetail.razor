@@ -1,10 +1,10 @@
 ﻿@page "/workorder/{Id}"
-@inject IWorkOrderService _workOrderService
-@using EmbPortal.Shared.Responses
+@inject MessageService messageService
+@inject IWorkOrderService workOrderService
 
 @if (data != null)
 {
-    <Tabs @bind-ActiveKey="@activeKey" OnChange="OnTabChange" Animated>
+    <Tabs Animated>
         <TabPane Tab="Work Order Header" Key="1">
             <Descriptions Bordered Size="@DescriptionsSize.Middle">
                 <DescriptionsItem Title="Order No" Span="2">@data.OrderNo</DescriptionsItem>
@@ -18,8 +18,35 @@
                 <DescriptionsItem Title="Engineer In Charge" Span="2">@data.EngineerInCharge</DescriptionsItem>
             </Descriptions>
         </TabPane>
+
         <TabPane Tab="Work Order Line Items" Key="2">
-            <WorkOrderItems />
+            <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer(false)" Style="margin-bottom: 1rem">Add Item</Button>
+            <Table DataSource="@data.Items" TItem="WorkOrderItemResponse">
+                <RowTemplate>
+                    <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%"/>
+                    <Column TData="float" DataIndex="@nameof(context.Quantity)" Width="15%"/>
+                    <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="15%"/>
+                    <ActionColumn Title="Action" Width="30%">
+                        <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(true, context.Id)">Edit</Button>
+                        <Popconfirm Title="Sure to delete?"
+                                    OnConfirm="()=> OnDeleteItem(context.Id)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@isLoading" Danger>Delete</Button>
+                        </Popconfirm>
+                    </ActionColumn>
+                </RowTemplate>
+                <ExpandTemplate Context="rowData">
+                    <Table DataSource="rowData.Data.SubItems" Size="@TableSize.Small" Loading="rowData.Data.SubItems==null" HidePagination>
+                        <Column TData="string" DataIndex="@nameof(context.Description)" />
+                        <Column TData="string" DataIndex="@nameof(context.Uom)" />
+                        <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" />
+                        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
+                    </Table>
+                </ExpandTemplate>
+            </Table>
+
+            <AddEditOrderItemDrawer LineItem="@currentLineItem" WorkOrderId="@int.Parse(Id)" Visible="@drawerVisible" OnItemUpdate="_=>OnItemUpdate()" OnClose="OnCloseSideBar" />
         </TabPane>
     </Tabs>
 }
@@ -27,13 +54,23 @@
 @code {
     [Parameter]
     public string Id { get; set; }
+
     public WorkOrderDetailResponse data { get; set; }
 
-    string activeKey { get; set; } = "1";
+    WorkOrderItemResponse currentLineItem;
 
-    void OnTabChange(string key)
+    bool drawerVisible;
+    bool isLoading;
+
+    void OpenSideDrawer(bool isEdit, int itemId = 0)
     {
-        Console.WriteLine($"tab change:{key}");
+        currentLineItem = data.Items.FirstOrDefault(p => p.Id == itemId);
+        drawerVisible = true;
+    }
+
+    void OnCloseSideBar()
+    {
+        drawerVisible = false;
     }
 
     protected override async Task OnInitializedAsync()
@@ -43,6 +80,29 @@
 
     async Task LoadWorkOrderDetailsAsync()
     {
-        data = await _workOrderService.GetWorkOrderById(int.Parse(Id));
+        data = await workOrderService.GetWorkOrderById(int.Parse(Id));
+    }
+
+    async Task OnItemUpdate()
+    {
+        await LoadWorkOrderDetailsAsync();
+    }
+
+    async Task OnDeleteItem(int itemId)
+    {
+        isLoading = true;
+        var result = await workOrderService.DeleteWorkOrderItem(data.Id, itemId);
+        isLoading = false;
+
+        if (result.Succeeded)
+        {
+            data.Items = data.Items.Where(item => item.Id != itemId).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }

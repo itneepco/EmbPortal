@@ -49,5 +49,22 @@ namespace Client.Services
             return await response.ToResult();
         }
 
+        public async Task<IResult<int>> CreateWorkOrderItem(int id, WorkOrderItemRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/WorkOrder/{id}/Item", request);
+            return await response.ToResult<int>();
+        }
+
+        public async Task<IResult> UpdateWorkOrderItem(int id, int itemId, WorkOrderItemRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Item/{itemId}", request);
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> DeleteWorkOrderItem(int id, int itemId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/WorkOrder/{id}/Item/{itemId}");
+            return await response.ToResult();
+        }
     }
 }

@@ -1,0 +1,156 @@
+﻿@inject IUomService _uomService
+
+<Form Model="@model"
+      OnFinish="OnAddSubItem"
+      Layout="@FormLayout.Vertical"
+      Style="margin-bottom: 2.25rem">
+
+    <Row Gutter="12">
+        <AntDesign.Col Span="12">
+            <FormItem Label="SubItem description">
+                <Input @bind-Value="@context.Description" AutoFocus />
+            </FormItem>
+        </AntDesign.Col>
+
+        <AntDesign.Col Span="3">
+            <FormItem Label="Uom">
+                <Select DataSource="@uoms"
+                        @bind-Value="@context.UomId"
+                        ValueName="@nameof(UomResponse.Id)"
+                        LabelName="@nameof(UomResponse.Name)"
+                        Placeholder="Select uom"
+                        AllowClear>
+                </Select>
+            </FormItem>
+        </AntDesign.Col>
+
+        <AntDesign.Col Span="3">
+            <FormItem Label="Unit Rate">
+                <Input @bind-Value="@context.UnitRate" />
+            </FormItem>
+        </AntDesign.Col>
+
+        <AntDesign.Col Span="3">
+            <FormItem Label="Quantity">
+                <Input @bind-Value="@context.PoQuantity" />
+            </FormItem>
+        </AntDesign.Col>
+
+        <AntDesign.Col Span="3">
+            <FormItem Label="Action">
+                <Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" HtmlType="submit">Add</Button>
+            </FormItem>
+        </AntDesign.Col>
+    </Row>
+</Form>
+
+<Table DataSource="SubItems" RowClassName="@(_=>"editable-row")" Size="@TableSize.Small" Bordered HidePagination>
+    <Column Width="40%" Title="Description" TData="string">
+        @context.Description
+    </Column>
+
+    <Column Width="15%" Title="Uom" TData="string">
+        @GetUom(context.UomId)
+    </Column>
+
+    <Column Width="15%" Title="Unit Rate" TData="decimal">
+        @context.UnitRate
+    </Column>
+
+    <Column Width="15%" Title="PO Quantity" TData="float">
+        @context.PoQuantity
+    </Column>
+
+    <ActionColumn Title="Action" Width="15%">
+        <Popconfirm Title="Sure to edit?"
+                    OnConfirm="()=> EditRow(context.Description, context.UomId)"
+                    OkText="Yes"
+                    CancelText="No">
+            <a>Edit</a>
+        </Popconfirm>
+        <Popconfirm Title="Sure to delete?"
+                    OnConfirm="()=> DeleteRow(context.Description, context.UomId)"
+                    OkText="Yes"
+                    CancelText="No">
+            <a>Delete</a>
+        </Popconfirm>
+    </ActionColumn>
+</Table>
+
+<style>
+    .editable-cell {
+        position: relative;
+    }
+
+    .editable-cell-value-wrap {
+        padding: 5px 12px;
+        cursor: pointer;
+    }
+
+    .editable-row:hover .editable-cell-value-wrap {
+        padding: 4px 11px;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+    }
+
+    [data-theme='dark'] .editable-row:hover .editable-cell-value-wrap {
+        border: 1px solid #434343;
+    }
+</style>
+
+@code{
+    [Parameter]
+    public List<SubItemRequest> SubItems { get; set; }
+
+    SubItemRequest model { get; set; } = new();
+
+    List<UomResponse> uoms = new();
+
+    void OnAddSubItem()
+    {
+        var item = SubItems.Find(i => i.Description == model.Description && i.UomId == model.UomId);
+        if (item == null)
+        {
+            SubItems.Add(model);
+        }
+        else
+        {
+            item.PoQuantity = item.PoQuantity;
+            item.UnitRate = item.UnitRate;
+        }
+
+        model = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (SubItems == null)
+        {
+            SubItems = new();
+        }
+
+        await LoadAllUoms();
+    }
+
+    async Task LoadAllUoms()
+    {
+        uoms = await _uomService.GetAllUoms();
+    }
+
+    string GetUom(int id)
+    {
+        return uoms.Find(p => p.Id == id)?.Name;
+    }
+
+    void EditRow(string desc, int uomId)
+    {
+        var item = SubItems.Find(i => i.Description == desc && i.UomId == uomId);
+        model = item?? new();
+    }
+
+    void DeleteRow(string desc, int uomId)
+    {
+        var item = SubItems.Find(i => i.Description == desc && i.UomId == uomId);
+        SubItems.Remove(item);
+    }
+}

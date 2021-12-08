@@ -27,6 +27,7 @@ namespace Application.CQRS.WorkOrders.Command
         {
             var workOrder = await _context.WorkOrders
                 .Include(p => p.Items)
+                    .ThenInclude(i => i.SubItems)
                 .FirstOrDefaultAsync(p => p.Id == request.workOrderId);
 
             if (workOrder == null)
@@ -46,7 +47,6 @@ namespace Application.CQRS.WorkOrders.Command
                 subItems: subItems
             );
 
-            _context.WorkOrders.Add(workOrder);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
