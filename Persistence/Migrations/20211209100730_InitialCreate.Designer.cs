@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211206093621_InitialCreate")]
+    [Migration("20211209100730_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,7 +141,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("MeasurementBookId")
+                    b.Property<int?>("MeasurementBookId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("WorkOrderItemId")
@@ -302,7 +302,7 @@ namespace Persistence.Migrations
                     b.Property<int>("UomId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("WorkOrderItemId")
+                    b.Property<int?>("WorkOrderItemId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -406,7 +406,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("WorkOrderId")
+                    b.Property<int?>("WorkOrderId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -549,10 +549,9 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
                         .WithMany("Items")
                         .HasForeignKey("MeasurementBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.SubItem", "WorkOrderItem")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
                         .WithOne("MBookItem")
                         .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MBookItem", "WorkOrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -583,8 +582,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", null)
                         .WithMany("SubItems")
                         .HasForeignKey("WorkOrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Uom");
                 });
@@ -610,13 +608,10 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WorkOrder");
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -685,11 +680,6 @@ namespace Persistence.Migrations
                     b.Navigation("WorkOrders");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
-                {
-                    b.Navigation("MBookItem");
-                });
-
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Navigation("Items");
@@ -699,6 +689,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
+                    b.Navigation("MBookItem");
+
                     b.Navigation("SubItems");
                 });
 #pragma warning restore 612, 618

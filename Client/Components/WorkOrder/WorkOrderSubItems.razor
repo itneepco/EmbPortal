@@ -7,7 +7,7 @@
 
     <Row Gutter="12">
         <AntDesign.Col Span="12">
-            <FormItem Label="SubItem description">
+            <FormItem Label="Sub Item description">
                 <Input @bind-Value="@context.Description" AutoFocus />
             </FormItem>
         </AntDesign.Col>
@@ -38,7 +38,9 @@
 
         <AntDesign.Col Span="3">
             <FormItem Label="Action">
-                <Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" HtmlType="submit">Add</Button>
+                <Button Icon="@(isEditing ? IconType.Outline.Edit : IconType.Outline.Plus)" Type="@ButtonType.Primary" HtmlType="submit">
+                    @(isEditing ? "Edit" : "Add")
+                </Button>
             </FormItem>
         </AntDesign.Col>
     </Row>
@@ -66,13 +68,13 @@
                     OnConfirm="()=> EditRow(context.Description, context.UomId)"
                     OkText="Yes"
                     CancelText="No">
-            <a>Edit</a>
+            <Button Icon="@IconType.Fill.Edit" />
         </Popconfirm>
         <Popconfirm Title="Sure to delete?"
                     OnConfirm="()=> DeleteRow(context.Description, context.UomId)"
                     OkText="Yes"
                     CancelText="No">
-            <a>Delete</a>
+            <Button Danger Icon="@IconType.Fill.Delete" />
         </Popconfirm>
     </ActionColumn>
 </Table>
@@ -105,9 +107,11 @@
     SubItemRequest model { get; set; } = new();
 
     List<UomResponse> uoms = new();
+    bool isEditing;
 
     void OnAddSubItem()
     {
+        isEditing = false;
         var item = SubItems.Find(i => i.Description == model.Description && i.UomId == model.UomId);
         if (item == null)
         {
@@ -146,6 +150,7 @@
     {
         var item = SubItems.Find(i => i.Description == desc && i.UomId == uomId);
         model = item?? new();
+        isEditing = true;
     }
 
     void DeleteRow(string desc, int uomId)

@@ -1,0 +1,78 @@
+﻿@inject IWorkOrderService workOrderService
+
+<Button Icon="@(MBook == null ? IconType.Outline.Edit : IconType.Outline.Plus)"
+        Type="@ButtonType.Primary" @onclick="@OnOpen">
+    @(MBook == null ? "Add Measurement Book" : "Edit MB")
+</Button>
+
+<Drawer Closable="true" Width="720" Visible="visible" Title="@(MBook == null ?  "Add Item" : "Edit Item")" OnClose="@OnClose">
+    <Form Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical">
+        <Row Gutter="16">
+            <AntDesign.Col Span="10">
+                <FormItem Label="Title">
+                    <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" />
+                </FormItem>
+            </AntDesign.Col>
+
+            <AntDesign.Col Span="7">
+                <FormItem Label="Measurement Officer">
+                    <Input TValue="string" @bind-Value="@context.MeasurementOfficer" />
+                </FormItem>
+            </AntDesign.Col>
+            <AntDesign.Col Span="7">
+                <FormItem Label="Validating Officer">
+                    <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
+                </FormItem>
+            </AntDesign.Col>
+        </Row>
+
+        <Divider Orientation="left" Plain>Select Line Items</Divider>
+
+        <SelectPendingOrderItems MBookItems="@model.Items" />
+
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1" />
+            <AntDesign.Col>
+                <Button OnClick="@OnClose">Cancel</Button>
+                <Button Type="@ButtonType.Primary">Submit</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+
+@code{
+    [CascadingParameter]
+    public int WorkOrderId { get; set; }
+
+    [Parameter]
+    public MeasurementBookResponse MBook { get; set; }
+
+    CreateMBookRequest model { get; set; }
+
+    bool visible = false;
+
+    protected override void OnParametersSet()
+    {
+        if (MBook == null)
+        {
+            model = new();
+            model.Items = new List<MBookItemRequest>();
+        }
+    }
+
+    void OnSubmit()
+    {
+
+    }
+
+    void OnOpen()
+    {
+        visible = true;
+    }
+
+    void OnClose()
+    {
+        visible = false;
+    }
+}

@@ -13,6 +13,8 @@ namespace Persistence.Configurations
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
 
+            builder.HasMany(p => p.SubItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+
             // Backing fields
             builder.Navigation(p => p.SubItems).HasField("_subItems");
         }

@@ -1,6 +1,4 @@
-﻿@using EmbPortal.Shared.Responses
-@using EmbPortal.Shared.Requests
-@inject MessageService messageService
+﻿@inject MessageService messageService
 @inject IProjectService projectservice
 @inject IContractorService contractorservice
 @inject IWorkOrderService workOrderService
@@ -108,12 +106,9 @@
         contractors = await contractorservice.GetAllContractors();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
-        await LoadProjects();
-        await LoadContractors();
-
-        if(IsEdit)
+        if (IsEdit && WorkOrder != null)
         {
             model.OrderNo = WorkOrder.OrderNo;
             model.OrderDate = WorkOrder.OrderDate;
@@ -123,6 +118,12 @@
             model.ProjectId = WorkOrder.ProjectId;
             model.ContractorId = WorkOrder.ContractorId;
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProjects();
+        await LoadContractors();
     }
 
     void open()

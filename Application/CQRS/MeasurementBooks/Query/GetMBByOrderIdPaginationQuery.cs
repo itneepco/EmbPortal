@@ -27,16 +27,21 @@ namespace Application.CQRS.MeasurementBooks.Query
             _context = context;
         }
 
-        public async Task<PaginatedList<MeasurementBookResponse>> Handle(GetMBByOrderIdPaginationQuery request, CancellationToken cancellationToken)
+        public Task<PaginatedList<MeasurementBookResponse>> Handle(GetMBByOrderIdPaginationQuery request, CancellationToken cancellationToken)
         {
-            return await _context.MeasurementBooks
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.WorkOrderItem)
-                        .ThenInclude(w => w.Uom)
-                .Where(p => p.WorkOrderId == request.workOrderId)
-                .ProjectTo<MeasurementBookResponse>(_mapper.ConfigurationProvider)
-                .AsNoTracking()
-                .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);
+            throw new System.NotImplementedException();
         }
+
+        //public async Task<PaginatedList<MeasurementBookResponse>> Handle(GetMBByOrderIdPaginationQuery request, CancellationToken cancellationToken)
+        //{
+        //    return await _context.MeasurementBooks
+        //        .Include(p => p.Items)
+        //            .ThenInclude(i => i.WorkOrderItem)
+        //                .ThenInclude(w => w.Uom)
+        //        .Where(p => p.WorkOrderId == request.workOrderId)
+        //        .ProjectTo<MeasurementBookResponse>(_mapper.ConfigurationProvider)
+        //        .AsNoTracking()
+        //        .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);
+        //}
     }
 }

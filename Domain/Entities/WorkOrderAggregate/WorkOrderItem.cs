@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities.MeasurementBookAggregate;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,12 +8,11 @@ namespace Domain.Entities.WorkOrderAggregate
     public class WorkOrderItem : AuditableEntity
     {
         public int Id { get; private set; }
-        public int WorkOrderId { get; private set; }
         public string Description { get; private set; }
+        public MBookItem MBookItem { get; private set; }
 
         private readonly List<SubItem> _subItems = new List<SubItem>();
         public IReadOnlyList<SubItem> SubItems => _subItems.AsReadOnly();
-        public WorkOrder WorkOrder { get; private set; }
 
         public WorkOrderItem()
         {

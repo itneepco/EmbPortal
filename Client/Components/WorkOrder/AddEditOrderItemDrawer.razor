@@ -1,6 +1,4 @@
-﻿@using EmbPortal.Shared.Responses
-@using EmbPortal.Shared.Requests
-@inject MessageService _message
+﻿@inject MessageService _message
 @inject IWorkOrderService _workOrderService
 
 <Drawer Closable="true"
@@ -10,7 +8,7 @@
         OnClose="_=> Close()">
 
     <Form Model="@model" OnFinish="OnSubmit" Layout="@FormLayout.Vertical" Loading="loading">
-        <FormItem Label="Line Item Description">
+        <FormItem Label="Order Line Item Description">
             <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" />
         </FormItem>
 
@@ -61,7 +59,7 @@
         model.SubItems = LineItem.SubItems.Select(item => new SubItemRequest
         {
             Id = item.Id,
-            PoQuantity = item.Id,
+            PoQuantity = item.PoQuantity,
             UnitRate = item.UnitRate,
             Description = item.Description,
             UomId = item.UomId
@@ -75,6 +73,12 @@
 
     async Task OnSubmit()
     {
+        if(model.SubItems.Count == 0)
+        {
+            await _message.Warning("Please add atleast one sub item");
+            return;
+        }
+
         loading = true;
         dynamic result;
         if (LineItem == null)

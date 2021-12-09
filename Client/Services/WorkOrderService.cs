@@ -3,6 +3,7 @@ using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -16,9 +17,10 @@ namespace Client.Services
         {
             _httpClient = httpClient;
         }
-        public async Task<WorkOrderDetailResponse> GetWorkOrderById(int id)
+        public async Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
         {
-            return await _httpClient.GetFromJsonAsync<WorkOrderDetailResponse>($"/api/WorkOrder/{id}");
+            var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}");
+            return await response.ToResult<WorkOrderDetailResponse>();
         }
 
         public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search)
@@ -65,6 +67,12 @@ namespace Client.Services
         {
             var response = await _httpClient.DeleteAsync($"/api/WorkOrder/{id}/Item/{itemId}");
             return await response.ToResult();
+        }
+
+        public async Task<IResult<List<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}/Item/Pending");
+            return await response.ToResult<List<PendingOrderItemResponse>>();
         }
     }
 }

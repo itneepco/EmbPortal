@@ -6,15 +6,11 @@ namespace Domain.Entities.WorkOrderAggregate
     public class SubItem :AuditableEntity
     {
         public int Id { get; private set; }
-        public int WorkOrderItemId { get; set; }
         public string Description { get; private set; }
         public int UomId { get; private set; } 
         public decimal UnitRate { get; private set; }
-        public Uom Uom { get; private set; }
         public float PoQuantity { get; private set; }
-        
-
-        public MBookItem MBookItem { get; private set; }
+        public Uom Uom { get; private set; }
 
         private SubItem()
         {

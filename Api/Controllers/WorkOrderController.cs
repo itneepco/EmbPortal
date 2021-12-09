@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Api.Controllers
 {
@@ -67,6 +68,14 @@ namespace Api.Controllers
             await Mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpGet("{workOrderId}/Item/Pending")]
+        public async Task<ActionResult<IReadOnlyList<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int workOrderId)
+        {
+            var query = new GetPendingWorkOrderItemsQuery(workOrderId);
+
+            return Ok(await Mediator.Send(query));
         }
 
         [HttpPost("{workOrderId}/Item")]

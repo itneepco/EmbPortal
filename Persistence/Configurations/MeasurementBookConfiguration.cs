@@ -15,6 +15,8 @@ namespace Persistence.Configurations
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
 
+            builder.HasMany(p => p.Items).WithOne().OnDelete(DeleteBehavior.Cascade);
+
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");
         }
