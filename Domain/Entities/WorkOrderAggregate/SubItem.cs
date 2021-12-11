@@ -1,5 +1,4 @@
 using Domain.Common;
-using Domain.Entities.MeasurementBookAggregate;
 
 namespace Domain.Entities.WorkOrderAggregate
 {

@@ -53,8 +53,8 @@
        Total="_total"
        @bind-PageIndex="_pageIndex"
        @bind-PageSize="_pageSize"
-       @bind-SelectedRows="selectedRows"
-       OnChange="OnChange">
+       @bind-SelectedRows="selectedRows">
+
     <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
     <Column @bind-Field="@context.OrderNo" Width="15%" />
     <Column @bind-Field="@context.ContractorName" Width="20%"/>
@@ -98,11 +98,6 @@
     }
 
     protected override async Task OnInitializedAsync()
-    {
-        await LoadWorkOrdersAsync();
-    }
-
-    async Task OnChange(QueryModel<WorkOrderResponse> queryModel)
     {
         await LoadWorkOrdersAsync();
     }

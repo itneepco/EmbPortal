@@ -5,6 +5,6 @@
         CREATED = 1,
         PUBLISHED = 2,
         VALIDATED = 3,
-        APPROVED = 4
+        ACCEPTED = 4
     }
 }

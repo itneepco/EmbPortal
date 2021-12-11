@@ -41,6 +41,18 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteMeasurementBook(int id)
+        {
+            var command = new DeleteMBookCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpPost("{mBookId}/Item")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

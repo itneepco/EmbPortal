@@ -58,7 +58,7 @@ namespace Domain.Entities.WorkOrderAggregate
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
                 item.SetDescription(description);
-                item.RemoveAllSubItems();
+                item.RemoveAllSubItems(); // TODO
                 item.AddSubItems(subItems);
             }
             else // new item

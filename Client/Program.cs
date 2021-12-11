@@ -21,6 +21,7 @@ namespace Client
             builder.Services.AddScoped<IContractorService, ContractorService>();
             builder.Services.AddScoped<IWorkOrderService, WorkOrderService>();
             builder.Services.AddScoped<IUomService, UomService>();
+            builder.Services.AddScoped<IMBookService, MBookService>();
 
             await builder.Build().RunAsync();
         }

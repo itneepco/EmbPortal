@@ -1,5 +1,5 @@
-﻿@inject MessageService _message
-@inject IWorkOrderService _workOrderService
+﻿@inject MessageService messageService
+@inject IWorkOrderService workOrderService
 
 <Drawer Closable="true"
         Width="750"
@@ -9,7 +9,7 @@
 
     <Form Model="@model" OnFinish="OnSubmit" Layout="@FormLayout.Vertical" Loading="loading">
         <FormItem Label="Order Line Item Description">
-            <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" />
+            <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" AutoFocus />
         </FormItem>
 
         <WorkOrderSubItems SubItems="@model.SubItems" />
@@ -25,11 +25,11 @@
 </Drawer>
 
 @code{
-    [Parameter]
-    public WorkOrderItemResponse LineItem { get; set; }
+    [CascadingParameter]
+    public int WorkOrderId { get; set; }
 
     [Parameter]
-    public int WorkOrderId { get; set; }
+    public WorkOrderItemResponse LineItem { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
@@ -75,7 +75,7 @@
     {
         if(model.SubItems.Count == 0)
         {
-            await _message.Warning("Please add atleast one sub item");
+            await messageService.Warning("Please add atleast one sub item");
             return;
         }
 
@@ -83,11 +83,11 @@
         dynamic result;
         if (LineItem == null)
         {
-            result = await _workOrderService.CreateWorkOrderItem(WorkOrderId, model);
+            result = await workOrderService.CreateWorkOrderItem(WorkOrderId, model);
         }
         else
         {
-            result = await _workOrderService.UpdateWorkOrderItem(WorkOrderId, LineItem.Id, model);
+            result = await workOrderService.UpdateWorkOrderItem(WorkOrderId, LineItem.Id, model);
         }
         loading = false;
 
@@ -95,11 +95,11 @@
         {
             Close();
             await OnItemUpdate.InvokeAsync();
-            await _message.Success(result.Message);
+            await messageService.Success(result.Message);
         }
         else
         {
-            await _message.Error(result.Message);
+            await messageService.Error(result.Message);
         }
     }
 }

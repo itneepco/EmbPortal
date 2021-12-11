@@ -6,7 +6,7 @@
 
 @if (data != null)
 {
-<CascadingValue Value="@int.Parse(Id)" TValue="int">
+<CascadingValue Value="@data.Id" TValue="int">
     <Tabs Animated>
         <TabPane Tab="Work Order Header" Key="1">
             <WorkOrderHeader WorkOrder="data" />
@@ -38,8 +38,7 @@
                     </Table>
                 </ExpandTemplate>
             </Table>
-
-            <AddEditOrderItemDrawer LineItem="@currentLineItem" WorkOrderId="@int.Parse(Id)" Visible="@drawerVisible" OnItemUpdate="_=>OnItemUpdate()" OnClose="OnCloseSideBar" />
+            <AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="_=>OnItemUpdate()" OnClose="OnCloseSideBar" />
         </TabPane>
 
         <TabPane Tab="Measurement Books" Key="3">

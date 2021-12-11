@@ -1,4 +1,7 @@
 ﻿@inject IWorkOrderService workOrderService
+@inject IMBookService mBookService
+@inject MessageService messageService
+@inject MessageService messageService
 
 <Button Icon="@(MBook == null ? IconType.Outline.Edit : IconType.Outline.Plus)"
         Type="@ButtonType.Primary" @onclick="@OnOpen">
@@ -6,38 +9,43 @@
 </Button>
 
 <Drawer Closable="true" Width="720" Visible="visible" Title="@(MBook == null ?  "Add Item" : "Edit Item")" OnClose="@OnClose">
-    <Form Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical">
-        <Row Gutter="16">
-            <AntDesign.Col Span="10">
-                <FormItem Label="Title">
-                    <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" />
-                </FormItem>
-            </AntDesign.Col>
+    <Spin Spinning="loading">
+        <Form @ref="form" Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical">
+            <Row Gutter="16">
+                <AntDesign.Col Span="10">
+                    <FormItem Label="Title">
+                        <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" AutoFocus />
+                    </FormItem>
+                </AntDesign.Col>
 
-            <AntDesign.Col Span="7">
-                <FormItem Label="Measurement Officer">
-                    <Input TValue="string" @bind-Value="@context.MeasurementOfficer" />
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="7">
-                <FormItem Label="Validating Officer">
-                    <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
+                <AntDesign.Col Span="7">
+                    <FormItem Label="Measurement Officer">
+                        <Input TValue="string" @bind-Value="@context.MeasurementOfficer" />
+                    </FormItem>
+                </AntDesign.Col>
+                <AntDesign.Col Span="7">
+                    <FormItem Label="Validating Officer">
+                        <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
+                    </FormItem>
+                </AntDesign.Col>
+            </Row>
+        </Form>
 
         <Divider Orientation="left" Plain>Select Line Items</Divider>
 
-        <SelectPendingOrderItems MBookItems="@model.Items" />
+        <Table DataSource="@pendingItems" @bind-SelectedRows="selectedRows" Size="TableSize.Small" HidePagination>
+            <Selection Key="@context.ItemId.ToString()" Disabled="@(!context.IsPending)" />
+            <Column Title="Line Item Description" @bind-Field="@context.Description"></Column>
+        </Table>
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1" />
             <AntDesign.Col>
                 <Button OnClick="@OnClose">Cancel</Button>
-                <Button Type="@ButtonType.Primary">Submit</Button>
+                <Button OnClick="@OnSubmit" Type="@ButtonType.Primary">Submit</Button>
             </AntDesign.Col>
         </Row>
-    </Form>
+    </Spin>
 </Drawer>
 
 
@@ -48,31 +56,84 @@
     [Parameter]
     public MeasurementBookResponse MBook { get; set; }
 
+    private Form<CreateMBookRequest> form;
+
     CreateMBookRequest model { get; set; }
 
+    List<PendingOrderItemResponse> pendingItems = new();
+
+    IEnumerable<PendingOrderItemResponse> selectedRows;
+
     bool visible = false;
+    bool loading = false;
+    bool submitting = false;
 
     protected override void OnParametersSet()
     {
         if (MBook == null)
         {
             model = new();
+            model.WorkOrderId = WorkOrderId;
             model.Items = new List<MBookItemRequest>();
         }
     }
 
-    void OnSubmit()
+    async Task LoadPendingOrderItemsAsync()
     {
+        loading = true;
+        var result = await workOrderService.GetPendingWorkOrderItems(WorkOrderId);
 
+        if (result.Succeeded)
+        {
+            pendingItems = result.Data;
+        }
+        loading = false;
     }
 
-    void OnOpen()
+    async Task OnSubmit()
+    {
+        if (!form.Validate()) return;
+
+        if (selectedRows == null)
+        {
+            await messageService.Warning("Please select atleast one line item");
+            return;
+        }
+
+        foreach (var item in selectedRows)
+        {
+            model.Items.Add(new MBookItemRequest
+            {
+                WorkOrderItemId = item.ItemId
+            });
+        }
+
+        loading = true;
+        var result = await mBookService.CreateMeasurementBook(model);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            OnClose();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task OnOpen()
     {
         visible = true;
+        await LoadPendingOrderItemsAsync();
     }
 
     void OnClose()
     {
         visible = false;
+        form.ValidationReset();
+        pendingItems.Clear();
     }
 }

@@ -1,9 +1,6 @@
-﻿using Application.Exceptions;
-using Application.Interfaces;
-using AutoMapper;
+﻿using Application.Interfaces;
 using EmbPortal.Shared.Responses;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,23 +13,16 @@ namespace Application.CQRS.WorkOrders.Query
 
     public class GetPendingWorkOrderItemsQueryHandler : IRequestHandler<GetPendingWorkOrderItemsQuery, IReadOnlyList<PendingOrderItemResponse>>
     {
-        private readonly IAppDbContext _context;
-        public GetPendingWorkOrderItemsQueryHandler(IAppDbContext context, IMapper mapper)
+        private readonly IWorkOrderService _orderService;
+
+        public GetPendingWorkOrderItemsQueryHandler(IWorkOrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
         public async Task<IReadOnlyList<PendingOrderItemResponse>> Handle(GetPendingWorkOrderItemsQuery request, CancellationToken cancellationToken)
         {
-            var workOrder = await _context.WorkOrders
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.MBookItem)
-                .FirstOrDefaultAsync(p => p.Id == request.workOrderId);
-
-            if (workOrder == null)
-            {
-                throw new NotFoundException(nameof(workOrder), request.workOrderId);
-            }
+            var workOrder = await _orderService.GetWorkOrderWithItems(request.workOrderId);
 
             List<PendingOrderItemResponse> response = new();
 

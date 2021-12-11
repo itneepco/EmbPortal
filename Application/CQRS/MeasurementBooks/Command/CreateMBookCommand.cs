@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Entities.MeasurementBookAggregate;
-using Infrastructure.Interfaces;
 using MediatR;
 using EmbPortal.Shared.Requests;
 
@@ -43,20 +42,20 @@ namespace Application.CQRS.MeasurementBooks.Command
                 validatingOfficer: req.data.ValidatingOfficer
             );
 
-            //foreach (var item in req.data.Items)
-            //{
-            //    var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
+            foreach (var item in req.data.Items)
+            {
+                var workOrderItem = workOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
 
-            //    if (workOrderItem == null)
-            //    {
-            //        throw new NotFoundException($"WorkOrder does not have LineItem with Id: {item.WorkOrderItemId}");
-            //    }
-            //    if (workOrderItem.MBookItem != null)
-            //    {
-            //        throw new BadRequestException($"LineItem with Id: {item.WorkOrderItemId} is being used in some other Measurement Book");
-            //    }
-            //    measurementBook.AddUpdateLineItem(workOrderItem.Id);
-            //}
+                if (workOrderItem == null)
+                {
+                    throw new NotFoundException($"WorkOrder does not have LineItem with Id: {item.WorkOrderItemId}");
+                }
+                if (workOrderItem.MBookItem != null)
+                {
+                    throw new BadRequestException($"LineItem with Id: {item.WorkOrderItemId} is being used in some other Measurement Book");
+                }
+                measurementBook.AddUpdateLineItem(workOrderItem.Id);
+            }
 
             _context.MeasurementBooks.Add(measurementBook);
             await _context.SaveChangesAsync(cancellationToken);
