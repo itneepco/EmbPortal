@@ -4,18 +4,17 @@
 @inject NavigationManager _navManager
 @inject IWorkOrderService _workOrderService
 @using EmbPortal.Shared.Responses
-@using AntDesign.TableModels
 
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <AddEditWorkOrderDrawer>Add Order</AddEditWorkOrderDrawer>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="@OpenSideDrawer">Add Item</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <AddEditWorkOrderDrawer IsEdit="@true" WorkOrder="selectedRows.First()">Edit Order</AddEditWorkOrderDrawer>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="@OpenSideDrawer">Edit</Button>
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Are you sure delete this order?"
@@ -23,7 +22,7 @@
                             OnConfirm="@(() => ConfirmDelete(selectedRows.First().Id))"
                             OkText="Yes"
                             CancelText="No">
-                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@_isLoading">Delete</Button>
+                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
                     </Popconfirm>
                 </SpaceItem>
                 <SpaceItem>
@@ -36,7 +35,7 @@
     <AntDesign.Col Flex="1">
         <Row>
             <AntDesign.Col Flex="1">
-                <Input Placeholder="Search" @bind-Value="@_search" @onkeyup="@KeyPressHandler" />
+                <Input Placeholder="Search" @bind-Value="@search" @onkeyup="@KeyPressHandler" />
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
@@ -47,12 +46,14 @@
     </AntDesign.Col>
 </Row>
 
+<AddEditWorkOrderDrawer WorkOrder="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@OnCloseSideBar"/>
+
 <Table @ref="table"
        TItem="WorkOrderResponse"
        DataSource="@workOrders"
-       Total="_total"
-       @bind-PageIndex="_pageIndex"
-       @bind-PageSize="_pageSize"
+       Total="total"
+       @bind-PageIndex="pageIndex"
+       @bind-PageSize="pageSize"
        @bind-SelectedRows="selectedRows">
 
     <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
@@ -75,7 +76,7 @@
     </Column>
 </Table>
 
-<p>PageIndex: @_pageIndex | PageSize: @_pageSize | Total: @_total</p>
+<p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
 
 @code {
 
@@ -84,17 +85,28 @@
     IEnumerable<WorkOrderResponse> selectedRows;
     ITable table;
 
-    int _pageIndex = 1;
-    int _pageSize = 10;
-    int _total = 0;
-    bool _isLoading = false;
-    string _search { get; set; }
+    int pageIndex = 1;
+    int pageSize = 10;
+    int total = 0;
+    bool loading = false;
+    bool drawerVisible = false;
+    string search;
+
+    void OpenSideDrawer()
+    {
+        drawerVisible = true;
+    }
+
+    void OnCloseSideBar()
+    {
+        drawerVisible = false;
+    }
 
     async Task LoadWorkOrdersAsync()
     {
-        var response = await _workOrderService.GetWorkOrdersByProjectPagination(5, _pageIndex, _pageSize, _search);
+        var response = await _workOrderService.GetWorkOrdersByProjectPagination(5, pageIndex, pageSize, search);
         workOrders = response.Items;
-        _total = response.TotalCount;
+        total = response.TotalCount;
     }
 
     protected override async Task OnInitializedAsync()
@@ -112,9 +124,9 @@
 
     async Task ConfirmDelete(int id)
     {
-        _isLoading = true;
+        loading = true;
         var result = await _workOrderService.DeleteWorkOrder(id);
-        _isLoading = false;
+        loading = false;
         selectedRows = null;
 
         if (result.Succeeded)

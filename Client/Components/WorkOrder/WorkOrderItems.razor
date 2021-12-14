@@ -1,0 +1,80 @@
+﻿@inject IWorkOrderService workOrderService
+@inject MessageService messageService
+
+<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Item</Button>
+<Table DataSource="Items" TItem="WorkOrderItemResponse">
+    <RowTemplate>
+        <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%" />
+        <Column TData="float" DataIndex="@nameof(context.Quantity)" Width="15%" />
+        <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="15%" />
+        <ActionColumn Title="Action" Width="30%">
+            <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+            <Popconfirm Title="Sure to delete?"
+                        OnConfirm="()=> OnDeleteItem(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+            </Popconfirm>
+        </ActionColumn>
+    </RowTemplate>
+    <ExpandTemplate Context="rowData">
+        <Table DataSource="rowData.Data.SubItems" Size="@TableSize.Small" Loading="rowData.Data.SubItems==null" HidePagination>
+            <Column TData="string" DataIndex="@nameof(context.Description)" />
+            <Column TData="string" DataIndex="@nameof(context.Uom)" />
+            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" />
+            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
+        </Table>
+    </ExpandTemplate>
+</Table>
+
+<AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="@OnItemUpdate" OnClose="@OnCloseSideBar" />
+
+@code {
+    [CascadingParameter]
+    public int WorkOrderId { get; set; }
+
+    [Parameter]
+    public List<WorkOrderItemResponse> Items { get; set; }
+
+    [Parameter]
+    public EventCallback ReloadPage { get; set; }
+
+    WorkOrderItemResponse currentLineItem;
+
+    bool drawerVisible;
+    bool loading;
+
+    void OpenSideDrawer(int itemId = 0)
+    {
+        currentLineItem = Items.FirstOrDefault(p => p.Id == itemId);
+        drawerVisible = true;
+    }
+
+    void OnCloseSideBar()
+    {
+        drawerVisible = false;
+    }
+
+    async Task OnDeleteItem(int itemId)
+    {
+        loading = true;
+        var result = await workOrderService.DeleteWorkOrderItem(WorkOrderId, itemId);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            Items = Items.Where(item => item.Id != itemId).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task OnItemUpdate()
+    {
+        await ReloadPage.InvokeAsync();
+    }
+}

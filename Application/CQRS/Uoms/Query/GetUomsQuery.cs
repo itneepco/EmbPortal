@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using EmbPortal.Shared.Responses;
+using Application.Mappings;
 
 namespace Application.Uoms.Query
 {
@@ -29,9 +29,8 @@ namespace Application.Uoms.Query
         {
             return await _context.Uoms
                 .OrderBy(p => p.Name)
-                .ProjectTo<UomResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .ToListAsync();
+                .ProjectToListAsync<UomResponse>(_mapper.ConfigurationProvider);
         }
 
     }

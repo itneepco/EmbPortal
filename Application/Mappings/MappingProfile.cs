@@ -42,12 +42,8 @@ namespace Application.Mappings
             CreateMap<MeasurementBook, MeasurementBookResponse>()
                 .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
 
-            //CreateMap<MBookItem, MBookItemResponse>()
-            //    .ForMember(m => m.ItemNo, opt => opt.MapFrom(p => p.WorkOrderItem.ItemNo))
-            //    .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
-            //    .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description))
-            //    .ForMember(m => m.UnitRate, opt => opt.MapFrom(p => p.WorkOrderItem.UnitRate))
-            //    .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom));
+            CreateMap<MBookItem, MBookItemResponse>()
+                .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description));
         }
     }
 }

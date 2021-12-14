@@ -1,90 +1,88 @@
-﻿@using System.ComponentModel
-@using AntDesign.TableModels
+﻿@inject IMBookService mBookService
+@inject MessageService messageService 
 
-<AddEditMBookDrawer />
+<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
-<Table TItem="Data" DataSource="@data" OnRowClick="OnRowClick">
-    <Column @bind-Field="@context.Name">
-        <a>@context.Name</a>
+<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar"/>
+
+<Table TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
+    <Column @bind-Field="@context.Title" Width="35%">
+        <a>@context.Title</a>
     </Column>
-    <Column @bind-Field="@context.Age"></Column>
-    <Column @bind-Field="@context.Address">
-        <TitleTemplate>
-            <span> <Icon Type="environment" /> Address </span>
-        </TitleTemplate>
-    </Column>
-    <Column @bind-Field="@context.Tags">
-        @foreach (var tag in context.Tags)
+    <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />
+    <Column Title="Validating Officer" @bind-Field="@context.ValidatingOfficer" Width="15%" />
+    <Column @bind-Field="@context.Status" Width="10%">
+        @if (context.Status == "COMPLETED")
         {
-            var color = tag.Length > 5 ? "geekblue" : "green";
-            if (tag == "loser")
-            {
-                color = "volcano";
-            }
-            <Tag Color="@color">@tag</Tag>
+            <Tag Color="gold">@context.Status</Tag>
+        }
+        else if (context.Status == "PUBLISHED")
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="green">@context.Status</Tag>
         }
     </Column>
-    <ActionColumn Title="Action">
-        <Space Size=@("middle")>
-            <SpaceItem>
-                <a>Invite @context.Name</a>
-            </SpaceItem>
-            <SpaceItem>
-                <a>Delete</a>
-            </SpaceItem>
-        </Space>
+    <ActionColumn Title="Action" Width="25%">
+        <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+        <Popconfirm Title="Sure to delete?"
+                    OnConfirm="()=> DeleteMBook(context.Id)"
+                    OkText="Yes"
+                    CancelText="No">
+            <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+        </Popconfirm>
     </ActionColumn>
 </Table>
 
 @code{
-    Data[] data = new Data[]
+    [CascadingParameter]
+    public int WorkOrderId { get; set; }
+
+    MeasurementBookResponse currentMBook;
+
+    List<MeasurementBookResponse> mbooks;
+
+    bool drawerVisible;
+    bool loading;
+
+    void OpenSideDrawer(int itemId = 0)
     {
-        new()
-        {
-            Key = "1",
-            Name = "John Brown",
-            Age = 32,
-            Address = "New York No. 1 Lake Park",
-            Tags = new[] {"nice", "developer"}
-        },
-        new()
-        {
-            Key = "2",
-            Name = "Jim Green",
-            Age = 42,
-            Address = "London No. 1 Lake Park",
-            Tags = new[] { "loser"}
-        },
-        new()
-        {
-            Key = "3",
-            Name = "Joe Black",
-            Age = 32,
-            Address = "Sidney No. 1 Lake Park",
-            Tags = new[] { "cool", "teacher" }
-        }
-        };
-
-    public class Data
-    {
-        [DisplayName("Key")]
-        public string Key { get; set; }
-
-        [DisplayName("Name")]
-        public string Name { get; set; }
-
-        [DisplayName("Age")]
-        public int Age { get; set; }
-
-        [DisplayName("Address")]
-        public string Address { get; set; }
-
-        [DisplayName("Tags")]
-        public string[] Tags { get; set; }
+        currentMBook = mbooks.FirstOrDefault(p => p.Id == itemId);
+        drawerVisible = true;
     }
 
-    void OnRowClick(RowData<Data> row)
+    void OnCloseSideBar()
     {
-        Console.WriteLine($"row {row.Data.Key} was clicked.");
+        drawerVisible = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMeasurementBooks();
+    }
+
+    async Task LoadMeasurementBooks()
+    {
+        mbooks = await mBookService.GetMBooksByWorkOrderId(WorkOrderId);
+    }
+
+    async Task DeleteMBook(int id)
+    {
+        loading = true;
+        var result = await mBookService.DeleteMeasurementBook(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            mbooks = mbooks.Where(item => item.Id != id).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }

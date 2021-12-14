@@ -3,14 +3,12 @@
 @inject MessageService messageService
 @inject MessageService messageService
 
-<Button Icon="@(MBook == null ? IconType.Outline.Edit : IconType.Outline.Plus)"
-        Type="@ButtonType.Primary" @onclick="@OnOpen">
-    @(MBook == null ? "Add Measurement Book" : "Edit MB")
-</Button>
+<Drawer Closable="true" Width="720" 
+        Visible="@Visible" OnClose="@Close"
+        Title="@(MBook == null ?  "Add Item" : "Edit Item")">
 
-<Drawer Closable="true" Width="720" Visible="visible" Title="@(MBook == null ?  "Add Item" : "Edit Item")" OnClose="@OnClose">
     <Spin Spinning="loading">
-        <Form @ref="form" Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical">
+        <Form @ref="form" Model="@model" Layout="@FormLayout.Vertical">
             <Row Gutter="16">
                 <AntDesign.Col Span="10">
                     <FormItem Label="Title">
@@ -41,8 +39,8 @@
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1" />
             <AntDesign.Col>
-                <Button OnClick="@OnClose">Cancel</Button>
-                <Button OnClick="@OnSubmit" Type="@ButtonType.Primary">Submit</Button>
+                <Button OnClick="@Close">Cancel</Button>
+                <Button OnClick="@Submit" Type="@ButtonType.Primary">Submit</Button>
             </AntDesign.Col>
         </Row>
     </Spin>
@@ -56,6 +54,12 @@
     [Parameter]
     public MeasurementBookResponse MBook { get; set; }
 
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
     private Form<CreateMBookRequest> form;
 
     CreateMBookRequest model { get; set; }
@@ -64,18 +68,26 @@
 
     IEnumerable<PendingOrderItemResponse> selectedRows;
 
-    bool visible = false;
     bool loading = false;
-    bool submitting = false;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        if (MBook == null)
+        model = new();
+        model.WorkOrderId = WorkOrderId;
+        model.Items = new List<MBookItemRequest>();
+
+        if (MBook != null)
         {
-            model = new();
-            model.WorkOrderId = WorkOrderId;
-            model.Items = new List<MBookItemRequest>();
+            model.Title = MBook.Title;
+            model.ValidatingOfficer = MBook.ValidatingOfficer;
+            model.MeasurementOfficer = MBook.MeasurementOfficer;
+            model.Items = MBook.Items.Select(item => new MBookItemRequest
+            {
+                WorkOrderItemId = item.WorkOrderItemId
+            }).ToList();
         }
+
+        await LoadPendingOrderItemsAsync();
     }
 
     async Task LoadPendingOrderItemsAsync()
@@ -90,7 +102,7 @@
         loading = false;
     }
 
-    async Task OnSubmit()
+    async Task Submit()
     {
         if (!form.Validate()) return;
 
@@ -114,7 +126,7 @@
 
         if (result.Succeeded)
         {
-            OnClose();
+            Close();
             StateHasChanged();
             await messageService.Success(result.Message);
         }
@@ -124,15 +136,9 @@
         }
     }
 
-    async Task OnOpen()
+    void Close()
     {
-        visible = true;
-        await LoadPendingOrderItemsAsync();
-    }
-
-    void OnClose()
-    {
-        visible = false;
+        OnClose.InvokeAsync();
         form.ValidationReset();
         pendingItems.Clear();
     }

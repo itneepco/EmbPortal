@@ -4,14 +4,10 @@
 @inject IWorkOrderService workOrderService
 @inject NavigationManager navManager 
 
-<Button Icon="@(IsEdit ? IconType.Outline.Edit : IconType.Outline.Plus)"
-        Type="@(IsEdit ? ButtonType.Default : ButtonType.Primary)"
-        @onclick="_=>open()">
-    @ChildContent
-</Button>
-
-<Drawer Closable="true" Width="720" Visible="visible" Title="@ChildContent" OnClose="_=>close()">
-    <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="OnSubmit">
+<Drawer Closable="true" Width="720"
+        Title="@(WorkOrder == null ?  "Add Work order" : "Edit Work Order")" 
+        Visible="@Visible" OnClose="@Close">
+    <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
         <Row Gutter="16">
             <AntDesign.Col Span="12">
                 <FormItem Label="Project">
@@ -71,7 +67,7 @@
         </Row>
 
         <FormItem WrapperColOffset="18" WrapperColSpan="6">
-            <Button Type="@ButtonType.Default" OnClick="close">Cancel</Button>
+            <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
             <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
         </FormItem>
     </Form>
@@ -80,20 +76,19 @@
 
 @code{
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
-
-    [Parameter]
-    public bool IsEdit { get; set; } = false;
-
-    [Parameter]
     public WorkOrderResponse WorkOrder { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
 
     WorkOrderRequest model { get; set; } = new();
 
     List<ProjectResponse> projects = new();
     List<ContractorResponse> contractors = new();
 
-    bool visible = false;
     bool loading = false;
 
     async Task LoadProjects()
@@ -108,7 +103,7 @@
 
     protected override void OnParametersSet()
     {
-        if (IsEdit && WorkOrder != null)
+        if (WorkOrder != null)
         {
             model.OrderNo = WorkOrder.OrderNo;
             model.OrderDate = WorkOrder.OrderDate;
@@ -118,6 +113,10 @@
             model.ProjectId = WorkOrder.ProjectId;
             model.ContractorId = WorkOrder.ContractorId;
         }
+        else
+        {
+            model = new();
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -126,21 +125,16 @@
         await LoadContractors();
     }
 
-    void open()
+    void Close()
     {
-        this.visible = true;
-    }
-
-    void close()
-    {
-        this.visible = false;
+        OnClose.InvokeAsync();
     }
 
     async Task OnSubmit(EditContext context)
     {
         loading = true;
         dynamic result;
-        if (IsEdit)
+        if (WorkOrder != null)
         {
             result = await workOrderService.UpdateWorkOrder(WorkOrder.Id , model);
         }
@@ -156,8 +150,8 @@
             return;
         }
 
-        this.visible = false;
-        var orderId = IsEdit ? WorkOrder.Id : result.Data;
+        Close();
+        var orderId = WorkOrder != null ? WorkOrder.Id : result.Data;
         navManager.NavigateTo($"/workorder/{orderId}");
         await messageService.Success(result.Message);
     }

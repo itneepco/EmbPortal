@@ -10,6 +10,6 @@ namespace EmbPortal.Shared.Responses
         public string MeasurementOfficer { get; set; }
         public string ValidatingOfficer { get; set; }
         public string Status { get; set; }
-        public IReadOnlyList<MBookItemResponse> Items { get; set; }
+        public List<MBookItemResponse> Items { get; set; }
     }
 }

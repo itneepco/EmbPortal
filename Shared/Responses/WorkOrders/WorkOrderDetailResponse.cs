@@ -4,6 +4,6 @@ namespace EmbPortal.Shared.Responses
 {
     public class WorkOrderDetailResponse : WorkOrderResponse
     {
-        public IReadOnlyList<WorkOrderItemResponse> Items { get; set; }
+        public List<WorkOrderItemResponse> Items { get; set; }
     }
 }

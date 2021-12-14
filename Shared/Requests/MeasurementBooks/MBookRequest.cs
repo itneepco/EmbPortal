@@ -11,10 +11,10 @@ namespace EmbPortal.Shared.Requests
         [Required, MaxLength(100)]
         public string Title { get; set; }
 
-        [Required, EmployeeCode]
+        [Required, EmployeeCode, Display(Name = "Measurer")]
         public string MeasurementOfficer { get; set; }
 
-        [Required, EmployeeCode]
+        [Required, EmployeeCode, Display(Name = "Validator")]
         public string ValidatingOfficer { get; set; }
     }
 }

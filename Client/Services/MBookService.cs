@@ -2,7 +2,9 @@
 using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -28,14 +30,20 @@ namespace Client.Services
             throw new NotImplementedException();
         }
 
-        public Task<IResult> DeleteMeasurementBook(int id)
+        public async Task<IResult> DeleteMeasurementBook(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"/api/MBook/{id}");
+            return await response.ToResult();
         }
 
         public Task<IResult> DeleteMeasurementBookItem(int id, int itemId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<MeasurementBookResponse>> GetMBooksByWorkOrderId(int orderId)
+        {
+            return await _httpClient.GetFromJsonAsync<List<MeasurementBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
         }
 
         public Task<IResult> UpdateMeasurementBook(int id, MBookRequest request)

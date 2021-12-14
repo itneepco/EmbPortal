@@ -2,43 +2,17 @@
 @inject MessageService messageService
 @inject IWorkOrderService workOrderService
 @inject NavigationManager navManager
-@inject MessageService messageService
 
 @if (data != null)
 {
 <CascadingValue Value="@data.Id" TValue="int">
     <Tabs Animated>
         <TabPane Tab="Work Order Header" Key="1">
-            <WorkOrderHeader WorkOrder="data" />
+            <WorkOrderHeader WorkOrder="@data" />
         </TabPane>
 
         <TabPane Tab="Work Order Line Items" Key="2">
-            <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer(false)" Style="margin-bottom: 1rem">Add Item</Button>
-            <Table DataSource="@data.Items" TItem="WorkOrderItemResponse">
-                <RowTemplate>
-                    <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%" />
-                    <Column TData="float" DataIndex="@nameof(context.Quantity)" Width="15%" />
-                    <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="15%" />
-                    <ActionColumn Title="Action" Width="30%">
-                        <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(true, context.Id)">Edit</Button>
-                        <Popconfirm Title="Sure to delete?"
-                                    OnConfirm="()=> OnDeleteItem(context.Id)"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@isLoading" Danger>Delete</Button>
-                        </Popconfirm>
-                    </ActionColumn>
-                </RowTemplate>
-                <ExpandTemplate Context="rowData">
-                    <Table DataSource="rowData.Data.SubItems" Size="@TableSize.Small" Loading="rowData.Data.SubItems==null" HidePagination>
-                        <Column TData="string" DataIndex="@nameof(context.Description)" />
-                        <Column TData="string" DataIndex="@nameof(context.Uom)" />
-                        <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" />
-                        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
-                    </Table>
-                </ExpandTemplate>
-            </Table>
-            <AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="_=>OnItemUpdate()" OnClose="OnCloseSideBar" />
+            <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage"/>
         </TabPane>
 
         <TabPane Tab="Measurement Books" Key="3">
@@ -53,22 +27,6 @@
     public string Id { get; set; }
 
     public WorkOrderDetailResponse data { get; set; }
-
-    WorkOrderItemResponse currentLineItem;
-
-    bool drawerVisible;
-    bool isLoading;
-
-    void OpenSideDrawer(bool isEdit, int itemId = 0)
-    {
-        currentLineItem = data.Items.FirstOrDefault(p => p.Id == itemId);
-        drawerVisible = true;
-    }
-
-    void OnCloseSideBar()
-    {
-        drawerVisible = false;
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,26 +46,8 @@
         data = result.Data;
     }
 
-    async Task OnItemUpdate()
+    async Task ReloadPage()
     {
         await LoadWorkOrderDetailsAsync();
-    }
-
-    async Task OnDeleteItem(int itemId)
-    {
-        isLoading = true;
-        var result = await workOrderService.DeleteWorkOrderItem(data.Id, itemId);
-        isLoading = false;
-
-        if (result.Succeeded)
-        {
-            data.Items = data.Items.Where(item => item.Id != itemId).ToList();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
     }
 }

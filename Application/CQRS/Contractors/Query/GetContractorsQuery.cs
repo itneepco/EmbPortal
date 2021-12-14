@@ -4,14 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using EmbPortal.Shared.Responses;
+using Application.Mappings;
 
 namespace Application.Contractors.Query
 {
-   public record GetContractorsQuery : IRequest<IReadOnlyList<ContractorResponse>>
+    public record GetContractorsQuery : IRequest<IReadOnlyList<ContractorResponse>>
     {
         
     }
@@ -30,9 +30,8 @@ namespace Application.Contractors.Query
         {
             return await _context.Contractors
                 .OrderBy(p => p.Name)
-                .ProjectTo<ContractorResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .ToListAsync();
+                .ProjectToListAsync<ContractorResponse>(_mapper.ConfigurationProvider);
         }
 
     }

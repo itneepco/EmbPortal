@@ -13,9 +13,9 @@ namespace Api.Controllers
     public class MBookController : ApiController
     {
         [HttpGet("WorkOrder/{orderId}")]
-        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBookByOrderId(int orderId, [FromQuery] PagedRequest request)
+        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBookByOrderId(int orderId)
         {
-            var query = new GetMBByOrderIdPaginationQuery(orderId, request);
+            var query = new GetMBooksByOrderIdQuery(orderId);
 
             return Ok(await Mediator.Send(query));
         }

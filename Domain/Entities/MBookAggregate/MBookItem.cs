@@ -6,8 +6,8 @@ namespace Domain.Entities.MeasurementBookAggregate
     public class MBookItem : AuditableEntity
     {
         public int Id { get; private set; }
-        public int WorkOrderItemId { get; set; }
-        public WorkOrderItem WorkOrderItem { get; set; }
+        public int WorkOrderItemId { get; private set; }
+        public WorkOrderItem WorkOrderItem { get; private set; }
 
         public MBookItem()
         {
