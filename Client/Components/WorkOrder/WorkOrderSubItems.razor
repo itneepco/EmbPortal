@@ -1,9 +1,7 @@
-﻿@inject IUomService _uomService
-
+﻿
 <Form Model="@model"
       OnFinish="OnAddSubItem"
-      Layout="@FormLayout.Vertical"
-      Style="margin-bottom: 2.25rem">
+      Layout="@FormLayout.Vertical">
 
     <Row Gutter="12">
         <AntDesign.Col Span="12">
@@ -14,7 +12,7 @@
 
         <AntDesign.Col Span="3">
             <FormItem Label="Uom">
-                <Select DataSource="@uoms"
+                <Select DataSource="@Uoms"
                         @bind-Value="@context.UomId"
                         ValueName="@nameof(UomResponse.Id)"
                         LabelName="@nameof(UomResponse.Name)"
@@ -38,7 +36,7 @@
 
         <AntDesign.Col Span="3">
             <FormItem Label="Action">
-                <Button Icon="@(isEditing ? IconType.Outline.Edit : IconType.Outline.Plus)" Type="@ButtonType.Primary" HtmlType="submit">
+                <Button Icon="@(isEditing ? IconType.Outline.Edit : IconType.Outline.Plus)" HtmlType="submit">
                     @(isEditing ? "Edit" : "Add")
                 </Button>
             </FormItem>
@@ -104,9 +102,11 @@
     [Parameter]
     public List<SubItemRequest> SubItems { get; set; }
 
+    [Parameter]
+    public List<UomResponse> Uoms { get; set; }
+
     SubItemRequest model { get; set; } = new();
 
-    List<UomResponse> uoms = new();
     bool isEditing;
 
     void OnAddSubItem()
@@ -126,24 +126,9 @@
         model = new();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (SubItems == null)
-        {
-            SubItems = new();
-        }
-
-        await LoadAllUoms();
-    }
-
-    async Task LoadAllUoms()
-    {
-        uoms = await _uomService.GetAllUoms();
-    }
-
     string GetUom(int id)
     {
-        return uoms.Find(p => p.Id == id)?.Name;
+        return Uoms.Find(p => p.Id == id)?.Name;
     }
 
     void EditRow(string desc, int uomId)

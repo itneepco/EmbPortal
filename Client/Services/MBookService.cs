@@ -3,7 +3,6 @@ using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -19,15 +18,10 @@ namespace Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IResult<int>> CreateMeasurementBook(CreateMBookRequest request)
+        public async Task<IResult<int>> CreateMeasurementBook(MBookRequest request)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/MBook", request);
             return await response.ToResult<int>();
-        }
-
-        public Task<IResult<int>> CreateMeasurementBookItem(int id, MBookItemRequest request)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IResult> DeleteMeasurementBook(int id)
@@ -36,24 +30,15 @@ namespace Client.Services
             return await response.ToResult();
         }
 
-        public Task<IResult> DeleteMeasurementBookItem(int id, int itemId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<MeasurementBookResponse>> GetMBooksByWorkOrderId(int orderId)
         {
             return await _httpClient.GetFromJsonAsync<List<MeasurementBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
         }
 
-        public Task<IResult> UpdateMeasurementBook(int id, MBookRequest request)
+        public async Task<IResult> UpdateMeasurementBook(int id, MBookRequest request)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult> UpdateMeasurementBookItem(int id, int itemId, MBookItemRequest request)
-        {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}", request);
+            return await response.ToResult();
         }
     }
 }

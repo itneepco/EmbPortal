@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -28,6 +29,11 @@ namespace Application.CQRS.WorkOrders.Command
             if (workOrder == null)
             {
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
+            }
+
+            if (workOrder.Status == WorkOrderStatus.PUBLISHED || workOrder.Status == WorkOrderStatus.COMPLETED)
+            {
+                throw new BadRequestException("Published work order cannot be deleted");
             }
 
             workOrder.RemoveLineItem(request.id);

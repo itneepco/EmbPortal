@@ -1,4 +1,5 @@
 ﻿@inject MessageService messageService
+@inject IUomService _uomService
 @inject IWorkOrderService workOrderService
 
 <Drawer Closable="true"
@@ -12,7 +13,7 @@
             <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" AutoFocus />
         </FormItem>
 
-        <WorkOrderSubItems SubItems="@model.SubItems" />
+        <WorkOrderSubItems SubItems="@model.SubItems" Uoms="@uoms"/>
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
@@ -40,16 +41,22 @@
     [Parameter]
     public EventCallback<bool> OnItemUpdate { get; set; }
 
-    WorkOrderItemRequest model;
-
+    WorkOrderItemRequest model = new();
+    List<UomResponse> uoms = new();
     bool loading = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllUoms();
+    }
 
     protected override void OnParametersSet()
     {
         model = new();
         model.SubItems = new List<SubItemRequest>();
 
-        if (LineItem != null) 
+        if (LineItem != null)
         {
             // for editing existing line item
             model.Description = LineItem.Description;
@@ -62,17 +69,16 @@
                 UomId = item.UomId
             }).ToList();
         }
-
     }
 
-    void Close()
+    async Task LoadAllUoms()
     {
-        OnClose.InvokeAsync();
+        uoms = await _uomService.GetAllUoms();
     }
 
     async Task OnSubmit()
     {
-        if(model.SubItems.Count == 0)
+        if (model.SubItems.Count == 0)
         {
             await messageService.Warning("Please add atleast one sub item");
             return;
@@ -100,5 +106,10 @@
         {
             await messageService.Error(result.Message);
         }
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
     }
 }

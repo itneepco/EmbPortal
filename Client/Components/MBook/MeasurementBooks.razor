@@ -3,9 +3,9 @@
 
 <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
-<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar"/>
+<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar" OnUpdateItem="@OnUpdateItem"/>
 
-<Table TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
+<Table Loading="@loading" TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
     <Column @bind-Field="@context.Title" Width="35%">
         <a>@context.Title</a>
     </Column>
@@ -42,7 +42,7 @@
 
     MeasurementBookResponse currentMBook;
 
-    List<MeasurementBookResponse> mbooks;
+    List<MeasurementBookResponse> mbooks = new();
 
     bool drawerVisible;
     bool loading;
@@ -65,7 +65,9 @@
 
     async Task LoadMeasurementBooks()
     {
+        loading = true;
         mbooks = await mBookService.GetMBooksByWorkOrderId(WorkOrderId);
+        loading = false;
     }
 
     async Task DeleteMBook(int id)
@@ -84,5 +86,10 @@
         {
             await messageService.Error(result.Message);
         }
+    }
+
+    async Task OnUpdateItem()
+    {
+        await LoadMeasurementBooks();
     }
 }

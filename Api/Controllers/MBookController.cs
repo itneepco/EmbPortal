@@ -1,7 +1,6 @@
 ﻿using Api.Models;
 using Application.CQRS.MeasurementBooks.Command;
 using Application.CQRS.MeasurementBooks.Query;
-using Application.CQRS.WorkOrders.Command;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EmbPortal.Shared.Requests;
@@ -23,7 +22,7 @@ namespace Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateMeasurementBook(CreateMBookRequest data)
+        public async Task<ActionResult<int>> CreateMeasurementBook(MBookRequest data)
         {
             var command = new CreateMBookCommand(data);
 
@@ -48,38 +47,6 @@ namespace Api.Controllers
         public async Task<ActionResult> DeleteMeasurementBook(int id)
         {
             var command = new DeleteMBookCommand(id);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpPost("{mBookId}/Item")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateMeasurementBookItem(int mBookId, MBookItemRequest data)
-        {
-            var command = new CreateMBItemCommand(mBookId, data.WorkOrderItemId);
-
-            return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPut("{mBookId}/Item/{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateWorkOrderItem(int mBookId, int id, MBookItemRequest data)
-        {
-            var command = new EditMBItemCommand(id, mBookId, data.WorkOrderItemId);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{mBookId}/Item/{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteWorkOrderItem(int id, int mBookId)
-        {
-            var command = new DeleteMBItemCommand(id, mBookId);
             await Mediator.Send(command);
 
             return NoContent();

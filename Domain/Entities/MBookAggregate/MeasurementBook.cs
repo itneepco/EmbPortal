@@ -48,11 +48,11 @@ namespace Domain.Entities.MeasurementBookAggregate
             }
         }
 
-        public void RemoveLineItem(int id)
+        public void RemoveByOrderItemId(int orderItemid)
         {
             if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
 
-            var item = _items.SingleOrDefault(p => p.Id == id);
+            var item = _items.SingleOrDefault(p => p.WorkOrderItemId == orderItemid);
 
             if (item != null) // if item exists in the list
             {

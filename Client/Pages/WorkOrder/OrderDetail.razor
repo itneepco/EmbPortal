@@ -3,23 +3,29 @@
 @inject IWorkOrderService workOrderService
 @inject NavigationManager navManager
 
-@if (data != null)
+@if (data != null) 
 {
-<CascadingValue Value="@data.Id" TValue="int">
-    <Tabs Animated>
-        <TabPane Tab="Work Order Header" Key="1">
-            <WorkOrderHeader WorkOrder="@data" />
-        </TabPane>
+    <CascadingValue Value="@data.Id" TValue="int">
+        <Tabs Animated>
+            <TabPane Tab="Work Order Header" Key="1">
+                <WorkOrderHeader WorkOrder="@data" />
+            </TabPane>
 
-        <TabPane Tab="Work Order Line Items" Key="2">
-            <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage"/>
-        </TabPane>
+            <TabPane Tab="Work Order Line Items" Key="2">
+                <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage" />
+            </TabPane>
 
-        <TabPane Tab="Measurement Books" Key="3">
-            <MeasurementBooks />
-        </TabPane>
-    </Tabs>
-</CascadingValue>
+            <TabPane Tab="Measurement Books" Key="3">
+                <MeasurementBooks />
+            </TabPane>
+        </Tabs>
+    </CascadingValue>
+}
+else
+{
+    <Spin>
+        <Empty />
+    </Spin>
 }
 
 @code {
@@ -36,7 +42,7 @@
     async Task LoadWorkOrderDetailsAsync()
     {
         var result = await workOrderService.GetWorkOrderById(int.Parse(Id));
-        if(!result.Succeeded)
+        if (!result.Succeeded)
         {
             navManager.NavigateTo("/workorder");
             await messageService.Warning(result.Message);

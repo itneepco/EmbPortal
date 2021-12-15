@@ -9,7 +9,7 @@ using EmbPortal.Shared.Requests;
 
 namespace Application.CQRS.MeasurementBooks.Command
 {
-    public record CreateMBookCommand(CreateMBookRequest data) : IRequest<int>
+    public record CreateMBookCommand(MBookRequest data) : IRequest<int>
     {
     }
 

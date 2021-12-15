@@ -1,4 +1,5 @@
 ﻿using EmbPortal.Shared.Validations;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
@@ -16,5 +17,7 @@ namespace EmbPortal.Shared.Requests
 
         [Required, EmployeeCode, Display(Name = "Validator")]
         public string ValidatingOfficer { get; set; }
+
+        public List<MBookItemRequest> Items { get; set; } = new List<MBookItemRequest>();
     }
 }

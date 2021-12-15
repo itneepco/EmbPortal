@@ -48,7 +48,7 @@
 
 <AddEditWorkOrderDrawer WorkOrder="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@OnCloseSideBar"/>
 
-<Table @ref="table"
+<Table Loading="@loading"
        TItem="WorkOrderResponse"
        DataSource="@workOrders"
        Total="total"
@@ -79,11 +79,9 @@
 <p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
 
 @code {
-
-    List<WorkOrderResponse> workOrders;
+    List<WorkOrderResponse> workOrders = new();
 
     IEnumerable<WorkOrderResponse> selectedRows;
-    ITable table;
 
     int pageIndex = 1;
     int pageSize = 10;
@@ -104,9 +102,11 @@
 
     async Task LoadWorkOrdersAsync()
     {
+        loading = true;
         var response = await _workOrderService.GetWorkOrdersByProjectPagination(5, pageIndex, pageSize, search);
         workOrders = response.Items;
         total = response.TotalCount;
+        loading = false;
     }
 
     protected override async Task OnInitializedAsync()

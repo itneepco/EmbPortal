@@ -2,8 +2,10 @@
 @inject IMBookService mBookService
 @inject MessageService messageService
 @inject MessageService messageService
+@using System.Text.Json
+@using System.Text.Json.Serialization;
 
-<Drawer Closable="true" Width="720" 
+<Drawer Closable="true" Width="720"
         Visible="@Visible" OnClose="@Close"
         Title="@(MBook == null ?  "Add Item" : "Edit Item")">
 
@@ -31,8 +33,8 @@
 
         <Divider Orientation="left" Plain>Select Line Items</Divider>
 
-        <Table DataSource="@pendingItems" @bind-SelectedRows="selectedRows" Size="TableSize.Small" HidePagination>
-            <Selection Key="@context.ItemId.ToString()" Disabled="@(!context.IsPending)" />
+        <Table @ref="table" DataSource="@pendingItems" @bind-SelectedRows="selectedRows" Size="TableSize.Small" HidePagination>
+            <Selection Key="@context.ItemId.ToString()" />
             <Column Title="Line Item Description" @bind-Field="@context.Description"></Column>
         </Table>
 
@@ -60,9 +62,14 @@
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
 
-    private Form<CreateMBookRequest> form;
+    [Parameter]
+    public EventCallback<bool> OnUpdateItem { get; set; }
 
-    CreateMBookRequest model { get; set; }
+    Form<MBookRequest> form;
+
+    ITable table;
+
+    MBookRequest model { get; set; } = new();
 
     List<PendingOrderItemResponse> pendingItems = new();
 
@@ -72,6 +79,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (!Visible) return;
+
+        await LoadPendingOrderItemsAsync();
+
         model = new();
         model.WorkOrderId = WorkOrderId;
         model.Items = new List<MBookItemRequest>();
@@ -81,13 +92,22 @@
             model.Title = MBook.Title;
             model.ValidatingOfficer = MBook.ValidatingOfficer;
             model.MeasurementOfficer = MBook.MeasurementOfficer;
-            model.Items = MBook.Items.Select(item => new MBookItemRequest
-            {
-                WorkOrderItemId = item.WorkOrderItemId
-            }).ToList();
-        }
 
-        await LoadPendingOrderItemsAsync();
+            // Add existing MBook items to pending OrderItem list
+            var existingItems = new List<PendingOrderItemResponse>();
+            foreach (var mBookitem in MBook.Items)
+            {
+                var item = new PendingOrderItemResponse
+                {
+                    ItemId = mBookitem.WorkOrderItemId,
+                    Description = mBookitem.Description
+                };
+                pendingItems.Add(item);
+                existingItems.Add(item);
+            }
+            selectedRows = existingItems.AsEnumerable();
+            StateHasChanged();
+        }
     }
 
     async Task LoadPendingOrderItemsAsync()
@@ -106,7 +126,7 @@
     {
         if (!form.Validate()) return;
 
-        if (selectedRows == null)
+        if (selectedRows.Count() == 0)
         {
             await messageService.Warning("Please select atleast one line item");
             return;
@@ -121,13 +141,21 @@
         }
 
         loading = true;
-        var result = await mBookService.CreateMeasurementBook(model);
+        dynamic result;
+        if (MBook == null)
+        {
+            result = await mBookService.CreateMeasurementBook(model);
+        }
+        else
+        {
+            result = await mBookService.UpdateMeasurementBook(MBook.Id, model);
+        }
         loading = false;
 
         if (result.Succeeded)
         {
             Close();
-            StateHasChanged();
+            await OnUpdateItem.InvokeAsync();
             await messageService.Success(result.Message);
         }
         else

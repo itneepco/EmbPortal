@@ -28,12 +28,14 @@ namespace Application.CQRS.WorkOrders.Query
 
             foreach (var item in workOrder.Items)
             {
+                // If work order item is already taken in some measurement book
+                if (item.MBookItem != null) continue;
+
                 response.Add(new PendingOrderItemResponse
                 {
                     ItemId = item.Id,
-                    Description = item.Description,
-                    IsPending = item.MBookItem == null ? true : false
-                }); ;
+                    Description = item.Description
+                });
             }
 
             return response.AsReadOnly();
