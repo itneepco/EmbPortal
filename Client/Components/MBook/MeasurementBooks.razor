@@ -1,9 +1,7 @@
 ﻿@inject IMBookService mBookService
-@inject MessageService messageService 
+@inject MessageService messageService
 
-<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Measurement Book</Button>
-
-<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar" OnUpdateItem="@OnUpdateItem"/>
+<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
 <Table Loading="@loading" TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
     <Column @bind-Field="@context.Title" Width="35%">
@@ -35,6 +33,8 @@
         </Popconfirm>
     </ActionColumn>
 </Table>
+
+<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar" OnItemUpdate="@OnUpdateItem" />
 
 @code{
     [CascadingParameter]

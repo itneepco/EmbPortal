@@ -1,0 +1,79 @@
+﻿@page "/users"
+@inject IUserService userService
+@inject MessageService messageService
+
+<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add User</Button>
+
+<Table TItem="UserResponse" DataSource="@users" Loading="loading" OnChange="@LoadWorkOrdersAsync">
+    <Column @bind-Field="@context.DisplayName">
+        <a>@context.DisplayName</a>
+    </Column>
+    <Column @bind-Field="@context.EmployeeCode" />
+    <Column @bind-Field="@context.Designation" />
+    <Column @bind-Field="@context.Email" />
+    <ActionColumn Title="Action">
+        <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+        <Popconfirm Title="Sure to Reset Password?"
+                    OnConfirm="() => ResetPassword(context.Id)"
+                    OkText="Yes"
+                    CancelText="No">
+            <Button Icon="@(IconType.Outline.Rocket)" Size="@ButtonSize.Small" Loading="@loading" Danger>Reset Password</Button>
+        </Popconfirm>
+    </ActionColumn>
+</Table>
+
+<AddEditUserDrawer CurrentUser="@currentUser" Visible="@drawerVisible" OnClose="@OnCloseSideBar" OnItemUpdate="@LoadWorkOrdersAsync" />
+
+@code{
+    List<UserResponse> users = new();
+    UserResponse currentUser;
+
+    int pageIndex = 1;
+    int pageSize = 10;
+    int total = 0;
+    bool loading = false;
+    bool drawerVisible = false;
+    string search;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadWorkOrdersAsync();
+    }
+
+    async Task LoadWorkOrdersAsync()
+    {
+        loading = true;
+        var response = await userService.GetUsersPagination(pageIndex, pageSize, search);
+        users = response.Items;
+        total = response.TotalCount;
+        loading = false;
+    }
+
+    async Task ResetPassword(string userId)
+    {
+        loading = true;
+        var result = await userService.ResetPassword(userId);
+        loading = false;
+        StateHasChanged();
+
+        if (result.Succeeded)
+        {
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void OpenSideDrawer(string userId = null)
+    {
+        currentUser = users.FirstOrDefault(p => p.Id == userId);
+        drawerVisible = true;
+    }
+
+    void OnCloseSideBar()
+    {
+        drawerVisible = false;
+    }
+}

@@ -1,20 +1,19 @@
 ﻿using Domain.Entities.Identity;
+using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EmbPortal.Shared.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Identity.Queries
 {
-    public class GetCurrentUserQuery : IRequest<AuthUserDto>
+    public record GetCurrentUserQuery(string Email) : IRequest<AuthUserResponse>
     {
-        public string Email { get; set; }
     }
 
-    public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, AuthUserDto>
+    public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, AuthUserResponse>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
@@ -25,10 +24,10 @@ namespace Application.Identity.Queries
             _tokenService = tokenService;
         }
 
-        public async Task<AuthUserDto> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<AuthUserResponse> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
             var user = await _userManager.Users.SingleOrDefaultAsync(x => x.Email == request.Email);
-            return new AuthUserDto
+            return new AuthUserResponse
             {
                 Email = user.Email,
                 DisplayName = user.DisplayName,

@@ -1,0 +1,147 @@
+﻿@inject MessageService messageService
+@inject IUserService userService
+
+<Drawer Closable="true"
+        Width="500"
+        Title="@(CurrentUser == null ?  "Add User" : "Edit User")"
+        Visible="@Visible"
+        OnClose="@Close">
+    
+    @if(CurrentUser == null)
+    {
+        <Alert Type="@AlertType.Info" Message="Default user password is Pass@123" Style="margin-bottom: 1rem"/>
+    }
+
+<Form Model="@model" OnFinish="OnSubmit" Layout="@FormLayout.Vertical" Loading="loading">
+    <FormItem Label="Display Name">
+        <Input Placeholder="Display Name" @bind-Value="@context.DisplayName" TValue="string" AutoFocus />
+    </FormItem>
+
+    <FormItem Label="Email">
+        <Input @bind-Value="@context.Email" TValue="string" />
+    </FormItem>
+
+    <FormItem Label="Employee Code">
+        <Input Placeholder="001234" @bind-Value="@context.EmployeeCode" TValue="string" />
+    </FormItem>
+
+    <FormItem Label="Designation">
+        <Input Placeholder="Designation" @bind-Value="@context.Designation" TValue="string" />
+    </FormItem>
+
+    <FormItem Label="User Roles">
+        <Select Mode="multiple"
+                Placeholder="Select user roles"
+                @bind-Values="@selectedRoles"
+                TItemValue="string"
+                TItem="string"
+                AllowClear>
+            <SelectOptions>
+                @foreach (var item in roles)
+                {
+                    <SelectOption TItemValue="string" TItem="string" Value=@item Label=@item />
+                }
+            </SelectOptions>
+        </Select>
+    </FormItem>
+
+    <Row Style="margin-top: 2rem">
+        <AntDesign.Col Flex="1"></AntDesign.Col>
+        <AntDesign.Col>
+            <Button Type="@ButtonType.Default" OnClick="Close">Cancel</Button>
+            <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+        </AntDesign.Col>
+    </Row>
+</Form>
+</Drawer>
+
+@code{
+    [Parameter]
+    public UserResponse CurrentUser { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemUpdate { get; set; }
+
+    IEnumerable<string> selectedRoles;
+    List<string> roles = new();
+    UserRequest model = new();
+    bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllRoles();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        model = new();
+        selectedRoles = new List<string> { "Member" }.AsEnumerable();
+
+        if (CurrentUser != null)
+        {
+            // for editing existing line item
+            model.DisplayName = CurrentUser.DisplayName;
+            model.EmployeeCode = CurrentUser.EmployeeCode;
+            model.Email = CurrentUser.Email;
+
+            loading = true;
+            var roles = await userService.GetUserRoles(CurrentUser.Id);
+            loading = false;
+            selectedRoles = roles.AsEnumerable();
+            StateHasChanged();
+        }
+    }
+
+    async Task LoadAllRoles()
+    {
+        roles = await userService.GetRoles();
+    }
+
+    async Task OnSubmit()
+    {
+        if (selectedRoles.Count() == 0)
+        {
+            await messageService.Warning("Please select user role");
+            return;
+        }
+        
+        foreach (var item in selectedRoles)
+        {
+            model.Roles.Add(item);
+        }
+
+        loading = true;
+        dynamic result;
+        if (CurrentUser == null)
+        {
+            result = await userService.RegisterUser(model);
+        }
+        else
+        {
+            result = await userService.UpdateUser(CurrentUser.Id, model);
+        }
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            Close();
+            await OnItemUpdate.InvokeAsync();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+}

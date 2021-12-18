@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmbPortal.Shared.Identity
+namespace EmbPortal.Shared.Requests
 {
-    public class LoginDto
+    public class LoginRequest
     {
         [Required]
         [EmailAddress]

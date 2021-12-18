@@ -1,7 +1,7 @@
 ﻿@inject IWorkOrderService workOrderService
 @inject MessageService messageService
 
-<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Item</Button>
+<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Item</Button>
 <Table DataSource="Items" TItem="WorkOrderItemResponse">
     <RowTemplate>
         <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%" />

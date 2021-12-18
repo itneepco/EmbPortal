@@ -1,15 +1,13 @@
 ﻿@page "/workorder"
-@inject HttpClient Http
 @inject MessageService _message
 @inject NavigationManager _navManager
 @inject IWorkOrderService _workOrderService
-@using EmbPortal.Shared.Responses
 
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" @onclick="@OpenSideDrawer">Add Item</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="@OpenSideDrawer">Add Item</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
@@ -49,6 +47,7 @@
 <AddEditWorkOrderDrawer WorkOrder="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@OnCloseSideBar"/>
 
 <Table Loading="@loading"
+       OnChange="@OnChange"
        TItem="WorkOrderResponse"
        DataSource="@workOrders"
        Total="total"
@@ -98,6 +97,11 @@
     void OnCloseSideBar()
     {
         drawerVisible = false;
+    }
+
+    async Task OnChange()
+    {
+        await LoadWorkOrdersAsync();
     }
 
     async Task LoadWorkOrdersAsync()

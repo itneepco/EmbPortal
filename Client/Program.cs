@@ -22,6 +22,7 @@ namespace Client
             builder.Services.AddScoped<IWorkOrderService, WorkOrderService>();
             builder.Services.AddScoped<IUomService, UomService>();
             builder.Services.AddScoped<IMBookService, MBookService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             await builder.Build().RunAsync();
         }

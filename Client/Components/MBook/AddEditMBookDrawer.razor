@@ -2,8 +2,6 @@
 @inject IMBookService mBookService
 @inject MessageService messageService
 @inject MessageService messageService
-@using System.Text.Json
-@using System.Text.Json.Serialization;
 
 <Drawer Closable="true" Width="720"
         Visible="@Visible" OnClose="@Close"
@@ -63,7 +61,7 @@
     public EventCallback<bool> OnClose { get; set; }
 
     [Parameter]
-    public EventCallback<bool> OnUpdateItem { get; set; }
+    public EventCallback<bool> OnItemUpdate { get; set; }
 
     Form<MBookRequest> form;
 
@@ -155,7 +153,7 @@
         if (result.Succeeded)
         {
             Close();
-            await OnUpdateItem.InvokeAsync();
+            await OnItemUpdate.InvokeAsync();
             await messageService.Success(result.Message);
         }
         else

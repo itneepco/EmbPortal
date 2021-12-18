@@ -5,7 +5,6 @@ using Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using EmbPortal.Shared.Identity;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System;
@@ -16,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace Application.Identity.Queries
 {
-    public class GetUsersWithPaginationQuery : PagedRequest, IRequest<PaginatedList<UserDto>>
+    public record GetUsersWithPaginationQuery(PagedRequest Data) : IRequest<PaginatedList<UserResponse>>
     {
     }
 
-    public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetUsersWithPaginationQuery, PaginatedList<UserDto>>
+    public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetUsersWithPaginationQuery, PaginatedList<UserResponse>>
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
@@ -32,25 +31,25 @@ namespace Application.Identity.Queries
             _mapper = mapper;
         }
 
-        public async Task<PaginatedList<UserDto>> Handle(GetUsersWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<UserResponse>> Handle(GetUsersWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _userManager.Users.AsQueryable();
 
-            if (!string.IsNullOrEmpty(request.Search))
+            if (!string.IsNullOrEmpty(request.Data.Search))
             {
                 Criteria = (m =>
-                    m.UserName.Contains(request.Search) ||
-                    m.DisplayName.ToLower().Contains(request.Search.ToLower()) ||
-                    m.PhoneNumber.Contains(request.Search.ToLower())
+                    m.UserName.Contains(request.Data.Search) ||
+                    m.DisplayName.ToLower().Contains(request.Data.Search.ToLower()) ||
+                    m.PhoneNumber.Contains(request.Data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);
             }
 
             return await query
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+                .PaginatedListAsync(request.Data.PageNumber, request.Data.PageSize);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Application.Exceptions;
 using Domain.Entities.Identity;
+using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using EmbPortal.Shared.Identity;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Identity.Commands.RegisterUser
 {
-    public class RegisterUserCommand : RegisterDto, IRequest<string>
+    public record RegisterUserCommand(UserRequest Data) : IRequest<string>
     {
     }
 
@@ -25,24 +25,25 @@ namespace Application.Identity.Commands.RegisterUser
         {
             var user = new AppUser
             {
-                DisplayName = request.DisplayName,
-                Email = request.Email,
-                UserName = request.EmployeeCode
+                DisplayName = request.Data.DisplayName,
+                Email = request.Data.Email,
+                UserName = request.Data.EmployeeCode,
+                Designation = request.Data.Designation
             };
 
-            var result = await _userManager.CreateAsync(user, request.Password);
+            // Default password will be "Pass@123"
+            var result = await _userManager.CreateAsync(user, "Pass@123");
 
             if (!result.Succeeded)
             {
                 throw new BadRequestException("Failed to register user");
             }
 
-            var roleAddResult = await _userManager.AddToRoleAsync(user, "Member");
-
-            if (!roleAddResult.Succeeded)
+            // Assign roles to user
+            foreach (var role in request.Data.Roles)
             {
-                throw new BadRequestException("Failed to add role");
-            }
+                await _userManager.AddToRoleAsync(user, role);
+            }            
 
             return user.Id;
         }

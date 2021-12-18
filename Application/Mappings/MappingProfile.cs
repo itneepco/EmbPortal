@@ -3,7 +3,6 @@ using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.WorkOrderAggregate;
-using EmbPortal.Shared.Identity;
 using EmbPortal.Shared.Responses;
 
 namespace Application.Mappings
@@ -12,7 +11,7 @@ namespace Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<AppUser, UserDto>()
+            CreateMap<AppUser, UserResponse>()
                 .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));
 
             CreateMap<Project, ProjectResponse>();

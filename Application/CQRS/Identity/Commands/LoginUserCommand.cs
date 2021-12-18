@@ -3,18 +3,18 @@ using Domain.Entities.Identity;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using EmbPortal.Shared.Identity;
 using System.Threading;
 using System.Threading.Tasks;
-
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 
 namespace Application.Identity.Commands
 {
-    public class LoginUserCommand : LoginDto, IRequest<AuthUserDto>
+    public record LoginUserCommand(LoginRequest Data) : IRequest<AuthUserResponse>
     {
     }
 
-    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, AuthUserDto>
+    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, AuthUserResponse>
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
@@ -27,23 +27,23 @@ namespace Application.Identity.Commands
             _signInManager = signInManager;
         }
 
-        public async Task<AuthUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+        public async Task<AuthUserResponse> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByEmailAsync(request.Data.Email);
 
             if (user == null)
             {
                 throw new UnauthorizedUserException("Authorization unsuccessfull");
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Data.Password, false);
 
             if (!result.Succeeded) 
             {
                 throw new UnauthorizedUserException("Authorization unsuccessfull");
             };
 
-            return new AuthUserDto
+            return new AuthUserResponse
             {
                 Email = user.Email,
                 DisplayName = user.DisplayName,
