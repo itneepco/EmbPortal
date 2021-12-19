@@ -80,9 +80,6 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        model = new();
-        selectedRoles = new List<string> { "Member" }.AsEnumerable();
-
         if (CurrentUser != null)
         {
             // for editing existing line item
@@ -95,6 +92,11 @@
             loading = false;
             selectedRoles = roles.AsEnumerable();
             StateHasChanged();
+        }
+        else
+        {
+            model = new();
+            selectedRoles = new List<string> { "Member" }.AsEnumerable();
         }
     }
 
@@ -110,7 +112,7 @@
             await messageService.Warning("Please select user role");
             return;
         }
-        
+
         foreach (var item in selectedRoles)
         {
             model.Roles.Add(item);

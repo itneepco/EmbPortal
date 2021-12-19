@@ -88,7 +88,8 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 5, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
                     Dimension = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),

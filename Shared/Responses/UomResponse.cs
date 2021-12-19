@@ -6,5 +6,6 @@ namespace EmbPortal.Shared.Responses
         public string Name { get; set; }
         public int DimensionId { get; set; }
         public string Dimension { get; set; }
+        public string Description { get; set; }
     }
 }

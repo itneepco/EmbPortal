@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
+using EmbPortal.Shared.Requests;
 using MediatR;
 
 namespace Application.Uoms.Command
 {
-    public record CreateUomCommand(string name, int dimension) : IRequest<int>
+    public record CreateUomCommand(UomRequest Data) : IRequest<int>
     {
     }
 
@@ -23,8 +24,9 @@ namespace Application.Uoms.Command
         {
             var uom = new Uom
             (
-                name : request.name,
-                dimension : (UomDimension) request.dimension
+                name: request.Data.Name,
+                description: request.Data.Description,
+                dimension: (UomDimension) request.Data.Dimension
             );
 
             _context.Uoms.Add(uom);

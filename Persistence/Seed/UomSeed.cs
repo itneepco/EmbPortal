@@ -14,10 +14,10 @@ namespace Persistence.Seed
                 return;
             var Uoms = new List<Uom>()
             {
-                new Uom("Cum", UomDimension.THREEDIMENSION),
-                new Uom("Sqm", UomDimension.TWODIMENSION),
-                new Uom("Rum", UomDimension.ONEDIMENSION),
-                new Uom("Kg",  UomDimension.ONEDIMENSION)
+                new Uom("Cum", "Cubic Meter", UomDimension.THREEDIMENSION),
+                new Uom("Sqm", "Square Meter", UomDimension.TWODIMENSION),
+                new Uom("Rum", "Running Meter", UomDimension.ONEDIMENSION),
+                new Uom("Kg",  "Kilogram", UomDimension.ONEDIMENSION)
             };
 
             context.Uoms.AddRange(Uoms);

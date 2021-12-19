@@ -13,16 +13,23 @@ namespace Api.Controllers
 {
     public class UomController : ApiController
     {
+        [HttpGet]
+        public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)
+        {
+            var query = new GetUomsWithPaginationQuery(request);
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IReadOnlyList<UomResponse>>> GetAllUoms()
+        {
+            return Ok(await Mediator.Send(new GetUomsQuery()));
+        }
+
         [HttpGet("dimension")]
         public async Task<ActionResult<IReadOnlyList<UomDimensionResponse>>> GetUomDimensions()
         {
             return Ok(await Mediator.Send(new GetUomDimensionsQuery()));
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<UomResponse>>> GetAllUoms()
-        {
-            return Ok(await Mediator.Send(new GetUomsQuery()));
         }
 
         [HttpGet("{id}")]
@@ -38,7 +45,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateUom(UomRequest request)
         {
-            var command = new CreateUomCommand(name: request.Name, dimension: request.Dimension);
+            var command = new CreateUomCommand(request);
 
             return Ok(await Mediator.Send(command));
         }

@@ -246,6 +246,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Dimension")
                         .HasColumnType("INTEGER");
 
@@ -258,7 +263,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(5)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -36,6 +36,7 @@ namespace Application.CQRS.WorkOrders.Query
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
                 .Where(p => p.EngineerInCharge == _currentUserService.EmployeeCode)
+                .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);

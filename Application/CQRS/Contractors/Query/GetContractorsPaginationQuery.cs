@@ -45,6 +45,7 @@ namespace Application.CQRS.Contractors.Query
             }
 
             return await query.OrderBy(p => p.Name)
+                .OrderBy(p => p.Name)
                 .ProjectTo<ContractorResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);

@@ -40,13 +40,14 @@ namespace Application.Identity.Queries
                 Criteria = (m =>
                     m.UserName.Contains(request.Data.Search) ||
                     m.DisplayName.ToLower().Contains(request.Data.Search.ToLower()) ||
-                    m.PhoneNumber.Contains(request.Data.Search.ToLower())
+                    m.Email.Contains(request.Data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);
             }
 
             return await query
+                .OrderBy(p => p.DisplayName)
                 .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.Data.PageNumber, request.Data.PageSize);

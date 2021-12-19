@@ -7,5 +7,6 @@ namespace Client.Services.Interfaces
     public interface IUomService
     {
         Task<List<UomResponse>> GetAllUoms();
+        Task<PaginatedList<UomResponse>> GetUomsPagination(int pageIndex, int pageSize, string search);
     }
 }

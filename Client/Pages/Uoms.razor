@@ -1,7 +1,100 @@
 ﻿@page "/uoms"
+@inject IUomService uomService
+@inject MessageService messageService
 
-<h3>Uoms</h3>
+<Row Style="margin-bottom: 0.75rem">
+    <AntDesign.Col>
+        <Space>
+            <SpaceItem>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="@OpenSideDrawer">Add Uom</Button>
+            </SpaceItem>
+            @if (selectedRows != null)
+            {
+                <SpaceItem>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="@OpenSideDrawer">Edit Uom</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Popconfirm Title="Sure to Delete Uom?"
+                                Placement="@Placement.Bottom"
+                                OnConfirm="() => DeleteUom(selectedRows.First().Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Delete</Button>
+                    </Popconfirm>
+                </SpaceItem>
+            }
+        </Space>
+    </AntDesign.Col>
+    <AntDesign.Col Flex="2" />
+    <AntDesign.Col Flex="1">
+        <Row>
+            <AntDesign.Col Flex="1">
+                <Input Placeholder="Search" @bind-Value="@search" />
+            </AntDesign.Col>
+            <AntDesign.Col Style="margin-left: 0.75rem">
+                <Tooltip Title="@IconType.Outline.Search">
+                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadUomsAsync" />
+                </Tooltip>
+            </AntDesign.Col>
+        </Row>
+    </AntDesign.Col>
+</Row>
 
-@code {
+@*<AddEditUserDrawer CurrentUser="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadWorkOrdersAsync" />*@
 
+<Table TItem="UomResponse"
+       DataSource="@uoms"
+       Loading="loading"
+       OnChange="@LoadUomsAsync"
+       Total="total"
+       @bind-PageIndex="pageIndex"
+       @bind-PageSize="pageSize"
+       @bind-SelectedRows="selectedRows">
+
+    <Selection Key="@context.Id.ToString()" Type="radio" />
+    <Column @bind-Field="@context.Name" />
+    <Column @bind-Field="@context.Description" />
+    <Column @bind-Field="@context.Dimension" />
+</Table>
+
+<p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
+
+@code{
+    List<UomResponse> uoms = new();
+    IEnumerable<UomResponse> selectedRows;
+
+    int pageIndex = 1;
+    int pageSize = 10;
+    int total = 0;
+    bool loading = false;
+    bool drawerVisible = false;
+    string search;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUomsAsync();
+    }
+
+    async Task LoadUomsAsync()
+    {
+        loading = true;
+        var response = await uomService.GetUomsPagination(pageIndex, pageSize, search);
+        uoms = response.Items;
+        total = response.TotalCount;
+        loading = false;
+    }
+
+    void DeleteUom(int uomId)
+    {
+    }
+
+    void OpenSideDrawer()
+    {
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
+    }
 }

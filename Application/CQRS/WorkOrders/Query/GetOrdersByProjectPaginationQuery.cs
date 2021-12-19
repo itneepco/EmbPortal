@@ -51,6 +51,7 @@ namespace Application.WorkOrders.Query
 
             return await query
                 .Where(p => p.ProjectId == request.projectId)
+                .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);
