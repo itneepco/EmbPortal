@@ -6,10 +6,11 @@ namespace EmbPortal.Shared.Requests
     {
         [Required, MaxLength(5)]
         public string Name { get; set; }
+
         [Required, MaxLength(20)]
         public string Description { get; set; }
 
-        [Range(1,3)]
+        [Required, Range(1,3)]
         public int Dimension { get; set; }
     }
 }

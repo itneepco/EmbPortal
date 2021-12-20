@@ -6,12 +6,12 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="@OpenSideDrawer">Add Uom</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Uom</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="@OpenSideDrawer">Edit Uom</Button>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit Uom</Button>
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Sure to Delete Uom?"
@@ -40,7 +40,7 @@
     </AntDesign.Col>
 </Row>
 
-@*<AddEditUserDrawer CurrentUser="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadWorkOrdersAsync" />*@
+<AddEditUomDrawer CurrentUom="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadUomsAsync" />
 
 <Table TItem="UomResponse"
        DataSource="@uoms"
@@ -78,18 +78,38 @@
     async Task LoadUomsAsync()
     {
         loading = true;
+        selectedRows = null;
         var response = await uomService.GetUomsPagination(pageIndex, pageSize, search);
         uoms = response.Items;
         total = response.TotalCount;
         loading = false;
     }
 
-    void DeleteUom(int uomId)
+    async Task DeleteUom(int id)
     {
+        loading = true;
+        var result = await uomService.DeleteUom(id);
+        loading = false;
+        selectedRows = null;
+
+        if (result.Succeeded)
+        {
+            uoms = uoms.Where(item => item.Id != id).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
-    void OpenSideDrawer()
+    void OpenSideDrawer(bool isAdd=false)
     {
+        if(isAdd)
+        {
+            selectedRows = null;
+        }
         drawerVisible = true;
     }
 

@@ -6,12 +6,12 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="@OpenSideDrawer">Add User</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add User</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="@OpenSideDrawer">Edit User</Button>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit User</Button>
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Sure to Reset Password?"
@@ -102,8 +102,12 @@
         }
     }
 
-    void OpenSideDrawer()
+    void OpenSideDrawer(bool isAdd=false)
     {
+        if (isAdd)
+        {
+            selectedRows = null;
+        }
         drawerVisible = true;
     }
 

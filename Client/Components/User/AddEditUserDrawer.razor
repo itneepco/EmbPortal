@@ -14,11 +14,11 @@
 
 <Form Model="@model" OnFinish="OnSubmit" Layout="@FormLayout.Vertical" Loading="loading">
     <FormItem Label="Display Name">
-        <Input Placeholder="Display Name" @bind-Value="@context.DisplayName" TValue="string" AutoFocus />
+        <Input Placeholder="Display Name" @bind-Value="@context.DisplayName" TValue="string" />
     </FormItem>
 
     <FormItem Label="Email">
-        <Input @bind-Value="@context.Email" TValue="string" />
+        <Input Placeholder="Enail" @bind-Value="@context.Email" TValue="string" />
     </FormItem>
 
     <FormItem Label="Employee Code">
@@ -86,6 +86,7 @@
             model.DisplayName = CurrentUser.DisplayName;
             model.EmployeeCode = CurrentUser.EmployeeCode;
             model.Email = CurrentUser.Email;
+            model.Designation = CurrentUser.Designation;
 
             loading = true;
             var roles = await userService.GetUserRoles(CurrentUser.Id);
