@@ -11,19 +11,19 @@ namespace Persistence.Seed
             if (context.MeasurementBooks.Any())
                 return;
 
-            //var mBook = new MeasurementBook
-            //(
-            //    workOrderId: 1,
-            //    title: "Hello World",
-            //    measurementOfficer: "001234",
-            //    validatingOfficer: "002345"
-            //);
+            var mBook = new MeasurementBook
+            (
+                workOrderId: 1,
+                title: "Hello World",
+                measurementOfficer: "001234",
+                validatingOfficer: "002345"
+            );
 
-            //mBook.AddUpdateLineItem(1);
-            //mBook.AddUpdateLineItem(2);
+            mBook.AddUpdateLineItem(1);
+            mBook.AddUpdateLineItem(2);
 
-            //context.MeasurementBooks.Add(mBook);
-            //await context.SaveChangesAsync();
+            context.MeasurementBooks.Add(mBook);
+            await context.SaveChangesAsync();
         }
     }
 }

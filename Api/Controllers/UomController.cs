@@ -8,22 +8,24 @@ using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
+    [Authorize]
     public class UomController : ApiController
     {
+        [HttpGet("all")]
+        public async Task<ActionResult<IReadOnlyList<UomResponse>>> GetAllUoms()
+        {
+            return Ok(await Mediator.Send(new GetUomsQuery()));
+        }
+
         [HttpGet]
         public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)
         {
             var query = new GetUomsWithPaginationQuery(request);
             return Ok(await Mediator.Send(query));
-        }
-
-        [HttpGet("all")]
-        public async Task<ActionResult<IReadOnlyList<UomResponse>>> GetAllUoms()
-        {
-            return Ok(await Mediator.Send(new GetUomsQuery()));
         }
 
         [HttpGet("dimension")]
@@ -40,6 +42,7 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(new GetUomByIdQuery(id)));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -50,6 +53,7 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -61,6 +65,7 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

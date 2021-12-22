@@ -16,19 +16,27 @@ namespace Persistence.Seed
                 var users = new List<AppUser> {
                     new AppUser
                     {
+                        DisplayName = "Admin",
+                        Designation = "Manager",
+                        Email = "admin@neepco.com",
+                        UserName = "001234",
+                        PhoneNumber = "8976453420"
+                    },
+                    new AppUser
+                    {
                         DisplayName = "Bob Willis",
                         Designation = "Manager",
-                        Email = "bob@test.com",
-                        UserName = "001234",
+                        Email = "bob@neepco.com",
+                        UserName = "001235",
                         PhoneNumber = "9876543210"
                     },
                     new AppUser
                     {
-                        DisplayName = "Admin",
+                        DisplayName = "Tom Joe",
                         Designation = "Manager",
-                        Email = "admin@neepco.com",
-                        UserName = "001235",
-                        PhoneNumber = "8976453420"
+                        Email = "tom@neepco.com",
+                        UserName = "001236",
+                        PhoneNumber = "9876543210"
                     }
                 };
 
@@ -52,6 +60,11 @@ namespace Persistence.Seed
                     if (user.Email == "admin@neepco.com")
                     {
                         await userManager.AddToRoleAsync(user, "Admin");
+                    }
+
+                    if (user.Email == "bob@neepco.com")
+                    {
+                        await userManager.AddToRoleAsync(user, "Manager");
                     }
                 }
             }

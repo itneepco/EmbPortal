@@ -9,9 +9,11 @@ using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
+    [Authorize(Roles = "Admin, Manager")]
     public class WorkOrderController : ApiController
     {
         [HttpGet("self")]

@@ -271,47 +271,6 @@ namespace Persistence.Migrations
                     b.ToTable("Uoms");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("Created")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("PoQuantity")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("UnitRate")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("UomId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UomId");
-
-                    b.ToTable("SubItem");
-                });
-
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Property<int>("Id")
@@ -578,17 +537,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("WorkOrder");
-                });
-
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.SubItem", b =>
-                {
-                    b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany()
-                        .HasForeignKey("UomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Uom");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>

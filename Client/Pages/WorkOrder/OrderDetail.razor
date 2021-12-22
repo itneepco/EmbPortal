@@ -1,9 +1,10 @@
 ﻿@page "/workorder/{Id}"
+@attribute [Authorize]
 @inject MessageService messageService
 @inject IWorkOrderService workOrderService
 @inject NavigationManager navManager
 
-@if (data != null) 
+@if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
         <Tabs Animated>

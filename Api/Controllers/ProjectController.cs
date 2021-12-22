@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
-   public class ProjectController : ApiController
+    [Authorize]
+    public class ProjectController : ApiController
     {
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProjectResponse>>> GetProjects()
@@ -26,6 +28,7 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(new GetProjectByIdQuery(id)));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -36,6 +39,7 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -47,6 +51,7 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

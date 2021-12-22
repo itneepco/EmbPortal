@@ -1,5 +1,4 @@
 ﻿using Domain.Common;
-using Domain.Entities.WorkOrderAggregate;
 
 namespace Domain.Entities.MBSheetAggregate
 {
@@ -10,7 +9,5 @@ namespace Domain.Entities.MBSheetAggregate
         public float Value1 { get; set; }
         public float Value2 { get; set; }
         public float Value3 { get; set; }
-
-        public SubItem SubItem { get; set; }
     }
 }

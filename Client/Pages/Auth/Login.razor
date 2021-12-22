@@ -1,0 +1,78 @@
+﻿@page "/login"
+@layout MainLayout
+@attribute [AllowAnonymous]
+
+@inject IAuthService authService
+@inject MessageService messageService
+@inject NavigationManager navManager
+@inject EMBStateProvider stateProvider
+
+<Card Bordered="false" Title=@("EMB Login") Style="width: 500px">
+    <Body>
+        <Form Model="@model"
+              Loading="@loading"
+              OnFinish="@OnFinish"
+              LabelColSpan="8"
+              WrapperColSpan="16">
+
+            <FormItem Label="Email">
+                <Input @bind-Value="@context.Email" />
+            </FormItem>
+
+            <FormItem Label="Password">
+                <InputPassword @bind-Value="@context.Password" />
+            </FormItem>
+
+            <FormItem WrapperColOffset="8" WrapperColSpan="16">
+                <Button Type="@ButtonType.Primary" HtmlType="submit">Submit</Button>
+                <Button OnClick="@ResetForm">Clear</Button>
+            </FormItem>
+        </Form>
+
+        <p>Admin id: admin@neepco.com</p>
+        <p>Manager id: bob@neepco.com</p>
+        <p>Member id: tom@neepco.com</p>
+        <p>Default password: Pa$$w0rd</p>
+    </Body>
+</Card>
+
+
+@code
+{
+    LoginRequest model = new();
+    bool loading;
+
+    async Task OnFinish(EditContext editContext)
+    {
+        loading = true;
+        var result = await authService.Login(model);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+
+        if (user != null && user.Identity.IsAuthenticated)
+        {
+            navManager.NavigateTo("/notauthorized");
+        }
+    }
+
+    void ResetForm()
+    {
+        model = new();
+    }
+}

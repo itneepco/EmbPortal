@@ -21,14 +21,12 @@ namespace Persistence.Seed
                 title: "Hello World",
                 agreementNo: "bca321",
                 agreementDate: DateTime.Now,
-                projectId: 1,
+                projectId: 5,
                 contractorId: 1,
                 engineerInCharge: "001234"
             );
 
-            
-
-            workOrder.AddUpdateLineItem("Line item one", 1,100,40);
+            workOrder.AddUpdateLineItem("Line item one", 1, 100, 40);
             workOrder.AddUpdateLineItem("Line item two", 1, 50, 200);
             workOrder.AddUpdateLineItem("Line item three", 1, 500, 30);
 
