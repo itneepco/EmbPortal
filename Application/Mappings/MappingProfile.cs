@@ -32,7 +32,8 @@ namespace Application.Mappings
                 .ForMember(m => m.ContractorName, opt => opt.MapFrom(p => p.Contractor.Name))
                 .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
 
-            CreateMap<WorkOrderItem, WorkOrderItemResponse>();
+            CreateMap<WorkOrderItem, WorkOrderItemResponse>()
+                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name));
 
             CreateMap<SubItem, SubItemResponse>()
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))

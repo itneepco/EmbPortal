@@ -34,16 +34,13 @@ namespace Application.CQRS.WorkOrders.Command
             {
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
-
-            List<SubItem> subItems = new();
-            foreach (var item in request.data.SubItems)
-            {
-                subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
-            }
+                       
 
             workOrder.AddUpdateLineItem(
                 description: request.data.Description,
-                subItems: subItems
+                uomId: request.data.UomId,
+                unitRate: request.data.UnitRate,
+                poQuantity: request.data.PoQuantity
             );
 
             await _context.SaveChangesAsync(cancellationToken);

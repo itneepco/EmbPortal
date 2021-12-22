@@ -5,8 +5,10 @@
 <Table DataSource="Items" TItem="WorkOrderItemResponse">
     <RowTemplate>
         <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%" />
-        <Column TData="float" DataIndex="@nameof(context.Quantity)" Width="15%" />
-        <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="15%" />
+        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%" />
+        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="10%" />
+        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%" />
+        
         <ActionColumn Title="Action" Width="30%">
             <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
             <Popconfirm Title="Sure to delete?"
@@ -17,14 +19,7 @@
             </Popconfirm>
         </ActionColumn>
     </RowTemplate>
-    <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.SubItems" Size="@TableSize.Small" Loading="rowData.Data.SubItems==null" HidePagination>
-            <Column TData="string" DataIndex="@nameof(context.Description)" />
-            <Column TData="string" DataIndex="@nameof(context.Uom)" />
-            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" />
-            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
-        </Table>
-    </ExpandTemplate>
+    
 </Table>
 
 <AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="@OnItemUpdate" OnClose="@OnCloseSideBar" />
@@ -65,6 +60,7 @@
         {
             Items = Items.Where(item => item.Id != itemId).ToList();
             StateHasChanged();
+            await ReloadPage.InvokeAsync();
             await messageService.Success(result.Message);
         }
         else
@@ -72,6 +68,10 @@
             await messageService.Error(result.Message);
         }
     }
+    //string GetUom(int id)
+    //{
+    //    return Uoms.Find(p => p.Id == id)?.Name;
+    //}
 
     async Task OnItemUpdate()
     {

@@ -12,9 +12,21 @@
         <FormItem Label="Order Line Item Description">
             <TextArea Placeholder="Please enter line item description" Rows="2" @bind-Value="@context.Description" AutoFocus />
         </FormItem>
-
-        <WorkOrderSubItems SubItems="@model.SubItems" Uoms="@uoms"/>
-
+        <FormItem Label="Unit of Measurement">
+            <Select DataSource="@uoms"
+                    @bind-Value="@context.UomId"
+                    ValueName="@nameof(UomResponse.Id)"
+                    LabelName="@nameof(UomResponse.Name)"
+                    Placeholder="Select Uom"
+                    AllowClear>
+            </Select>
+        </FormItem>
+        <FormItem Label="Unit Rate">
+            <Input @bind-Value="@context.UnitRate" />
+        </FormItem>
+        <FormItem Label="PO Quantity">
+            <Input @bind-Value="@context.PoQuantity" />
+        </FormItem>
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
             <AntDesign.Col>
@@ -54,20 +66,14 @@
     protected override void OnParametersSet()
     {
         model = new();
-        model.SubItems = new List<SubItemRequest>();
 
         if (LineItem != null)
         {
             // for editing existing line item
             model.Description = LineItem.Description;
-            model.SubItems = LineItem.SubItems.Select(item => new SubItemRequest
-            {
-                Id = item.Id,
-                PoQuantity = item.PoQuantity,
-                UnitRate = item.UnitRate,
-                Description = item.Description,
-                UomId = item.UomId
-            }).ToList();
+            model.UomId = LineItem.UomId;
+            model.UnitRate = LineItem.UnitRate;
+            model.PoQuantity = LineItem.PoQuantity;
         }
     }
 
@@ -78,11 +84,6 @@
 
     async Task OnSubmit()
     {
-        if (model.SubItems.Count == 0)
-        {
-            await messageService.Warning("Please add atleast one sub item");
-            return;
-        }
 
         loading = true;
         dynamic result;

@@ -27,8 +27,7 @@ namespace Application.CQRS.WorkOrders.Command
         public async Task<Unit> Handle(EditWorkOrderItemCommand request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders
-                .Include(p => p.Items)
-                    .ThenInclude(i => i.SubItems)
+                .Include(p => p.Items)                    
                 .FirstOrDefaultAsync(p => p.Id == request.workOrderId);
 
             if (workOrder == null)
@@ -40,17 +39,14 @@ namespace Application.CQRS.WorkOrders.Command
             {
                 throw new BadRequestException("Published work order cannot be updated");
             }
-
-            List<SubItem> subItems = new();
-            foreach (var item in request.data.SubItems)
-            {
-                subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
-            }
+            
 
             workOrder.AddUpdateLineItem(
                 id: request.id,
                 description: request.data.Description,
-                subItems: subItems
+                uomId: request.data.UomId,
+                unitRate: request.data.UnitRate,
+                poQuantity: request.data.PoQuantity
             );
 
             await _context.SaveChangesAsync(cancellationToken);

@@ -1,28 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace EmbPortal.Shared.Responses
+﻿namespace EmbPortal.Shared.Responses
 {
     public class WorkOrderItemResponse
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public IReadOnlyList<SubItemResponse> SubItems { get; set; }
-
-        public float Quantity 
-        {
-            get
-            {
-                return SubItems.Aggregate(0, (float acc, SubItemResponse item) => acc + item.PoQuantity);
-            }
-        }
-
-        public decimal TotalAmount
-        {
-            get
-            {
-                return SubItems.Aggregate(0, (decimal acc, SubItemResponse item) => acc + (item.UnitRate*(decimal)item.PoQuantity));
-            }
-        }
+        public decimal UnitRate { get; set; }
+        public string Uom { get; set; }
+        public int UomId { get; set; }
+        public string Dimension { get; set; }
+        public float PoQuantity { get; set; }
+       
     }
 }

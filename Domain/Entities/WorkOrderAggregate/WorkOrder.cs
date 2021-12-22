@@ -49,7 +49,7 @@ namespace Domain.Entities.WorkOrderAggregate
             EngineerInCharge = engineerInCharge;
         }
 
-        public void AddUpdateLineItem(string description, List<SubItem> subItems, int id=0)
+        public void AddUpdateLineItem(string description, int uomId, decimal unitRate, float poQuantity, int id=0)
         {
             if(Status == WorkOrderStatus.PUBLISHED || Status == WorkOrderStatus.COMPLETED) return;
 
@@ -58,12 +58,13 @@ namespace Domain.Entities.WorkOrderAggregate
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
                 item.SetDescription(description);
-                item.RemoveAllSubItems(); // TODO
-                item.AddSubItems(subItems);
+                item.SetUomId(uomId);
+                item.SetUnitRate(unitRate);
+                item.SetPoQuantity(poQuantity);
             }
             else // new item
             {
-                _items.Add(new WorkOrderItem(description, subItems));
+                _items.Add(new WorkOrderItem(description, uomId, unitRate, poQuantity));
             }
         }
 
@@ -74,8 +75,7 @@ namespace Domain.Entities.WorkOrderAggregate
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if(item != null) // if item exists in the list
-            {
-                item.RemoveAllSubItems();
+            {                
                 _items.Remove(item);
             }
         }

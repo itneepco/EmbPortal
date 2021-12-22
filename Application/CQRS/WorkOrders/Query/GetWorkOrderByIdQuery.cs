@@ -30,8 +30,7 @@ namespace Application.CQRS.WorkOrders.Query
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
                 .Include(p => p.Items)
-                    .ThenInclude(i => i.SubItems)
-                        .ThenInclude(s => s.Uom)
+                   .ThenInclude(s => s.Uom)
                 .ProjectTo<WorkOrderDetailResponse>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(p => p.Id == request.id);
 

@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211219181420_InitialCreate")]
+    [Migration("20211221102746_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -307,14 +307,9 @@ namespace Persistence.Migrations
                     b.Property<int>("UomId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("WorkOrderItemId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UomId");
-
-                    b.HasIndex("WorkOrderItemId");
 
                     b.ToTable("SubItem");
                 });
@@ -401,7 +396,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
@@ -411,10 +406,21 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
+                    b.Property<float>("PoQuantity")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("UnitRate")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("UomId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("WorkOrderId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UomId");
 
                     b.HasIndex("WorkOrderId");
 
@@ -584,11 +590,6 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", null)
-                        .WithMany("SubItems")
-                        .HasForeignKey("WorkOrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Uom");
                 });
 
@@ -613,10 +614,18 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
+                    b.HasOne("Domain.Entities.Uom", "Uom")
+                        .WithMany()
+                        .HasForeignKey("UomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Uom");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -695,8 +704,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
                     b.Navigation("MBookItem");
-
-                    b.Navigation("SubItems");
                 });
 #pragma warning restore 612, 618
         }

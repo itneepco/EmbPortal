@@ -1,7 +1,5 @@
 ﻿using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
@@ -9,47 +7,41 @@ namespace Domain.Entities.WorkOrderAggregate
     {
         public int Id { get; private set; }
         public string Description { get; private set; }
+        public int UomId { get; private set; }
+        public decimal UnitRate { get; private set; }
+        public float PoQuantity { get; private set; }
+        public Uom Uom { get; private set; }
         public MBookItem MBookItem { get; private set; }
-
-        private readonly List<SubItem> _subItems = new List<SubItem>();
-        public IReadOnlyList<SubItem> SubItems => _subItems.AsReadOnly();
-
         public WorkOrderItem()
         {
         }
 
-        public WorkOrderItem(string description, List<SubItem> subItems)
+        public WorkOrderItem(string description, int uomId, decimal unitRate, float poQuantity)
         {
             Description = description;
-            AddSubItems(subItems);
+            UomId = uomId;
+            UnitRate = unitRate;
+            PoQuantity = poQuantity;
         }
-
         public void SetDescription(string description)
         {
             Description = description;
         }
 
-        public void AddSubItems(List<SubItem> subItems)
+        public void SetUomId(int uomId)
         {
-            foreach (var item in subItems)
-            {
-                _subItems.Add(new SubItem(item.Description, item.UomId, item.UnitRate, item.PoQuantity));
-            }
+            UomId = uomId;
         }
 
-        public void RemoveSubItem(int id)
+        public void SetUnitRate(decimal unitRate)
         {
-            var item = _subItems.SingleOrDefault(p => p.Id == id);
-
-            if (item != null) // if item exists in the list
-            {
-                _subItems.Remove(item);
-            }
+            UnitRate = unitRate;
         }
 
-        public void RemoveAllSubItems()
+        public void SetPoQuantity(float poQuantity)
         {
-            _subItems.RemoveAll(p => true);
+            PoQuantity = poQuantity;
         }
+
     }
 }

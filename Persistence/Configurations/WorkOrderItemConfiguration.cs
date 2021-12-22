@@ -8,15 +8,13 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkOrderItem> builder)
         {
-            builder.Property(p => p.Description).HasMaxLength(250).IsRequired();
+            builder.Property(p => p.Description).HasMaxLength(100).IsRequired();
+            builder.Property(p => p.UnitRate).IsRequired();
+            builder.Property(p => p.UomId).IsRequired();
+            builder.Property(p => p.PoQuantity).IsRequired();
 
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
-
-            builder.HasMany(p => p.SubItems).WithOne().OnDelete(DeleteBehavior.Cascade);
-
-            // Backing fields
-            builder.Navigation(p => p.SubItems).HasField("_subItems");
         }
     }
 }
