@@ -34,13 +34,16 @@ namespace Application.Mappings
 
             CreateMap<WorkOrderItem, WorkOrderItemResponse>()
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))
-                .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension.ToString()));
+                .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension));
 
             CreateMap<MeasurementBook, MeasurementBookResponse>()
                 .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
 
             CreateMap<MBookItem, MBookItemResponse>()
-                .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description));
+                .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description))
+                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Name))
+                .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
+                .ForMember(m => m.UnitRate, opt => opt.MapFrom(p => p.WorkOrderItem.UnitRate));
         }
     }
 }
