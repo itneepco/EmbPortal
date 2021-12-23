@@ -119,6 +119,116 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("AcceptingDate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AcceptingOfficer")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MeasurementBookId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("MeasurementDate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MeasurementOfficer")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ValidationDate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ValidationOfficer")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeasurementBookId");
+
+                    b.ToTable("MBSheet");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Dimension")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MBSheetId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MBookItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Uom")
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("Value1")
+                        .HasColumnType("REAL");
+
+                    b.Property<float>("Value2")
+                        .HasColumnType("REAL");
+
+                    b.Property<float>("Value3")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MBSheetId");
+
+                    b.HasIndex("MBookItemId");
+
+                    b.ToTable("MBSheetItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
                     b.Property<int>("Id")
@@ -353,7 +463,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
@@ -512,6 +622,33 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
+                {
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
+                        .WithMany()
+                        .HasForeignKey("MeasurementBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MeasurementBook");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
+                {
+                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", null)
+                        .WithMany("Items")
+                        .HasForeignKey("MBSheetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MBookItem", "MBookItem")
+                        .WithMany("MBSheetItems")
+                        .HasForeignKey("MBookItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MBookItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", null)
@@ -628,6 +765,16 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Contractor", b =>
                 {
                     b.Navigation("WorkOrders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
+                {
+                    b.Navigation("MBSheetItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>

@@ -279,7 +279,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     UomId = table.Column<int>(type: "INTEGER", nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     PoQuantity = table.Column<float>(type: "REAL", nullable: false),
@@ -302,6 +302,36 @@ namespace Persistence.Migrations
                         name: "FK_WorkOrderItem_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
                         principalTable: "WorkOrders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MBSheet",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    MeasurementDate = table.Column<long>(type: "INTEGER", nullable: false),
+                    ValidationOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    ValidationDate = table.Column<long>(type: "INTEGER", nullable: false),
+                    AcceptingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    AcceptingDate = table.Column<long>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    MeasurementBookId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Created = table.Column<long>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
+                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MBSheet", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MBSheet_MeasurementBooks_MeasurementBookId",
+                        column: x => x.MeasurementBookId,
+                        principalTable: "MeasurementBooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -332,6 +362,42 @@ namespace Persistence.Migrations
                         name: "FK_MBookItem_WorkOrderItem_WorkOrderItemId",
                         column: x => x.WorkOrderItemId,
                         principalTable: "WorkOrderItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MBSheetItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Value1 = table.Column<float>(type: "REAL", nullable: false),
+                    Value2 = table.Column<float>(type: "REAL", nullable: false),
+                    Value3 = table.Column<float>(type: "REAL", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Uom = table.Column<string>(type: "TEXT", nullable: true),
+                    Dimension = table.Column<int>(type: "INTEGER", nullable: false),
+                    MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MBSheetId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Created = table.Column<long>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
+                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MBSheetItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MBSheetItem_MBookItem_MBookItemId",
+                        column: x => x.MBookItemId,
+                        principalTable: "MBookItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MBSheetItem_MBSheet_MBSheetId",
+                        column: x => x.MBSheetId,
+                        principalTable: "MBSheet",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -385,6 +451,21 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_MBSheet_MeasurementBookId",
+                table: "MBSheet",
+                column: "MeasurementBookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MBSheetItem_MBookItemId",
+                table: "MBSheetItem",
+                column: "MBookItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MBSheetItem_MBSheetId",
+                table: "MBSheetItem",
+                column: "MBSheetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
                 table: "MeasurementBooks",
                 column: "WorkOrderId");
@@ -428,7 +509,7 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "MBookItem");
+                name: "MBSheetItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -437,10 +518,16 @@ namespace Persistence.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "MeasurementBooks");
+                name: "MBookItem");
+
+            migrationBuilder.DropTable(
+                name: "MBSheet");
 
             migrationBuilder.DropTable(
                 name: "WorkOrderItem");
+
+            migrationBuilder.DropTable(
+                name: "MeasurementBooks");
 
             migrationBuilder.DropTable(
                 name: "Uoms");

@@ -1,16 +1,16 @@
-﻿using Domain.Entities.MeasurementBookAggregate;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Domain.Entities.MBSheetAggregate;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Configurations
 {
-    class MeasurementBookConfiguration : IEntityTypeConfiguration<MeasurementBook>
+    public class MBSheetConfiguration : IEntityTypeConfiguration<MBSheet>
     {
-        public void Configure(EntityTypeBuilder<MeasurementBook> builder)
+        public void Configure(EntityTypeBuilder<MBSheet> builder)
         {
-            builder.Property(p => p.Title).HasMaxLength(100).IsRequired();
             builder.Property(p => p.MeasurementOfficer).HasMaxLength(6).IsRequired();
-            builder.Property(p => p.ValidatingOfficer).HasMaxLength(6).IsRequired();
+            builder.Property(p => p.ValidationOfficer).HasMaxLength(6).IsRequired();
+            builder.Property(p => p.AcceptingOfficer).HasMaxLength(6).IsRequired();
 
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);

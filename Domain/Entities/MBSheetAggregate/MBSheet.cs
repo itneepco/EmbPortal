@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities.MeasurementBookAggregate;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Domain.Entities.MBSheetAggregate
         public string AcceptingOfficer { get; private set; }
         public DateTime AcceptingDate { get; private set; }
         public MBSheetStatus Status { get; private set; }
+
+        public int MeasurementBookId { get; set; }
+        public MeasurementBook MeasurementBook { get; set; }
 
         private readonly List<MBSheetItem> _items = new List<MBSheetItem>();
         public IReadOnlyList<MBSheetItem> Items => _items.AsReadOnly();
