@@ -14,5 +14,18 @@ namespace Domain.Entities.MBSheetAggregate
         public int Dimension { get; private set; }
         public int MBookItemId { get; private set; }
         public MBookItem MBookItem { get; private set; }
+
+        public MBSheetItem(string description, string uom, int dimension, int mBBookItemId)
+        {
+            Description = description;
+            Uom = uom;
+            Dimension = dimension;
+            MBookItemId = mBBookItemId;
+        }
+
+        public MBSheetItem()
+        {
+
+        }
     }
 }

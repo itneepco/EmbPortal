@@ -8,9 +8,9 @@ namespace EmbPortal.Shared.Requests
         public string MeasurementOfficer { get; set; }
         public DateTime MeasurementDate { get; set; }
         public string ValidationOfficer { get; set; }
-        public DateTime ValidationDate { get; set; }
+        //public DateTime ValidationDate { get; set; }
         public string AcceptingOfficer { get; set; }
-        public DateTime AcceptingDate { get; set; }
+        //public DateTime AcceptingDate { get; set; }
         public int MeasurementBookId { get; set; }
         public List<MBSheetItemRequest> Items { get; set; }
     }

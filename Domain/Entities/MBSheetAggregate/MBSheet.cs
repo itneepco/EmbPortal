@@ -22,5 +22,24 @@ namespace Domain.Entities.MBSheetAggregate
 
         private readonly List<MBSheetItem> _items = new List<MBSheetItem>();
         public IReadOnlyList<MBSheetItem> Items => _items.AsReadOnly();
+        public MBSheet()
+        {
+
+        }
+
+        public MBSheet(int measurementBookId, string measurementOfficer, DateTime measurementDate, string validationOfficer, string acceptingOfficer)
+        {
+            MeasurementBookId = measurementBookId;
+            MeasurementOfficer = measurementOfficer;
+            MeasurementDate = measurementDate;
+            ValidationOfficer = validationOfficer;
+            AcceptingOfficer = acceptingOfficer;
+           
+        }
+
+        public void AddLineItem(MBSheetItem item)
+        {
+            _items.Add(item);
+        }
     }
 }

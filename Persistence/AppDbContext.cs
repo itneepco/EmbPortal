@@ -7,6 +7,7 @@ using Application.Interfaces;
 using Domain.Common;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using Infrastructure.Interfaces;
@@ -30,7 +31,7 @@ namespace Persistence
         public DbSet<Contractor> Contractors {get; set;}
         public DbSet<WorkOrder> WorkOrders { get ; set ; }
         public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
-
+        public DbSet<MBSheet> MBSheets { get; set; }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
