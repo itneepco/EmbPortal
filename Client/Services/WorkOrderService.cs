@@ -74,5 +74,11 @@ namespace Client.Services
             var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}/Item/Pending");
             return await response.ToResult<List<PendingOrderItemResponse>>();
         }
+
+        public async Task<IResult> PublishWorkOrder(int id)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Publish", "");
+            return await response.ToResult();
+        }
     }
 }

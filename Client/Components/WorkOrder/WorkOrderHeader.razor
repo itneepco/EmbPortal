@@ -4,13 +4,47 @@
     <DescriptionsItem Title="Agreement No" Span="2"> @WorkOrder.AgreementNo</DescriptionsItem>
     <DescriptionsItem Title="Agreement Date" Span="2"> @WorkOrder.AgreementDate</DescriptionsItem>
     <DescriptionsItem Title="Contractor" Span="2">@WorkOrder.ContractorName</DescriptionsItem>
-    <DescriptionsItem Title="Status" Span="2"><Tag Color="green">@WorkOrder.Status</Tag></DescriptionsItem>
-    <DescriptionsItem Title="Work Description" Span="4">@WorkOrder.Title</DescriptionsItem>
+    <DescriptionsItem Title="Status" Span="2">
+        <Tag Color="green">@WorkOrder.Status</Tag>
+        @if (WorkOrder.Status == "CREATED")
+        {
+            <Popconfirm Title="Sure to publish work order?"
+                        OnConfirm="PublishOrder"
+                        OkText="Yes"
+                        CancelText="No">
+                <Button Size="@ButtonSize.Small" Loading="@loading" Danger>Publish</Button>
+            </Popconfirm>
+        }
+    </DescriptionsItem>
     <DescriptionsItem Title="Project" Span="2">@WorkOrder.ProjectName</DescriptionsItem>
     <DescriptionsItem Title="Engineer In Charge" Span="2">@WorkOrder.EngineerInCharge</DescriptionsItem>
+    <DescriptionsItem Title="Work Description" Span="4">@WorkOrder.Title</DescriptionsItem>
 </Descriptions>
 
 @code {
     [Parameter]
     public WorkOrderDetailResponse WorkOrder { get; set; }
+
+    [Parameter]
+    public EventCallback WorkOrderPublished { get; set; }
+
+    bool loading = false;
+
+    async Task PublishOrder()
+    {
+        loading = true;
+        var result = await workOrderService.PublishWorkOrder(WorkOrder.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await WorkOrderPublished.InvokeAsync();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
 }

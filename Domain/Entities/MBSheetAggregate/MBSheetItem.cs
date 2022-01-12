@@ -15,12 +15,15 @@ namespace Domain.Entities.MBSheetAggregate
         public int MBookItemId { get; private set; }
         public MBookItem MBookItem { get; private set; }
 
-        public MBSheetItem(string description, string uom, int dimension, int mBBookItemId)
+        public MBSheetItem(string description, string uom, int dimension, int mBBookItemId, float value1, float value2, float value3)
         {
             Description = description;
             Uom = uom;
             Dimension = dimension;
             MBookItemId = mBBookItemId;
+            Value1 = value1;
+            Value2 = value2;
+            Value3 = value3;
         }
 
         public MBSheetItem()

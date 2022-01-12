@@ -14,7 +14,7 @@ namespace Application.Interfaces
         DbSet<Uom> Uoms { get; set; }
         DbSet<Contractor> Contractors {get; set;}
         DbSet<WorkOrder> WorkOrders { get; set; }
-        DbSet<MeasurementBook> MeasurementBooks { get; set; }\
+        DbSet<MeasurementBook> MeasurementBooks { get; set; }
         DbSet<MBSheet> MBSheets { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

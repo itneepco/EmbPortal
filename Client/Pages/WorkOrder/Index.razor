@@ -1,8 +1,5 @@
 ﻿@page "/workorder"
 @attribute [Authorize(Roles="Admin, Manager")]
-@inject MessageService _message
-@inject NavigationManager _navManager
-@inject IWorkOrderService _workOrderService
 
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
@@ -94,7 +91,7 @@
     {
         loading = true;
         selectedRows = null;
-        var response = await _workOrderService.GetWorkOrdersByProjectPagination(5, pageIndex, pageSize, search);
+        var response = await workOrderService.GetWorkOrdersByProjectPagination(5, pageIndex, pageSize, search);
         workOrders = response.Items;
         total = response.TotalCount;
         loading = false;
@@ -108,7 +105,7 @@
     async Task ConfirmDelete(int id)
     {
         loading = true;
-        var result = await _workOrderService.DeleteWorkOrder(id);
+        var result = await workOrderService.DeleteWorkOrder(id);
         loading = false;
         selectedRows = null;
 
@@ -116,17 +113,17 @@
         {
             workOrders = workOrders.Where(item => item.Id != id).ToList();
             StateHasChanged();
-            await _message.Success(result.Message);
+            await messageService.Success(result.Message);
         }
         else
         {
-            await _message.Error(result.Message);
+            await messageService.Error(result.Message);
         }
     }
 
     void ViewDetail(int id)
     {
-        _navManager.NavigateTo($"/workorder/{id}");
+        navManager.NavigateTo($"/workorder/{id}");
     }
 
     void OpenSideDrawer(bool isAdd = false)

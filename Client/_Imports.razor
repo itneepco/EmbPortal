@@ -14,17 +14,26 @@
 @using Client
 @using Client.Shared
 @using Client.Models
-
-@using Services
-@using Services.Interfaces
-
 @using Client.Components
 @using Client.Components.WorkOrder
 @using Client.Components.MBook
 @using Client.Components.User
-
 @using Client.Pages.Auth
-
 @using EmbPortal.Shared.Requests
 @using EmbPortal.Shared.Responses
 @using EmbPortal.Shared.Extensions
+@using Services
+@using Services.Interfaces
+
+@*Ant design services*@
+@inject MessageService messageService
+@inject ModalService modalService
+
+@*emb services*@
+@inject IProjectService projectservice
+@inject IContractorService contractorservice
+@inject IWorkOrderService workOrderService
+@inject NavigationManager navManager
+@inject IUomService uomService
+@inject IUserService userService
+@inject IMBookService mBookService

@@ -5,8 +5,6 @@ using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,45 +26,52 @@ namespace Application.CQRS.MBSheets.Command
 
         public async Task<int> Handle(CreateMBSheetCommand request, CancellationToken cancellationToken)
         {
-
             var mbSheet = new MBSheet
-           (
+            (
                measurementBookId: request.data.MeasurementBookId,
                measurementOfficer: request.data.MeasurementOfficer,
                measurementDate: request.data.MeasurementDate,
                validationOfficer: request.data.ValidationOfficer,
                acceptingOfficer: request.data.AcceptingOfficer
-               
-           ); 
-            
+            );
 
-            MeasurementBook mBBook = await _context.MeasurementBooks
+            MeasurementBook mBook = await _context.MeasurementBooks
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                       .ThenInclude(i => i.Uom)
                  .Where(p => p.Id == request.data.MeasurementBookId)
                  .AsNoTracking()
                  .FirstOrDefaultAsync();
-            if (mBBook == null)
-            {
-                throw new NotFoundException($"MBBook does not exist with Id: {request.data.MeasurementBookId}");
-            }
-            
-                IReadOnlyList<MBookItem> mBookItems = mBBook.Items;
-                foreach (var item in mBookItems)
-                {
-                    mbSheet.AddLineItem(new MBSheetItem
-                        (
-                          description: item.WorkOrderItem.Description,
-                          uom: item.WorkOrderItem.Uom.Description,
-                          dimension: ((int)item.WorkOrderItem.Uom.Dimension),
-                          mBBookItemId: request.data.MeasurementBookId
-                        )) ;
 
+            if (mBook == null)
+            {
+                throw new NotFoundException($"MeasurementBook does not exist with Id: {request.data.MeasurementBookId}");
+            }
+
+            foreach (var item in request.data.Items)
+            {
+                MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.Id == item.MBookItemId);
+                
+                if (mBookItem == null)
+                {
+                    throw new NotFoundException($"MeasurementBook does not have line item with Id: {item.MBookItemId}");
                 }
-                _context.MBSheets.Add(mbSheet);
-                await _context.SaveChangesAsync(cancellationToken);
-                return mbSheet.Id;            
+
+                mbSheet.AddLineItem(new MBSheetItem
+                (
+                    description: mBookItem.WorkOrderItem.Description,
+                    uom: mBookItem.WorkOrderItem.Uom.Description,
+                    dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
+                    mBBookItemId: request.data.MeasurementBookId,
+                    value1: item.Value1,
+                    value2: item.Value2,
+                    value3: item.Value3
+                ));
+            }
+
+            _context.MBSheets.Add(mbSheet);
+            await _context.SaveChangesAsync(cancellationToken);
+            return mbSheet.Id;
         }
     }
 }

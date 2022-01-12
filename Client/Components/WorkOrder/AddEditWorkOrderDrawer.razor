@@ -1,10 +1,4 @@
-﻿@inject MessageService messageService
-@inject IProjectService projectservice
-@inject IContractorService contractorservice
-@inject IWorkOrderService workOrderService
-@inject NavigationManager navManager 
-
-<Drawer Closable="true" Width="700"
+﻿<Drawer Closable="true" Width="700"
         Title="@(WorkOrder == null ?  "Add Work order" : "Edit Work Order")" 
         Visible="@Visible" OnClose="@Close">
     <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">

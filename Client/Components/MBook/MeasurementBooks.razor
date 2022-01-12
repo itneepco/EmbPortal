@@ -1,7 +1,8 @@
-﻿@inject IMBookService mBookService
-@inject MessageService messageService
-
-<Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="_=> OpenSideDrawer()" Style="margin-bottom: 1rem">Add Measurement Book</Button>
+﻿<Button Icon="@(IconType.Outline.Plus)" 
+        Type="@(ButtonType.Primary)" 
+        OnClick="_=> OpenSideDrawer()" 
+        Disabled="@(WorkOrderStatus != "PUBLISHED")"
+        Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
 <Table Loading="@loading" TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
     <RowTemplate>
@@ -51,6 +52,9 @@
 @code{
     [CascadingParameter]
     public int WorkOrderId { get; set; }
+
+    [Parameter]
+    public string WorkOrderStatus { get; set; }
 
     MeasurementBookResponse currentMBook;
 

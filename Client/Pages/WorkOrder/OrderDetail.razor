@@ -1,15 +1,12 @@
 ﻿@page "/workorder/{Id}"
 @attribute [Authorize]
-@inject MessageService messageService
-@inject IWorkOrderService workOrderService
-@inject NavigationManager navManager
 
 @if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
         <Tabs Animated>
             <TabPane Tab="Work Order Header" Key="1">
-                <WorkOrderHeader WorkOrder="@data" />
+                <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@OnPublish" />
             </TabPane>
 
             <TabPane Tab="Work Order Line Items" Key="2">
@@ -17,7 +14,7 @@
             </TabPane>
 
             <TabPane Tab="Measurement Books" Key="3">
-                <MeasurementBooks />
+                <MeasurementBooks WorkOrderStatus="@data.Status" />
             </TabPane>
         </Tabs>
     </CascadingValue>
@@ -51,6 +48,11 @@ else
         }
 
         data = result.Data;
+    }
+
+    void OnPublish()
+    {
+        data.Status = "PUBLISHED";
     }
 
     async Task ReloadPage()

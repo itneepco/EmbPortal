@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 
 namespace EmbPortal.Shared.Responses
 {
-   public class WorkOrderResponse
+    public class WorkOrderResponse
     {
         public int Id { get; set; }
         public string OrderNo { get; set; }
