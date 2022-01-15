@@ -1,6 +1,7 @@
 ﻿<Button Icon="@(IconType.Outline.Plus)"
         Type="@(ButtonType.Primary)"
         OnClick="_=> OpenSideDrawer()"
+        Disabled="@(WorkOrderStatus == "COMPLETED")"
         Style="margin-bottom: 1rem">Add Item</Button>
 
 <Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small">
@@ -11,12 +12,19 @@
         <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%" />
         
         <ActionColumn Title="Action" Width="25%">
-            <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+            <Button Icon="@(IconType.Outline.Edit)" 
+                    Size="@ButtonSize.Small"
+                    Disabled="@(WorkOrderStatus != "CREATED")"
+                    OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+
             <Popconfirm Title="Sure to delete?"
                         OnConfirm="()=> OnDeleteItem(context.Id)"
                         OkText="Yes"
                         CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+                <Button Icon="@(IconType.Outline.Delete)" 
+                        Size="@ButtonSize.Small"
+                        Disabled="@(WorkOrderStatus != "CREATED")"
+                        Loading="@loading" Danger>Delete</Button>
             </Popconfirm>
         </ActionColumn>
     </RowTemplate>
@@ -28,6 +36,9 @@
 @code {
     [CascadingParameter]
     public int WorkOrderId { get; set; }
+
+    [CascadingParameter]
+    public string WorkOrderStatus { get; set; }
 
     [Parameter]
     public List<WorkOrderItemResponse> Items { get; set; }

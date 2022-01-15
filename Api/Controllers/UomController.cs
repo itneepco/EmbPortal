@@ -22,7 +22,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)
+        public async Task<ActionResult<PaginatedList<UserResponse>>> GetUomsByPagination([FromQuery] PagedRequest request)
         {
             var query = new GetUomsWithPaginationQuery(request);
             return Ok(await Mediator.Send(query));

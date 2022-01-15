@@ -1,0 +1,75 @@
+﻿@page "/mbooks/{Id}"
+@attribute [Authorize]
+
+@if (data != null)
+{
+    <Tabs Animated>
+        <TabPane Tab="Measurement Book Detail" Key="1">
+            <Descriptions Bordered Size="@DescriptionsSize.Small">
+                <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
+                <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
+                <DescriptionsItem Title="Validating Officer">@data.ValidatingOfficer</DescriptionsItem>
+
+                <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
+                <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate</DescriptionsItem>
+                <DescriptionsItem Title="Contractor">@data.WorkOrder.ContractorName</DescriptionsItem>
+
+                <DescriptionsItem Title="Agreement No">@data.WorkOrder.AgreementNo</DescriptionsItem>
+                <DescriptionsItem Title="Agreeement Date">@data.WorkOrder.AgreementDate</DescriptionsItem>
+                <DescriptionsItem Title="Project">@data.WorkOrder.ProjectName</DescriptionsItem>
+
+                <DescriptionsItem Title="Work Description">@data.WorkOrder.Title</DescriptionsItem>
+            </Descriptions>
+
+            <Divider>Measurement Book Items</Divider>
+
+            <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination>
+                <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%"></Column>
+                <Column TData="string" DataIndex="@nameof(context.Uom)" Width="15%"></Column>
+                <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="13%"></Column>
+                <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="12%"></Column>
+                <Column TData="float" DataIndex="@nameof(context.TotalAmount)" Width="15%"></Column>
+            </Table>
+        </TabPane>
+
+        <TabPane Tab="Measurement Book Sheet" Key="2">
+            <Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
+                Add MB Sheet
+            </Button>
+            <div>
+                Measurement Book Sheet
+            </div>
+        </TabPane>
+    </Tabs>
+}
+else
+{
+    <Spin>
+        <Empty />
+    </Spin>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    public MBookDetailResponse data { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMBookDetailsAsync();
+    }
+
+    async Task LoadMBookDetailsAsync()
+    {
+        var result = await mBookService.GetMBooksById(int.Parse(Id));
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo("/mbooks");
+            await messageService.Warning(result.Message);
+            return;
+        }
+
+        data = result.Data;
+    }
+}

@@ -9,20 +9,25 @@
                 <span>Dashboard</span>
             </MenuLink>
         </MenuItem>
-        
+        <MenuItem Key="5">
+            <MenuLink Href="/mbooks">
+                <span>Measurement Books</span>
+            </MenuLink>
+        </MenuItem>
+
         @* For administrator and managers only *@
         @if (currentUser != null && (currentUser.IsInRole("Admin") || currentUser.IsInRole("Manager")))
         {
             <MenuItem Key="2">
                 <MenuLink Href="/workorder">
-                <span>Work Orders</span>
+                    <span>Work Orders</span>
                 </MenuLink>
             </MenuItem>
         }
 
         @* For administrator only *@
         @if (currentUser != null && currentUser.IsInRole("Admin"))
-        { 
+        {
             <MenuItem Key="3">
                 <MenuLink Href="/users">
                     <span>Users</span>

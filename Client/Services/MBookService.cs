@@ -18,10 +18,20 @@ namespace Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IResult<int>> CreateMeasurementBook(MBookRequest request)
+        public async Task<List<MeasurementBookResponse>> GetMBooksByWorkOrderId(int orderId)
         {
-            var response = await _httpClient.PostAsJsonAsync($"/api/MBook", request);
-            return await response.ToResult<int>();
+            return await _httpClient.GetFromJsonAsync<List<MeasurementBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
+        }
+
+        public async Task<PaginatedList<MBookInfoResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search)
+        {
+            return await _httpClient.GetFromJsonAsync<PaginatedList<MBookInfoResponse>>($"/api/MBook/CurrentUser?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
+        }
+
+        public async Task<IResult<MBookDetailResponse>> GetMBooksById(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/MBook/{id}");
+            return await response.ToResult<MBookDetailResponse>();
         }
 
         public async Task<IResult> DeleteMeasurementBook(int id)
@@ -30,9 +40,10 @@ namespace Client.Services
             return await response.ToResult();
         }
 
-        public async Task<List<MeasurementBookResponse>> GetMBooksByWorkOrderId(int orderId)
+        public async Task<IResult<int>> CreateMeasurementBook(MBookRequest request)
         {
-            return await _httpClient.GetFromJsonAsync<List<MeasurementBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
+            var response = await _httpClient.PostAsJsonAsync($"/api/MBook", request);
+            return await response.ToResult<int>();
         }
 
         public async Task<IResult> UpdateMeasurementBook(int id, MBookRequest request)

@@ -45,8 +45,8 @@ namespace Application.CQRS.WorkOrders.Command
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            var wokrOrderitem = workOrder.Items.FirstOrDefault(p => p.Description == request.data.Description);
-            return wokrOrderitem.Id;
+            var workOrderitem = workOrder.Items.FirstOrDefault(p => p.Description == request.data.Description);
+            return workOrderitem.Id;
         }
     }
 

@@ -119,7 +119,7 @@
     {
         if (!form.Validate()) return;
 
-        if (selectedRows.Count() == 0)
+        if (selectedRows == null || selectedRows.Count() == 0)
         {
             await messageService.Warning("Please select atleast one line item");
             return;

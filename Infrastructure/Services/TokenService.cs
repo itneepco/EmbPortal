@@ -30,6 +30,7 @@ namespace Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.DisplayName),
                 new Claim("designation", user.Designation)
             };

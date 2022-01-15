@@ -4,19 +4,21 @@
 @if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
-        <Tabs Animated>
-            <TabPane Tab="Work Order Header" Key="1">
-                <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@OnPublish" />
-            </TabPane>
+        <CascadingValue Value="@data.Status" TValue="string">
+            <Tabs Animated>
+                <TabPane Tab="Work Order Header" Key="1">
+                    <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@OnPublish" />
+                </TabPane>
 
-            <TabPane Tab="Work Order Line Items" Key="2">
-                <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage" />
-            </TabPane>
+                <TabPane Tab="Work Order Line Items" Key="2">
+                    <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage" />
+                </TabPane>
 
-            <TabPane Tab="Measurement Books" Key="3">
-                <MeasurementBooks WorkOrderStatus="@data.Status" />
-            </TabPane>
-        </Tabs>
+                <TabPane Tab="Measurement Books" Key="3">
+                    <MeasurementBooks/>
+                </TabPane>
+            </Tabs>
+        </CascadingValue>
     </CascadingValue>
 }
 else

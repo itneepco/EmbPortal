@@ -1,26 +1,23 @@
-﻿@page "/uoms"
+﻿@page "/users"
 @attribute [Authorize(Roles = "Admin")]
-@inject IUomService uomService
-@inject MessageService messageService
 
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Uom</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add User</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit Uom</Button>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit User</Button>
                 </SpaceItem>
                 <SpaceItem>
-                    <Popconfirm Title="Sure to Delete Uom?"
-                                Placement="@Placement.Bottom"
-                                OnConfirm="() => DeleteUom(selectedRows.First().Id)"
+                    <Popconfirm Title="Sure to Reset Password?"
+                                OnConfirm="() => ResetPassword(selectedRows.First().Id)"
                                 OkText="Yes"
                                 CancelText="No">
-                        <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Delete</Button>
+                        <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Reset Password</Button>
                     </Popconfirm>
                 </SpaceItem>
             }
@@ -34,35 +31,36 @@
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
-                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadUomsAsync" />
+                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadUsersAsync" />
                 </Tooltip>
             </AntDesign.Col>
         </Row>
     </AntDesign.Col>
 </Row>
 
-<AddEditUomDrawer CurrentUom="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadUomsAsync" />
+<AddEditUserDrawer CurrentUser="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadUsersAsync" />
 
-<Table TItem="UomResponse"
-       DataSource="@uoms"
+<Table TItem="UserResponse"
+       DataSource="@users"
        Loading="loading"
-       OnChange="@LoadUomsAsync"
+       OnChange="@LoadUsersAsync"
        Total="total"
        @bind-PageIndex="pageIndex"
        @bind-PageSize="pageSize"
        @bind-SelectedRows="selectedRows">
 
-    <Selection Key="@context.Id.ToString()" Type="radio" />
-    <Column @bind-Field="@context.Name" />
-    <Column @bind-Field="@context.Description" />
-    <Column @bind-Field="@context.Dimension" />
+    <Selection Key="@context.EmployeeCode" Type="radio" />
+    <Column @bind-Field="@context.DisplayName" />
+    <Column @bind-Field="@context.EmployeeCode" />
+    <Column @bind-Field="@context.Designation" />
+    <Column @bind-Field="@context.Email" />
 </Table>
 
 <p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
 
 @code{
-    List<UomResponse> uoms = new();
-    IEnumerable<UomResponse> selectedRows;
+    List<UserResponse> users = new();
+    IEnumerable<UserResponse> selectedRows;
 
     int pageIndex = 1;
     int pageSize = 10;
@@ -73,30 +71,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadUomsAsync();
+        await LoadUsersAsync();
     }
 
-    async Task LoadUomsAsync()
+    async Task LoadUsersAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await uomService.GetUomsPagination(pageIndex, pageSize, search);
-        uoms = response.Items;
+        var response = await userService.GetUsersPagination(pageIndex, pageSize, search);
+        users = response.Items;
         total = response.TotalCount;
         loading = false;
     }
 
-    async Task DeleteUom(int id)
+    async Task ResetPassword(string userId)
     {
         loading = true;
-        var result = await uomService.DeleteUom(id);
+        var result = await userService.ResetPassword(userId);
         loading = false;
-        selectedRows = null;
+        StateHasChanged();
 
         if (result.Succeeded)
         {
-            uoms = uoms.Where(item => item.Id != id).ToList();
-            StateHasChanged();
             await messageService.Success(result.Message);
         }
         else

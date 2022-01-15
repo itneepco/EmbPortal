@@ -51,7 +51,7 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public void AddUpdateLineItem(string description, int uomId, decimal unitRate, float poQuantity, int id=0)
         {
-            if(Status == WorkOrderStatus.PUBLISHED || Status == WorkOrderStatus.COMPLETED) return;
+            if(Status == WorkOrderStatus.COMPLETED) return;
 
             // for item update
             if (id != 0)

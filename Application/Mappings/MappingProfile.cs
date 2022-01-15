@@ -24,14 +24,12 @@ namespace Application.Mappings
 
             CreateMap<WorkOrder, WorkOrderResponse>()
                 .ForMember(m => m.ProjectName, opt => opt.MapFrom(p => p.Project.Name))
-                .ForMember(m => m.ContractorName, opt => opt.MapFrom(p => p.Contractor.Name))
-                .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
+                .ForMember(m => m.ContractorName, opt => opt.MapFrom(p => p.Contractor.Name));
 
             CreateMap<WorkOrder, WorkOrderDetailResponse>()
                 .ForMember(m => m.ProjectName, opt => opt.MapFrom(p => p.Project.Name))
-                .ForMember(m => m.ContractorName, opt => opt.MapFrom(p => p.Contractor.Name))
-                .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
-
+                .ForMember(m => m.ContractorName, opt => opt.MapFrom(p => p.Contractor.Name));
+                
             CreateMap<WorkOrderItem, WorkOrderItemResponse>()
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension));
@@ -44,6 +42,13 @@ namespace Application.Mappings
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Name))
                 .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
                 .ForMember(m => m.UnitRate, opt => opt.MapFrom(p => p.WorkOrderItem.UnitRate));
+
+            CreateMap<MeasurementBook, MBookInfoResponse>()
+                .ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.WorkOrder.OrderNo))
+                .ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.WorkOrder.OrderDate))
+                .ForMember(m => m.Contractor, opt => opt.MapFrom(p => p.WorkOrder.Contractor.Name));
+
+            CreateMap<MeasurementBook, MBookDetailResponse>();
         }
     }
 }

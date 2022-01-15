@@ -12,11 +12,27 @@ namespace Api.Controllers
     public class MBookController : ApiController
     {
         [HttpGet("WorkOrder/{orderId}")]
-        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBookByOrderId(int orderId)
+        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBooksByOrderId(int orderId)
         {
             var query = new GetMBooksByOrderIdQuery(orderId);
 
             return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("CurrentUser")]
+        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBooksByUserId([FromQuery] PagedRequest request)
+        {
+            var query = new GetMBooksByUserIdPaginationQuery(request);
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(MBookDetailResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MBookDetailResponse>> GetMBookById(int id)
+        {
+            return Ok(await Mediator.Send(new GetMBookByIdQuery(id)));
         }
 
         [HttpPost]

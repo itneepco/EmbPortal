@@ -1,0 +1,72 @@
+﻿@page "/mbooks"
+@attribute [Authorize]
+
+<Row Style="margin-bottom: 0.75rem">
+    <AntDesign.Col>
+        <Button Icon="@IconType.Outline.Read"
+                Disabled="@(selectedRows == null)"
+                OnClick="() => ViewDetail(selectedRows.First().Id)">Details
+        </Button>
+    </AntDesign.Col>
+    <AntDesign.Col Flex="2" />
+    <AntDesign.Col Flex="1">
+        <Row>
+            <AntDesign.Col Flex="1">
+                <Input Placeholder="Search" @bind-Value="@search" />
+            </AntDesign.Col>
+            <AntDesign.Col Style="margin-left: 0.75rem">
+                <Tooltip Title="@IconType.Outline.Search">
+                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadMBooksAsync" />
+                </Tooltip>
+            </AntDesign.Col>
+        </Row>
+    </AntDesign.Col>
+</Row>
+
+<Table TItem="MBookInfoResponse"
+       DataSource="@mBooks"
+       Loading="loading"
+       OnChange="@LoadMBooksAsync"
+       Total="total"
+       @bind-PageIndex="pageIndex"
+       @bind-PageSize="pageSize"
+       @bind-SelectedRows="selectedRows">
+
+    <Selection Key="@context.OrderNo" Type="radio" />
+    <Column @bind-Field="@context.Title" />
+    <Column @bind-Field="@context.Contractor" />
+    <Column @bind-Field="@context.OrderNo" />
+    <Column @bind-Field="@context.OrderDate" />
+    <Column @bind-Field="@context.Status" />
+</Table>
+
+@code {
+    List<MBookInfoResponse> mBooks = new();
+    IEnumerable<MBookInfoResponse> selectedRows;
+
+    int pageIndex = 1;
+    int pageSize = 10;
+    int total = 0;
+    bool loading = false;
+    string search;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMBooksAsync();
+    }
+
+    async Task LoadMBooksAsync()
+    {
+        loading = true;
+        selectedRows = null;
+        var response = await mBookService.GetMBooksByUserIdPagination(pageIndex, pageSize, search);
+        mBooks = response.Items;
+        total = response.TotalCount;
+        loading = false;
+    }
+
+    void ViewDetail(int id)
+    {
+        navManager.NavigateTo($"/mbooks/{id}");
+    }
+}
