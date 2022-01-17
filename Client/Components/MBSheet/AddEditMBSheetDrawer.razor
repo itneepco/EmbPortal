@@ -1,0 +1,77 @@
+﻿<Drawer Closable="true"
+        Width="550"
+        Title="@title"
+        Visible="@Visible"
+        OnClose="@Close">
+
+    <Form Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+        <FormItem Label="Measurement Date">
+            <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
+        </FormItem>
+
+        @foreach (var item in MBItems)
+        {
+    <div>
+        <span>@item.Description</span>
+        <span>@item.Uom</span>
+    </div>
+        }
+
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1"></AntDesign.Col>
+            <AntDesign.Col>
+                <Button Type="@ButtonType.Default" OnClick="Close">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+@code {
+    [Parameter]
+    public List<MBookItemResponse> MBItems { get; set; }
+
+    //[Parameter]
+    //public UomResponse CurrentUom { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    MBSheetRequest model = new();
+    bool loading = false;
+
+    string title = "Add MB Sheet";
+
+    async Task OnSubmit()
+    {
+        //loading = true;
+        //dynamic result;
+        //if (CurrentUom == null)
+        //{
+        //    result = // TODO
+        //}
+        //else
+        //{
+        //    result = // TODO
+        //}
+        //loading = false;
+
+        //if (result.Succeeded)
+        //{
+        //    Close();
+        //    await messageService.Success(result.Message);
+        //}
+        //else
+        //{
+        //    await messageService.Error(result.Message);
+        //}
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+}

@@ -5,13 +5,14 @@ using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.CQRS.MBSheets.Command
 {
-    public record CreateMBSheetCommand(CreateMBSheetRequest data) : IRequest<int>
+    public record CreateMBSheetCommand(MBSheetRequest data) : IRequest<int>
     {
     }
 
@@ -26,15 +27,6 @@ namespace Application.CQRS.MBSheets.Command
 
         public async Task<int> Handle(CreateMBSheetCommand request, CancellationToken cancellationToken)
         {
-            var mbSheet = new MBSheet
-            (
-               measurementBookId: request.data.MeasurementBookId,
-               measurementOfficer: request.data.MeasurementOfficer,
-               measurementDate: request.data.MeasurementDate,
-               validationOfficer: request.data.ValidationOfficer,
-               acceptingOfficer: request.data.AcceptingOfficer
-            );
-
             MeasurementBook mBook = await _context.MeasurementBooks
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
@@ -47,6 +39,15 @@ namespace Application.CQRS.MBSheets.Command
             {
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.data.MeasurementBookId}");
             }
+
+            var mbSheet = new MBSheet
+            (
+               measurementBookId: request.data.MeasurementBookId,
+               measurementOfficer: mBook.MeasurementOfficer,
+               measurementDate: (DateTime)request.data.MeasurementDate,
+               validationOfficer: mBook.ValidatingOfficer,
+               acceptingOfficer: mBook.WorkOrder.EngineerInCharge
+            );
 
             foreach (var item in request.data.Items)
             {

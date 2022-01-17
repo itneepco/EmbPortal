@@ -33,12 +33,13 @@
         </TabPane>
 
         <TabPane Tab="Measurement Book Sheet" Key="2">
-            <Button Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
+            <Button OnClick="() => OpenSideDrawer(true)" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
                 Add MB Sheet
             </Button>
             <div>
                 Measurement Book Sheet
             </div>
+            <AddEditMBSheetDrawer MBItems="@data.Items" Visible="@drawerVisible" OnClose="@CloseSideBar" />
         </TabPane>
     </Tabs>
 }
@@ -54,6 +55,8 @@ else
     public string Id { get; set; }
 
     public MBookDetailResponse data { get; set; }
+
+    bool drawerVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,5 +74,18 @@ else
         }
 
         data = result.Data;
+    }
+
+    void OpenSideDrawer(bool isAdd = false)
+    {
+        if (isAdd)
+        {
+        }
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
     }
 }
