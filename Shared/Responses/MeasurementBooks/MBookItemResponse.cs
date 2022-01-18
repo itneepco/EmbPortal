@@ -8,6 +8,7 @@
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
         public float PoQuantity { get; set; }
+        public int Dimension { get; set; }
 
         public decimal TotalAmount
         {

@@ -1,5 +1,5 @@
 ﻿<Drawer Closable="true"
-        Width="550"
+        Width="800"
         Title="@title"
         Visible="@Visible"
         OnClose="@Close">
@@ -9,13 +9,7 @@
             <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
         </FormItem>
 
-        @foreach (var item in MBItems)
-        {
-    <div>
-        <span>@item.Description</span>
-        <span>@item.Uom</span>
-    </div>
-        }
+        <MBSheetLineItems Items="@model.Items"></MBSheetLineItems>
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
@@ -27,12 +21,15 @@
     </Form>
 </Drawer>
 
+<style>
+    .save {
+        margin-right: 8px;
+    }
+</style>
+
 @code {
     [Parameter]
     public List<MBookItemResponse> MBItems { get; set; }
-
-    //[Parameter]
-    //public UomResponse CurrentUom { get; set; }
 
     [Parameter]
     public bool Visible { get; set; }
@@ -40,13 +37,44 @@
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
 
-    MBSheetRequest model = new();
-    bool loading = false;
+    MBSheetRequest model = new MBSheetRequest
+    {
+        Items = new List<MBSheetItemRequest>()
+    };
 
+    bool loading = false;
     string title = "Add MB Sheet";
+
+    protected override void OnParametersSet()
+    {
+        if (!Visible) return;
+
+        model.Items = new List<MBSheetItemRequest>();
+
+        foreach (var item in MBItems)
+        {
+            model.Items.Add(new MBSheetItemRequest
+            {
+                MBookItemId = item.Id,
+                Description = item.Description,
+                UnitRate = item.UnitRate,
+                Uom = item.Uom,
+                Dimension = item.Dimension,
+                Value1 = 0,
+                Value2 = 0,
+                Value3 = 0
+            });
+        }
+    }
 
     async Task OnSubmit()
     {
+        if(model.Items.Where(p => p.Total > 0).ToList().Count < 1)
+        {
+            await messageService.Error("Please enter the value for atleast for one line item");
+            return;
+        }
+
         //loading = true;
         //dynamic result;
         //if (CurrentUom == null)

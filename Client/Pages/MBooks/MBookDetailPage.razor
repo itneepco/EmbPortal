@@ -23,12 +23,12 @@
 
             <Divider>Measurement Book Items</Divider>
 
-            <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination>
-                <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%"></Column>
-                <Column TData="string" DataIndex="@nameof(context.Uom)" Width="15%"></Column>
-                <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="13%"></Column>
+            <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
+                <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%"></Column>
+                <Column TData="string" DataIndex="@nameof(context.Uom)" Width="13%"></Column>
+                <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="12%"></Column>
                 <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="12%"></Column>
-                <Column TData="float" DataIndex="@nameof(context.TotalAmount)" Width="15%"></Column>
+                <Column TData="float" DataIndex="@nameof(context.TotalAmount)" Width="13%"></Column>
             </Table>
         </TabPane>
 
