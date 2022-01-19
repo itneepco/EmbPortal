@@ -8,6 +8,7 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<MBSheet> builder)
         {
+            builder.Property(p => p.Title).HasMaxLength(100).IsRequired();
             builder.Property(p => p.MeasurementOfficer).HasMaxLength(6).IsRequired();
             builder.Property(p => p.ValidationOfficer).HasMaxLength(6).IsRequired();
             builder.Property(p => p.AcceptingOfficer).HasMaxLength(6).IsRequired();

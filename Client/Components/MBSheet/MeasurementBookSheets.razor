@@ -1,0 +1,89 @@
+﻿<Button OnClick="() => OpenSideDrawer()" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
+    Add MB Sheet
+</Button>
+
+<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" HidePagination>
+    <RowTemplate>
+        <Column Title="MB Sheet Title" @bind-Field="@context.Title" />
+        <Column Title="Measurement Date" @bind-Field="@context.MeasurementDate" />
+        <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" />
+        <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" />
+        <Column @bind-Field="@context.Status">
+            @if (context.Status == "COMPLETED")
+            {
+                <Tag Color="gold">@context.Status</Tag>
+            }
+            else if (context.Status == "PUBLISHED")
+            {
+                <Tag Color="blue">@context.Status</Tag>
+            }
+            else
+            {
+                <Tag Color="green">@context.Status</Tag>
+            }
+        </Column>
+        <ActionColumn Title="Action" Width="20%">
+            <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+            <Popconfirm Title="Sure to delete?"
+                        OnConfirm="()=> DeleteMBSheet(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+            </Popconfirm>
+        </ActionColumn>
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table DataSource="rowData.Data.Items" HidePagination>
+            <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%" />
+            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="12%" />
+            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="12%" />
+            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.TotalQuantity)" Width="13%" />
+            <Column Title="Total Amount" TData="float" DataIndex="@nameof(context.TotalAmount)" Width="13%" />
+        </Table>
+    </ExpandTemplate>
+</Table>
+
+
+
+<AddEditMBSheetDrawer MBookId="MBookId" MBItems="MBItems" Visible="@drawerVisible" OnClose="@CloseSideBar" />
+
+@code {
+    [Parameter]
+    public int MBookId { get; set; }
+
+    [Parameter]
+    public List<MBookItemResponse> MBItems { get; set; }
+
+    List<MBSheetResponse> mbSheets = new();
+
+    bool drawerVisible = false;
+    bool loading = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadMBSheets();
+    }
+
+    async Task LoadMBSheets()
+    {
+        loading = true;
+        mbSheets = await mbSheetService.GetMBSheetsByMBookId(MBookId);
+        loading = false;
+    }
+
+    void OpenSideDrawer(int itemId=0)
+    {
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
+    }
+
+    void DeleteMBSheet(int id)
+    {
+        
+    }
+}

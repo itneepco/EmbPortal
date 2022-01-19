@@ -28,12 +28,13 @@ namespace Application.CQRS.MBSheets.Command
         public async Task<int> Handle(CreateMBSheetCommand request, CancellationToken cancellationToken)
         {
             MeasurementBook mBook = await _context.MeasurementBooks
+                .Include(p => p.WorkOrder)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                       .ThenInclude(i => i.Uom)
-                 .Where(p => p.Id == request.data.MeasurementBookId)
-                 .AsNoTracking()
-                 .FirstOrDefaultAsync();
+                .Where(p => p.Id == request.data.MeasurementBookId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
 
             if (mBook == null)
             {
@@ -42,6 +43,7 @@ namespace Application.CQRS.MBSheets.Command
 
             var mbSheet = new MBSheet
             (
+               title: request.data.Title,
                measurementBookId: request.data.MeasurementBookId,
                measurementOfficer: mBook.MeasurementOfficer,
                measurementDate: (DateTime)request.data.MeasurementDate,
@@ -51,6 +53,8 @@ namespace Application.CQRS.MBSheets.Command
 
             foreach (var item in request.data.Items)
             {
+                if (item.Total < 1) continue;
+
                 MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.Id == item.MBookItemId);
                 
                 if (mBookItem == null)
@@ -63,6 +67,7 @@ namespace Application.CQRS.MBSheets.Command
                     description: mBookItem.WorkOrderItem.Description,
                     uom: mBookItem.WorkOrderItem.Uom.Description,
                     dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
+                    rate: mBookItem.WorkOrderItem.UnitRate,
                     mBBookItemId: request.data.MeasurementBookId,
                     value1: item.Value1,
                     value2: item.Value2,

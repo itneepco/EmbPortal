@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
@@ -34,8 +35,7 @@ namespace Application.Mappings
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension));
 
-            CreateMap<MeasurementBook, MeasurementBookResponse>()
-                .ForMember(m => m.Status, opt => opt.MapFrom(p => p.Status.ToString()));
+            CreateMap<MeasurementBook, MeasurementBookResponse>();
 
             CreateMap<MBookItem, MBookItemResponse>()
                 .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description))
@@ -50,6 +50,10 @@ namespace Application.Mappings
                 .ForMember(m => m.Contractor, opt => opt.MapFrom(p => p.WorkOrder.Contractor.Name));
 
             CreateMap<MeasurementBook, MBookDetailResponse>();
+
+            CreateMap<MBSheet, MBSheetResponse>();
+
+            CreateMap<MBSheetItem, MBSheetItemResponse>();
         }
     }
 }

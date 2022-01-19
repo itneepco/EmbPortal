@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211223104034_InitialCreate")]
+    [Migration("20220119123222_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,11 @@ namespace Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("ValidationDate")
                         .HasColumnType("INTEGER");
 
@@ -175,7 +180,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MeasurementBookId");
 
-                    b.ToTable("MBSheet");
+                    b.ToTable("MBSheets");
                 });
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
@@ -209,6 +214,9 @@ namespace Persistence.Migrations
 
                     b.Property<int>("MBookItemId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("UnitRate")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("Uom")
                         .HasColumnType("TEXT");

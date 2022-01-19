@@ -307,11 +307,12 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MBSheet",
+                name: "MBSheets",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     MeasurementDate = table.Column<long>(type: "INTEGER", nullable: false),
                     ValidationOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
@@ -327,9 +328,9 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MBSheet", x => x.Id);
+                    table.PrimaryKey("PK_MBSheets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MBSheet_MeasurementBooks_MeasurementBookId",
+                        name: "FK_MBSheets_MeasurementBooks_MeasurementBookId",
                         column: x => x.MeasurementBookId,
                         principalTable: "MeasurementBooks",
                         principalColumn: "Id",
@@ -377,6 +378,7 @@ namespace Persistence.Migrations
                     Value3 = table.Column<float>(type: "REAL", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Uom = table.Column<string>(type: "TEXT", nullable: true),
+                    UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     Dimension = table.Column<int>(type: "INTEGER", nullable: false),
                     MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     MBSheetId = table.Column<int>(type: "INTEGER", nullable: true),
@@ -395,9 +397,9 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MBSheetItem_MBSheet_MBSheetId",
+                        name: "FK_MBSheetItem_MBSheets_MBSheetId",
                         column: x => x.MBSheetId,
-                        principalTable: "MBSheet",
+                        principalTable: "MBSheets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -451,11 +453,6 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MBSheet_MeasurementBookId",
-                table: "MBSheet",
-                column: "MeasurementBookId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MBSheetItem_MBookItemId",
                 table: "MBSheetItem",
                 column: "MBookItemId");
@@ -464,6 +461,11 @@ namespace Persistence.Migrations
                 name: "IX_MBSheetItem_MBSheetId",
                 table: "MBSheetItem",
                 column: "MBSheetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MBSheets_MeasurementBookId",
+                table: "MBSheets",
+                column: "MeasurementBookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -521,7 +523,7 @@ namespace Persistence.Migrations
                 name: "MBookItem");
 
             migrationBuilder.DropTable(
-                name: "MBSheet");
+                name: "MBSheets");
 
             migrationBuilder.DropTable(
                 name: "WorkOrderItem");

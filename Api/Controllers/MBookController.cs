@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Api.Controllers
 {
     public class MBookController : ApiController
     {
         [HttpGet("WorkOrder/{orderId}")]
-        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBooksByOrderId(int orderId)
+        public async Task<ActionResult<List<MeasurementBookResponse>>> GetMBooksByOrderId(int orderId)
         {
             var query = new GetMBooksByOrderIdQuery(orderId);
 

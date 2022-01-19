@@ -5,6 +5,10 @@
         OnClose="@Close">
 
     <Form Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+        <FormItem Label="MB Sheet Title">
+            <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" AutoFocus />
+        </FormItem>
+
         <FormItem Label="Measurement Date">
             <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
         </FormItem>
@@ -29,6 +33,9 @@
 
 @code {
     [Parameter]
+    public int MBookId { get; set; }
+
+    [Parameter]
     public List<MBookItemResponse> MBItems { get; set; }
 
     [Parameter]
@@ -49,6 +56,7 @@
     {
         if (!Visible) return;
 
+        model.MeasurementBookId = MBookId;
         model.Items = new List<MBSheetItemRequest>();
 
         foreach (var item in MBItems)
@@ -75,8 +83,8 @@
             return;
         }
 
-        //loading = true;
-        //dynamic result;
+        loading = true;
+        dynamic result;
         //if (CurrentUom == null)
         //{
         //    result = // TODO
@@ -85,17 +93,18 @@
         //{
         //    result = // TODO
         //}
-        //loading = false;
+        result = await mbSheetService.CreateMBSheet(model);
+        loading = false;
 
-        //if (result.Succeeded)
-        //{
-        //    Close();
-        //    await messageService.Success(result.Message);
-        //}
-        //else
-        //{
-        //    await messageService.Error(result.Message);
-        //}
+        if (result.Succeeded)
+        {
+            Close();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
     void Close()

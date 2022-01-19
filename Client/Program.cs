@@ -32,6 +32,7 @@ namespace Client
                 .AddScoped<IWorkOrderService, WorkOrderService>()
                 .AddScoped<IUomService, UomService>()
                 .AddScoped<IMBookService, MBookService>()
+                .AddScoped<IMBSheetService, MBSheetService>()
                 .AddScoped<IUserService, UserService>();
 
             builder.Services.AddHttpClientInterceptor();
