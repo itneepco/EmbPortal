@@ -10,5 +10,6 @@ namespace Client.Services.Interfaces
     {
         Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId);
         Task<IResult<int>> CreateMBSheet(MBSheetRequest request);
+        Task<IResult> DeleteMBSheet(int id);
     }
 }

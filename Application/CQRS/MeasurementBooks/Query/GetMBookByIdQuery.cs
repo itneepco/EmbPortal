@@ -39,7 +39,6 @@ namespace Application.CQRS.MeasurementBooks.Query
             var query = _context.MeasurementBooks.AsQueryable();
 
             Criteria = (m =>
-                m.Id == request.Id ||
                 m.MeasurementOfficer == _userService.EmployeeCode ||
                 m.ValidatingOfficer == _userService.EmployeeCode ||
                 m.WorkOrder.EngineerInCharge == _userService.EmployeeCode
@@ -49,7 +48,7 @@ namespace Application.CQRS.MeasurementBooks.Query
 
             var mbook = await query.ProjectTo<MBookDetailResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.Id == request.Id);
 
             if (mbook == null)
             {

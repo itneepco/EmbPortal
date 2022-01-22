@@ -29,5 +29,17 @@ namespace Api.Controllers
 
             return Ok(await Mediator.Send(command));
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteMBSheet(int id)
+        {
+            var command = new DeleteMBSheetCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }

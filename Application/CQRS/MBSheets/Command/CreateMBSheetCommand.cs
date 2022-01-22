@@ -68,7 +68,7 @@ namespace Application.CQRS.MBSheets.Command
                     uom: mBookItem.WorkOrderItem.Uom.Description,
                     dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
                     rate: mBookItem.WorkOrderItem.UnitRate,
-                    mBBookItemId: request.data.MeasurementBookId,
+                    mBookItemId: mBookItem.Id,
                     value1: item.Value1,
                     value2: item.Value2,
                     value3: item.Value3

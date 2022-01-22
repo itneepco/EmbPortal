@@ -6,9 +6,7 @@
 
 <Table Loading="@loading" TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
     <RowTemplate>
-        <Column @bind-Field="@context.Title" Width="40%">
-            <a>@context.Title</a>
-        </Column>
+        <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />
         <Column Title="Validating Officer" @bind-Field="@context.ValidatingOfficer" Width="15%" />
         <Column @bind-Field="@context.Status" Width="10%">
@@ -26,13 +24,22 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
-            <Popconfirm Title="Sure to delete?"
-                        OnConfirm="()=> DeleteMBook(context.Id)"
-                        OkText="Yes"
-                        CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
-            </Popconfirm>
+            @if (context.Status != "PUBLISHED")
+            {
+                <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> DeleteMBook(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Danger>Delete</Button>
+                </Popconfirm>
+                <Popconfirm Title="Sure to publish?"
+                            OnConfirm="()=> PublishMBook(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
+                </Popconfirm>
+            }
         </ActionColumn>
     </RowTemplate>
 
@@ -107,5 +114,23 @@
     async Task OnUpdateItem()
     {
         await LoadMeasurementBooks();
+    }
+
+    async Task PublishMBook(int id)
+    {
+        loading = true;
+        var result = await mBookService.PublishMeasurementBook(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadMeasurementBooks();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }

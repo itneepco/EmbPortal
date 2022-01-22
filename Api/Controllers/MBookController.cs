@@ -57,6 +57,17 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}/Publish")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> PublishMeasurementBook(int id)
+        {
+            var command = new PublishMBookCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

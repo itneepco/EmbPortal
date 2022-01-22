@@ -39,6 +39,9 @@
     public List<MBookItemResponse> MBItems { get; set; }
 
     [Parameter]
+    public MBSheetResponse CurrentMBSheet { get; set; }
+
+    [Parameter]
     public bool Visible { get; set; }
 
     [Parameter]
@@ -56,23 +59,37 @@
     {
         if (!Visible) return;
 
+        model = new();
         model.MeasurementBookId = MBookId;
         model.Items = new List<MBSheetItemRequest>();
 
+
+        if (CurrentMBSheet != null)
+        {
+            model.Title = CurrentMBSheet.Title;
+            model.MeasurementDate = CurrentMBSheet.MeasurementDate;
+        }
+
         foreach (var item in MBItems)
         {
+            var currMBSheetItem = CurrentMBSheet != null ?
+                CurrentMBSheet.Items.Find(p => p.MBookItemId == item.Id) : null;
+
             model.Items.Add(new MBSheetItemRequest
             {
+                Id = currMBSheetItem != null ? currMBSheetItem.Id : 0,
                 MBookItemId = item.Id,
                 Description = item.Description,
                 UnitRate = item.UnitRate,
                 Uom = item.Uom,
                 Dimension = item.Dimension,
-                Value1 = 0,
-                Value2 = 0,
-                Value3 = 0
+                Value1 = currMBSheetItem != null ? currMBSheetItem.Value1 : 0,
+                Value2 = currMBSheetItem != null ? currMBSheetItem.Value2 : 0,
+                Value3 = currMBSheetItem != null ? currMBSheetItem.Value3 : 0
             });
         }
+
+
     }
 
     async Task OnSubmit()
@@ -99,6 +116,7 @@
         if (result.Succeeded)
         {
             Close();
+
             await messageService.Success(result.Message);
         }
         else

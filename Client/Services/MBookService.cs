@@ -51,5 +51,11 @@ namespace Client.Services
             var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}", request);
             return await response.ToResult();
         }
+
+        public async Task<IResult> PublishMeasurementBook(int id)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}/Publish", "");
+            return await response.ToResult();
+        }
     }
 }

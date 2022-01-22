@@ -2,6 +2,7 @@
 {
     public class MBSheetItemRequest
     {
+        public int Id { get; set; }
         public string Description { get; set; }
         public decimal UnitRate { get; set; }
         public string Uom { get; set; }
@@ -15,7 +16,18 @@
         {
             get
             {
-                return Value1 + Value2 + Value3;
+                if(Dimension == 3)
+                {
+                    return Value1 * Value2 * Value3;
+                }
+                else if (Dimension == 2)
+                {
+                    return Value1 * Value2;
+                }
+                else
+                {
+                    return Value1;
+                }
             }
         }
     }

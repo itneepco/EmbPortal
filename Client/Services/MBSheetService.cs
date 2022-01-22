@@ -3,9 +3,7 @@ using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -25,6 +23,12 @@ namespace Client.Services
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/MBSheet", request);
             return await response.ToResult<int>();
+        }
+
+        public async Task<IResult> DeleteMBSheet(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{id}");
+            return await response.ToResult();
         }
 
         public async Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId)

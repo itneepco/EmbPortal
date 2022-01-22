@@ -59,6 +59,11 @@ namespace Domain.Entities.MeasurementBookAggregate
             }
         }
 
+        public void MarkPublished()
+        {
+            Status = MBookStatus.PUBLISHED;
+        }
+
         public void SetTitle(string title)
         {
             Title = title;

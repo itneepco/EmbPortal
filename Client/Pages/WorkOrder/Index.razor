@@ -55,8 +55,9 @@
 
     <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
     <Column @bind-Field="@context.OrderNo" Width="15%" />
+    <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="10%" />
     <Column @bind-Field="@context.ContractorName" Width="20%" />
-    <Column @bind-Field="@context.Title" Width="50%" />
+    <Column @bind-Field="@context.Title" Width="40%" />
     <Column @bind-Field="@context.Status" Width="10%">
         @if (context.Status == "COMPLETED")
         {

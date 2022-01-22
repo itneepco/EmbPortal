@@ -4,6 +4,7 @@
 
 <Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" HidePagination>
     <RowTemplate>
+        <Column Title="Id" @bind-Field="@context.Id" />
         <Column Title="MB Sheet Title" @bind-Field="@context.Title" />
         <Column Title="Measurement Date" @bind-Field="@context.MeasurementDate" />
         <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" />
@@ -46,7 +47,7 @@
 
 
 
-<AddEditMBSheetDrawer MBookId="MBookId" MBItems="MBItems" Visible="@drawerVisible" OnClose="@CloseSideBar" />
+<AddEditMBSheetDrawer CurrentMBSheet="currentMBSheet" MBookId="MBookId" MBItems="MBItems" Visible="@drawerVisible" OnClose="@CloseSideBar" />
 
 @code {
     [Parameter]
@@ -56,11 +57,11 @@
     public List<MBookItemResponse> MBItems { get; set; }
 
     List<MBSheetResponse> mbSheets = new();
-
+    MBSheetResponse currentMBSheet;
     bool drawerVisible = false;
     bool loading = false;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         await LoadMBSheets();
     }
@@ -74,6 +75,7 @@
 
     void OpenSideDrawer(int itemId=0)
     {
+        currentMBSheet = mbSheets.FirstOrDefault(p => p.Id == itemId);
         drawerVisible = true;
     }
 
@@ -82,8 +84,21 @@
         drawerVisible = false;
     }
 
-    void DeleteMBSheet(int id)
+    async Task DeleteMBSheet(int id)
     {
-        
+        loading = true;
+        var result = await mbSheetService.DeleteMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            mbSheets = mbSheets.Where(item => item.Id != id).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }
