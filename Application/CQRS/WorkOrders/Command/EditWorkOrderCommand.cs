@@ -5,7 +5,7 @@ using EmbPortal.Shared.Requests;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 
 namespace Application.CQRS.WorkOrders.Command
 {
@@ -31,9 +31,9 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.id);
             }
 
-            if (workOrder.Status == WorkOrderStatus.PUBLISHED || workOrder.Status == WorkOrderStatus.COMPLETED)
+            if (workOrder.Status != WorkOrderStatus.CREATED)
             {
-                throw new BadRequestException("Published work order cannot be updated");
+                throw new BadRequestException("Published/Completed Work Order cannot be updated");
             }
 
             workOrder.SetOrderNo(request.data.OrderNo);

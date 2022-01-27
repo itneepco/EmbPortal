@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.MBSheetAggregate
 {
@@ -13,6 +14,10 @@ namespace Domain.Entities.MBSheetAggregate
         public string Uom { get; private set; }
         public decimal UnitRate { get; private set; }
         public int Dimension { get; private set; }
+
+        public int MBSheetId { get; set; }
+        public MBSheet MBSheet { get; set; }
+
         public int MBookItemId { get; private set; }
         public MBookItem MBookItem { get; private set; }
 

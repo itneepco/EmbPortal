@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Seed
 {
-    public class MBookItemSeed
+    public class MBookSeed
     {
         public static async Task SeedAsync(AppDbContext context)
         {
@@ -15,8 +15,8 @@ namespace Persistence.Seed
             (
                 workOrderId: 1,
                 title: "Hello World",
-                measurementOfficer: "001234",
-                validatingOfficer: "002345"
+                measurementOfficer: "001236",
+                validatingOfficer: "001235"
             );
 
             mBook.AddUpdateLineItem(1);

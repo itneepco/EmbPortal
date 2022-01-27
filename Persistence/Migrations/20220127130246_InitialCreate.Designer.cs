@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220119123222_InitialCreate")]
+    [Migration("20220127130246_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,7 +209,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("MBSheetId")
+                    b.Property<int>("MBSheetId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MBookItemId")
@@ -645,10 +645,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
                 {
-                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", null)
+                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", "MBSheet")
                         .WithMany("Items")
                         .HasForeignKey("MBSheetId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MBookItem", "MBookItem")
                         .WithMany("MBSheetItems")
@@ -657,6 +658,8 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("MBookItem");
+
+                    b.Navigation("MBSheet");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>

@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 
 namespace Domain.Entities
 {

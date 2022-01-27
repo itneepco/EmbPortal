@@ -1,9 +1,8 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

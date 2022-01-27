@@ -4,17 +4,17 @@
         Disabled="@(WorkOrderStatus != "PUBLISHED")"
         Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
-<Table Loading="@loading" TItem="MeasurementBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
+<Table Loading="@loading" TItem="MBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
     <RowTemplate>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />
         <Column Title="Validating Officer" @bind-Field="@context.ValidatingOfficer" Width="15%" />
         <Column @bind-Field="@context.Status" Width="10%">
-            @if (context.Status == "COMPLETED")
+            @if (context.Status == MBookStatus.COMPLETED.ToString())
             {
                 <Tag Color="gold">@context.Status</Tag>
             }
-            else if (context.Status == "PUBLISHED")
+            else if (context.Status == MBookStatus.PUBLISHED.ToString())
             {
                 <Tag Color="blue">@context.Status</Tag>
             }
@@ -24,7 +24,7 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            @if (context.Status != "PUBLISHED")
+            @if (context.Status == MBookStatus.CREATED.ToString())
             {
                 <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
                 <Popconfirm Title="Sure to delete?"
@@ -63,9 +63,9 @@
     [CascadingParameter]
     public string WorkOrderStatus { get; set; }
 
-    MeasurementBookResponse currentMBook;
+    MBookResponse currentMBook;
 
-    List<MeasurementBookResponse> mbooks = new();
+    List<MBookResponse> mbooks = new();
 
     bool drawerVisible;
     bool loading;

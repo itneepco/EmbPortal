@@ -35,7 +35,7 @@ namespace Application.Mappings
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension));
 
-            CreateMap<MeasurementBook, MeasurementBookResponse>();
+            CreateMap<MeasurementBook, MBookResponse>();
 
             CreateMap<MBookItem, MBookItemResponse>()
                 .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.Description))
@@ -54,6 +54,9 @@ namespace Application.Mappings
             CreateMap<MBSheet, MBSheetResponse>();
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
+
+            CreateMap<MBSheetItem, MBSheetItemInfoResponse>()
+                .ForMember(m => m.Status, opt => opt.MapFrom(p => p.MBSheet.Status));
         }
     }
 }

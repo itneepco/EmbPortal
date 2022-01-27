@@ -35,5 +35,16 @@ namespace Client.Services
         {
             return await _httpClient.GetFromJsonAsync<List<MBSheetResponse>>($"/api/MBSheet/MBook/{mBookId}");
         }
+        public async Task<IResult> AcceptMBSheet(int id)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}/Accept", "");
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> ValidateMBSheet(int id)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}/Validate", "");
+            return await response.ToResult();
+        }
     }
 }

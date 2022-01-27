@@ -11,11 +11,11 @@ using Application.Mappings;
 
 namespace Application.CQRS.MeasurementBooks.Query
 {
-    public record GetMBooksByOrderIdQuery(int workOrderId) : IRequest<List<MeasurementBookResponse>>
+    public record GetMBooksByOrderIdQuery(int workOrderId) : IRequest<List<MBookResponse>>
     {
     }
 
-    public class GetMBooksByOrderIdQueryHandler : IRequestHandler<GetMBooksByOrderIdQuery, List<MeasurementBookResponse>>
+    public class GetMBooksByOrderIdQueryHandler : IRequestHandler<GetMBooksByOrderIdQuery, List<MBookResponse>>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -26,14 +26,14 @@ namespace Application.CQRS.MeasurementBooks.Query
             _context = context;
         }
 
-        public async Task<List<MeasurementBookResponse>> Handle(GetMBooksByOrderIdQuery request, CancellationToken cancellationToken)
+        public async Task<List<MBookResponse>> Handle(GetMBooksByOrderIdQuery request, CancellationToken cancellationToken)
         {
             return await _context.MeasurementBooks
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                 .Where(p => p.WorkOrderId == request.workOrderId)
                 .AsNoTracking()
-                .ProjectToListAsync<MeasurementBookResponse>(_mapper.ConfigurationProvider);
+                .ProjectToListAsync<MBookResponse>(_mapper.ConfigurationProvider);
         }
     }
 }

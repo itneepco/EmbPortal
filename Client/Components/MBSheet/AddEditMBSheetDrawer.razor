@@ -88,8 +88,6 @@
                 Value3 = currMBSheetItem != null ? currMBSheetItem.Value3 : 0
             });
         }
-
-
     }
 
     async Task OnSubmit()
@@ -102,21 +100,19 @@
 
         loading = true;
         dynamic result;
-        //if (CurrentUom == null)
-        //{
-        //    result = // TODO
-        //}
-        //else
-        //{
-        //    result = // TODO
-        //}
-        result = await mbSheetService.CreateMBSheet(model);
+        if (CurrentMBSheet == null)
+        {
+            result = await mbSheetService.CreateMBSheet(model);
+        }
+        else
+        {
+            return; // TODO EDIT 
+        }
         loading = false;
 
         if (result.Succeeded)
         {
             Close();
-
             await messageService.Success(result.Message);
         }
         else

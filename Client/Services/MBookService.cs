@@ -18,9 +18,9 @@ namespace Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<MeasurementBookResponse>> GetMBooksByWorkOrderId(int orderId)
+        public async Task<List<MBookResponse>> GetMBooksByWorkOrderId(int orderId)
         {
-            return await _httpClient.GetFromJsonAsync<List<MeasurementBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
+            return await _httpClient.GetFromJsonAsync<List<MBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
         }
 
         public async Task<PaginatedList<MBookInfoResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search)

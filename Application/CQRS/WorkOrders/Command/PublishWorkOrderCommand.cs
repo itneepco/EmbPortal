@@ -1,6 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;

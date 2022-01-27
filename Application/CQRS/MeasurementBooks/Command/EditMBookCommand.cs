@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 
 namespace Application.CQRS.MeasurementBooks.Command
 {

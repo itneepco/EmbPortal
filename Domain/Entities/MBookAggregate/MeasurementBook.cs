@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
 using Domain.Entities.WorkOrderAggregate;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 
 namespace Domain.Entities.MeasurementBookAggregate
 {

@@ -3,39 +3,40 @@
 
 @if (data != null)
 {
-    <Tabs Animated>
-        <TabPane Tab="Measurement Book Detail" Key="1">
-            <Descriptions Bordered Size="@DescriptionsSize.Small">
-                <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
-                <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
-                <DescriptionsItem Title="Validating Officer">@data.ValidatingOfficer</DescriptionsItem>
+<Tabs Animated>
+    <TabPane Tab="Measurement Book Detail" Key="1">
+        <Descriptions Bordered Size="@DescriptionsSize.Small">
+            <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
+            <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
+            <DescriptionsItem Title="Validating Officer">@data.ValidatingOfficer</DescriptionsItem>
 
-                <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
-                <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate</DescriptionsItem>
-                <DescriptionsItem Title="Contractor">@data.WorkOrder.ContractorName</DescriptionsItem>
+            <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
+            <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate</DescriptionsItem>
+            <DescriptionsItem Title="Contractor">@data.WorkOrder.ContractorName</DescriptionsItem>
 
-                <DescriptionsItem Title="Agreement No">@data.WorkOrder.AgreementNo</DescriptionsItem>
-                <DescriptionsItem Title="Agreeement Date">@data.WorkOrder.AgreementDate</DescriptionsItem>
-                <DescriptionsItem Title="Project">@data.WorkOrder.ProjectName</DescriptionsItem>
+            <DescriptionsItem Title="Agreement No">@data.WorkOrder.AgreementNo</DescriptionsItem>
+            <DescriptionsItem Title="Agreeement Date">@data.WorkOrder.AgreementDate</DescriptionsItem>
+            <DescriptionsItem Title="Project">@data.WorkOrder.ProjectName</DescriptionsItem>
 
-                <DescriptionsItem Title="Work Description">@data.WorkOrder.Title</DescriptionsItem>
-            </Descriptions>
+            <DescriptionsItem Title="Work Description">@data.WorkOrder.Title</DescriptionsItem>
+        </Descriptions>
 
-            <Divider>Measurement Book Items</Divider>
+        <Divider>Measurement Book Items</Divider>
 
-            <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
-                <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%"></Column>
-                <Column TData="string" DataIndex="@nameof(context.Uom)" Width="13%"></Column>
-                <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="12%"></Column>
-                <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="12%"></Column>
-                <Column TData="float" DataIndex="@nameof(context.TotalAmount)" Width="13%"></Column>
-            </Table>
-        </TabPane>
-
-        <TabPane Tab="Measurement Book Sheet" Key="2">
-            <MeasurementBookSheets MBookId="int.Parse(Id)" MBItems="@data.Items" />
-        </TabPane>
-    </Tabs>
+        <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
+            <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%"></Column>
+            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%"></Column>
+            <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
+            <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%"></Column>
+            <Column TData="float" DataIndex="@nameof(context.TotalAmount)" Width="10%"></Column>
+            <Column TData="float" DataIndex="@nameof(context.ApprovedQuantity)" Width="10%"></Column>
+        </Table>
+    </TabPane>
+    
+    <TabPane Tab="Measurement Book Sheet" Key="2">
+        <MeasurementBookSheets MBookId="int.Parse(Id)" MBItems="@data.Items" />
+    </TabPane>
+</Tabs>
 }
 else
 {

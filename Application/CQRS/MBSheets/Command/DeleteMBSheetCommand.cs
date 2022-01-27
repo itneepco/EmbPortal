@@ -1,6 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -33,7 +33,7 @@ namespace Application.CQRS.MBSheets.Command
 
             if (mbSheet.Status != MBSheetStatus.CREATED)
             {
-                throw new BadRequestException("Published measurement book cannot be deleted");
+                throw new BadRequestException("Validated or Accepted MB Sheet cannot be deleted");
             }
 
             _context.MBSheets.Remove(mbSheet);

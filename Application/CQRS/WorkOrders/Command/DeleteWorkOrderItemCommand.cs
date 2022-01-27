@@ -1,6 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -31,7 +31,7 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
 
-            if (workOrder.Status == WorkOrderStatus.PUBLISHED || workOrder.Status == WorkOrderStatus.COMPLETED)
+            if (workOrder.Status != WorkOrderStatus.CREATED)
             {
                 throw new BadRequestException("Published work order cannot be deleted");
             }

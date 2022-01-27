@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums
+﻿namespace EmbPortal.Shared.Enums
 {
     public enum MBookStatus
     {

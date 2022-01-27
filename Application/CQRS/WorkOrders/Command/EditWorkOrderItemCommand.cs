@@ -1,13 +1,11 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Entities.WorkOrderAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using EmbPortal.Shared.Requests;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 
 namespace Application.CQRS.WorkOrders.Command
 {
@@ -35,9 +33,9 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
 
-            if (workOrder.Status == WorkOrderStatus.PUBLISHED || workOrder.Status == WorkOrderStatus.COMPLETED)
+            if (workOrder.Status != WorkOrderStatus.CREATED)
             {
-                throw new BadRequestException("Published work order cannot be updated");
+                throw new BadRequestException("Published/Completed Work Order cannot be updated");
             }
             
 

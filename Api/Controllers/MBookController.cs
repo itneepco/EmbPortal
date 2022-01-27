@@ -7,13 +7,15 @@ using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
+    [Authorize]
     public class MBookController : ApiController
     {
         [HttpGet("WorkOrder/{orderId}")]
-        public async Task<ActionResult<List<MeasurementBookResponse>>> GetMBooksByOrderId(int orderId)
+        public async Task<ActionResult<List<MBookResponse>>> GetMBooksByOrderId(int orderId)
         {
             var query = new GetMBooksByOrderIdQuery(orderId);
 
@@ -21,7 +23,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("CurrentUser")]
-        public async Task<ActionResult<PaginatedList<MeasurementBookResponse>>> GetMBooksByUserId([FromQuery] PagedRequest request)
+        public async Task<ActionResult<PaginatedList<MBookResponse>>> GetMBooksByUserId([FromQuery] PagedRequest request)
         {
             var query = new GetMBooksByUserIdPaginationQuery(request);
 
@@ -48,6 +50,7 @@ namespace Api.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateMeasurementBook(int id, MBookRequest data)
         {
@@ -59,6 +62,7 @@ namespace Api.Controllers
 
         [HttpPut("{id}/Publish")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> PublishMeasurementBook(int id)
         {

@@ -1,6 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -42,6 +42,18 @@ namespace Domain.Entities.MBSheetAggregate
         public void AddLineItem(MBSheetItem item)
         {
             _items.Add(item);
+        }
+
+        public void MarkAsAccepted()
+        {
+            Status = MBSheetStatus.ACCEPTED;
+            AcceptingDate = new DateTime();
+        }
+
+        public void MarkAsValidated()
+        {
+            Status = MBSheetStatus.VALIDATED;
+            ValidationDate = new DateTime();
         }
     }
 }

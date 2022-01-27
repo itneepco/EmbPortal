@@ -3,6 +3,7 @@ using Application.CQRS.MBSheets.Command;
 using Application.CQRS.MBSheets.Query;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
+    [Authorize]
     public class MBSheetController : ApiController
     {
         [HttpGet("MBook/{mBookId}")]
@@ -28,6 +30,30 @@ namespace Api.Controllers
             var command = new CreateMBSheetCommand(data);
 
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPut("{id}/Validate")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ValidateMBSheet(int id)
+        {
+            var command = new ValidateMBSheetCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/Accept")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ApproveMBSheet(int id)
+        {
+            var command = new AcceptMBSheetCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

@@ -2,7 +2,7 @@
 
 namespace EmbPortal.Shared.Responses
 {
-    public class MeasurementBookResponse
+    public class MBookResponse
     {
         public int Id { get; set; }
         public int WorkOrderId { get; set; }

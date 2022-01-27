@@ -10,11 +10,11 @@
         <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" />
         <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" />
         <Column @bind-Field="@context.Status">
-            @if (context.Status == "COMPLETED")
+            @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
             {
                 <Tag Color="gold">@context.Status</Tag>
             }
-            else if (context.Status == "PUBLISHED")
+            else if (context.Status == MBSheetStatus.VALIDATED.ToString())
             {
                 <Tag Color="blue">@context.Status</Tag>
             }
@@ -24,13 +24,35 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
-            <Popconfirm Title="Sure to delete?"
-                        OnConfirm="()=> DeleteMBSheet(context.Id)"
-                        OkText="Yes"
-                        CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
-            </Popconfirm>
+            @if (context.Status == MBSheetStatus.CREATED.ToString())
+            {
+                <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> DeleteMBSheet(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+                </Popconfirm>
+            }
+            @if (context.Status == MBSheetStatus.CREATED.ToString() && employeeCode == context.ValidationOfficer)
+            {
+                <Popconfirm Title="Sure to Validate MB Sheet?"
+                            OnConfirm="()=> ValidateMBSheet(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                </Popconfirm>
+            }
+            @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.AcceptingOfficer)
+            {
+                <Popconfirm Title="Sure to Accept MB Sheet?"
+                            OnConfirm="()=> AcceptMBSheet(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                </Popconfirm>
+            }
+
         </ActionColumn>
     </RowTemplate>
 
@@ -56,6 +78,7 @@
     [Parameter]
     public List<MBookItemResponse> MBItems { get; set; }
 
+    string employeeCode;
     List<MBSheetResponse> mbSheets = new();
     MBSheetResponse currentMBSheet;
     bool drawerVisible = false;
@@ -63,6 +86,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
+
         await LoadMBSheets();
     }
 
@@ -93,6 +119,42 @@
         if (result.Succeeded)
         {
             mbSheets = mbSheets.Where(item => item.Id != id).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task ValidateMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.ValidateMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadMBSheets();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task AcceptMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.AcceptMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadMBSheets();
             StateHasChanged();
             await messageService.Success(result.Message);
         }

@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
-using Domain.Enums;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using MediatR;
 

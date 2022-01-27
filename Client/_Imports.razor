@@ -23,6 +23,7 @@
 @using EmbPortal.Shared.Requests
 @using EmbPortal.Shared.Responses
 @using EmbPortal.Shared.Extensions
+@using EmbPortal.Shared.Enums
 @using Services
 @using Services.Interfaces
 
@@ -38,3 +39,5 @@
 @inject IUserService userService
 @inject IMBookService mBookService
 @inject IMBSheetService mbSheetService
+@inject IAuthService authService
+@inject EMBStateProvider stateProvider
