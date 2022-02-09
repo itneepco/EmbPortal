@@ -9,6 +9,7 @@ namespace Persistence.Configurations
         public void Configure(EntityTypeBuilder<WorkOrderItem> builder)
         {
             builder.Property(p => p.Description).HasMaxLength(250).IsRequired();
+            builder.Property(p => p.ServiceNo).HasMaxLength(10);
             builder.Property(p => p.UnitRate).IsRequired();
             builder.Property(p => p.UomId).IsRequired();
             builder.Property(p => p.PoQuantity).IsRequired();

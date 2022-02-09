@@ -45,11 +45,14 @@
 
     <ExpandTemplate Context="rowData">
         <Table DataSource="rowData.Data.Items" HidePagination>
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%" />
+            <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%" />
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%" />
             <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%" />
-            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="15%" />
-            <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="15%" />
+            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%" />
+            <Column Title="Total Amount" TData="decimal" DataIndex="@nameof(context.TotalAmount)" Width="10%" />
+            <Column TData="int" DataIndex="@nameof(context.Progess)" Width="15%">
+                <Progress Size=ProgressSize.Small Percent=@context.Progess />
+            </Column>
         </Table>
     </ExpandTemplate>
 </Table>

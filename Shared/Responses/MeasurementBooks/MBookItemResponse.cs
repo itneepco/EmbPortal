@@ -1,6 +1,4 @@
-﻿using EmbPortal.Shared.Enums;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 
 namespace EmbPortal.Shared.Responses
 {
@@ -13,7 +11,7 @@ namespace EmbPortal.Shared.Responses
         public decimal UnitRate { get; set; }
         public float PoQuantity { get; set; }
         public int Dimension { get; set; }
-        public List<MBSheetItemInfoResponse> MBSheetItems { get; set; } = new();
+        public float ApprovedQuantity { get; set; }
 
         public decimal TotalAmount
         {
@@ -23,12 +21,19 @@ namespace EmbPortal.Shared.Responses
             }
         }
 
-        public float ApprovedQuantity
+        public int Progess
         {
             get
             {
-                var items = MBSheetItems.Where(p => p.Status == MBSheetStatus.ACCEPTED.ToString()).ToList();
-                return items.Aggregate((float)0, (acc, curr) => acc + curr.TotalQuantity);
+                return (int)Math.Round(ApprovedQuantity/PoQuantity*100);
+            }
+        }
+
+        public float BalanceQuantity
+        {
+            get
+            {
+                return PoQuantity - ApprovedQuantity;
             }
         }
     }

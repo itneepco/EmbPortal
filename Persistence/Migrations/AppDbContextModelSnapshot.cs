@@ -187,6 +187,10 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AttachmentUrl")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Created")
                         .HasColumnType("INTEGER");
 
@@ -211,6 +215,9 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MBookItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Nos")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("UnitRate")
@@ -483,6 +490,10 @@ namespace Persistence.Migrations
 
                     b.Property<float>("PoQuantity")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("ServiceNo")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");

@@ -279,6 +279,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ServiceNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true),
                     Description = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     UomId = table.Column<int>(type: "INTEGER", nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
@@ -373,6 +374,8 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Nos = table.Column<int>(type: "INTEGER", nullable: false),
+                    AttachmentUrl = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     Value1 = table.Column<float>(type: "REAL", nullable: false),
                     Value2 = table.Column<float>(type: "REAL", nullable: false),
                     Value3 = table.Column<float>(type: "REAL", nullable: false),

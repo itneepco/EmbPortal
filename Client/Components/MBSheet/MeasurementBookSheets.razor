@@ -1,4 +1,6 @@
-﻿<Button OnClick="() => OpenSideDrawer()" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
+﻿<Button OnClick="() => AddEditMBSheet()" Icon="@IconType.Outline.Plus">Add New</Button>
+
+<Button OnClick="() => OpenSideDrawer()" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
     Add MB Sheet
 </Button>
 
@@ -27,12 +29,15 @@
             @if (context.Status == MBSheetStatus.CREATED.ToString())
             {
                 <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
-                <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> DeleteMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
-                </Popconfirm>
+                @if (employeeCode == context.MeasurementOfficer)
+                {
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="()=> DeleteMBSheet(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
+                    </Popconfirm>
+                }
             }
             @if (context.Status == MBSheetStatus.CREATED.ToString() && employeeCode == context.ValidationOfficer)
             {
@@ -66,8 +71,6 @@
         </Table>
     </ExpandTemplate>
 </Table>
-
-
 
 <AddEditMBSheetDrawer CurrentMBSheet="currentMBSheet" MBookId="MBookId" MBItems="MBItems" Visible="@drawerVisible" OnClose="@CloseSideBar" />
 
@@ -162,5 +165,10 @@
         {
             await messageService.Error(result.Message);
         }
+    }
+
+    void AddEditMBSheet()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet");
     }
 }

@@ -6,6 +6,7 @@ namespace Domain.Entities.WorkOrderAggregate
     public class WorkOrderItem : AuditableEntity
     {
         public int Id { get; private set; }
+        public string ServiceNo { get; private set; }
         public string Description { get; private set; }
         public int UomId { get; private set; }
         public decimal UnitRate { get; private set; }

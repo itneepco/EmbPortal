@@ -27,8 +27,11 @@ namespace Persistence.Seed
             );
 
             workOrder.AddUpdateLineItem("Line item one", 1, 100, 40);
-            workOrder.AddUpdateLineItem("Line item two", 1, 50, 200);
-            workOrder.AddUpdateLineItem("Line item three", 1, 500, 30);
+            workOrder.AddUpdateLineItem("Line item two", 2, 50, 200);
+            workOrder.AddUpdateLineItem("Line item three", 3, 500, 30);
+            workOrder.AddUpdateLineItem("Line item four", 2, 200, 40);
+            workOrder.AddUpdateLineItem("Line item five", 3, 500, 100);
+            workOrder.AddUpdateLineItem("Line item six", 1, 50, 300);
 
             context.WorkOrders.Add(workOrder);
             await context.SaveChangesAsync();

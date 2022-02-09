@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220127130246_InitialCreate")]
+    [Migration("20220209113845_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,6 +189,10 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AttachmentUrl")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Created")
                         .HasColumnType("INTEGER");
 
@@ -213,6 +217,9 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MBookItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Nos")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("UnitRate")
@@ -485,6 +492,10 @@ namespace Persistence.Migrations
 
                     b.Property<float>("PoQuantity")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("ServiceNo")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");

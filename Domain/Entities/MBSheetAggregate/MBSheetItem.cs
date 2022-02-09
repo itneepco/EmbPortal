@@ -1,12 +1,13 @@
 ﻿using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.MBSheetAggregate
 {
     public class MBSheetItem :AuditableEntity
     {
         public int Id { get; private set; }
+        public int Nos { get; private set; }
+        public string AttachmentUrl { get; private set; }
         public float Value1 { get; private set; }
         public float Value2 { get; private set; }
         public float Value3 { get; private set; }
@@ -35,7 +36,6 @@ namespace Domain.Entities.MBSheetAggregate
 
         public MBSheetItem()
         {
-
         }
     }
 }
