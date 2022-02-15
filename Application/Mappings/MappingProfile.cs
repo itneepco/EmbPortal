@@ -54,9 +54,6 @@ namespace Application.Mappings
             CreateMap<MBSheet, MBSheetResponse>();
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
-
-            CreateMap<MBSheetItem, MBSheetItemInfoResponse>()
-                .ForMember(m => m.Status, opt => opt.MapFrom(p => p.MBSheet.Status));
         }
     }
 }

@@ -1,17 +1,17 @@
-﻿<Button OnClick="() => AddEditMBSheet()" Icon="@IconType.Outline.Plus">Add New</Button>
-
-<Button OnClick="() => OpenSideDrawer()" Icon="@IconType.Outline.Plus" Type="@ButtonType.Primary" style="margin-bottom: 0.5rem;">
+﻿<Button OnClick="() => AddEditMBSheet()" 
+        Icon="@IconType.Outline.Plus" 
+        Type="@ButtonType.Primary" 
+        style="margin-bottom: 0.5rem;">
     Add MB Sheet
 </Button>
 
-<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" HidePagination>
+<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" HidePagination Bordered>
     <RowTemplate>
-        <Column Title="Id" @bind-Field="@context.Id" />
-        <Column Title="MB Sheet Title" @bind-Field="@context.Title" />
-        <Column Title="Measurement Date" @bind-Field="@context.MeasurementDate" />
-        <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" />
-        <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" />
-        <Column @bind-Field="@context.Status">
+        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="40%" />
+        <Column Title="Measurement Date" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
+        <Column Title="Measuring Officer" @bind-Field="@context.MeasurementOfficer" Width="10%" />
+        <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" Width="10%" />
+        <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
             {
                 <Tag Color="gold">@context.Status</Tag>
@@ -28,7 +28,6 @@
         <ActionColumn Title="Action" Width="20%">
             @if (context.Status == MBSheetStatus.CREATED.ToString())
             {
-                <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
                 @if (employeeCode == context.MeasurementOfficer)
                 {
                     <Popconfirm Title="Sure to delete?"
@@ -62,17 +61,19 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" HidePagination>
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="50%" />
-            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="12%" />
-            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="12%" />
-            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.TotalQuantity)" Width="13%" />
-            <Column Title="Total Amount" TData="float" DataIndex="@nameof(context.TotalAmount)" Width="13%" />
+        <Table DataSource="rowData.Data.Items" HidePagination Bordered>
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="35%" />
+            <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="20%" />
+            <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
+            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
+            <Column Title="No" TData="decimal" DataIndex="@nameof(context.Nos)" Width="5%" />
+            <Column Title="L" TData="decimal" Width="5%">@context.Value1</Column>
+            <Column Title="B" TData="decimal" Width="5%">@(context.Value2 > 0 ? context.Value2 : "")</Column>
+            <Column Title="H" TData="decimal" Width="5%">@(context.Value3 > 0 ? context.Value3 : "")</Column>
+            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.TotalQuantity)" Width="9%" />
         </Table>
     </ExpandTemplate>
 </Table>
-
-<AddEditMBSheetDrawer CurrentMBSheet="currentMBSheet" MBookId="MBookId" MBItems="MBItems" Visible="@drawerVisible" OnClose="@CloseSideBar" />
 
 @code {
     [Parameter]
@@ -83,8 +84,6 @@
 
     string employeeCode;
     List<MBSheetResponse> mbSheets = new();
-    MBSheetResponse currentMBSheet;
-    bool drawerVisible = false;
     bool loading = false;
 
     protected override async Task OnInitializedAsync()
@@ -99,18 +98,14 @@
     {
         loading = true;
         mbSheets = await mbSheetService.GetMBSheetsByMBookId(MBookId);
+        foreach (var mbSheet in mbSheets)
+        {
+            mbSheet.Items = mbSheet.Items
+                .OrderBy(p => p.MBookItemId)
+                .ThenBy(i => i.Id)
+                .ToList();
+        }
         loading = false;
-    }
-
-    void OpenSideDrawer(int itemId=0)
-    {
-        currentMBSheet = mbSheets.FirstOrDefault(p => p.Id == itemId);
-        drawerVisible = true;
-    }
-
-    void CloseSideBar()
-    {
-        drawerVisible = false;
     }
 
     async Task DeleteMBSheet(int id)
@@ -171,4 +166,23 @@
     {
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet");
     }
+
+    int GetRowSpan(MBSheetItemResponse currItem, List<MBSheetItemResponse> items)
+    {
+        int count = items.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
+
+        if(count > 1)
+        {
+            int minMBSheeItemId = items.Where(i => i.MBookItemId == currItem.MBookItemId)
+                                  .Select(i => i.Id)
+                                  .Min();
+
+            return currItem.Id == minMBSheeItemId ? count : 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
 }
+

@@ -38,7 +38,7 @@ namespace Application.Services
                 items.AddRange(_mapper.Map<List<MBSheetItemResponse>>(mbSheet.Items));
             }
 
-            List<int> mBookItemIds = items.Select(i => i.Id).Distinct().ToList();
+            List<int> mBookItemIds = items.Select(i => i.MBookItemId).Distinct().ToList();
 
             foreach (var mBookItemId in mBookItemIds)
             {

@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220209113845_InitialCreate")]
+    [Migration("20220214115617_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,6 +201,8 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Dimension")
@@ -216,6 +218,11 @@ namespace Persistence.Migrations
                     b.Property<int>("MBSheetId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("MBookItemDescription")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("MBookItemId")
                         .HasColumnType("INTEGER");
 
@@ -226,6 +233,8 @@ namespace Persistence.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("Uom")
+                        .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<float>("Value1")
@@ -662,13 +671,11 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MBookItem", "MBookItem")
+                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MBookItem", null)
                         .WithMany("MBSheetItems")
                         .HasForeignKey("MBookItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("MBookItem");
 
                     b.Navigation("MBSheet");
                 });

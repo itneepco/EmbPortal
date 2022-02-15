@@ -31,9 +31,11 @@ namespace Application.CQRS.MBSheets.Query
         public async Task<List<MBSheetResponse>> Handle(GetMBSheetsByMBookIdQuery request, CancellationToken cancellationToken)
         {
             return await _context.MBSheets
-               .Where(p => p.MeasurementBookId == request.MBookId)
-               .AsNoTracking()
-               .ProjectToListAsync<MBSheetResponse>(_mapper.ConfigurationProvider);
+                .Include(p => p.Items)
+                .Where(p => p.MeasurementBookId == request.MBookId)
+                .OrderBy(p => p.MeasurementDate)
+                .AsNoTracking()
+                .ProjectToListAsync<MBSheetResponse>(_mapper.ConfigurationProvider);
         }
     }
 }

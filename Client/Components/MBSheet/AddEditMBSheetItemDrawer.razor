@@ -1,0 +1,84 @@
+﻿<Drawer Closable="true"
+        Width="550"
+        Title="@title"
+        Visible="@Visible"
+        OnClose="@CloseSidebar">
+
+    <Form Model="@MBSheetItem" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+        <FormItem Label="Work Description">
+            <Input Placeholder="General Remarks" @bind-Value="@context.Description" TValue="string" />
+        </FormItem>
+
+        <Row Gutter="16">
+            <AntDesign.Col Span="12">
+                <FormItem Label="Uom">
+                    <Input Placeholder="Nos" @bind-Value="@context.Uom" TValue="string" Disabled />
+                </FormItem>
+            </AntDesign.Col>
+
+            <AntDesign.Col Span="12">
+                <FormItem Label="Nos">
+                    <Input Placeholder="Nos" @bind-Value="@context.Nos" TValue="int" />
+                </FormItem>
+            </AntDesign.Col>
+        </Row>
+
+        <FormItem Label="Value 1">
+            <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
+        </FormItem>
+
+        @if (context.Dimension > 1)
+        {
+            <FormItem Label="Value 2">
+                <Input Placeholder="Value 2" @bind-Value="@context.Value2" TValue="float" />
+            </FormItem>
+        }
+
+        @if (context.Dimension > 2)
+        {
+            <FormItem Label="Value 3">
+                <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
+            </FormItem>
+        }
+
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1"></AntDesign.Col>
+            <AntDesign.Col>
+                <Button Type="@ButtonType.Default" OnClick="@CloseSidebar">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Add</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+@code {
+    [Parameter]
+    public MBSheetItemRequest MBSheetItem { get; set; } = new();
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<MBSheetItemRequest> MBSheetItemChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemSubmit { get; set; }
+
+    bool loading = false;
+    string title = "Add MB Sheet Item";
+
+    void OnSubmit()
+    {
+        MBSheetItemChanged.InvokeAsync(MBSheetItem);
+        OnItemSubmit.InvokeAsync();
+        CloseSidebar();
+    }
+
+    void CloseSidebar()
+    {
+        OnClose.InvokeAsync();
+    }
+}

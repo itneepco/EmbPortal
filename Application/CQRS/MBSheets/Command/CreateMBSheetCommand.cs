@@ -64,11 +64,13 @@ namespace Application.CQRS.MBSheets.Command
 
                 mbSheet.AddLineItem(new MBSheetItem
                 (
-                    description: mBookItem.WorkOrderItem.Description,
-                    uom: mBookItem.WorkOrderItem.Uom.Description,
+                    uom: mBookItem.WorkOrderItem.Uom.Name,
                     dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
                     rate: mBookItem.WorkOrderItem.UnitRate,
-                    mBookItemId: mBookItem.Id,
+                    mbItemDescription: mBookItem.WorkOrderItem.Description,
+                    mBookItemId: item.MBookItemId,
+                    description: item.Description,
+                    nos: item.Nos,
                     value1: item.Value1,
                     value2: item.Value2,
                     value3: item.Value3
