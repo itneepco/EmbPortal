@@ -1,0 +1,23 @@
+﻿
+<Tabs @bind-ActiveKey="@activeKey" OnChange="OnTabChange" Animated>
+    <TabPane Tab="Users" Key="1">
+        <UsersPage></UsersPage>
+    </TabPane>
+    <TabPane Tab="Contractors" Key="2">
+       <Contractors></Contractors>
+    </TabPane>
+    <TabPane Tab="Unit of Measurement" Key="4">
+       <UomsPage></UomsPage>
+    </TabPane>
+    <TabPane Tab="Location" Key="4">
+        Content of Tab Pane 3
+    </TabPane>
+</Tabs>
+@code{
+    string activeKey { get; set; } = "1";
+
+    void OnTabChange(string key)
+    {
+        Console.WriteLine($"tab change:{key}");
+    }
+}

@@ -1,0 +1,87 @@
+﻿<Drawer Closable="true"
+        Width="550"
+        Title="@(CurrentContractor == null ?  "Add Contractor" : "Edit Contractor")"
+        Visible="@Visible"
+        OnClose="@Close">
+
+    <Form Model="@model" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+        <FormItem Label="Name">
+            <Input @bind-Value="@context.Name" TValue="string" />
+        </FormItem>
+       
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1"></AntDesign.Col>
+            <AntDesign.Col>
+                <Button Type="@ButtonType.Default" OnClick="Close">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+@code{
+    [Parameter]
+    public ContractorResponse CurrentContractor { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemUpdate { get; set; }
+
+
+    ContractorRequest model = new();
+    bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (CurrentContractor != null)
+        {
+            // for editing existing line item
+            model.Name = CurrentContractor.Name;
+        }
+        else
+        {
+            model = new();
+        }
+    }
+
+    async Task OnSubmit()
+    {
+        loading = true;
+        dynamic result;
+        if (CurrentContractor == null)
+        {
+            result = await contractorService.CreateContractor(model);
+        }
+        else
+        {
+            result = await contractorService.UpdateContractor(CurrentContractor.Id, model);
+        }
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            Close();
+            await OnItemUpdate.InvokeAsync();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+}

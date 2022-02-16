@@ -5,19 +5,20 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add User</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Contractor</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit User</Button>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit Contractor</Button>
                 </SpaceItem>
                 <SpaceItem>
-                    <Popconfirm Title="Sure to Reset Password?"
-                                OnConfirm="() => ResetPassword(selectedRows.First().Id)"
+                    <Popconfirm Title="Sure to Delete Contractor?"
+                                Placement="@Placement.Bottom"
+                                OnConfirm="() => DeleteUom(selectedRows.First().Id)"
                                 OkText="Yes"
                                 CancelText="No">
-                        <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Reset Password</Button>
+                        <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Delete</Button>
                     </Popconfirm>
                 </SpaceItem>
             }
@@ -31,36 +32,35 @@
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
-                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadUsersAsync" />
+                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadContractorsAsync" />
                 </Tooltip>
             </AntDesign.Col>
         </Row>
     </AntDesign.Col>
 </Row>
 
-<AddEditUserDrawer CurrentUser="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadUsersAsync" />
+<AddEditContractorDrawer CurrentContractor="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadContractorsAsync" />
 
-<Table TItem="UserResponse"
-       DataSource="@users"
+<Table TItem="ContractorResponse"
+       DataSource="@contractors"
        Loading="loading"
-       OnChange="@LoadUsersAsync"
+       OnChange="@LoadContractorsAsync"
        Total="total"
        @bind-PageIndex="pageIndex"
        @bind-PageSize="pageSize"
        @bind-SelectedRows="selectedRows">
 
-    <Selection Key="@context.EmployeeCode" Type="radio" />
-    <Column @bind-Field="@context.DisplayName" />
-    <Column @bind-Field="@context.EmployeeCode" />
-    <Column @bind-Field="@context.Designation" />
-    <Column @bind-Field="@context.Email" />
+    <Selection Key="@context.Id.ToString()" Type="radio" />
+    <Column @bind-Field="@context.Name" />
+   
+    
 </Table>
 
 <p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
 
 @code{
-    List<UserResponse> users = new();
-    IEnumerable<UserResponse> selectedRows;
+    List<ContractorResponse> contractors = new();
+    IEnumerable<ContractorResponse> selectedRows;
 
     int pageIndex = 1;
     int pageSize = 10;
@@ -71,34 +71,36 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadUsersAsync();
+        await LoadContractorsAsync();
     }
 
-    async Task LoadUsersAsync()
+    async Task LoadContractorsAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await userService.GetUsersPagination(pageIndex, pageSize, search);
-        users = response.Items;
+        var response = await contractorService.GetContractorsPagination(pageIndex, pageSize, search);
+        contractors = response.Items;
         total = response.TotalCount;
         loading = false;
     }
 
-    async Task ResetPassword(string userId)
+    async Task DeleteUom(int id)
     {
         loading = true;
-        var result = await userService.ResetPassword(userId);
+       // var result = await uomService.DeleteUom(id);
         loading = false;
-        StateHasChanged();
-
+        selectedRows = null;
+        /*
         if (result.Succeeded)
         {
+            contractors = contractors.Where(item => item.Id != id).ToList();
+            StateHasChanged();
             await messageService.Success(result.Message);
         }
         else
         {
             await messageService.Error(result.Message);
-        }
+        }*/
     }
 
     void OpenSideDrawer(bool isAdd = false)

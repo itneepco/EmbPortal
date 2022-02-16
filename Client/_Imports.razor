@@ -15,7 +15,9 @@
 @using Client.Shared
 @using Client.Models
 @using Client.Components
+@using Client.Pages
 @using Client.Components.WorkOrder
+@using Client.Components.Contractor
 @using Client.Components.MBook
 @using Client.Components.User
 @using Client.Components.MBSheet
@@ -32,7 +34,7 @@
 @inject ModalService modalService
 @*emb services*@
 @inject IProjectService projectservice
-@inject IContractorService contractorservice
+@inject IContractorService contractorService
 @inject IWorkOrderService workOrderService
 @inject NavigationManager navManager
 @inject IUomService uomService

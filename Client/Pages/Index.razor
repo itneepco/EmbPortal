@@ -2,6 +2,25 @@
 @attribute [Authorize]
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Myneepco Intranet portal for NEEPCO Employees.</p>
+    
+    @if (currentUser != null && (currentUser.IsInRole("Admin")))
+    {
+      <AdminDashboard></AdminDashboard>
+    }
+    
+       
+
 </div>
+@code{
+    private ClaimsPrincipal currentUser;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+    private async Task LoadDataAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        currentUser = state.User;
+    }
+
+}

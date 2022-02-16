@@ -22,3 +22,6 @@ html, body {
     right: 0.75rem;
     top: 0.5rem;
 }
+.ant-btn {
+    font-weight:bold;
+}

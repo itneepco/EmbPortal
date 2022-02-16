@@ -53,7 +53,7 @@ namespace Application.CQRS.MBSheets.Command
 
             foreach (var item in request.data.Items)
             {
-                if (item.Total < 1) continue;
+                if (item.Total <= 0) continue;
 
                 MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.Id == item.MBookItemId);
                 

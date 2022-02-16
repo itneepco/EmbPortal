@@ -1,0 +1,83 @@
+﻿<Row Gutter="16">
+    <Col Span="8">
+    <Card>
+        <TitleTemplate>
+            <Icon Type="credit-card" Theme="outline" /> Assigned MBs
+        </TitleTemplate>
+        <Extra>
+            <Badge Class="site-badge-count-109"
+                   Count="2"
+                   Style="background-color: #52c41a; " />
+
+        </Extra>
+
+        <Body>
+            <p>Measurment Books assigned for measurment</p>
+            <Button Type="@ButtonType.Primary" OnClick="@LoadMBs">View MBs</Button>
+        </Body>
+    </Card>
+    </Col>
+    <Col Span="8">
+    <Card>
+        <TitleTemplate>
+            <Icon Type="credit-card" Theme="outline" />  MBs for Validation
+        </TitleTemplate>
+        <Extra>
+            <Badge Class="site-badge-count-109"
+                   Count="2"
+                   Style="background-color: #52c41a; " />
+
+        </Extra>
+
+        <Body>
+            <p>Measurment Books assigned for validation</p>
+            <Button Type="@ButtonType.Primary">View MBs</Button>
+        </Body>
+    </Card>
+    </Col>
+    <Col Span="8">
+    <Card>
+        <TitleTemplate>
+            <Icon Type="credit-card" Theme="outline" />  Work Orders
+        </TitleTemplate>
+        <Extra>
+            <Icon Type="double-right" Theme="outline" />
+
+        </Extra>
+
+        <Body>
+            <p>Work orders created by you</p>
+            <Row Gutter="16">
+                <Col Span="12">
+                <Statistic Title="Completed" Value="1" ValueStyle="color: #3f8600;">
+                    <PrefixTemplate>
+                        <span><Icon Type="Check" /></span>
+                    </PrefixTemplate>
+                </Statistic>
+                <Button Style="margin-top: 16px;">
+                    View
+                </Button>
+                </Col>
+                <Col Span="12">
+                <Statistic Title="In Progress" Value="1">
+                    <PrefixTemplate>
+                        <span><Icon Type="arrow-up" /></span>
+                    </PrefixTemplate>
+                </Statistic>
+                <Button Style="margin-top: 16px;" Type="primary">
+                    View
+                </Button>
+                </Col>
+            </Row>
+        </Body>
+    </Card>
+    </Col>
+
+</Row>
+
+@code {
+    void LoadMBs()
+    {
+        navManager.NavigateTo("/mbooks");
+    }
+}
