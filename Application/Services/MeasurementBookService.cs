@@ -43,7 +43,7 @@ namespace Application.Services
             foreach (var mBookItemId in mBookItemIds)
             {
                 float totalQuantity = items.Where(i => i.MBookItemId == mBookItemId)
-                    .Aggregate((float)0, (acc, curr) => acc + curr.TotalQuantity);
+                    .Aggregate((float)0, (acc, curr) => acc + curr.Quantity);
 
                 var approvedQty = new MBookItemApprovedQty
                 {

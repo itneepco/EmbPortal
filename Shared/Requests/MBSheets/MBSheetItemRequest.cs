@@ -18,7 +18,9 @@ namespace EmbPortal.Shared.Requests
         [Required, MaxLength(100)] 
         public string Description { get; set; }
 
-        [Range(1, float.MaxValue, ErrorMessage = "Please enter a value bigger than 0")]
+        public string MBookItemDescription { get; set; }
+
+        [Range(float.MinValue, float.MaxValue, ErrorMessage = "Please enter a value bigger than 0")]
         public float Value1 { get; set; }
 
         public float Value2 { get; set; }

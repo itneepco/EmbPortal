@@ -1,0 +1,106 @@
+﻿@page "/mbook/{MBookId}/mbsheet"
+@attribute [Authorize]
+
+@if (data != null)
+{
+    <Row Justify="center">
+        <AntDesign.Col Lg="20" Md="22" Sm="24">
+            <h3>Add MB Sheet</h3>
+
+            <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+                <Row Gutter="16">
+                    <AntDesign.Col Span="16">
+                        <FormItem Label="MB Sheet Title">
+                            <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
+                        </FormItem>
+                    </AntDesign.Col>
+                    <AntDesign.Col Span="8">
+                        <FormItem Label="Measurement Date">
+                            <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                        </FormItem>
+                    </AntDesign.Col>
+                </Row>
+
+                <MBSheetItemTable ModelItems="@model.Items" MBookItemResponses="@data.Items" />
+
+                <FormItem Style="margin-top: 1rem">
+                    <Row Justify="end">
+                        <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
+                        <Button HtmlType="submit" Type="@ButtonType.Primary">Submit</Button>
+                    </Row>
+                </FormItem>
+            </Form>
+        </AntDesign.Col>
+    </Row>
+}
+else
+{
+    <Spin>
+        <Empty />
+    </Spin>
+}
+
+@code {
+    [Parameter]
+    public string MBookId { get; set; }
+
+    public MBookDetailResponse data { get; set; }
+
+    MBSheetRequest model = new MBSheetRequest
+    {
+        Items = new List<MBSheetItemRequest>()
+    };
+
+    bool loading = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadMBookDetailsAsync();
+        model.MeasurementBookId = int.Parse(MBookId);
+    }
+
+    async Task LoadMBookDetailsAsync()
+    {
+        loading = true;
+        var result = await mBookService.GetMBooksById(int.Parse(MBookId));
+        loading = false;
+
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo("/mbooks");
+            await messageService.Warning(result.Message);
+            return;
+        }
+
+        data = result.Data;
+        StateHasChanged();
+    }
+
+    async Task OnFormSubmit()
+    {
+        if (model.Items.Where(p => p.Total > 0).ToList().Count < 1)
+        {
+            await messageService.Error("Please select at least one item and add measurement details");
+            return;
+        }
+
+        loading = true;
+        dynamic result = await mbSheetService.CreateMBSheet(model);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void GoToMBookDetailPage()
+    {
+        navManager.NavigateTo($"/mbooks/{MBookId}");
+    }
+}

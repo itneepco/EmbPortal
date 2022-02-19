@@ -9,6 +9,7 @@ namespace Client.Services.Interfaces
     public interface IMBSheetService
     {
         Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId);
+        Task<IResult<MBSheetResponse>> GetMBSheetsById(int mbSheetId);
         Task<IResult<int>> CreateMBSheet(MBSheetRequest request);
         Task<IResult> DeleteMBSheet(int id);
         Task<IResult> ValidateMBSheet(int id);

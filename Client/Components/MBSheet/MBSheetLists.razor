@@ -26,17 +26,17 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
+            <Row Justify="ceter">
             @if (context.Status == MBSheetStatus.CREATED.ToString())
             {
-                @if (employeeCode == context.MeasurementOfficer)
-                {
-                    <Popconfirm Title="Sure to delete?"
-                                OnConfirm="()=> DeleteMBSheet(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger>Delete</Button>
-                    </Popconfirm>
-                }
+                <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem"/>
+
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> DeleteMBSheet(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger/>
+                </Popconfirm>
             }
             @if (context.Status == MBSheetStatus.CREATED.ToString() && employeeCode == context.ValidationOfficer)
             {
@@ -56,21 +56,23 @@
                     <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
                 </Popconfirm>
             }
-
+            </Row>
         </ActionColumn>
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
         <Table DataSource="rowData.Data.Items" HidePagination Bordered>
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="35%" />
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="34%" />
             <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="20%" />
             <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
-            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
-            <Column Title="No" TData="decimal" DataIndex="@nameof(context.Nos)" Width="5%" />
-            <Column Title="L" TData="decimal" Width="5%">@context.Value1</Column>
-            <Column Title="B" TData="decimal" Width="5%">@(context.Value2 > 0 ? context.Value2 : "")</Column>
-            <Column Title="H" TData="decimal" Width="5%">@(context.Value3 > 0 ? context.Value3 : "")</Column>
-            <Column Title="Quantity" TData="float" DataIndex="@nameof(context.TotalQuantity)" Width="9%" />
+            <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
+            <Column Title="L" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
+            <Column Title="B" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
+            <Column Title="H" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
+            <Column Title="Qty" TData="string" Width="6%">@context.Quantity.ToString("0.00")</Column>
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
+                @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
+            </Column>
         </Table>
     </ExpandTemplate>
 </Table>
@@ -179,10 +181,19 @@
 
             return currItem.Id == minMBSheeItemId ? count : 0;
         }
-        else
-        {
-            return 1;
-        }
+
+        return 1;
+    }
+
+    float GetMBookItemTotalQtyInMBSheet(int mBookItemId, List<MBSheetItemResponse> items)
+    {
+        return items.Where(i => i.MBookItemId == mBookItemId)
+            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
+    }
+
+    void GoToEditPage(int mbSheetId)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
     }
 }
 

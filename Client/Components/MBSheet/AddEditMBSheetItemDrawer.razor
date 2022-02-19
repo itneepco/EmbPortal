@@ -5,14 +5,25 @@
         OnClose="@CloseSidebar">
 
     <Form Model="@MBSheetItem" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+        <FormItem Label="Select Measurement Book Line Item" Required>
+            <Select DataSource="@MBookItems"
+                    @bind-Value="@lineItemId"
+                    ValueName="@nameof(MBookItemResponse.Id)"
+                    LabelName="@nameof(MBookItemResponse.Description)"
+                    Placeholder="Select Measurement Book Item"
+                    OnSelectedItemChanged="@(item => SelectLineItem(item))"
+                    AllowClear>
+            </Select>
+        </FormItem>
+
         <FormItem Label="Work Description">
             <Input Placeholder="General Remarks" @bind-Value="@context.Description" TValue="string" />
         </FormItem>
 
-        <Row Gutter="16">
+        <Row Gutter="12">
             <AntDesign.Col Span="12">
                 <FormItem Label="Uom">
-                    <Input Placeholder="Nos" @bind-Value="@context.Uom" TValue="string" Disabled />
+                    <Input Placeholder="Uom" @bind-Value="@context.Uom" TValue="string" Disabled />
                 </FormItem>
             </AntDesign.Col>
 
@@ -23,29 +34,36 @@
             </AntDesign.Col>
         </Row>
 
-        <FormItem Label="Value 1">
-            <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
-        </FormItem>
+        <Row Gutter="12">
+            <AntDesign.Col Flex="1">
+                <FormItem Label="Value 1">
+                    <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
+                </FormItem>
+            </AntDesign.Col>
+            @if (context.Dimension > 1)
+            {
+                <AntDesign.Col Flex="1">
+                    <FormItem Label="Value 2">
+                        <Input Placeholder="Value 2" @bind-Value="@context.Value2" TValue="float" />
+                    </FormItem>
+                </AntDesign.Col>
+            }
 
-        @if (context.Dimension > 1)
-        {
-            <FormItem Label="Value 2">
-                <Input Placeholder="Value 2" @bind-Value="@context.Value2" TValue="float" />
-            </FormItem>
-        }
-
-        @if (context.Dimension > 2)
-        {
-            <FormItem Label="Value 3">
-                <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
-            </FormItem>
-        }
+            @if (context.Dimension > 2)
+            {
+                <AntDesign.Col Flex="1">
+                    <FormItem Label="Value 3">
+                        <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
+                    </FormItem>
+                </AntDesign.Col>
+            }
+        </Row>
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
             <AntDesign.Col>
                 <Button Type="@ButtonType.Default" OnClick="@CloseSidebar">Cancel</Button>
-                <Button HtmlType="submit" Type="@ButtonType.Primary">Add</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
             </AntDesign.Col>
         </Row>
     </Form>
@@ -67,8 +85,17 @@
     [Parameter]
     public EventCallback<bool> OnItemSubmit { get; set; }
 
+    [Parameter]
+    public List<MBookItemResponse> MBookItems { get; set; }
+
+    int lineItemId;
     bool loading = false;
-    string title = "Add MB Sheet Item";
+    string title = "Add / Edit MB Sheet Item";
+
+    protected override void OnParametersSet()
+    {
+        lineItemId = MBSheetItem.MBookItemId;
+    }
 
     void OnSubmit()
     {
@@ -79,6 +106,17 @@
 
     void CloseSidebar()
     {
+        lineItemId = 0;
         OnClose.InvokeAsync();
+    }
+
+    void SelectLineItem(MBookItemResponse item)
+    {
+        if (item == null) return;
+
+        MBSheetItem.Dimension = item.Dimension;
+        MBSheetItem.MBookItemDescription = item.Description;
+        MBSheetItem.MBookItemId = item.Id;
+        MBSheetItem.Uom = item.Uom;
     }
 }

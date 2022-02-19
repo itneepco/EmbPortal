@@ -30,7 +30,7 @@ namespace Client.Services
 
         public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search)
         {
-            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/Project/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
+            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
         }
 
         public async Task<IResult> DeleteWorkOrder(int id)

@@ -92,7 +92,7 @@
     {
         loading = true;
         selectedRows = null;
-        var response = await workOrderService.GetWorkOrdersByProjectPagination(5, pageIndex, pageSize, search);
+        var response = await workOrderService.GetUserWorkOrdersPagination(pageIndex, pageSize, search);
         workOrders = response.Items;
         total = response.TotalCount;
         loading = false;

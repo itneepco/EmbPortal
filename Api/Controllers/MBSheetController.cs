@@ -15,9 +15,17 @@ namespace Api.Controllers
     public class MBSheetController : ApiController
     {
         [HttpGet("MBook/{mBookId}")]
-        public async Task<ActionResult<List<MBSheetResponse>>> GetMBooksByOrderId(int mBookId)
+        public async Task<ActionResult<List<MBSheetResponse>>> GetMBSheetsByMBookId(int mBookId)
         {
             var query = new GetMBSheetsByMBookIdQuery(mBookId);
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("{mBSheetId}")]
+        public async Task<ActionResult<List<MBSheetResponse>>> GetMBSheetsById(int mBSheetId)
+        {
+            var query = new GetMBSheetByIdQuery(mBSheetId);
 
             return Ok(await Mediator.Send(query));
         }

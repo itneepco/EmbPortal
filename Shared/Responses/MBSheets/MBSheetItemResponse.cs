@@ -13,7 +13,7 @@
         public decimal UnitRate { get; set; }
         public int MBookItemId { get; set; }
         public string MBookItemDescription { get; set; }
-        public float TotalQuantity
+        public float Quantity
         {
             get
             {
@@ -36,7 +36,7 @@
         {
             get
             {
-                return (decimal)TotalQuantity * UnitRate;
+                return (decimal)Quantity * UnitRate;
             }
         }
     }
