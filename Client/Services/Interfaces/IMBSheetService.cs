@@ -11,6 +11,7 @@ namespace Client.Services.Interfaces
         Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId);
         Task<IResult<MBSheetResponse>> GetMBSheetsById(int mbSheetId);
         Task<IResult<int>> CreateMBSheet(MBSheetRequest request);
+        Task<IResult> EditMBSheet(int id, MBSheetRequest request);
         Task<IResult> DeleteMBSheet(int id);
         Task<IResult> ValidateMBSheet(int id);
         Task<IResult> AcceptMBSheet(int id);

@@ -25,12 +25,17 @@
 
         <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
             <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%"></Column>
-            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%"></Column>
-            <Column TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
-            <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%"></Column>
-            <Column TData="float" DataIndex="@nameof(context.ApprovedQuantity)" Width="10%"></Column>
-            <Column TData="int" DataIndex="@nameof(context.Progess)" Width="15%">
-                <Progress Size=ProgressSize.Small Percent=@context.Progess />
+            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%"></Column>
+            <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%"></Column>
+            <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%"></Column>
+            <Column Title="Cumulative Measured Qty" TData="float" Width="8%">
+                @context.CumulativeMeasuredQty.ToString("0.00")
+            </Column>
+            <Column Title="Accepted Measured Qty" TData="float" Width="8%">
+                @context.AcceptedMeasuredQty.ToString("0.00")
+            </Column>
+            <Column Title="Measurement Progess" TData="int" Width="15%">
+                <Progress Size=ProgressSize.Small Percent=@context.MeasurementProgess />
             </Column>
         </Table>
     </TabPane>

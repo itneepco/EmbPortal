@@ -47,13 +47,23 @@ namespace Domain.Entities.MBSheetAggregate
         public void MarkAsAccepted()
         {
             Status = MBSheetStatus.ACCEPTED;
-            AcceptingDate = new DateTime();
+            AcceptingDate = DateTime.Now;
         }
 
         public void MarkAsValidated()
         {
             Status = MBSheetStatus.VALIDATED;
-            ValidationDate = new DateTime();
+            ValidationDate = DateTime.Now;
+        }
+
+        public void SetTitle(string title)
+        {
+            Title = title;
+        }
+
+        public void SetMeasurementDate(DateTime date)
+        {
+            MeasurementDate = date;
         }
     }
 }

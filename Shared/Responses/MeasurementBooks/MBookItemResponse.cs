@@ -11,7 +11,8 @@ namespace EmbPortal.Shared.Responses
         public decimal UnitRate { get; set; }
         public float PoQuantity { get; set; }
         public int Dimension { get; set; }
-        public float ApprovedQuantity { get; set; }
+        public float AcceptedMeasuredQty { get; set; }
+        public float CumulativeMeasuredQty { get; set; }
 
         public decimal TotalAmount
         {
@@ -21,11 +22,11 @@ namespace EmbPortal.Shared.Responses
             }
         }
 
-        public int Progess
+        public int MeasurementProgess
         {
             get
             {
-                return (int)Math.Round(ApprovedQuantity/PoQuantity*100);
+                return (int)Math.Round(CumulativeMeasuredQty / PoQuantity*100);
             }
         }
 
@@ -33,7 +34,7 @@ namespace EmbPortal.Shared.Responses
         {
             get
             {
-                return PoQuantity - ApprovedQuantity;
+                return PoQuantity - CumulativeMeasuredQty;
             }
         }
     }

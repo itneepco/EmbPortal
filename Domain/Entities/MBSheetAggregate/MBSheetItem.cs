@@ -38,5 +38,30 @@ namespace Domain.Entities.MBSheetAggregate
         public MBSheetItem()
         {
         }
+
+        public void SetDescription(string desc)
+        {
+            Description = desc;
+        }
+
+        public void SetNos(int no)
+        {
+            Nos = no;
+        }
+
+        public void SetValue1(float value1)
+        {
+            Value1 = value1;
+        }
+
+        public void SetValue2(float value2)
+        {
+            Value2 = value2;
+        }
+
+        public void SetValue3(float value3)
+        {
+            Value3 = value3;
+        }
     }
 }

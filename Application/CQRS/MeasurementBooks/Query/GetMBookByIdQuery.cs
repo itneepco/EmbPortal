@@ -63,13 +63,14 @@ namespace Application.CQRS.MeasurementBooks.Query
                 throw new NotFoundException(nameof(mbook), request.Id);
             }
 
-            // Calculating the approved quantity for each measurement book items --- START ---
-            List<MBookItemApprovedQty> approvedItemQties = await _mBookService.GetMBItemsApprovedQty(mbook.Id);
+            // Calculating the Item Quantity Status for each measurement book items --- START ---
+            List<MBookItemQtyStatus> itemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mbook.Id);
             
             foreach (var item in mbook.Items)
             {
-                var approvedItemQty = approvedItemQties.Find(i => i.MBookItemId == item.Id);
-                item.ApprovedQuantity = approvedItemQty != null ? approvedItemQty.TotalQuantity : 0; 
+                var itemQtyStatus = itemQtyStatuses.Find(i => i.MBookItemId == item.Id);
+                item.AcceptedMeasuredQty = itemQtyStatus != null ? itemQtyStatus.AcceptedMeasuredQty : 0;
+                item.CumulativeMeasuredQty = itemQtyStatus != null ? itemQtyStatus.CumulativeMeasuredQty : 0;
             }
             // --- END ---
 

@@ -114,30 +114,34 @@ else
             });
         }
 
+        model.Items = model.Items.OrderBy(i => i.MBookItemId)
+                .ThenBy(i => i.GetHashCode())
+                .ToList();
+
         StateHasChanged();
     }
 
     async Task OnFormSubmit()
     {
-        //if (model.Items.Where(p => p.Total > 0).ToList().Count < 1)
-        //{
-        //    await messageService.Error("Please select at least one item and add measurement details");
-        //    return;
-        //}
+        if (model.Items.Where(p => p.Total > 0).ToList().Count < 1)
+        {
+            await messageService.Error("Please select at least one item and add measurement details");
+            return;
+        }
 
-        //loading = true;
-        //dynamic result = await mbSheetService.CreateMBSheet(model);
-        //loading = false;
+        loading = true;
+        dynamic result = await mbSheetService.EditMBSheet(int.Parse(MBSheetId), model);
+        loading = false;
 
-        //if (result.Succeeded)
-        //{
-        //    navManager.NavigateTo($"/mbooks/{MBookId}");
-        //    await messageService.Success(result.Message);
-        //}
-        //else
-        //{
-        //    await messageService.Error(result.Message);
-        //}
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
     void GoToMBookDetailPage()

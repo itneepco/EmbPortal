@@ -53,11 +53,6 @@
     bool drawerVisible = false;
     bool isEdit = false;
 
-    protected override void OnParametersSet()
-    {
-        SortModelItems();
-    }
-
     int GetRowSpan(MBSheetItemRequest currItem)
     {
         int count = ModelItems.Where(i => i.MBookItemId == currItem.MBookItemId).Count();

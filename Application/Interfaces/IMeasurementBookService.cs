@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IMeasurementBookService
     {
-        Task<List<MBookItemApprovedQty>> GetMBItemsApprovedQty(int mBookId);
+        Task<List<MBookItemQtyStatus>> GetMBItemsQtyStatus(int mBookId);
     }
 }

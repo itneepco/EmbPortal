@@ -21,46 +21,59 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MBookItemApprovedQty>> GetMBItemsApprovedQty(int mBookId)
+        public async Task<List<MBookItemQtyStatus>> GetMBItemsQtyStatus(int mBookId)
         {
             List<MBSheet> mbSheets = await _context.MBSheets
                  .Include(p => p.Items)
                  .Where(p => p.MeasurementBookId == mBookId)
-                 .Where(p => p.Status == MBSheetStatus.ACCEPTED)
                  .AsNoTracking()
                  .ToListAsync();
 
-            List<MBSheetItemResponse> items = new();
-            List<MBookItemApprovedQty> mBookItemApprovedQties = new();
+            List<MBookItemQtyStatus> mBookItemQtyStatuses = new();
 
+            // for mb sheet items
+            List<MBSheetItemResponse> mbSheetItems = new();
             foreach (var mbSheet in mbSheets)
             {
-                items.AddRange(_mapper.Map<List<MBSheetItemResponse>>(mbSheet.Items));
+                mbSheetItems.AddRange(_mapper.Map<List<MBSheetItemResponse>>(mbSheet.Items));
             }
 
-            List<int> mBookItemIds = items.Select(i => i.MBookItemId).Distinct().ToList();
+            // for accepted mb sheet items
+            List<MBSheetItemResponse> acceptedMBSheetItems = new();
+            foreach (var mbSheet in mbSheets.Where(p => p.Status == MBSheetStatus.ACCEPTED ))
+            {
+                acceptedMBSheetItems.AddRange(_mapper.Map<List<MBSheetItemResponse>>(mbSheet.Items));
+            }
+
+            // select all possible measurement book item ids
+            List<int> mBookItemIds = mbSheetItems.Select(i => i.MBookItemId).Distinct().ToList();
 
             foreach (var mBookItemId in mBookItemIds)
             {
-                float totalQuantity = items.Where(i => i.MBookItemId == mBookItemId)
+                float cumulativeMeasuredQty = mbSheetItems.Where(i => i.MBookItemId == mBookItemId)
                     .Aggregate((float)0, (acc, curr) => acc + curr.Quantity);
 
-                var approvedQty = new MBookItemApprovedQty
+                float acceptedMeasuredQty = acceptedMBSheetItems.Where(i => i.MBookItemId == mBookItemId)
+                    .Aggregate((float)0, (acc, curr) => acc + curr.Quantity);
+
+                var approvedQty = new MBookItemQtyStatus
                 {
                     MBookItemId = mBookItemId,
-                    TotalQuantity = totalQuantity
+                    CumulativeMeasuredQty = cumulativeMeasuredQty,
+                    AcceptedMeasuredQty = acceptedMeasuredQty
                 };
 
-                mBookItemApprovedQties.Add(approvedQty);
+                mBookItemQtyStatuses.Add(approvedQty);
             }
 
-            return mBookItemApprovedQties;
+            return mBookItemQtyStatuses;
         }
     }
 }
 
-public class MBookItemApprovedQty
+public class MBookItemQtyStatus
 {
     public int MBookItemId { get; set; }
-    public float TotalQuantity { get; set; }
+    public float AcceptedMeasuredQty { get; set; }
+    public float CumulativeMeasuredQty { get; set; }
 }

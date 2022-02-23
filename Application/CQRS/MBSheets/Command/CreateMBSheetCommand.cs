@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.MBSheets.Command
 {
-    public record CreateMBSheetCommand(MBSheetRequest data) : IRequest<int>
+    public record CreateMBSheetCommand(MBSheetRequest Data) : IRequest<int>
     {
     }
 
@@ -32,28 +32,32 @@ namespace Application.CQRS.MBSheets.Command
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                       .ThenInclude(i => i.Uom)
-                .Where(p => p.Id == request.data.MeasurementBookId)
+                .Where(p => p.Id == request.Data.MeasurementBookId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (mBook == null)
             {
-                throw new NotFoundException($"MeasurementBook does not exist with Id: {request.data.MeasurementBookId}");
+                throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
             }
 
             var mbSheet = new MBSheet
             (
-               title: request.data.Title,
-               measurementBookId: request.data.MeasurementBookId,
+               title: request.Data.Title,
+               measurementBookId: request.Data.MeasurementBookId,
                measurementOfficer: mBook.MeasurementOfficer,
-               measurementDate: (DateTime)request.data.MeasurementDate,
+               measurementDate: (DateTime)request.Data.MeasurementDate,
                validationOfficer: mBook.ValidatingOfficer,
                acceptingOfficer: mBook.WorkOrder.EngineerInCharge
             );
 
-            foreach (var item in request.data.Items)
+            foreach (var item in request.Data.Items)
             {
-                if (item.Total <= 0) continue;
+                // if the item total quantity is less than or equal to zero, raise exception
+                if (item.Total <= 0)
+                {
+                    throw new BadRequestException("Item quantity cannot be less than or equal to Zero");
+                }
 
                 MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.Id == item.MBookItemId);
                 
@@ -64,16 +68,21 @@ namespace Application.CQRS.MBSheets.Command
 
                 mbSheet.AddLineItem(new MBSheetItem
                 (
+                    // fill up the data from measurement book item details --- START ---
                     uom: mBookItem.WorkOrderItem.Uom.Name,
                     dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
                     rate: mBookItem.WorkOrderItem.UnitRate,
                     mbItemDescription: mBookItem.WorkOrderItem.Description,
                     mBookItemId: item.MBookItemId,
+                    // --- END ---
+
+                    // fill up the data from the request object coming from client --- START ---
                     description: item.Description,
                     nos: item.Nos,
                     value1: item.Value1,
                     value2: item.Value2,
                     value3: item.Value3
+                    // --- END ---
                 ));
             }
 
