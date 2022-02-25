@@ -1,0 +1,21 @@
+﻿<Button OnClick="() => GoToAddPage()"
+        Icon="@IconType.Outline.Plus"
+        Type="@ButtonType.Primary"
+        style="margin-bottom: 0.5rem;">
+    Add RA Bill
+</Button>
+
+@code {
+    [Parameter]
+    public int MBookId { get; set; }
+
+    void GoToAddPage()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill");
+    }
+
+    void GoToEditPage(int raBillId)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
+    }
+}

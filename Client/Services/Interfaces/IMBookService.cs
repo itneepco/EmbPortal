@@ -11,6 +11,7 @@ namespace Client.Services.Interfaces
         Task<List<MBookResponse>> GetMBooksByWorkOrderId(int orderId);
         Task<PaginatedList<MBookInfoResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search);
         Task<IResult<MBookDetailResponse>> GetMBooksById(int id);
+        Task<List<MBItemStatusResponse>> GetCurrentMBItemsStatus(int id);
         Task<IResult> DeleteMeasurementBook(int id);
         Task<IResult<int>> CreateMeasurementBook(MBookRequest request);
         Task<IResult> UpdateMeasurementBook(int id, MBookRequest request);

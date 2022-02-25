@@ -1,9 +1,9 @@
-﻿@page "/mbooks/{Id}"
+﻿@page "/mbooks/{Id}/{Tab?}"
 @attribute [Authorize]
 
 @if (data != null)
 {
-<Tabs Animated>
+<Tabs @bind-ActiveKey="@activeKey" Animated>
     <TabPane Tab="Measurement Book Detail" Key="1">
         <Descriptions Bordered Size="@DescriptionsSize.Small">
             <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
@@ -39,9 +39,13 @@
             </Column>
         </Table>
     </TabPane>
-    
+
     <TabPane Tab="Measurement Book Sheet" Key="2">
         <MBSheetLists MBookId="int.Parse(Id)" MBItems="@data.Items" />
+    </TabPane>
+
+    <TabPane Tab="RA Bill" Key="3">
+        <RABillList MBookId="int.Parse(Id)" />
     </TabPane>
 </Tabs>
 }
@@ -56,11 +60,17 @@ else
     [Parameter]
     public string Id { get; set; }
 
+    [Parameter]
+    public string Tab { get; set; }
+
     public MBookDetailResponse data { get; set; }
+
+    string activeKey = "1";
 
     protected override async Task OnInitializedAsync()
     {
         await LoadMBookDetailsAsync();
+        activeKey = Tab ?? "1";
     }
 
     async Task LoadMBookDetailsAsync()

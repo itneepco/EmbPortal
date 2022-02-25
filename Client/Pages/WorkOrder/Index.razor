@@ -9,18 +9,21 @@
             </SpaceItem>
             @if (selectedRows != null)
             {
-                <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit</Button>
-                </SpaceItem>
-                <SpaceItem>
-                    <Popconfirm Title="Are you sure delete this order?"
-                                Placement="@Placement.Bottom"
-                                OnConfirm="@(() => ConfirmDelete(selectedRows.First().Id))"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
-                    </Popconfirm>
-                </SpaceItem>
+                @if (selectedRows.First().Status == WorkOrderStatus.CREATED.ToString())
+                {
+                    <SpaceItem>
+                        <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit</Button>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Popconfirm Title="Are you sure delete this order?"
+                                    Placement="@Placement.Bottom"
+                                    OnConfirm="@(() => ConfirmDelete(selectedRows.First().Id))"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
+                        </Popconfirm>
+                    </SpaceItem>
+                }
                 <SpaceItem>
                     <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
                 </SpaceItem>

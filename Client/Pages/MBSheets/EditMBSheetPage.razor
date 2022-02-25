@@ -88,7 +88,7 @@ else
 
         if (!result.Succeeded)
         {
-            navManager.NavigateTo("/mbooks");
+            navManager.NavigateTo($"/mbooks/{MBookId}/2");
             await messageService.Warning(result.Message);
             return;
         }
@@ -135,7 +135,7 @@ else
 
         if (result.Succeeded)
         {
-            navManager.NavigateTo($"/mbooks/{MBookId}");
+            navManager.NavigateTo($"/mbooks/{MBookId}/2");
             await messageService.Success(result.Message);
         }
         else
@@ -146,6 +146,6 @@ else
 
     void GoToMBookDetailPage()
     {
-        navManager.NavigateTo($"/mbooks/{MBookId}");
+        navManager.NavigateTo($"/mbooks/{MBookId}/2");
     }
 }

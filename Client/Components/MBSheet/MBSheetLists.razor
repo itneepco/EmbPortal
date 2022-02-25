@@ -1,4 +1,4 @@
-﻿<Button OnClick="() => AddEditMBSheet()" 
+﻿<Button OnClick="() => GoToAddPage()" 
         Icon="@IconType.Outline.Plus" 
         Type="@ButtonType.Primary" 
         style="margin-bottom: 0.5rem;">
@@ -164,9 +164,14 @@
         }
     }
 
-    void AddEditMBSheet()
+    void GoToAddPage()
     {
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet");
+    }
+
+    void GoToEditPage(int mbSheetId)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
     }
 
     int GetRowSpan(MBSheetItemResponse currItem, List<MBSheetItemResponse> items)
@@ -189,11 +194,6 @@
     {
         return items.Where(i => i.MBookItemId == mBookItemId)
             .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
-    }
-
-    void GoToEditPage(int mbSheetId)
-    {
-        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
     }
 }
 

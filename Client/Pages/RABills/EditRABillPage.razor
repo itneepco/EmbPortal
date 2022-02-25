@@ -1,0 +1,12 @@
+﻿@page "/mbook/{MBookId}/rabill/{RABillId}"
+@attribute [Authorize]
+
+<h3>Edit Page</h3>
+
+@code {
+    [Parameter]
+    public string MBookId { get; set; }
+
+    [Parameter]
+    public string RABillId { get; set; }
+}

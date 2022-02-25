@@ -38,6 +38,14 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(new GetMBookByIdQuery(id)));
         }
 
+        [HttpGet("{id}/ItemStatus")]
+        public async Task<ActionResult<List<MBItemStatusResponse>>> GetCurrentMBItemsStatus(int id)
+        {
+            var query = new GetCurrentMBookItemsStatusQuery(id);
+
+            return Ok(await Mediator.Send(query));
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

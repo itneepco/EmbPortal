@@ -36,6 +36,19 @@ namespace Application.CQRS.MBSheets.Command
                 throw new NotFoundException($"Measurement Sheet does not exist with Id: {request.MBSheetID}");
             }
 
+            mbSheet.SetMeasurementDate((DateTime)request.Data.MeasurementDate);
+            mbSheet.SetTitle(request.Data.Title);
+
+            // iterate over all mbsheet items and remove items that are not in request object
+            //foreach (var item in mbSheet.Items)
+            //{
+            //    var itemInRequest = request.Data.Items.Find(p => p.Id == item.Id);
+            //    if (itemInRequest == null)
+            //    {
+            //        mbSheet.RemoveLineItem(item);
+            //    }
+            //}
+
             MeasurementBook mBook = await _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
                 .Include(p => p.Items)
@@ -50,9 +63,7 @@ namespace Application.CQRS.MBSheets.Command
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
             }
 
-            mbSheet.SetMeasurementDate((DateTime) request.Data.MeasurementDate);
-            mbSheet.SetTitle(request.Data.Title);
-
+            // iterate over all items in request object and update the mbsheet items
             foreach (var item in request.Data.Items)
             {
                 // if the item total quantity is less than or equal to zero, raise exception

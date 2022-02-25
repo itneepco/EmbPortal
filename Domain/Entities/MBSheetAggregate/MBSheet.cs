@@ -44,6 +44,11 @@ namespace Domain.Entities.MBSheetAggregate
             _items.Add(item);
         }
 
+        public void RemoveLineItem(MBSheetItem item)
+        {
+            _items.Remove(item);
+        }
+
         public void MarkAsAccepted()
         {
             Status = MBSheetStatus.ACCEPTED;

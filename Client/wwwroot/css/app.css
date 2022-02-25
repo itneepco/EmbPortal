@@ -1,7 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
 
 html, body {
-    font-family: 'Abel', sans-serif;
+    /*font-family: 'Abel', sans-serif;*/
+    font-family: 'Nanum Gothic', sans-serif;
 }
 
 #blazor-error-ui {

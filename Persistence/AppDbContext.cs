@@ -9,6 +9,7 @@ using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
+using Domain.Entities.RABillAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -32,6 +33,7 @@ namespace Persistence
         public DbSet<WorkOrder> WorkOrders { get ; set ; }
         public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
         public DbSet<MBSheet> MBSheets { get; set; }
+        public DbSet<RABill> RABills { get; set; }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
