@@ -1,50 +1,92 @@
 ﻿@page "/mbook/{MBookId}/rabill"
 @attribute [Authorize]
+<Row Justify="center">
+    <AntDesign.Col Lg="20" Md="22" Sm="24">
+        <h3>Add Recurring Account Bill</h3>
+        <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+            <Row Gutter="16">
+                <AntDesign.Col Span="16">
+                    <FormItem Label="RA Bill Title">
+                        <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
+                    </FormItem>
+                </AntDesign.Col>
+                <AntDesign.Col Span="8">
+                    <FormItem Label="RA Bill Date">
+                        <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                    </FormItem>
+                </AntDesign.Col>
+            </Row>
+            <RABillItemTable ModelItems="@model.Items"/>
+           <!--<Table TItem="RABillItemRequest"
+                   DataSource="@model.Items"
+                   Size="@TableSize.Small"
+                   Loading="@loading"
+                   Bordered HidePagination>
+                <Column Title="Description" @bind-Field="@context.ItemDescription"></Column>
+                <Column Title="Unit Rate" @bind-Field="@context.UnitRate" Width="10%"></Column>
+                <Column Title="Measured Qty (A)" @bind-Field="@context.AcceptedMeasuredQty" Width="10%"></Column>
+                <Column Title="Till Last RA Qty" @bind-Field="@context.TillLastRAQty" Width="10%"></Column>
+                <Column Title="Available Qty" TData="float" DataIndex="@nameof(context.AvailableQty)" Width="10%" />
+                <Column Title="Current RA Qty" TData="float" DataIndex="@nameof(context.CurrentRAQty)" Width="10%">
+                    <Input Type="text" @bind-Value="context.CurrentRAQty" />
+                </Column>
+            </Table>-->
 
-<h3>Add Recurring Account Bill</h3>
+            <FormItem Style="margin-top: 1rem">
+                <Row Justify="end">
+                    <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
+                    <Button HtmlType="submit" Type="@ButtonType.Primary">Submit</Button>
+                </Row>
+            </FormItem>
+        </Form>
+    </AntDesign.Col>
+</Row>
 
-<Table TItem="RABillItemRequest"
-       DataSource="@model.Items"
-       Size="@TableSize.Small"
-       Loading="@loading"
-       Bordered HidePagination>
-    <Column Title="Description" @bind-Field="@context.ItemDescription"></Column>
-    <Column Title="Unit Rate" @bind-Field="@context.UnitRate" Width="10%"></Column>
-    <Column Title="Measured Qty (A)" @bind-Field="@context.AcceptedMeasuredQty" Width="10%"></Column>
-    <Column Title="Till Last RA Qty" @bind-Field="@context.TillLastRAQty" Width="10%"></Column>
-    <Column Title="Available Qty" TData="float" DataIndex="@nameof(context.AvailableQty)" Width="10%" />
-    <Column Title="Current RA Qty" TData="float" DataIndex="@nameof(context.CurrentRAQty)" Width="10%" >
-        <Input Type="text" @bind-Value="context.CurrentRAQty" />
-    </Column>
-</Table>
 
-@code {
-    [Parameter]
-    public string MBookId { get; set; }
+   
 
-    RABillRequest model = new();
-    bool loading;
+    @code {
+        [Parameter]
+        public string MBookId { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadCurrentMBookItemsStatusAsync();
-    }
-
-    async Task LoadCurrentMBookItemsStatusAsync()
-    {
-        loading = true;
-        var items = await mBookService.GetCurrentMBItemsStatus(int.Parse(MBookId));
-        loading = false;
-
-        foreach (var item in items)
+        RABillRequest model = new RABillRequest
         {
-            model.Items.Add(new RABillItemRequest { 
-                MBookItemId = item.MBookItemId,
-                ItemDescription = item.ItemDescription,
-                UnitRate = item.UnitRate,
-                AcceptedMeasuredQty = item.AcceptedMeasuredQty,
-                TillLastRAQty = item.TillLastRAQty
-            });
+            Items = new List<RABillItemRequest>()
+        };
+        bool loading;
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadCurrentMBookItemsStatusAsync();
+        }
+
+        async Task LoadCurrentMBookItemsStatusAsync()
+        {
+            loading = true;
+            var items = await mBookService.GetCurrentMBItemsStatus(int.Parse(MBookId));
+            loading = false;
+
+            foreach (var item in items)
+            {
+                model.Items.Add(new RABillItemRequest
+                {
+                    MBookItemId = item.MBookItemId,
+                    ItemDescription = item.ItemDescription,
+                    UnitRate = item.UnitRate,
+                    AcceptedMeasuredQty = item.AcceptedMeasuredQty,
+                    TillLastRAQty = item.TillLastRAQty
+                });
+            }
+        }
+
+        async Task OnFormSubmit()
+        {
+            
+            await messageService.Error("Method Not Implemented");
+        }
+
+        void GoToMBookDetailPage()
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}/2");
         }
     }
-}
