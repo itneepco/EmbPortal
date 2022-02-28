@@ -15,6 +15,7 @@ namespace Application
 
             services.AddScoped<IMeasurementBookService, MeasurementBookService>();
             services.AddScoped<IWorkOrderService, WorkOrderService>();
+            services.AddScoped<IRABillService, RABillService>();
 
             return services;
         }

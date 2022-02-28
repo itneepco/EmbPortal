@@ -23,7 +23,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("{mBSheetId}")]
-        public async Task<ActionResult<List<MBSheetResponse>>> GetMBSheetsById(int mBSheetId)
+        [ProducesResponseType(typeof(MBSheetResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MBSheetResponse>> GetMBSheetsById(int mBSheetId)
         {
             var query = new GetMBSheetByIdQuery(mBSheetId);
 

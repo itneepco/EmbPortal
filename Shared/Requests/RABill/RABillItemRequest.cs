@@ -5,7 +5,7 @@ namespace EmbPortal.Shared.Requests
     public class RABillItemRequest
     {
         public int MBookItemId { get; set; }
-        public string ItemDescription { get; set; }
+        public string MBookItemDescription { get; set; }
         public decimal UnitRate { get; set; }
         public float AcceptedMeasuredQty { get; set; }
         public float TillLastRAQty { get; set; }

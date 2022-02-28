@@ -16,21 +16,7 @@
                     </FormItem>
                 </AntDesign.Col>
             </Row>
-            <RABillItemTable ModelItems="@model.Items"/>
-           <!--<Table TItem="RABillItemRequest"
-                   DataSource="@model.Items"
-                   Size="@TableSize.Small"
-                   Loading="@loading"
-                   Bordered HidePagination>
-                <Column Title="Description" @bind-Field="@context.ItemDescription"></Column>
-                <Column Title="Unit Rate" @bind-Field="@context.UnitRate" Width="10%"></Column>
-                <Column Title="Measured Qty (A)" @bind-Field="@context.AcceptedMeasuredQty" Width="10%"></Column>
-                <Column Title="Till Last RA Qty" @bind-Field="@context.TillLastRAQty" Width="10%"></Column>
-                <Column Title="Available Qty" TData="float" DataIndex="@nameof(context.AvailableQty)" Width="10%" />
-                <Column Title="Current RA Qty" TData="float" DataIndex="@nameof(context.CurrentRAQty)" Width="10%">
-                    <Input Type="text" @bind-Value="context.CurrentRAQty" />
-                </Column>
-            </Table>-->
+            <RABillItemTable ModelItems="@model.Items" />
 
             <FormItem Style="margin-top: 1rem">
                 <Row Justify="end">
@@ -43,50 +29,67 @@
 </Row>
 
 
-   
+@code {
+    [Parameter]
+    public string MBookId { get; set; }
 
-    @code {
-        [Parameter]
-        public string MBookId { get; set; }
+    RABillRequest model = new RABillRequest
+    {
+        Items = new List<RABillItemRequest>()
+    };
 
-        RABillRequest model = new RABillRequest
+    bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCurrentMBookItemsStatusAsync();
+        model.MeasurementBookId = int.Parse(MBookId);
+    }
+
+    async Task LoadCurrentMBookItemsStatusAsync()
+    {
+        loading = true;
+        var items = await mBookService.GetCurrentMBItemsStatus(int.Parse(MBookId));
+        loading = false;
+
+        foreach (var item in items)
         {
-            Items = new List<RABillItemRequest>()
-        };
-        bool loading;
-
-        protected override async Task OnInitializedAsync()
-        {
-            await LoadCurrentMBookItemsStatusAsync();
-        }
-
-        async Task LoadCurrentMBookItemsStatusAsync()
-        {
-            loading = true;
-            var items = await mBookService.GetCurrentMBItemsStatus(int.Parse(MBookId));
-            loading = false;
-
-            foreach (var item in items)
+            model.Items.Add(new RABillItemRequest
             {
-                model.Items.Add(new RABillItemRequest
-                {
-                    MBookItemId = item.MBookItemId,
-                    ItemDescription = item.ItemDescription,
-                    UnitRate = item.UnitRate,
-                    AcceptedMeasuredQty = item.AcceptedMeasuredQty,
-                    TillLastRAQty = item.TillLastRAQty
-                });
-            }
-        }
-
-        async Task OnFormSubmit()
-        {
-            
-            await messageService.Error("Method Not Implemented");
-        }
-
-        void GoToMBookDetailPage()
-        {
-            navManager.NavigateTo($"/mbooks/{MBookId}/2");
+                MBookItemId = item.MBookItemId,
+                MBookItemDescription = item.ItemDescription,
+                UnitRate = item.UnitRate,
+                AcceptedMeasuredQty = item.AcceptedMeasuredQty,
+                TillLastRAQty = item.TillLastRAQty
+            });
         }
     }
+
+    async Task OnFormSubmit()
+    {
+        if (model.Items.Where(p => p.CurrentRAQty > 0).ToList().Count < 1)
+        {
+            await messageService.Error("Atleast one line item should have non zero value");
+            return;
+        }
+
+        loading = true;
+        dynamic result = await raBillService.CreateRABill(model);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}/3");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void GoToMBookDetailPage()
+    {
+        navManager.NavigateTo($"/mbooks/{MBookId}/3");
+    }
+}

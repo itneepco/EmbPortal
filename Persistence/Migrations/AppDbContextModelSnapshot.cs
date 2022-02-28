@@ -445,11 +445,10 @@ namespace Persistence.Migrations
                     b.Property<int>("MBookItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("RABillId")
+                    b.Property<int>("RABillId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Remarks")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -817,9 +816,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABillItem", b =>
                 {
-                    b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
+                    b.HasOne("Domain.Entities.RABillAggregate.RABill", "RABill")
                         .WithMany("Items")
-                        .HasForeignKey("RABillId");
+                        .HasForeignKey("RABillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RABill");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>

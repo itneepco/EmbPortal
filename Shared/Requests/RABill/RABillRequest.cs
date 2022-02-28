@@ -10,6 +10,7 @@ namespace EmbPortal.Shared.Requests
         public string Title { get; set; }
         [Required]
         public DateTime? BillDate { get; set; }
+        public int MeasurementBookId { get; set; }
         public List<RABillItemRequest> Items { get; set; } = new();
     }
 }

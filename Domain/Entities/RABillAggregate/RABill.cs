@@ -22,5 +22,23 @@ namespace Domain.Entities.RABillAggregate
         public RABill()
         {
         }
+
+        public RABill(string title, DateTime billDate, int mBookId)
+        {
+            Title = title;
+            BillDate = billDate;
+            MeasurementBookId = mBookId;
+            Status = RABillStatus.CREATED;
+        }
+
+        public void AddLineItem(RABillItem item)
+        {
+            _items.Add(item);
+        }
+
+        public void RemoveLineItem(RABillItem item)
+        {
+            _items.Remove(item);
+        }
     }
 }

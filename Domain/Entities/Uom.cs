@@ -1,5 +1,7 @@
 using Domain.Common;
+using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Enums;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -9,6 +11,7 @@ namespace Domain.Entities
         public string Name { get;  set; }
         public string Description { get; set; }
         public UomDimension Dimension { get; set; }
+        public IReadOnlyList<WorkOrderItem> WorkOrderItems { get; set; }
 
         private Uom()
         {

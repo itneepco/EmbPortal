@@ -33,6 +33,7 @@ namespace Client
                 .AddScoped<IUomService, UomService>()
                 .AddScoped<IMBookService, MBookService>()
                 .AddScoped<IMBSheetService, MBSheetService>()
+                .AddScoped<IRABillService, RABillService>()
                 .AddScoped<IUserService, UserService>();
 
             builder.Services.AddHttpClientInterceptor();

@@ -39,16 +39,6 @@ namespace Application.CQRS.MBSheets.Command
             mbSheet.SetMeasurementDate((DateTime)request.Data.MeasurementDate);
             mbSheet.SetTitle(request.Data.Title);
 
-            // iterate over all mbsheet items and remove items that are not in request object
-            //foreach (var item in mbSheet.Items)
-            //{
-            //    var itemInRequest = request.Data.Items.Find(p => p.Id == item.Id);
-            //    if (itemInRequest == null)
-            //    {
-            //        mbSheet.RemoveLineItem(item);
-            //    }
-            //}
-
             MeasurementBook mBook = await _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
                 .Include(p => p.Items)
@@ -61,6 +51,16 @@ namespace Application.CQRS.MBSheets.Command
             if (mBook == null)
             {
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
+            }
+
+            // iterate over all mbsheet items and remove items that are not in request object
+            foreach (var item in mbSheet.Items.ToList())
+            {
+                var itemInRequest = request.Data.Items.Find(p => p.Id == item.Id);
+                if (itemInRequest == null)
+                {
+                    mbSheet.RemoveLineItem(item);
+                }
             }
 
             // iterate over all items in request object and update the mbsheet items

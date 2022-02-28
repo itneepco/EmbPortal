@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class AddedRABill : Migration
+    public partial class RABillAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,9 +45,9 @@ namespace Persistence.Migrations
                     AcceptedMeasuredQty = table.Column<float>(type: "REAL", nullable: false),
                     TillLastRAQty = table.Column<float>(type: "REAL", nullable: false),
                     CurrentRAQty = table.Column<float>(type: "REAL", nullable: false),
-                    Remarks = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Remarks = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RABillId = table.Column<int>(type: "INTEGER", nullable: true),
+                    RABillId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
                     LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -61,7 +61,7 @@ namespace Persistence.Migrations
                         column: x => x.RABillId,
                         principalTable: "RABills",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

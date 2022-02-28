@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
+using Domain.Entities.RABillAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
 
@@ -54,6 +55,11 @@ namespace Application.Mappings
             CreateMap<MBSheet, MBSheetResponse>();
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
+
+            CreateMap<RABill, RABillResponse>();
+
+            CreateMap<RABillItem, RABillItemResponse>()
+                .ForMember(dest => dest.MBookItemDescription, opt => opt.MapFrom(src => src.ItemDescription));
         }
     }
 }

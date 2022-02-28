@@ -28,13 +28,13 @@
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%"></Column>
             <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%"></Column>
             <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%"></Column>
-            <Column Title="Cumulative Measured Qty" TData="float" Width="8%">
+            <Column Title="Measured Qty (Cum)" TData="float" Width="8%">
                 @context.CumulativeMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Accepted Measured Qty" TData="float" Width="8%">
+            <Column Title="Measured Qty (A)" TData="float" Width="8%">
                 @context.AcceptedMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Measurement Progess" TData="int" Width="15%">
+            <Column Title="Measurement Progess (Cum)" TData="int" Width="15%">
                 <Progress Size=ProgressSize.Small Percent=@context.MeasurementProgess />
             </Column>
         </Table>
@@ -44,7 +44,7 @@
         <MBSheetLists MBookId="int.Parse(Id)" MBItems="@data.Items" />
     </TabPane>
 
-    <TabPane Tab="RA Bill" Key="3">
+    <TabPane Tab="Recurring Account Bill" Key="3">
         <RABillList MBookId="int.Parse(Id)" />
     </TabPane>
 </Tabs>

@@ -8,7 +8,7 @@ namespace Persistence.Configurations.RecurringAccountBill
     {
         public void Configure(EntityTypeBuilder<RABillItem> builder)
         {
-            builder.Property(p => p.Remarks).HasMaxLength(100).IsRequired();
+            builder.Property(p => p.Remarks).HasMaxLength(100);
             builder.Property(p => p.ItemDescription).HasMaxLength(250).IsRequired();
 
             builder.Property(p => p.CreatedBy).HasMaxLength(6);

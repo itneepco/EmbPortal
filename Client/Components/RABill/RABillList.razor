@@ -5,9 +5,110 @@
     Add RA Bill
 </Button>
 
+<Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" HidePagination Bordered>
+    <RowTemplate>
+        <Column Title="RA Bill Title" @bind-Field="@context.Title" />
+        <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="10%" />
+        <Column @bind-Field="@context.Status" Width="10%">
+            @if (context.Status == RABillStatus.APPROVED)
+            {
+                <Tag Color="gold">@context.Status</Tag>
+            }
+            else
+            {
+                <Tag Color="green">@context.Status</Tag>
+            }
+        </Column>
+        <ActionColumn Title="Action" Width="20%">
+            <Row Justify="ceter">
+                @if (context.Status == RABillStatus.CREATED)
+                {
+                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
+
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="()=> DeleteRABill(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger />
+                    </Popconfirm>
+
+                    <Popconfirm Title="Sure to approve RA Bill?"
+                                OnConfirm="()=> ApproveRABill(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Size="@ButtonSize.Small" Loading="@loading" Type="@ButtonType.Primary" />
+                    </Popconfirm>
+                }
+                @if (context.Status == RABillStatus.APPROVED)
+                {
+                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
+                                OnConfirm="()=> RevokeRABillStatus(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                    </Popconfirm>
+                }
+            </Row>
+        </ActionColumn>
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table DataSource="rowData.Data.Items" Size="@TableSize.Small" HidePagination Bordered>
+            <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
+            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
+            <Column Title="Measured Qty" TData="float" Width="8%">
+                @context.AcceptedMeasuredQty.ToString("0.00")
+            </Column>
+            <Column Title="Till Last RA" TData="float" Width="8%">
+                @context.TillLastRAQty.ToString("0.00")
+            </Column>
+            <Column Title="Current RA Qty" TData="float" Width="8%">
+                @context.CurrentRAQty.ToString("0.00")
+            </Column>
+            <Column Title="Current RA (Rs)" TData="decimal" Width="10%">
+                @context.CurrentRAAmount.ToString("0.00")
+            </Column>
+            <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="15%" />
+        </Table>
+    </ExpandTemplate>
+</Table>
+
 @code {
     [Parameter]
     public int MBookId { get; set; }
+
+    List<RABillResponse> raBills = new();
+    bool loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRABills();
+    }
+
+    async Task LoadRABills()
+    {
+        loading = true;
+        raBills = await raBillService.GetRABillsByMBookId(MBookId);
+        loading = false;
+    }
+
+    async Task DeleteRABill(int id)
+    {
+        loading = true;
+        var result = await raBillService.DeleteRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBills = raBills.Where(item => item.Id != id).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
 
     void GoToAddPage()
     {
@@ -17,5 +118,13 @@
     void GoToEditPage(int raBillId)
     {
         navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
+    }
+
+    void RevokeRABillStatus(int id)
+    {
+    }
+
+    void ApproveRABill(int id)
+    {
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace EmbPortal.Shared.Responses.RABills
+namespace EmbPortal.Shared.Responses
 {
     public class RABillResponse
     {

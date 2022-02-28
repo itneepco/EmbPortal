@@ -12,9 +12,21 @@ namespace Domain.Entities.RABillAggregate
         public float CurrentRAQty { get; private set; }
         public string Remarks { get; private set; } // character 100 max limit
         public int MBookItemId { get; private set; }
+        public int RABillId { get; set; }
+        public RABill RABill { get; set; }
 
         public RABillItem()
         {
+        }
+
+        public RABillItem(string desc, decimal rate, float acceptedMeasuredQty, float tillLastRAQty, float currentRAQty, string remarks)
+        {
+            ItemDescription = desc;
+            UnitRate = rate;
+            AcceptedMeasuredQty = acceptedMeasuredQty;
+            TillLastRAQty = tillLastRAQty;
+            CurrentRAQty = currentRAQty;
+            Remarks = remarks;
         }
     }
 }
