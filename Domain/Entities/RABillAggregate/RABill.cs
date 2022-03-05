@@ -40,5 +40,15 @@ namespace Domain.Entities.RABillAggregate
         {
             _items.Remove(item);
         }
+
+        public void SetTitle(string title)
+        {
+            this.Title = title;
+        }
+
+        public void SetBillDate(DateTime billDate)
+        {
+            this.BillDate = billDate;
+        }
     }
 }

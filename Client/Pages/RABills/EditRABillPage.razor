@@ -1,7 +1,36 @@
 ﻿@page "/mbook/{MBookId}/rabill/{RABillId}"
 @attribute [Authorize]
 
-<h3>Edit Page</h3>
+
+<Row Justify="center">
+    <AntDesign.Col Lg="20" Md="22" Sm="24">
+        <h3>Edit RA Bill</h3>
+
+        <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+            <Row Gutter="16">
+                <AntDesign.Col Span="16">
+                    <FormItem Label="RA Bill Title">
+                        <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
+                    </FormItem>
+                </AntDesign.Col>
+                <AntDesign.Col Span="8">
+                    <FormItem Label="RA Bill Date">
+                        <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                    </FormItem>
+                </AntDesign.Col>
+            </Row>
+
+            <RABillItemTable ModelItems="@model.Items" />
+
+            <FormItem Style="margin-top: 1rem">
+                <Row Justify="end">
+                    <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
+                    <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+                </Row>
+            </FormItem>
+        </Form>
+    </AntDesign.Col>
+</Row>
 
 @code {
     [Parameter]
@@ -9,4 +38,60 @@
 
     [Parameter]
     public string RABillId { get; set; }
+
+    RABillResponse raBill;
+    bool loading = false;
+    RABillRequest model = new RABillRequest
+    {
+        Items = new List<RABillItemRequest>()
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRABillDetailsAsync();
+    }
+
+    async Task LoadRABillDetailsAsync()
+    {
+        loading = true;
+        var result = await raBillService.GetRABillById(int.Parse(RABillId));
+        loading = false;
+
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}/2");
+            await messageService.Warning(result.Message);
+            return;
+        }
+
+        raBill = result.Data;
+        model.Title = raBill.Title;
+        model.BillDate = raBill.BillDate;
+
+        foreach (var item in raBill.Items)
+        {
+            model.Items.Add(new RABillItemRequest
+            {
+                AcceptedMeasuredQty = item.AcceptedMeasuredQty,
+                CurrentRAQty = item.CurrentRAQty,
+                TillLastRAQty = item.TillLastRAQty,
+                Remarks = item.Remarks,
+                MBookItemId = item.MBookItemId,
+                MBookItemDescription = item.MBookItemDescription
+            });
+        }
+
+        model.Items = model.Items.OrderBy(i => i.MBookItemId)
+                .ThenBy(i => i.GetHashCode())
+                .ToList();
+
+        StateHasChanged();
+    }
+    async Task OnFormSubmit()
+    {
+    }
+    void GoToMBookDetailPage()
+    {
+        navManager.NavigateTo($"/mbooks/{MBookId}/2");
+    }
 }
