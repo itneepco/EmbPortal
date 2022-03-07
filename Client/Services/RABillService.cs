@@ -32,9 +32,10 @@ namespace Client.Services
             return await response.ToResult();
         }
 
-        public Task<IResult> EditRABill(int id, RABillRequest request)
+        public async Task<IResult> EditRABill(int id, RABillRequest request)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.PutAsJsonAsync($"/api/RABill/{id}", request);
+            return await response.ToResult(); ;
         }
 
         public async Task<List<RABillResponse>> GetRABillsByMBookId(int mBookId)
@@ -42,9 +43,9 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<RABillResponse>>($"/api/RABill/MBook/{mBookId}");
         }
 
-        public async Task<IResult<RABillResponse>> GetRABillById(int mbSheetId)
+        public async Task<IResult<RABillResponse>> GetRABillById(int id)
         {
-            var response = await _httpClient.GetAsync($"/api/RABill/{mbSheetId}");
+            var response = await _httpClient.GetAsync($"/api/RABill/{id}");
             return await response.ToResult<RABillResponse>();
         }
 
