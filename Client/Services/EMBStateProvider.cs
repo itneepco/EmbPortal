@@ -47,15 +47,32 @@ namespace Client.Services
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            var anonymousState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+
             if (string.IsNullOrWhiteSpace(savedToken))
             {
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                return anonymousState;
             }
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
             var claimsFromJwt = GetClaimsFromJwt(savedToken);
+
+            // Checks the exp field of the token
+            var expiry = claimsFromJwt.Where(claim => claim.Type.Equals("exp")).FirstOrDefault();
+            if (expiry == null)
+            {
+                return anonymousState;
+            }
+
+            // The exp field is in Unix time
+            var datetime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiry.Value));
+            if (datetime.UtcDateTime <= DateTime.UtcNow)
+            {
+                return anonymousState;
+            }
+
             var state = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claimsFromJwt, "jwt")));
             AuthenticationStateUser = state.User;
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
 
             return state;
         }

@@ -6,7 +6,7 @@ namespace EmbPortal.Shared.Requests
     {
         public int Id { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "Nos should be atleast 1")]
         public int Nos { get; set; } = 1;
         
         [Required] 
@@ -20,7 +20,6 @@ namespace EmbPortal.Shared.Requests
 
         public string MBookItemDescription { get; set; }
 
-        [Range(float.MinValue, float.MaxValue, ErrorMessage = "Please enter a value bigger than 0")]
         public float Value1 { get; set; }
 
         public float Value2 { get; set; }

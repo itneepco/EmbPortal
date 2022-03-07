@@ -42,6 +42,30 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [HttpPut("{id}/Approve")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ApproveRABill(int id)
+        {
+            var command = new ApproveRABillCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/Revoke")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> RevokeRABill(int id)
+        {
+            var command = new RevokeRABillCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

@@ -4,7 +4,13 @@
         Visible="@Visible"
         OnClose="@CloseSidebar">
 
-    <Form Model="@MBSheetItem" OnFinish="@OnSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+    <Form @ref="form"
+          Model="@MBSheetItem"
+          OnFinish="@OnSubmit"
+          Layout="@FormLayout.Vertical"
+          ValidateMode="@FormValidateMode.Complex"
+          Loading="@loading">
+
         <FormItem Label="Select Measurement Book Line Item" Required>
             <Select DataSource="@MBookItems"
                     @bind-Value="@lineItemId"
@@ -23,7 +29,7 @@
         <Row Gutter="12">
             <AntDesign.Col Span="12">
                 <FormItem Label="Uom">
-                    <Input Placeholder="Uom" @bind-Value="@context.Uom" TValue="string" Disabled />
+                    <Input Placeholder="Uom" @bind-Value="@context.Uom" Disabled />
                 </FormItem>
             </AntDesign.Col>
 
@@ -36,14 +42,14 @@
 
         <Row Gutter="12">
             <AntDesign.Col Flex="1">
-                <FormItem Label="Value 1">
+                <FormItem Label="Value 1" Rules=@(valueGreaterThanZero)>
                     <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
                 </FormItem>
             </AntDesign.Col>
             @if (context.Dimension > 1)
             {
                 <AntDesign.Col Flex="1">
-                    <FormItem Label="Value 2">
+                    <FormItem Label="Value 2" Rules=@(valueGreaterThanZero)>
                         <Input Placeholder="Value 2" @bind-Value="@context.Value2" TValue="float" />
                     </FormItem>
                 </AntDesign.Col>
@@ -52,12 +58,18 @@
             @if (context.Dimension > 2)
             {
                 <AntDesign.Col Flex="1">
-                    <FormItem Label="Value 3">
+                    <FormItem Label="Value 3" Rules=@(valueGreaterThanZero)>
                         <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
                     </FormItem>
                 </AntDesign.Col>
             }
         </Row>
+
+        @if (selectedItem != null)
+        {
+            <Tag Color="purple-inverse">Balance Quantity: @selectedItem.BalanceQuantity.ToString("0.00")</Tag>
+            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.00")</Tag>
+        }
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
@@ -88,19 +100,34 @@
     [Parameter]
     public List<MBookItemResponse> MBookItems { get; set; }
 
-    int lineItemId;
-    bool loading = false;
-    string title = "Add / Edit MB Sheet Item";
+    private AntDesign.Form<MBSheetItemRequest> form;
+
+    private MBookItemResponse selectedItem;
+    private int lineItemId;
+    private bool loading = false;
+    private string title = "Add / Edit MB Sheet Item";
+
+    private FormValidationRule[] valueGreaterThanZero = new FormValidationRule[]{
+        new FormValidationRule { Type=FormFieldType.Float, Min=(decimal)0.001, Message="Value should be atleast 0.001" }
+    };
 
     protected override void OnParametersSet()
     {
         lineItemId = MBSheetItem.MBookItemId;
     }
 
-    void OnSubmit()
+    async Task OnSubmit()
     {
-        MBSheetItemChanged.InvokeAsync(MBSheetItem);
-        OnItemSubmit.InvokeAsync();
+        if (selectedItem == null) return;
+
+        if(MBSheetItem.Total > selectedItem.BalanceQuantity)
+        {
+            await messageService.Error($"Entered quantity should be less or equal to {selectedItem.BalanceQuantity}");
+            return;
+        }
+
+        await MBSheetItemChanged.InvokeAsync(MBSheetItem);
+        await OnItemSubmit.InvokeAsync();
         CloseSidebar();
     }
 
@@ -112,11 +139,21 @@
 
     void SelectLineItem(MBookItemResponse item)
     {
-        if (item == null) return;
+        selectedItem = item;
 
-        MBSheetItem.Dimension = item.Dimension;
-        MBSheetItem.MBookItemDescription = item.Description;
-        MBSheetItem.MBookItemId = item.Id;
-        MBSheetItem.Uom = item.Uom;
+        if (item == null)
+        {
+            MBSheetItem.Dimension = 0;
+            MBSheetItem.MBookItemDescription = null;
+            MBSheetItem.MBookItemId = 0;
+            MBSheetItem.Uom = null;
+        }
+        else
+        {
+            MBSheetItem.Dimension = item.Dimension;
+            MBSheetItem.MBookItemDescription = item.Description;
+            MBSheetItem.MBookItemId = item.Id;
+            MBSheetItem.Uom = item.Uom;
+        }
     }
 }

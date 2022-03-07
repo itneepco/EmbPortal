@@ -1,6 +1,7 @@
 ﻿using EmbPortal.Shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EmbPortal.Shared.Responses
 {
@@ -13,5 +14,7 @@ namespace EmbPortal.Shared.Responses
         public DateTime ApprovalDate { get; set; }
         public int MeasurementBookId { get; set; }
         public List<RABillItemResponse> Items { get; set; }
+
+        public decimal RABillTotalAmount => Items.Aggregate((decimal)0, (curr, item) => curr + item.CurrentRAAmount);
     }
 }

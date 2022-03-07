@@ -47,5 +47,17 @@ namespace Client.Services
             var response = await _httpClient.GetAsync($"/api/RABill/{mbSheetId}");
             return await response.ToResult<RABillResponse>();
         }
+
+        public async Task<IResult> ApproveRABill(int raBillId)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/RABill/{raBillId}/Approve", "");
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> RevokeRABill(int raBillId)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/RABill/{raBillId}/Revoke", "");
+            return await response.ToResult();
+        }
     }
 }

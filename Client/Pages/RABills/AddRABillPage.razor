@@ -1,7 +1,7 @@
 ﻿@page "/mbook/{MBookId}/rabill"
 @attribute [Authorize]
 <Row Justify="center">
-    <AntDesign.Col Lg="20" Md="22" Sm="24">
+    <AntDesign.Col Xl="20" Md="22" Sm="24">
         <h3>Add Recurring Account Bill</h3>
         <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
             <Row Gutter="16">
@@ -69,12 +69,12 @@
     {
         if (model.Items.Where(p => p.CurrentRAQty > 0).ToList().Count < 1)
         {
-            await messageService.Error("Atleast one line item should have non zero value");
+            await messageService.Error("Atleast one line item should have value greater than 0");
             return;
         }
 
         loading = true;
-        dynamic result = await raBillService.CreateRABill(model);
+        var result = await raBillService.CreateRABill(model);
         loading = false;
 
         if (result.Succeeded)
@@ -84,7 +84,16 @@
         }
         else
         {
-            await messageService.Error(result.Message);
+            if(result.Errors.Count == 0)
+            {
+                await messageService.Error(result.Message);
+                return;
+            }
+
+            foreach (var error in result.Errors)
+            {
+                messageService.Error(error);
+            }
         }
     }
 

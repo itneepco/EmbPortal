@@ -40,5 +40,16 @@ namespace Domain.Entities.RABillAggregate
         {
             _items.Remove(item);
         }
+
+        public void MarkAsApproved()
+        {
+            Status = RABillStatus.APPROVED;
+            ApprovalDate = DateTime.Now;
+        }
+
+        public void MarkAsRevoked()
+        {
+            Status = RABillStatus.REVOKED;
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace Application.CQRS.RABills.Commands
                 throw new NotFoundException(nameof(raBill), request.Id);
             }
 
-            if (raBill.Status != RABillStatus.CREATED)
+            if (raBill.Status == RABillStatus.APPROVED)
             {
                 throw new BadRequestException("Approved RA Bill cannot be deleted");
             }

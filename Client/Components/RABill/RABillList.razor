@@ -1,18 +1,26 @@
 ﻿<Button OnClick="() => GoToAddPage()"
         Icon="@IconType.Outline.Plus"
         Type="@ButtonType.Primary"
+        Disabled="@raBills.Any(p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)"
         style="margin-bottom: 0.5rem;">
     Add RA Bill
 </Button>
 
 <Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" HidePagination Bordered>
     <RowTemplate>
-        <Column Title="RA Bill Title" @bind-Field="@context.Title" />
+        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)"/>
+        <Column Title="RA Bill Amount" TData="decimal" Width="15%">
+            Rs. @context.RABillTotalAmount.ToString("0.00")
+        </Column>
         <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="10%" />
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == RABillStatus.APPROVED)
             {
                 <Tag Color="gold">@context.Status</Tag>
+            }
+            else if (context.Status == RABillStatus.REVOKED)
+            {
+                <Tag Color="blue">@context.Status</Tag>
             }
             else
             {
@@ -21,7 +29,7 @@
         </Column>
         <ActionColumn Title="Action" Width="20%">
             <Row Justify="ceter">
-                @if (context.Status == RABillStatus.CREATED)
+                @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
                 {
                     <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
 
@@ -36,16 +44,16 @@
                                 OnConfirm="()=> ApproveRABill(context.Id)"
                                 OkText="Yes"
                                 CancelText="No">
-                        <Button Size="@ButtonSize.Small" Loading="@loading" Type="@ButtonType.Primary" />
+                        <Button Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Approve</Button>
                     </Popconfirm>
                 }
-                @if (context.Status == RABillStatus.APPROVED)
+                @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId)
                 {
                     <Popconfirm Title="Sure to Revoke RA Bill Status?"
                                 OnConfirm="()=> RevokeRABillStatus(context.Id)"
                                 OkText="Yes"
                                 CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                        <Button Danger Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Revoke</Button>
                     </Popconfirm>
                 }
             </Row>
@@ -79,6 +87,7 @@
 
     List<RABillResponse> raBills = new();
     bool loading = false;
+    int latestRaBillId => raBills.Select(p => p.Id).Max();
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,11 +129,39 @@
         navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
     }
 
-    void RevokeRABillStatus(int id)
+    async Task RevokeRABillStatus(int id)
     {
+        loading = true;
+        var result = await raBillService.RevokeRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadRABills();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
-    void ApproveRABill(int id)
+    async Task ApproveRABill(int id)
     {
+        loading = true;
+        var result = await raBillService.ApproveRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadRABills();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }

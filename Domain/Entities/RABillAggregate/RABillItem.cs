@@ -19,8 +19,9 @@ namespace Domain.Entities.RABillAggregate
         {
         }
 
-        public RABillItem(string desc, decimal rate, float acceptedMeasuredQty, float tillLastRAQty, float currentRAQty, string remarks)
+        public RABillItem(int mbItemId, string desc, decimal rate, float acceptedMeasuredQty, float tillLastRAQty, float currentRAQty, string remarks)
         {
+            MBookItemId = mbItemId;
             ItemDescription = desc;
             UnitRate = rate;
             AcceptedMeasuredQty = acceptedMeasuredQty;

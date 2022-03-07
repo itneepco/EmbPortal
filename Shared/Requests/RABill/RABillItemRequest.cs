@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
 {
-    public class RABillItemRequest
+    public class RABillItemRequest : IValidatableObject
     {
         public int MBookItemId { get; set; }
         public string MBookItemDescription { get; set; }
@@ -17,5 +18,20 @@ namespace EmbPortal.Shared.Requests
         public float AvailableQty => AcceptedMeasuredQty - TillLastRAQty;
 
         public decimal AvailableAmount => UnitRate * (decimal)AvailableQty;
+
+        public decimal CurrentRAAmount => UnitRate * (decimal)CurrentRAQty;
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if(CurrentRAQty > AvailableQty)
+            {
+                yield return new ValidationResult(GetErrorMessage(), new[] { nameof(CurrentRAQty) });
+            }
+        }
+
+        private string GetErrorMessage()
+        {
+            return $"Current RA Qty {CurrentRAQty} must be less than or equal to {AvailableQty.ToString("0.00")}";
+        }
     }
 }

@@ -17,11 +17,13 @@ namespace Application.CQRS.MeasurementBooks.Query
     {
         private readonly IAppDbContext _context;
         private readonly IMeasurementBookService _mBookService;
+        private readonly IRABillService _raBillService;
 
-        public GetCurrentMBookItemsStatusQueryHandler(IAppDbContext context, IMeasurementBookService mBookService)
+        public GetCurrentMBookItemsStatusQueryHandler(IAppDbContext context, IMeasurementBookService mBookService, IRABillService raBillService)
         {
             _context = context;
             _mBookService = mBookService;
+            _raBillService = raBillService;
         }
 
         public async Task<List<MBItemStatusResponse>> Handle(GetCurrentMBookItemsStatusQuery request, CancellationToken cancellationToken)
@@ -37,20 +39,24 @@ namespace Application.CQRS.MeasurementBooks.Query
             }
 
             // Fetch the MB items status
-            List<MBookItemQtyStatus> itemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
+            List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
+
+            // Fetch the cumulative RA items quantity
+            List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(mBook.Id);
 
             List<MBItemStatusResponse> itemStatusResponses = new();
             foreach (var item in mBook.Items)
             {
-                var itemQtyStatus = itemQtyStatuses.Find(i => i.MBookItemId == item.Id);
+                var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.MBookItemId == item.Id);
+                var raItemQtyStatus = raItemQtyStatuses.Find(i => i.MBookItemId == item.Id);
 
                 itemStatusResponses.Add(new MBItemStatusResponse
                 {
                     MBookItemId = item.Id,
                     ItemDescription = item.WorkOrderItem.Description,
                     UnitRate = item.WorkOrderItem.UnitRate,
-                    AcceptedMeasuredQty = itemQtyStatus != null ? itemQtyStatus.AcceptedMeasuredQty : 0,
-                    TillLastRAQty = 0 // TODO - Calculate the Till Last RA Quantity from the database
+                    AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
+                    TillLastRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0
                 });
             }
 

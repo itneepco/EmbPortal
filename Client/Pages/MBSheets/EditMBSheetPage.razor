@@ -41,26 +41,35 @@ else
 }
 
 @code {
-    [Parameter]
-    public string MBookId { get; set; }
+        [Parameter]
+        public string MBookId { get; set; }
 
-    [Parameter]
-    public string MBSheetId { get; set; }
+        [Parameter]
+        public string MBSheetId { get; set; }
 
-    MBookDetailResponse data;
-    MBSheetResponse mBSheet;
+        MBookDetailResponse data;
+        MBSheetResponse mBSheet;
 
-    MBSheetRequest model = new MBSheetRequest
-    {
-        Items = new List<MBSheetItemRequest>()
-    };
+        MBSheetRequest model = new MBSheetRequest
+        {
+            Items = new List<MBSheetItemRequest>()
+        };
 
-    bool loading = false;
+        bool loading = false;
 
     protected override async Task OnParametersSetAsync()
     {
         await LoadMBookDetailsAsync();
         await LoadMBSheetDetailsAsync();
+
+        foreach (var item in data.Items)
+        {
+            var mbSheetItem = mBSheet.Items.Find(i => i.MBookItemId == item.Id);
+            if (mbSheetItem != null)
+            {
+                item.CumulativeMeasuredQty -= mbSheetItem.Quantity;
+            }
+        }
     }
 
     async Task LoadMBookDetailsAsync()

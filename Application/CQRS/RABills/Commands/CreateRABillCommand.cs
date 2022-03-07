@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,14 @@ namespace Application.CQRS.RABills.Commands
 
         public async Task<int> Handle(CreateRABillCommand request, CancellationToken cancellationToken)
         {
+            bool anyActiveRaBill = await _context.RABills.AnyAsync(
+                p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED);
+
+            if(anyActiveRaBill)
+            {
+                throw new BadRequestException("Cannot create new RA Bill when there are exsiting unapproved RA Bill");
+            }
+
             MeasurementBook mBook = await _context.MeasurementBooks
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
@@ -66,6 +75,7 @@ namespace Application.CQRS.RABills.Commands
                 }
 
                 raBill.AddLineItem(new RABillItem(
+                    mbItemId: mBookItem.Id,
                     desc: mBookItem.WorkOrderItem.Description,
                     rate: mBookItem.WorkOrderItem.UnitRate,
                     acceptedMeasuredQty: mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
@@ -78,6 +88,11 @@ namespace Application.CQRS.RABills.Commands
             _context.RABills.Add(raBill);
             await _context.SaveChangesAsync(cancellationToken);
             return raBill.Id;
+        }
+
+        private Exception BadRequestException(string v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

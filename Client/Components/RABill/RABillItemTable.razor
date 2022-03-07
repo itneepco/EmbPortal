@@ -1,20 +1,66 @@
-﻿<Table TItem="RABillItemRequest" DataSource="@ModelItems" Size="@TableSize.Small" Loading="@loading" Bordered HidePagination>
+﻿<Table TItem="RABillItemRequest"
+       DataSource="@ModelItems"
+       Size="@TableSize.Small"
+       Loading="@loading"
+       RowClassName="@(x => x.Data.CurrentRAQty > x.Data.AvailableQty ? "danger" : null)"
+       Bordered HidePagination>
 
-    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="45"></Column>
-    <Column Title="Unit Rate" @bind-Field="@context.UnitRate" Width="8%"></Column>
-    <Column Title="Measured Qty (A)" @bind-Field="@context.AcceptedMeasuredQty" Width="8%"></Column>
-    <Column Title="Till Last RA Qty" @bind-Field="@context.TillLastRAQty" Width="8%"></Column>
-    <Column Title="Available Qty" TData="float" DataIndex="@nameof(context.AvailableQty)" Width="8%" />
-    <Column Title="Current RA Qty" TData="float" Width="8%">
+    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="35%"></Column>
+    <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="7%" />
+    <Column Title="Measured Qty (A)" TData="float" Width="7%">
+        @context.AcceptedMeasuredQty.ToString("0.00")
+    </Column>
+    <Column Title="Till Last RA Qty" TData="float" Width="7%">
+        @context.TillLastRAQty.ToString("0.00")
+    </Column>
+    <Column Title="Available Qty" TData="float" Width="7%">
+        @context.AvailableQty.ToString("0.00")
+    </Column>
+    <Column Title="Available Amt (Rs)" TData="decimal" Width="8%">
+        @context.AvailableAmount.ToString("0.00")
+    </Column>
+    <Column Title="Current Qty" TData="float" Width="8%">
         <Input Type="text" @bind-Value="context.CurrentRAQty" />
     </Column>
-    <Column Title="Remarks" TData="float" Width="15%">
+    <Column Title="Current Amt (Rs)" TData="decimal" Width="8%">
+        @context.CurrentRAAmount.ToString("0.00")
+    </Column>
+    <Column Title="Remarks" TData="float" Width="13%">
         <Input Type="text" @bind-Value="context.Remarks" />
     </Column>
+
+    <SummaryRow>
+        <SummaryCell ColSpan="4" Style="text-align:right">
+            <Text Style="font-weight: bold">Total</Text>
+         </SummaryCell>
+        <SummaryCell ColSpan="2" Style="text-align:right">
+            <Text Mark>Rs. @GetTotalAvailableAmount().ToString("0.00")</Text>
+        </SummaryCell>
+        <SummaryCell ColSpan="2" Style="text-align:right">
+            <Text Mark>Rs. @GetTotalCurrentRAAmount().ToString("0.00")</Text>
+        </SummaryCell>
+        <SummaryCell />
+    </SummaryRow>
 </Table>
+
+<style>
+    .danger {
+        background-color: #fff1f0;
+    }
+</style>
 
 @code {
     [Parameter]
     public List<RABillItemRequest> ModelItems { get; set; }
     bool loading;
+
+    decimal GetTotalAvailableAmount()
+    {
+        return ModelItems.Aggregate((decimal)0, (curr, item) => curr + item.AvailableAmount);
+    }
+
+    decimal GetTotalCurrentRAAmount()
+    {
+        return ModelItems.Aggregate((decimal)0, (curr, item) => curr + item.CurrentRAAmount);
+    }
 }

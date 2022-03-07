@@ -27,12 +27,15 @@
 @using EmbPortal.Shared.Responses
 @using EmbPortal.Shared.Extensions
 @using EmbPortal.Shared.Enums
+@using EmbPortal.Shared.Validations
 @using Services
 @using Services.Interfaces
 
 @*Ant design services*@
 @inject MessageService messageService
 @inject ModalService modalService
+@inject NotificationService noticeService
+
 @*emb services*@
 @inject IProjectService projectservice
 @inject IContractorService contractorService
