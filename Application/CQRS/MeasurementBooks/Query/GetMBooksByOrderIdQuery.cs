@@ -37,20 +37,6 @@ namespace Application.CQRS.MeasurementBooks.Query
                 .AsNoTracking()
                 .ProjectToListAsync<MBookResponse>(_mapper.ConfigurationProvider);
 
-            // Calculating the Item Quantity Status for each measurement book items --- START ---
-            foreach (var mBook in mBooks)
-            {
-                List<MBookItemQtyStatus> itemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
-
-                foreach (var item in mBook.Items)
-                {
-                    var itemQtyStatus = itemQtyStatuses.Find(i => i.MBookItemId == item.Id);
-                    item.AcceptedMeasuredQty = itemQtyStatus != null ? itemQtyStatus.AcceptedMeasuredQty : 0;
-                    item.CumulativeMeasuredQty = itemQtyStatus != null ? itemQtyStatus.CumulativeMeasuredQty : 0;
-                }
-            }
-            // --- END ---
-
             return mBooks;
         }
     }

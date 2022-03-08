@@ -25,16 +25,18 @@ namespace Application.CQRS.MeasurementBooks.Query
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _userService;
-        private readonly IMeasurementBookService _mBookService;
+        private readonly IMeasurementBookService _mBookService; 
+        private readonly IRABillService _raBillService;
 
         private Expression<Func<MeasurementBook, bool>> Criteria { set; get; }
 
-        public GetMBookByIdQueryHandler(IMapper mapper, IAppDbContext context, ICurrentUserService userService, IMeasurementBookService mBookService)
+        public GetMBookByIdQueryHandler(IMapper mapper, IAppDbContext context, ICurrentUserService userService, IMeasurementBookService mBookService, IRABillService raBillService)
         {
             _mapper = mapper;
             _context = context;
             _userService = userService;
             _mBookService = mBookService;
+            _raBillService = raBillService;
         }
 
         public async Task<MBookDetailResponse> Handle(GetMBookByIdQuery request, CancellationToken cancellationToken)
@@ -54,27 +56,33 @@ namespace Application.CQRS.MeasurementBooks.Query
 
             query = query.Where(Criteria);
 
-            var mbook = await query.ProjectTo<MBookDetailResponse>(_mapper.ConfigurationProvider)
+            var mBook = await query.ProjectTo<MBookDetailResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == request.Id);
 
-            if (mbook == null)
+            if (mBook == null)
             {
-                throw new NotFoundException(nameof(mbook), request.Id);
+                throw new NotFoundException(nameof(MeasurementBook), request.Id);
             }
 
-            // Calculating the Item Quantity Status for each measurement book items --- START ---
-            List<MBookItemQtyStatus> itemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mbook.Id);
-            
-            foreach (var item in mbook.Items)
+            // Fetch the MB items status
+            List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
+
+            // Fetch the cumulative RA items quantity
+            List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(mBook.Id);
+
+            foreach (var item in mBook.Items)
             {
-                var itemQtyStatus = itemQtyStatuses.Find(i => i.MBookItemId == item.Id);
-                item.AcceptedMeasuredQty = itemQtyStatus != null ? itemQtyStatus.AcceptedMeasuredQty : 0;
-                item.CumulativeMeasuredQty = itemQtyStatus != null ? itemQtyStatus.CumulativeMeasuredQty : 0;
+                var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.MBookItemId == item.Id);
+                var raItemQtyStatus = raItemQtyStatuses.Find(i => i.MBookItemId == item.Id);
+
+                item.AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0;
+                item.CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.CumulativeMeasuredQty : 0;
+                item.CumulativeRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0;
             }
             // --- END ---
 
-            return mbook;
+            return mBook;
         }
     }
 }

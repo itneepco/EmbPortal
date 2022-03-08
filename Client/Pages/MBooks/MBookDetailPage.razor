@@ -24,7 +24,7 @@
         <Divider>Measurement Book Items</Divider>
 
         <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%"></Column>
+            <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%"></Column>
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%"></Column>
             <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%"></Column>
             <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%"></Column>
@@ -34,8 +34,11 @@
             <Column Title="Measured Qty (A)" TData="float" Width="8%">
                 @context.AcceptedMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Measurement Progess (Cum)" TData="int" Width="15%">
+            <Column Title="Measurement Progess (Cum)" TData="int" Width="12%">
                 <Progress Size=ProgressSize.Small Percent=@context.MeasurementProgess />
+            </Column>
+            <Column Title="RA Qty (Cum)" TData="float" Width="8%">
+                @context.CumulativeRAQty.ToString("0.00")
             </Column>
         </Table>
     </TabPane>

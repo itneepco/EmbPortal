@@ -67,8 +67,8 @@
 
         @if (selectedItem != null)
         {
-            <Tag Color="purple-inverse">Balance Quantity: @selectedItem.BalanceQuantity.ToString("0.00")</Tag>
-            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.00")</Tag>
+            <Tag Color="purple-inverse">Balance Quantity: @selectedItem.BalanceQuantity.ToString("0.000")</Tag>
+            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.000")</Tag>
         }
 
         <Row Style="margin-top: 2rem">

@@ -13,6 +13,7 @@ namespace EmbPortal.Shared.Responses
         public int Dimension { get; set; }
         public float AcceptedMeasuredQty { get; set; }
         public float CumulativeMeasuredQty { get; set; }
+        public float CumulativeRAQty { get; set; }
 
         public decimal TotalAmount
         {

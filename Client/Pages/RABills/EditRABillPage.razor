@@ -1,7 +1,6 @@
 ﻿@page "/mbook/{MBookId}/rabill/{RABillId}"
 @attribute [Authorize]
 
-
 <Row Justify="center">
     <AntDesign.Col Lg="20" Md="22" Sm="24">
         <h3>Edit RA Bill</h3>
@@ -48,6 +47,27 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadCurrentMBookItemsStatusAsync();
+    }
+
+    async Task LoadCurrentMBookItemsStatusAsync()
+    {
+        loading = true;
+        var items = await mBookService.GetCurrentMBItemsStatus(int.Parse(MBookId));
+        loading = false;
+
+        foreach (var item in items)
+        {
+            model.Items.Add(new RABillItemRequest
+            {
+                MBookItemId = item.MBookItemId,
+                MBookItemDescription = item.ItemDescription,
+                UnitRate = item.UnitRate,
+                AcceptedMeasuredQty = item.AcceptedMeasuredQty,
+                TillLastRAQty = item.TillLastRAQty
+            });
+        }
+
         await LoadRABillDetailsAsync();
     }
 
@@ -59,39 +79,50 @@
 
         if (!result.Succeeded)
         {
-            navManager.NavigateTo($"/mbooks/{MBookId}/2");
+            navManager.NavigateTo($"/mbooks/{MBookId}/3");
             await messageService.Warning(result.Message);
             return;
         }
 
-        raBill = result.Data;
-        model.Title = raBill.Title;
-        model.BillDate = raBill.BillDate;
+        model.Title = result.Data.Title;
+        model.BillDate = result.Data.BillDate;
+        model.MeasurementBookId = result.Data.MeasurementBookId;
 
-        foreach (var item in raBill.Items)
+        foreach (var item in model.Items)
         {
-            model.Items.Add(new RABillItemRequest
-            {
-                AcceptedMeasuredQty = item.AcceptedMeasuredQty,
-                CurrentRAQty = item.CurrentRAQty,
-                TillLastRAQty = item.TillLastRAQty,
-                Remarks = item.Remarks,
-                MBookItemId = item.MBookItemId,
-                MBookItemDescription = item.MBookItemDescription
-            });
+            var oldRaItem = result.Data.Items.Find(p => p.MBookItemId == item.MBookItemId);
+            item.CurrentRAQty = oldRaItem != null ? oldRaItem.CurrentRAQty : 0;
+            item.Remarks = oldRaItem != null ? oldRaItem.Remarks : "";
         }
-
-        model.Items = model.Items.OrderBy(i => i.MBookItemId)
-                .ThenBy(i => i.GetHashCode())
-                .ToList();
 
         StateHasChanged();
     }
+
     async Task OnFormSubmit()
     {
+        if (model.Items.Where(p => p.CurrentRAQty > 0).ToList().Count < 1)
+        {
+            await messageService.Error("Atleast one line item should have value greater than 0");
+            return;
+        }
+
+        loading = true;
+        dynamic result = await raBillService.EditRABill(int.Parse(RABillId), model);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}/3");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
+
     void GoToMBookDetailPage()
     {
-        navManager.NavigateTo($"/mbooks/{MBookId}/2");
+        navManager.NavigateTo($"/mbooks/{MBookId}/3");
     }
 }

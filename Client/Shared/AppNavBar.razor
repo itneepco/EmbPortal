@@ -24,7 +24,7 @@
         }
 
         @* For administrator only *@
-        @if (currentUser != null && currentUser.IsInRole("Admin"))
+        @*@if (currentUser != null && currentUser.IsInRole("Admin"))
         {
             <MenuItem Key="3">
                 <MenuLink Href="/users">
@@ -36,7 +36,7 @@
                     <span>Uoms</span>
                 </MenuLink>
             </MenuItem>
-        }
+        }*@
 
         <div class="profile">
             <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">

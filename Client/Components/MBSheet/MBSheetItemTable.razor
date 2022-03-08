@@ -49,6 +49,9 @@
     [Parameter]
     public List<MBSheetItemRequest> ModelItems { get; set; }
 
+    [Parameter]
+    public EventCallback<List<MBSheetItemRequest>> ModelItemsChanged { get; set; }
+
     MBSheetItemRequest currentMBSheetItem = new();
     bool drawerVisible = false;
     bool isEdit = false;
@@ -95,7 +98,7 @@
         drawerVisible = false;
     }
 
-    void OnItemSubmit()
+    async Task OnItemSubmit()
     {
         if(!isEdit)
         {
@@ -104,6 +107,8 @@
 
         currentMBSheetItem = new();
         SortModelItems();
+
+        await ModelItemsChanged.InvokeAsync(ModelItems);
     }
 
     void SortModelItems()

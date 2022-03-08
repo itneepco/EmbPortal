@@ -1,11 +1,10 @@
 ﻿<Table TItem="RABillItemRequest"
        DataSource="@ModelItems"
        Size="@TableSize.Small"
-       Loading="@loading"
        RowClassName="@(x => x.Data.CurrentRAQty > x.Data.AvailableQty ? "danger" : null)"
        Bordered HidePagination>
 
-    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="35%"></Column>
+    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="32%"></Column>
     <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="7%" />
     <Column Title="Measured Qty (A)" TData="float" Width="7%">
         @context.AcceptedMeasuredQty.ToString("0.00")
@@ -19,13 +18,13 @@
     <Column Title="Available Amt (Rs)" TData="decimal" Width="8%">
         @context.AvailableAmount.ToString("0.00")
     </Column>
-    <Column Title="Current Qty" TData="float" Width="8%">
+    <Column Title="Current Qty" TData="float" Width="10%">
         <Input Type="text" @bind-Value="context.CurrentRAQty" />
     </Column>
     <Column Title="Current Amt (Rs)" TData="decimal" Width="8%">
         @context.CurrentRAAmount.ToString("0.00")
     </Column>
-    <Column Title="Remarks" TData="float" Width="13%">
+    <Column Title="Remarks" TData="float" Width="14%">
         <Input Type="text" @bind-Value="context.Remarks" />
     </Column>
 
@@ -52,7 +51,6 @@
 @code {
     [Parameter]
     public List<RABillItemRequest> ModelItems { get; set; }
-    bool loading;
 
     decimal GetTotalAvailableAmount()
     {

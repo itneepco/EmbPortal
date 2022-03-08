@@ -1,5 +1,6 @@
 ﻿@page "/mbook/{MBookId}/rabill"
 @attribute [Authorize]
+
 <Row Justify="center">
     <AntDesign.Col Xl="20" Md="22" Sm="24">
         <h3>Add Recurring Account Bill</h3>
@@ -16,6 +17,7 @@
                     </FormItem>
                 </AntDesign.Col>
             </Row>
+
             <RABillItemTable ModelItems="@model.Items" />
 
             <FormItem Style="margin-top: 1rem">

@@ -29,5 +29,22 @@ namespace Domain.Entities.RABillAggregate
             CurrentRAQty = currentRAQty;
             Remarks = remarks;
         }
+
+        public void SetAcceptedMeasuredQty(float val)
+        {
+            AcceptedMeasuredQty = val;
+        }
+        public void SetTillLastRAQty(float val)
+        {
+            TillLastRAQty = val;
+        }
+        public void SetCurrentRAQty(float val)
+        {
+            CurrentRAQty = val;
+        }
+        public void SetRemarks(string val)
+        {
+            Remarks = val;
+        }
     }
 }
