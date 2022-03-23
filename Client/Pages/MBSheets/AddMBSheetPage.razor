@@ -54,46 +54,55 @@
     {
         loading = true;
         model.MeasurementBookId = int.Parse(MBookId); // set measurement book id
-        dynamic result = await mbSheetService.CreateMBSheet(model);
 
-        if (result.Succeeded)
+        if(mbSheet == null)
         {
-            IResult<MBSheetResponse> fetchResult = await mbSheetService.GetMBSheetById(result.Data);
-            mbSheet = fetchResult.Data;
-            loading = false;
-            await messageService.Success("Successfully created MB Sheet Header");
+            var result = await mbSheetService.CreateMBSheet(model);
+            if (result.Succeeded)
+            {
+                await LoadMBookDetailsAsync(result.Data);
+                await messageService.Success("Successfully Created MB Sheet Header");
+            }
+            else
+            {
+                await messageService.Error(result.Message);
+            }
         }
         else
         {
-            loading = false;
-            await messageService.Error(result.Message);
+            var result = await mbSheetService.EditMBSheet(mbSheet.Id, model);
+            if (result.Succeeded)
+            {
+                await LoadMBookDetailsAsync(mbSheet.Id);
+                await messageService.Success("Successfully Updated MB Sheet Header");
+            }
+            else
+            {
+                await messageService.Error(result.Message);
+            }
         }
+
+        loading = false;
+        StateHasChanged();
     }
 
-    async Task LoadMBookDetailsAsync()
+    async Task LoadMBookDetailsAsync(int mbSheetId)
     {
-        if (mbSheet == null) return;
-
         loading = true;
-        var result = await mbSheetService.GetMBSheetById(mbSheet.Id);
-        loading = false;
-
-        if (!result.Succeeded)
-        {
-            navManager.NavigateTo($"/mbooks/{MBookId}");
-            await messageService.Warning(result.Message);
-            return;
-        }
-
+        var result = await mbSheetService.GetMBSheetById(mbSheetId);
         mbSheet = result.Data;
         mbSheet.Items = mbSheet.Items.OrderBy(p => p.MBookItemId).ThenBy(p => p.Id).ToList();
+        loading = false;
 
         StateHasChanged();
     }
 
     async Task ReloadPage()
     {
-        await LoadMBookDetailsAsync();
+        if(mbSheet != null)
+        {
+            await LoadMBookDetailsAsync(mbSheet.Id);
+        }
     }
 
     void GoToMBookDetailPage()
