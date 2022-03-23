@@ -38,7 +38,7 @@
                     <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger/>
                 </Popconfirm>
             }
-            @if (context.Status == MBSheetStatus.CREATED.ToString() && employeeCode == context.ValidationOfficer)
+            @if (context.Status == MBSheetStatus.CREATED.ToString() && employeeCode == context.ValidationOfficer && context.Items.Count() > 0)
             {
                 <Popconfirm Title="Sure to Validate MB Sheet?"
                             OnConfirm="()=> ValidateMBSheet(context.Id)"

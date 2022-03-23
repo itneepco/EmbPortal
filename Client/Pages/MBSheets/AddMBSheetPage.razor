@@ -1,102 +1,99 @@
 ﻿@page "/mbook/{MBookId}/mbsheet"
 @attribute [Authorize]
 
-@if (data != null)
-{
-    <Row Justify="center">
-        <AntDesign.Col Lg="20" Md="22" Sm="24">
-            <h3>Add MB Sheet</h3>
+<Row Justify="center">
+    <AntDesign.Col Lg="20" Md="22" Sm="24">
+        <h3>Add MB Sheet</h3>
 
-            <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
-                <Row Gutter="16">
-                    <AntDesign.Col Span="16">
-                        <FormItem Label="MB Sheet Title">
-                            <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
-                        </FormItem>
-                    </AntDesign.Col>
-                    <AntDesign.Col Span="8">
-                        <FormItem Label="Measurement Date">
-                            <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                        </FormItem>
-                    </AntDesign.Col>
-                </Row>
+        <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+            <Row Gutter="16">
+                <AntDesign.Col Span="14">
+                    <FormItem Label="MB Sheet Title">
+                        <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
+                    </FormItem>
+                </AntDesign.Col>
+                <AntDesign.Col Span="6">
+                    <FormItem Label="Measurement Date">
+                        <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                    </FormItem>
+                </AntDesign.Col>
+                <AntDesign.Col Span="4">
+                    <FormItem Label="Action">
+                        <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+                    </FormItem>
+                </AntDesign.Col>
+            </Row>
+        </Form>
 
-                <MBSheetItemTable @bind-ModelItems="@model.Items" MBookItemResponses="@data.Items" />
+        @if (mbSheet != null)
+        {
+            <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId" >
+                <CascadingValue Value="@mbSheet.Id" Name="MBSheetId">
+                    <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
+                </CascadingValue>
+            </CascadingValue>
+        }
 
-                <FormItem Style="margin-top: 1rem">
-                    <Row Justify="end">
-                        <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
-                        <Button HtmlType="submit" Type="@ButtonType.Primary">Submit</Button>
-                    </Row>
-                </FormItem>
-            </Form>
-        </AntDesign.Col>
-    </Row>
-}
-else
-{
-    <Spin>
-        <Empty />
-    </Spin>
-}
+        <Row Justify="start" Style="margin-top: 2rem;">
+            <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
+        </Row>
+    </AntDesign.Col>
+</Row>
 
 @code {
     [Parameter]
     public string MBookId { get; set; }
 
-    public MBookDetailResponse data { get; set; }
-
-    MBSheetRequest model = new MBSheetRequest
-    {
-        Items = new List<MBSheetItemRequest>()
-    };
+    MBSheetResponse mbSheet;
 
     bool loading = false;
 
-    protected override async Task OnParametersSetAsync()
+    MBSheetRequest model = new();
+
+    async Task OnFormSubmit()
     {
-        await LoadMBookDetailsAsync();
-        model.MeasurementBookId = int.Parse(MBookId);
+        loading = true;
+        model.MeasurementBookId = int.Parse(MBookId); // set measurement book id
+        dynamic result = await mbSheetService.CreateMBSheet(model);
+
+        if (result.Succeeded)
+        {
+            IResult<MBSheetResponse> fetchResult = await mbSheetService.GetMBSheetById(result.Data);
+            mbSheet = fetchResult.Data;
+            loading = false;
+            await messageService.Success("Successfully created MB Sheet Header");
+        }
+        else
+        {
+            loading = false;
+            await messageService.Error(result.Message);
+        }
     }
 
     async Task LoadMBookDetailsAsync()
     {
+        if (mbSheet == null) return;
+
         loading = true;
-        var result = await mBookService.GetMBooksById(int.Parse(MBookId));
+        var result = await mbSheetService.GetMBSheetById(mbSheet.Id);
         loading = false;
 
         if (!result.Succeeded)
         {
-            navManager.NavigateTo("/mbooks");
+            navManager.NavigateTo($"/mbooks/{MBookId}");
             await messageService.Warning(result.Message);
             return;
         }
 
-        data = result.Data;
+        mbSheet = result.Data;
+        mbSheet.Items = mbSheet.Items.OrderBy(p => p.MBookItemId).ThenBy(p => p.Id).ToList();
+
         StateHasChanged();
     }
 
-    async Task OnFormSubmit()
+    async Task ReloadPage()
     {
-        if (model.Items.Where(p => p.Total > 0).ToList().Count < 1)
-        {
-            await messageService.Error("Please select at least one item and add measurement details");
-            return;
-        }
-
-        loading = true;
-        dynamic result = await mbSheetService.CreateMBSheet(model);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            navManager.NavigateTo($"/mbooks/{MBookId}/2");
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
+        await LoadMBookDetailsAsync();
     }
 
     void GoToMBookDetailPage()

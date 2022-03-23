@@ -23,7 +23,7 @@
     </AntDesign.Col>
 </Row>
 
-<Table TItem="MBookInfoResponse"
+<Table TItem="MBookHeaderResponse"
        DataSource="@mBooks"
        Loading="loading"
        OnChange="@LoadMBooksAsync"
@@ -41,8 +41,8 @@
 </Table>
 
 @code {
-    List<MBookInfoResponse> mBooks = new();
-    IEnumerable<MBookInfoResponse> selectedRows;
+    List<MBookHeaderResponse> mBooks = new();
+    IEnumerable<MBookHeaderResponse> selectedRows;
 
     int pageIndex = 1;
     int pageSize = 10;

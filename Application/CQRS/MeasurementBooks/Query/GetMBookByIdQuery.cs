@@ -78,7 +78,7 @@ namespace Application.CQRS.MeasurementBooks.Query
 
                 item.AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0;
                 item.CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.CumulativeMeasuredQty : 0;
-                item.CumulativeRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0;
+                item.TillLastRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0;
             }
             // --- END ---
 

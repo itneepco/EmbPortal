@@ -25,15 +25,15 @@ namespace Client.Services
             return await response.ToResult<int>();
         }
 
-        public async Task<IResult> EditMBSheet(int id, MBSheetRequest request)
+        public async Task<IResult> EditMBSheet(int mbSheetId, MBSheetRequest request)
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}", request);
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{mbSheetId}", request);
             return await response.ToResult();
         }
 
-        public async Task<IResult> DeleteMBSheet(int id)
+        public async Task<IResult> DeleteMBSheet(int mbSheetId)
         {
-            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{id}");
+            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}");
             return await response.ToResult();
         }
 
@@ -42,21 +42,39 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<MBSheetResponse>>($"/api/MBSheet/MBook/{mBookId}");
         }
 
-        public async Task<IResult<MBSheetResponse>> GetMBSheetsById(int mbSheetId)
+        public async Task<IResult<MBSheetResponse>> GetMBSheetById(int mbSheetId)
         {
             var response = await _httpClient.GetAsync($"/api/MBSheet/{mbSheetId}");
             return await response.ToResult<MBSheetResponse>();
         }
 
-        public async Task<IResult> AcceptMBSheet(int id)
+        public async Task<IResult> AcceptMBSheet(int mbSheetId)
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}/Accept", "");
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{mbSheetId}/Accept", "");
             return await response.ToResult();
         }
 
-        public async Task<IResult> ValidateMBSheet(int id)
+        public async Task<IResult> ValidateMBSheet(int mbSheetId)
         {
-            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}/Validate", "");
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{mbSheetId}/Validate", "");
+            return await response.ToResult();
+        }
+
+        public async Task<IResult<int>> CreateMBSheetItem(int mbSheetId, MBSheetItemRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/MBSheet/{mbSheetId}/Item", request);
+            return await response.ToResult<int>();
+        }
+
+        public async Task<IResult> UpdateMBSheetItem(int mbSheetId, int itemId, MBSheetItemRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}", request);
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> DeleteMBSheetItem(int mbSheetId, int itemId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}");
             return await response.ToResult();
         }
     }

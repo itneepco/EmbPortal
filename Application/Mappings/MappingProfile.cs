@@ -45,7 +45,7 @@ namespace Application.Mappings
                 .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
                 .ForMember(m => m.UnitRate, opt => opt.MapFrom(p => p.WorkOrderItem.UnitRate));
 
-            CreateMap<MeasurementBook, MBookInfoResponse>()
+            CreateMap<MeasurementBook, MBookHeaderResponse>()
                 .ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.WorkOrder.OrderNo))
                 .ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.WorkOrder.OrderDate))
                 .ForMember(m => m.Contractor, opt => opt.MapFrom(p => p.WorkOrder.Contractor.Name));

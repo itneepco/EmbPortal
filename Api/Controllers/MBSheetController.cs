@@ -89,5 +89,37 @@ namespace Api.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("{mbSheetId}/Item")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> CreateMBSheetItem(int mbSheetId, MBSheetItemRequest data)
+        {
+            var command = new CreateMBSheetItemCommand(mbSheetId, data);
+
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPut("{mbSheetId}/Item/{itemId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> UpdateMBSheetItem(int mbSheetId, int itemId, MBSheetItemRequest data)
+        {
+            var command = new EditMBSheetItemCommand(itemId, mbSheetId, data);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{mbSheetId}/Item/{itemId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteMBSheetItem(int mbSheetId, int itemId)
+        {
+            var command = new DeleteMBSheetItemCommand(itemId, mbSheetId);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }

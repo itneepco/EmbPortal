@@ -1,4 +1,6 @@
-﻿namespace EmbPortal.Shared.Responses
+﻿using System;
+
+namespace EmbPortal.Shared.Responses
 {
     public class MBSheetItemResponse
     {
@@ -17,18 +19,22 @@
         {
             get
             {
+                float val;
+
                 if (Dimension == 3)
                 {
-                    return Nos * Value1 * Value2 * Value3;
+                    val = Nos * Value1 * Value2 * Value3;
                 }
                 else if (Dimension == 2)
                 {
-                    return Nos * Value1 * Value2;
+                    val = Nos * Value1 * Value2;
                 }
                 else
                 {
-                    return Nos * Value1;
+                    val = Nos * Value1;
                 }
+
+                return (float)Math.Round(val * 100f) / 100f;
             }
         }
 

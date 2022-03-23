@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
@@ -11,6 +10,5 @@ namespace EmbPortal.Shared.Requests
         [Required]
         public DateTime? MeasurementDate { get; set; }
         public int MeasurementBookId { get; set; }
-        public List<MBSheetItemRequest> Items { get; set; }
     }
 }

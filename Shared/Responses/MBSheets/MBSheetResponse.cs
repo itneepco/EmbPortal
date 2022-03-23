@@ -6,6 +6,7 @@ namespace EmbPortal.Shared.Responses
     public class MBSheetResponse
     {
         public int Id { get; set; }
+        public int MeasurementBookId { get; set; }
         public string Title { get; set; }
         public string MeasurementOfficer { get; set; }
         public DateTime MeasurementDate { get; set; }

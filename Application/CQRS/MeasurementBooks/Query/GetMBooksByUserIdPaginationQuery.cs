@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.MeasurementBooks.Query
 {
-    public record GetMBooksByUserIdPaginationQuery(PagedRequest Data) : IRequest<PaginatedList<MBookInfoResponse>>
+    public record GetMBooksByUserIdPaginationQuery(PagedRequest Data) : IRequest<PaginatedList<MBookHeaderResponse>>
     {
     }
 
-    public class GetMBooksByUserIdPaginationQueryHandler : IRequestHandler<GetMBooksByUserIdPaginationQuery, PaginatedList<MBookInfoResponse>>
+    public class GetMBooksByUserIdPaginationQueryHandler : IRequestHandler<GetMBooksByUserIdPaginationQuery, PaginatedList<MBookHeaderResponse>>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -35,7 +35,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             _userService = userService;
         }
 
-        public async Task<PaginatedList<MBookInfoResponse>> Handle(GetMBooksByUserIdPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<MBookHeaderResponse>> Handle(GetMBooksByUserIdPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
@@ -61,7 +61,7 @@ namespace Application.CQRS.MeasurementBooks.Query
 
 
             return await query.OrderBy(p => p.WorkOrder.OrderDate)
-                .ProjectTo<MBookInfoResponse>(_mapper.ConfigurationProvider)
+                .ProjectTo<MBookHeaderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.Data.PageNumber, request.Data.PageSize);
         }

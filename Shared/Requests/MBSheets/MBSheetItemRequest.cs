@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
 {
@@ -32,18 +33,22 @@ namespace EmbPortal.Shared.Requests
         {
             get
             {
+                float val;
+
                 if(Dimension == 3)
                 {
-                    return Nos * Value1 * Value2 * Value3;
+                    val = Nos * Value1 * Value2 * Value3;
                 }
                 else if (Dimension == 2)
                 {
-                    return Nos * Value1 * Value2;
+                    val = Nos * Value1 * Value2;
                 }
                 else
                 {
-                    return Nos * Value1;
+                    val = Nos * Value1;
                 }
+
+                return (float)Math.Round(val * 100f) / 100f;
             }
         }
     }

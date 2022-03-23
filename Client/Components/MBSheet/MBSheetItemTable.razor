@@ -2,7 +2,7 @@
     Add Measurement
 </Button>
 
-<Table DataSource="@ModelItems" Size="TableSize.Small" HidePagination Bordered>
+<Table DataSource="@MBSheetItems" Size="TableSize.Small" HidePagination Bordered>
     <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="32%" />
     <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="18%" />
     <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
@@ -10,7 +10,9 @@
     <Column Title="L" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
     <Column Title="B" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
     <Column Title="H" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
-    <Column Title="Qty" TData="string" Width="8%">@context.Total.ToString("0.00")</Column>
+    <Column RowSpan="GetRowSpan(context)" Title="Total Qty" TData="decimal" Width="8%">
+        @GetMBookItemTotalQtyInMBSheet(context.MBookItemId).ToString("0.00")
+    </Column>
     <ActionColumn Title="Action" Width="10%">
         <Row Justify="center" Gutter="6">
             <AntDesign.Col>
@@ -36,59 +38,65 @@
     </ActionColumn>
 </Table>
 
-<AddEditMBSheetItemDrawer MBookItems="@MBookItemResponses"
-                       Visible="@drawerVisible"
+<AddEditMBSheetItemDrawer Visible="@drawerVisible"
                        OnClose="@CloseSideBar"
-                       @bind-MBSheetItem="@currentMBSheetItem"
+                       CurrentMBSheetItem="@currentMBSheetItem"
                        OnItemSubmit="@OnItemSubmit" />
 
 @code {
-    [Parameter]
-    public List<MBookItemResponse> MBookItemResponses { get; set; }
+    [CascadingParameter(Name = "MBookId")]
+    public int MBookId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetId")]
+    public int MBSheetId { get; set; }
 
     [Parameter]
-    public List<MBSheetItemRequest> ModelItems { get; set; }
+    public List<MBSheetItemResponse> MBSheetItems { get; set; }
 
     [Parameter]
-    public EventCallback<List<MBSheetItemRequest>> ModelItemsChanged { get; set; }
+    public EventCallback ReloadPage { get; set; }
 
-    MBSheetItemRequest currentMBSheetItem = new();
+    MBSheetItemResponse currentMBSheetItem;
     bool drawerVisible = false;
     bool isEdit = false;
+    bool loading = false;
 
-    int GetRowSpan(MBSheetItemRequest currItem)
+    int GetRowSpan(MBSheetItemResponse currItem)
     {
-        int count = ModelItems.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
+        int count = MBSheetItems.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
 
         if (count > 1)
         {
-            int minMBSheeItemHash = ModelItems.Where(i => i.MBookItemId == currItem.MBookItemId)
-                                  .Select(i => i.GetHashCode())
+            int minId = MBSheetItems.Where(i => i.MBookItemId == currItem.MBookItemId)
+                                  .Select(i => i.Id)
                                   .Min();
 
-            return currItem.GetHashCode() == minMBSheeItemHash ? count : 0;
+            return currItem.Id == minId ? count : 0;
         }
 
         return 1;
     }
 
-    void OnDeleteItem(MBSheetItemRequest item)
+    async Task OnDeleteItem(MBSheetItemResponse item)
     {
-        ModelItems.Remove(item);
-    }
+        loading = true;
+        var result = await mbSheetService.DeleteMBSheetItem(MBSheetId, item.Id);
+        loading = false;
 
-    void OpenSideDrawer(MBSheetItemRequest item)
-    {
-        if(item == null)
+        if (result.Succeeded)
         {
-            isEdit = false; // for adding new item
+            await ReloadPage.InvokeAsync();
+            await messageService.Success(result.Message);
         }
         else
         {
-            isEdit = true; // for editing existing item
+            await messageService.Error(result.Message);
         }
+    }
 
-        currentMBSheetItem = item ?? new MBSheetItemRequest();
+    void OpenSideDrawer(MBSheetItemResponse item)
+    {
+        currentMBSheetItem = item;
         drawerVisible = true;
     }
 
@@ -100,21 +108,19 @@
 
     async Task OnItemSubmit()
     {
-        if(!isEdit)
-        {
-            ModelItems.Add(currentMBSheetItem);
-        }
-
-        currentMBSheetItem = new();
-        SortModelItems();
-
-        await ModelItemsChanged.InvokeAsync(ModelItems);
+        await ReloadPage.InvokeAsync();
     }
 
     void SortModelItems()
     {
-        ModelItems = ModelItems.OrderBy(i => i.MBookItemId)
-                .ThenBy(i => i.GetHashCode())
-                .ToList();
+        MBSheetItems = MBSheetItems.OrderBy(i => i.MBookItemId)
+            .ThenBy(i => i.GetHashCode())
+            .ToList();
+    }
+
+    float GetMBookItemTotalQtyInMBSheet(int mBookItemId)
+    {
+        return MBSheetItems.Where(i => i.MBookItemId == mBookItemId)
+            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
     }
 }

@@ -9,7 +9,7 @@ namespace Client.Services.Interfaces
     public interface IMBookService
     {
         Task<List<MBookResponse>> GetMBooksByWorkOrderId(int orderId);
-        Task<PaginatedList<MBookInfoResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search);
+        Task<PaginatedList<MBookHeaderResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search);
         Task<IResult<MBookDetailResponse>> GetMBooksById(int id);
         Task<List<MBItemStatusResponse>> GetCurrentMBItemsStatus(int id);
         Task<IResult> DeleteMeasurementBook(int id);

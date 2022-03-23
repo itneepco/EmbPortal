@@ -31,6 +31,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             var mBook = await _context.MeasurementBooks
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
+                        .ThenInclude(i => i.Uom)
                 .FirstOrDefaultAsync(p => p.Id == request.MBookId);
 
             if (mBook == null)
@@ -55,6 +56,10 @@ namespace Application.CQRS.MeasurementBooks.Query
                     MBookItemId = item.Id,
                     ItemDescription = item.WorkOrderItem.Description,
                     UnitRate = item.WorkOrderItem.UnitRate,
+                    Dimension = (int)item.WorkOrderItem.Uom.Dimension,
+                    Uom = item.WorkOrderItem.Uom.Name,
+                    PoQuantity = item.WorkOrderItem.PoQuantity,
+                    CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.CumulativeMeasuredQty : 0,
                     AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
                     TillLastRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0
                 });

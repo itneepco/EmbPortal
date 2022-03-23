@@ -102,23 +102,23 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpPut("{workOrderId}/Item/{id}")]
+        [HttpPut("{workOrderId}/Item/{itemId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateWorkOrderItem(int workOrderId, int id, WorkOrderItemRequest data)
+        public async Task<ActionResult> UpdateWorkOrderItem(int workOrderId, int itemId, WorkOrderItemRequest data)
         {
-            var command = new EditWorkOrderItemCommand(id, workOrderId, data);
+            var command = new EditWorkOrderItemCommand(itemId, workOrderId, data);
             await Mediator.Send(command);
 
             return NoContent();
         }
 
-        [HttpDelete("{workOrderId}/Item/{id}")]
+        [HttpDelete("{workOrderId}/Item/{itemId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteWorkOrderItem(int workOrderId, int id)
+        public async Task<ActionResult> DeleteWorkOrderItem(int workOrderId, int itemId)
         {
-            var command = new DeleteWorkOrderItemCommand(id, workOrderId);
+            var command = new DeleteWorkOrderItemCommand(itemId, workOrderId);
             await Mediator.Send(command);
 
             return NoContent();

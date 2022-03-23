@@ -2,7 +2,7 @@
 
 namespace EmbPortal.Shared.Responses
 {
-    public class MBookInfoResponse
+    public class MBookHeaderResponse
     {
         public int Id { get; set; }
         public string Title { get; set; }

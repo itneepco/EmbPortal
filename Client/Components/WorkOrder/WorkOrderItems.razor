@@ -70,8 +70,6 @@
 
         if (result.Succeeded)
         {
-            Items = Items.Where(item => item.Id != itemId).ToList();
-            StateHasChanged();
             await ReloadPage.InvokeAsync();
             await messageService.Success(result.Message);
         }

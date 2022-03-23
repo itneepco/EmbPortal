@@ -1,21 +1,21 @@
 ﻿<Drawer Closable="true"
         Width="550"
-        Title="@title"
+        Title="@(CurrentMBSheetItem == null ?  "Add MB Sheet Item" : "Edit MB Sheet Item")"
         Visible="@Visible"
         OnClose="@CloseSidebar">
 
     <Form @ref="form"
-          Model="@MBSheetItem"
+          Model="@model"
           OnFinish="@OnSubmit"
           Layout="@FormLayout.Vertical"
           ValidateMode="@FormValidateMode.Complex"
           Loading="@loading">
 
         <FormItem Label="Select Measurement Book Line Item" Required>
-            <Select DataSource="@MBookItems"
-                    @bind-Value="@lineItemId"
-                    ValueName="@nameof(MBookItemResponse.Id)"
-                    LabelName="@nameof(MBookItemResponse.Description)"
+            <Select DataSource="@mbItemsStatuses"
+                    @bind-Value="@mbItemId"
+                    ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
+                    LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
                     Placeholder="Select Measurement Book Item"
                     OnSelectedItemChanged="@(item => SelectLineItem(item))"
                     AllowClear>
@@ -67,8 +67,8 @@
 
         @if (selectedItem != null)
         {
-            <Tag Color="purple-inverse">Balance Quantity: @selectedItem.BalanceQuantity.ToString("0.000")</Tag>
-            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.000")</Tag>
+            <Tag Color="purple-inverse">Balance Quantity: @selectedItem.AvailableMeasurementQty.ToString("0.00")</Tag>
+            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.00")</Tag>
         }
 
         <Row Style="margin-top: 2rem">
@@ -82,8 +82,14 @@
 </Drawer>
 
 @code {
+    [CascadingParameter(Name = "MBookId")]
+    public int MBookId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetId")]
+    public int MBSheetId { get; set; }
+
     [Parameter]
-    public MBSheetItemRequest MBSheetItem { get; set; } = new();
+    public MBSheetItemResponse CurrentMBSheetItem { get; set; } = new();
 
     [Parameter]
     public bool Visible { get; set; }
@@ -92,68 +98,116 @@
     public EventCallback<bool> OnClose { get; set; }
 
     [Parameter]
-    public EventCallback<MBSheetItemRequest> MBSheetItemChanged { get; set; }
-
-    [Parameter]
     public EventCallback<bool> OnItemSubmit { get; set; }
 
-    [Parameter]
-    public List<MBookItemResponse> MBookItems { get; set; }
+    public MBSheetItemRequest model { get; set; } = new();
 
     private AntDesign.Form<MBSheetItemRequest> form;
 
-    private MBookItemResponse selectedItem;
-    private int lineItemId;
+    private List<MBItemStatusResponse> mbItemsStatuses = new();
+    private MBItemStatusResponse selectedItem;
+
+    private int mbItemId; // for binding with select input field
     private bool loading = false;
-    private string title = "Add / Edit MB Sheet Item";
 
     private FormValidationRule[] valueGreaterThanZero = new FormValidationRule[]{
         new FormValidationRule { Type=FormFieldType.Float, Min=(decimal)0.001, Message="Value should be atleast 0.001" }
     };
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        lineItemId = MBSheetItem.MBookItemId;
+        if (Visible) // fetch MB Item status only when drawer is visible
+        {
+            await LoadCurrentMBookItemsStatusAsync();
+        }
+
+        model = new();
+
+        if (CurrentMBSheetItem != null)
+        {
+            mbItemId = CurrentMBSheetItem.MBookItemId;
+
+            model.Description = CurrentMBSheetItem.Description;
+            model.Dimension = CurrentMBSheetItem.Dimension;
+            model.Nos = CurrentMBSheetItem.Nos;
+            model.Value1 = CurrentMBSheetItem.Value1;
+            model.Value2 = CurrentMBSheetItem.Value2;
+            model.Value3 = CurrentMBSheetItem.Value3;
+
+            // Remove current line item quantity from the cumulative measure quantity
+            var mbItemStatus = mbItemsStatuses.Find(p => p.MBookItemId == CurrentMBSheetItem.MBookItemId);
+            if(mbItemStatus != null)
+            {
+                mbItemStatus.CumulativeMeasuredQty -= CurrentMBSheetItem.Quantity;
+            }
+        }
+    }
+
+    async Task LoadCurrentMBookItemsStatusAsync()
+    {
+        loading = true;
+        mbItemsStatuses = await mBookService.GetCurrentMBItemsStatus(MBookId);
+        loading = false;
     }
 
     async Task OnSubmit()
     {
         if (selectedItem == null) return;
 
-        if(MBSheetItem.Total > selectedItem.BalanceQuantity)
+        if(model.Total > selectedItem.AvailableMeasurementQty)
         {
-            await messageService.Error($"Entered quantity should be less or equal to {selectedItem.BalanceQuantity}");
+            await messageService.Error($"Entered quantity should be less or equal to {selectedItem.AvailableMeasurementQty}");
             return;
         }
 
-        await MBSheetItemChanged.InvokeAsync(MBSheetItem);
-        await OnItemSubmit.InvokeAsync();
-        CloseSidebar();
+
+        loading = true;
+        dynamic result;
+        if (CurrentMBSheetItem == null)
+        {
+            result = await mbSheetService.CreateMBSheetItem(MBSheetId, model);
+        }
+        else
+        {
+            result = await mbSheetService.UpdateMBSheetItem(MBSheetId, CurrentMBSheetItem.Id, model);
+        }
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            CloseSidebar();
+            await OnItemSubmit.InvokeAsync();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
     void CloseSidebar()
     {
-        lineItemId = 0;
+        mbItemId = 0;
         OnClose.InvokeAsync();
     }
 
-    void SelectLineItem(MBookItemResponse item)
+    void SelectLineItem(MBItemStatusResponse item)
     {
         selectedItem = item;
 
         if (item == null)
         {
-            MBSheetItem.Dimension = 0;
-            MBSheetItem.MBookItemDescription = null;
-            MBSheetItem.MBookItemId = 0;
-            MBSheetItem.Uom = null;
+            model.Dimension = 0;
+            model.MBookItemDescription = null;
+            model.MBookItemId = 0;
+            model.Uom = null;
         }
         else
         {
-            MBSheetItem.Dimension = item.Dimension;
-            MBSheetItem.MBookItemDescription = item.Description;
-            MBSheetItem.MBookItemId = item.Id;
-            MBSheetItem.Uom = item.Uom;
+            model.Dimension = item.Dimension;
+            model.MBookItemDescription = item.ItemDescription;
+            model.MBookItemId = item.MBookItemId;
+            model.Uom = item.Uom;
         }
     }
 }
