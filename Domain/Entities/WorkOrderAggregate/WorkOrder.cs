@@ -61,6 +61,7 @@ namespace Domain.Entities.WorkOrderAggregate
                 item.SetUomId(uomId);
                 item.SetUnitRate(unitRate);
                 item.SetPoQuantity(poQuantity);
+                item.MarkPublished();
             }
             else // new item
             {
@@ -70,7 +71,7 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public void RemoveLineItem(int id)
         {
-            if (Status == WorkOrderStatus.PUBLISHED || Status == WorkOrderStatus.COMPLETED) return;
+            if (Status == WorkOrderStatus.COMPLETED) return;
 
             var item = _items.SingleOrDefault(p => p.Id == id);
 
@@ -87,6 +88,10 @@ namespace Domain.Entities.WorkOrderAggregate
         public void MarkPublished()
         {
             Status = WorkOrderStatus.PUBLISHED;
+            foreach (var item in _items)
+            {
+                item.MarkPublished();
+            }
         }
 
         public void SetOrderNo(string orderNo)

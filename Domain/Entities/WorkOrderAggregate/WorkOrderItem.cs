@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities.MeasurementBookAggregate;
+using EmbPortal.Shared.Enums;
 
 namespace Domain.Entities.WorkOrderAggregate
 {
@@ -12,6 +13,7 @@ namespace Domain.Entities.WorkOrderAggregate
         public decimal UnitRate { get; private set; }
         public float PoQuantity { get; private set; }
         public Uom Uom { get; private set; }
+        public WorkOrderItemStatus Status { get; set; }
         public MBookItem MBookItem { get; private set; }
         public WorkOrderItem()
         {
@@ -23,6 +25,7 @@ namespace Domain.Entities.WorkOrderAggregate
             UomId = uomId;
             UnitRate = unitRate;
             PoQuantity = poQuantity;
+            Status = WorkOrderItemStatus.CREATED;
         }
         public void SetDescription(string description)
         {
@@ -44,5 +47,9 @@ namespace Domain.Entities.WorkOrderAggregate
             PoQuantity = poQuantity;
         }
 
+        public void MarkPublished()
+        {
+            Status = WorkOrderItemStatus.PUBLISHED;
+        }
     }
 }

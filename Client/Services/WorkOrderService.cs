@@ -80,5 +80,11 @@ namespace Client.Services
             var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Publish", "");
             return await response.ToResult();
         }
+
+        public async Task<IResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/{orderItemId}/Publish", "");
+            return await response.ToResult();
+        }
     }
 }

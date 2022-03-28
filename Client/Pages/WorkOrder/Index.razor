@@ -62,11 +62,11 @@
     <Column @bind-Field="@context.ContractorName" Width="20%" />
     <Column @bind-Field="@context.Title" Width="40%" />
     <Column @bind-Field="@context.Status" Width="10%">
-        @if (context.Status == "COMPLETED")
+        @if (context.Status == WorkOrderStatus.COMPLETED.ToString())
         {
             <Tag Color="gold">@context.Status</Tag>
         }
-        else if (context.Status == "PUBLISHED")
+        else if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
         {
             <Tag Color="blue">@context.Status</Tag>
         }

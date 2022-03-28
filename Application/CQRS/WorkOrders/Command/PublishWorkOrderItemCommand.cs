@@ -4,25 +4,29 @@ using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Command
 {
-    public record DeleteWorkOrderItemCommand(int Id, int WorkOrderId) : IRequest
+    public record PublishWorkOrderItemCommand(int WorkOrderId, int ItemId) : IRequest
     {
     }
 
-    public class DeleteWorkOrderItemCommandHandler : IRequestHandler<DeleteWorkOrderItemCommand>
+    public class PublishWorkOrderItemCommandHandler : IRequestHandler<PublishWorkOrderItemCommand>
     {
         private readonly IAppDbContext _context;
-        public DeleteWorkOrderItemCommandHandler(IAppDbContext dbContext)
+
+        public PublishWorkOrderItemCommandHandler(IAppDbContext context)
         {
-            _context = dbContext;
+            _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteWorkOrderItemCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PublishWorkOrderItemCommand request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders
                 .Include(p => p.Items)
@@ -33,20 +37,14 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(WorkOrder), request.WorkOrderId);
             }
 
-            var orderItem = workOrder.Items.FirstOrDefault(p => p.Id == request.Id);
+            var orderItem = workOrder.Items.FirstOrDefault(p => p.Id == request.ItemId);
 
             if (orderItem == null)
             {
-                throw new NotFoundException(nameof(WorkOrderItem), request.Id);
+                throw new NotFoundException(nameof(WorkOrderItem), request.ItemId);
             }
 
-            if (orderItem.Status == WorkOrderItemStatus.PUBLISHED)
-            {
-                throw new BadRequestException("Published work order item cannot be deleted");
-            }
-
-            workOrder.RemoveLineItem(request.Id);
-
+            orderItem.MarkPublished();
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

@@ -6,7 +6,7 @@
     <DescriptionsItem Title="Contractor" Span="2">@WorkOrder.ContractorName</DescriptionsItem>
     <DescriptionsItem Title="Status" Span="2">
         <Tag Color="green">@WorkOrder.Status</Tag>
-        @if (WorkOrder.Status == "CREATED")
+        @if (WorkOrder.Status == WorkOrderStatus.CREATED.ToString())
         {
             <Popconfirm Title="Sure to publish work order?"
                         OnConfirm="PublishOrder"

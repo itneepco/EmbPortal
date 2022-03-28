@@ -15,6 +15,7 @@ namespace Client.Services.Interfaces
         Task<IResult<int>> CreateWorkOrder(WorkOrderRequest request);
         Task<IResult> UpdateWorkOrder(int id, WorkOrderRequest request);
         Task<IResult> PublishWorkOrder(int id);
+        Task<IResult> PublishWorkOrderItem(int workOrderId, int orderItemId);
         Task<IResult<int>> CreateWorkOrderItem(int id, WorkOrderItemRequest request);
         Task<IResult> UpdateWorkOrderItem(int id, int itemId, WorkOrderItemRequest request);
         Task<IResult> DeleteWorkOrderItem(int id, int itemId);

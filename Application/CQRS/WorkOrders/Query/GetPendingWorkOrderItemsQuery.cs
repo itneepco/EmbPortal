@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses;
 using MediatR;
 using System.Collections.Generic;
@@ -28,8 +29,8 @@ namespace Application.CQRS.WorkOrders.Query
 
             foreach (var item in workOrder.Items)
             {
-                // If work order item is already taken in some measurement book
-                if (item.MBookItem != null) continue;
+                // If work order item is already taken in some measurement book or is not yet published
+                if (item.MBookItem != null || item.Status != WorkOrderItemStatus.PUBLISHED) continue;
 
                 response.Add(new PendingOrderItemResponse
                 {

@@ -84,6 +84,17 @@ namespace Api.Controllers
             return NoContent();
         }
 
+        [HttpPut("{workOrderId}/Items/{orderItemId}/Publish")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
+        {
+            var command = new PublishWorkOrderItemCommand(workOrderId, orderItemId);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpGet("{workOrderId}/Item/Pending")]
         public async Task<ActionResult<IReadOnlyList<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int workOrderId)
         {

@@ -7,7 +7,7 @@
         <CascadingValue Value="@data.Status" TValue="string">
             <Tabs Animated>
                 <TabPane Tab="Work Order Header" Key="1">
-                    <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@OnPublish" />
+                    <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@ReloadPage" />
                 </TabPane>
 
                 <TabPane Tab="Work Order Line Items" Key="2">
@@ -50,11 +50,6 @@ else
         }
 
         data = result.Data;
-    }
-
-    void OnPublish()
-    {
-        data.Status = "PUBLISHED";
     }
 
     async Task ReloadPage()

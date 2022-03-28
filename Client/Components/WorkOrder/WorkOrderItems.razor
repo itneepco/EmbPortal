@@ -1,34 +1,61 @@
 ﻿<Button Icon="@(IconType.Outline.Plus)"
         Type="@(ButtonType.Primary)"
         OnClick="_=> OpenSideDrawer()"
-        Disabled="@(WorkOrderStatus == "COMPLETED")"
-        Style="margin-bottom: 1rem">Add Item</Button>
+        Disabled="@(OrderStatus == "COMPLETED")"
+        Style="margin-bottom: 1rem">
+    Add Item
+</Button>
 
-<Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small">
+<Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" HidePagination Loading="@loading">
     <RowTemplate>
-        <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%" />
-        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%" />
-        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="10%" />
-        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%" />
-        
-        <ActionColumn Title="Action" Width="25%">
-            <Button Icon="@(IconType.Outline.Edit)" 
+        <Column TData="string" DataIndex="@nameof(context.Description)" Width="46%" />
+        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
+        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="8%" />
+        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%" />
+        <Column TData="string" Width="10%" Title="Status">
+            @if (context.Status == WorkOrderItemStatus.PUBLISHED)
+            {
+                <Tag Color="blue">@context.Status</Tag>
+            }
+            else
+            {
+                <Tag Color="green">@context.Status</Tag>
+            }
+        </Column>
+
+        <ActionColumn Title="Action" Width="20%">
+            <Button Icon="@(IconType.Outline.Edit)"
                     Size="@ButtonSize.Small"
-                    Disabled="@(WorkOrderStatus != "CREATED")"
-                    OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
+                    Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
+                    OnClick="_=> OpenSideDrawer(context.Id)">
+                Edit
+            </Button>
 
             <Popconfirm Title="Sure to delete?"
                         OnConfirm="()=> OnDeleteItem(context.Id)"
                         OkText="Yes"
                         CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)" 
+                <Button Icon="@(IconType.Outline.Delete)"
                         Size="@ButtonSize.Small"
-                        Disabled="@(WorkOrderStatus != "CREATED")"
-                        Loading="@loading" Danger>Delete</Button>
+                        Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
+                        Danger>
+                    Delete
+                </Button>
+            </Popconfirm>
+
+            <Popconfirm Title="Sure to publish order item?"
+                        OnConfirm="() => PublishOrderItem(context)"
+                        OkText="Yes"
+                        CancelText="No">
+                <Button Size="@ButtonSize.Small"
+                        Disabled="@(OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.PUBLISHED)"
+                        Style="margin-left: 0.15rem">
+                    Publish
+                </Button>
             </Popconfirm>
         </ActionColumn>
     </RowTemplate>
-    
+
 </Table>
 
 <AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="@OnItemUpdate" OnClose="@OnCloseSideBar" />
@@ -38,7 +65,7 @@
     public int WorkOrderId { get; set; }
 
     [CascadingParameter]
-    public string WorkOrderStatus { get; set; }
+    public string OrderStatus { get; set; }
 
     [Parameter]
     public List<WorkOrderItemResponse> Items { get; set; }
@@ -82,5 +109,23 @@
     async Task OnItemUpdate()
     {
         await ReloadPage.InvokeAsync();
+    }
+
+    async Task PublishOrderItem(WorkOrderItemResponse item)
+    {
+        loading = true;
+        var result = await workOrderService.PublishWorkOrderItem(WorkOrderId, item.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            item.Status = WorkOrderItemStatus.PUBLISHED;
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 }

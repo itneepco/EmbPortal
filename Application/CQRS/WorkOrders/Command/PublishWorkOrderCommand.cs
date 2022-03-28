@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using EmbPortal.Shared.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +23,9 @@ namespace Application.CQRS.WorkOrders.Command
 
         public async Task<Unit> Handle(PublishWorkOrderCommand request, CancellationToken cancellationToken)
         {
-            var workOrder = await _context.WorkOrders.FindAsync(request.Id);
+            var workOrder = await _context.WorkOrders
+                .Include(p => p.Items)
+                .FirstOrDefaultAsync(p => p.Id == request.Id);
 
             if (workOrder == null)
             {

@@ -1,4 +1,6 @@
-﻿namespace EmbPortal.Shared.Responses
+﻿using EmbPortal.Shared.Enums;
+
+namespace EmbPortal.Shared.Responses
 {
     public class WorkOrderItemResponse
     {
@@ -9,5 +11,6 @@
         public int UomId { get; set; }
         public int Dimension { get; set; }
         public float PoQuantity { get; set; }
+        public WorkOrderItemStatus Status { get; set; }
     }
 }
