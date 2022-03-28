@@ -35,11 +35,12 @@ namespace Application.CQRS.RABills.Commands
         public async Task<int> Handle(CreateRABillCommand request, CancellationToken cancellationToken)
         {
             bool anyActiveRaBill = await _context.RABills.AnyAsync(
-                p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED);
+                p => p.MeasurementBookId == request.Data.MeasurementBookId && 
+                     (p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED));
 
             if(anyActiveRaBill)
             {
-                throw new BadRequestException("Cannot create new RA Bill when there are exsiting unapproved RA Bill");
+                throw new BadRequestException("Cannot create new RA Bill when there are existing unapproved RA Bill");
             }
 
             MeasurementBook mBook = await _context.MeasurementBooks

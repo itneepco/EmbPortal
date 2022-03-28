@@ -8,11 +8,6 @@ namespace EmbPortal.Shared.Extensions
     {
         public static string GetEmailFromClaimsPrincipal(this ClaimsPrincipal user)
         {
-            foreach (Claim claim in user.Claims)
-            {
-                Console.WriteLine("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value);
-            }
-
             return user?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
         }
 

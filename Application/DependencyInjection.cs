@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Behaviors;
 using Application.Interfaces;
 using Application.Services;
 using MediatR;
@@ -16,6 +17,9 @@ namespace Application
             services.AddScoped<IMeasurementBookService, MeasurementBookService>();
             services.AddScoped<IWorkOrderService, WorkOrderService>();
             services.AddScoped<IRABillService, RABillService>();
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
 
             return services;
         }
