@@ -1,27 +1,34 @@
 ﻿@using System.IO;
 
-<Button Icon="@(IconType.Outline.Plus)"
-        Type="@(ButtonType.Primary)"
-        OnClick="_=> OpenSideDrawer()"
-        Disabled="@(OrderStatus == "COMPLETED")"
-        Style="margin-bottom: 1rem">
-    Add Item
-</Button>
+<Row Style="margin-bottom: 0.75rem">
+    <AntDesign.Col>
+        <Button Icon="@(IconType.Outline.Plus)"
+                Type="@(ButtonType.Primary)"
+                OnClick="_=> OpenSideDrawer()"
+                Disabled="@(OrderStatus == "COMPLETED")"
+                Style="margin-bottom: 1rem">
+            Add Item
+        </Button>
 
-<Button Icon="@(IconType.Outline.Download)"
-        OnClick="_ => DownloadTemplate()"
-        Type="@(ButtonType.Default)">
-    Download Template
-</Button>
+        <Button Icon="@(IconType.Outline.Download)"
+                OnClick="_ => DownloadTemplate()"
+                Type="@(ButtonType.Default)">
+            Download Template
+        </Button>
+    </AntDesign.Col>
 
+    <AntDesign.Col Flex="1"></AntDesign.Col>
+    
+    <AntDesign.Col>
+        <InputFile OnChange="@OnImportData" />
 
-<InputFile OnChange="@OnImportData" />
-
-<Button Icon="@(IconType.Outline.Upload)"
-        OnClick="_ => OnUploadFile()"
-        Type="@(ButtonType.Primary)">
-    Upload Items
-</Button>
+        <Button Icon="@(IconType.Outline.Upload)"
+                OnClick="_ => OnUploadFile()"
+                Type="@(ButtonType.Primary)">
+            Upload Items
+        </Button>
+    </AntDesign.Col>
+</Row>
 
 <Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" Loading="@loading">
     <RowTemplate>
@@ -41,35 +48,34 @@
         </Column>
 
         <ActionColumn Title="Action" Width="20%">
-            <Button Icon="@(IconType.Outline.Edit)"
-                    Size="@ButtonSize.Small"
-                    Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
-                    OnClick="_=> OpenSideDrawer(context.Id)">
-                Edit
-            </Button>
-
-            <Popconfirm Title="Sure to delete?"
-                        OnConfirm="()=> OnDeleteItem(context.Id)"
-                        OkText="Yes"
-                        CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)"
+            <Row Justify="ceter">
+                <Button Icon="@(IconType.Outline.Edit)"
                         Size="@ButtonSize.Small"
                         Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
-                        Danger>
-                    Delete
-                </Button>
-            </Popconfirm>
+                        OnClick="_=> OpenSideDrawer(context.Id)"
+                        Style="margin-right: 0.2rem" />
 
-            <Popconfirm Title="Sure to publish order item?"
-                        OnConfirm="() => PublishOrderItem(context)"
-                        OkText="Yes"
-                        CancelText="No">
-                <Button Size="@ButtonSize.Small"
-                        Disabled="@(OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.PUBLISHED)"
-                        Style="margin-left: 0.15rem">
-                    Publish
-                </Button>
-            </Popconfirm>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> OnDeleteItem(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)"
+                            Size="@ButtonSize.Small"
+                            Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
+                            Danger Style="margin-right: 0.2rem" />
+                </Popconfirm>
+
+                <Popconfirm Title="Sure to publish order item?"
+                            OnConfirm="() => PublishOrderItem(context)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Size="@ButtonSize.Small"
+                            Disabled="@(OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.PUBLISHED)"
+                            Style="margin-left: 0.15rem">
+                        Publish
+                    </Button>
+                </Popconfirm>
+            </Row>
         </ActionColumn>
     </RowTemplate>
 

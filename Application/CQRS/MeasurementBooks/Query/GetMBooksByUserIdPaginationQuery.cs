@@ -3,6 +3,7 @@ using Application.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities.MeasurementBookAggregate;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
@@ -59,6 +60,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             );
             query = query.Where(Criteria);
 
+            query = query.Where(p => p.Status == MBookStatus.PUBLISHED);
 
             return await query.OrderBy(p => p.WorkOrder.OrderDate)
                 .ProjectTo<MBookHeaderResponse>(_mapper.ConfigurationProvider)

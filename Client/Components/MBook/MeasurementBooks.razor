@@ -24,22 +24,24 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            @if (context.Status == MBookStatus.CREATED.ToString())
-            {
-                <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)">Edit</Button>
-                <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> DeleteMBook(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Danger>Delete</Button>
-                </Popconfirm>
-                <Popconfirm Title="Sure to publish?"
-                            OnConfirm="()=> PublishMBook(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
-                </Popconfirm>
-            }
+            <Row Justify="ceter">
+                @if (context.Status == MBookStatus.CREATED.ToString())
+                {
+                    <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)"  Style="margin-right: 0.2rem"/>
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="()=> DeleteMBook(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Danger  Style="margin-right: 0.2rem"/>
+                    </Popconfirm>
+                    <Popconfirm Title="Sure to publish?"
+                                OnConfirm="()=> PublishMBook(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
+                    </Popconfirm>
+                }
+            </Row>
         </ActionColumn>
     </RowTemplate>
 
