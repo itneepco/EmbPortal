@@ -3,8 +3,9 @@
 </Button>
 
 <Table DataSource="@MBSheetItems" 
-       @bind-PageSize="@MBSheetItems.Count"
+       PageSize="@MBSheetItems.Count"
        Size="TableSize.Small" 
+       Loading="@loading"
        HidePagination Bordered>
 
     <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="32%" />
