@@ -1,5 +1,4 @@
-﻿using Client.Models;
-using EmbPortal.Shared.Requests;
+﻿using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;

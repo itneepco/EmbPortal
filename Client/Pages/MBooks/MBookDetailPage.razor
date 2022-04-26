@@ -24,22 +24,22 @@
         <Divider>Measurement Book Items</Divider>
 
         <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="42%"></Column>
-            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%"></Column>
-            <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%"></Column>
-            <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%"></Column>
-            <Column Title="Measured Qty (Cum)" TData="float" Width="8%">
+            <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%"></Column>
+            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%"></Column>
+            <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
+            <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%"></Column>
+            <Column Title="Measured Qty (Cum)" TData="float" Width="10%">
                 @context.CumulativeMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Measured Qty (A)" TData="float" Width="8%">
+            <Column Title="Measured Qty (A)" TData="float" Width="10%">
                 @context.AcceptedMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Till Last RA" TData="float" Width="8%">
+            <Column Title="Till Last RA" TData="float" Width="10%">
                 @context.TillLastRAQty.ToString("0.00")
             </Column>
-            <Column Title="Measurement Progess (Cum)" TData="int" Width="10%">
+            @*<Column Title="Measurement Progess (Cum)" TData="int" Width="10%">
                 <Progress Size=ProgressSize.Small Percent=@context.MeasurementProgess />
-            </Column>
+            </Column>*@
         </Table>
     </TabPane>
 

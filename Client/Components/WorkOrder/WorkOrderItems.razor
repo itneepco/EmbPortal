@@ -1,4 +1,6 @@
-﻿<Button Icon="@(IconType.Outline.Plus)"
+﻿@using System.IO;
+
+<Button Icon="@(IconType.Outline.Plus)"
         Type="@(ButtonType.Primary)"
         OnClick="_=> OpenSideDrawer()"
         Disabled="@(OrderStatus == "COMPLETED")"
@@ -6,7 +8,22 @@
     Add Item
 </Button>
 
-<Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" HidePagination Loading="@loading">
+<Button Icon="@(IconType.Outline.Download)"
+        OnClick="_ => DownloadTemplate()"
+        Type="@(ButtonType.Default)">
+    Download Template
+</Button>
+
+
+<InputFile OnChange="@OnImportData" />
+
+<Button Icon="@(IconType.Outline.Upload)"
+        OnClick="_ => OnUploadFile()"
+        Type="@(ButtonType.Primary)">
+    Upload Items
+</Button>
+
+<Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" Loading="@loading">
     <RowTemplate>
         <Column TData="string" DataIndex="@nameof(context.Description)" Width="46%" />
         <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
@@ -77,6 +94,7 @@
 
     bool drawerVisible;
     bool loading;
+    IBrowserFile selectedFile;
 
     void OpenSideDrawer(int itemId = 0)
     {
@@ -126,6 +144,64 @@
         else
         {
             await messageService.Error(result.Message);
+        }
+    }
+
+    async Task DownloadTemplate()
+    {
+        var base64 = await workOrderService.ExportToExcelAsync();
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = $"{"Template"}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx",
+            MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+    }
+
+    private void OnImportData(InputFileChangeEventArgs e)
+    {
+        // Get the selected file
+        var file = e.File;
+
+        // Check if the file is null then return from the method
+        if (file == null) return;
+
+        this.selectedFile = file;
+    }
+
+    private async Task OnUploadFile()
+    {
+        if (selectedFile == null) return;
+
+        Stream stream = selectedFile.OpenReadStream();
+        MemoryStream ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        stream.Close();
+
+        FileUploadRequest uploadedFile = new FileUploadRequest();
+        uploadedFile.FileName = selectedFile.Name;
+        uploadedFile.FileContent = ms.ToArray();
+        ms.Close();
+
+        var result = await workOrderService.UploadWorkOrderItemsAsync(WorkOrderId, uploadedFile);
+
+        if (result.Succeeded)
+        {
+            await OnItemUpdate();
+            await messageService.Success("Successfully Uploaded Work Order Items");
+        }
+        else
+        {
+            if (result.Errors.Count == 0)
+            {
+                await messageService.Error(result.Message);
+                return;
+            }
+
+            foreach (var error in result.Errors)
+            {
+                await messageService.Error(error);
+            }
         }
     }
 }

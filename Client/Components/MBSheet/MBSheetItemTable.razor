@@ -2,7 +2,11 @@
     Add Measurement
 </Button>
 
-<Table DataSource="@MBSheetItems" Size="TableSize.Small" HidePagination Bordered>
+<Table DataSource="@MBSheetItems" 
+       @bind-PageSize="@MBSheetItems.Count"
+       Size="TableSize.Small" 
+       HidePagination Bordered>
+
     <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="32%" />
     <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="18%" />
     <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />

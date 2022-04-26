@@ -11,6 +11,7 @@ namespace Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IExcelService, ExcelService>();
 
             return services;
         }

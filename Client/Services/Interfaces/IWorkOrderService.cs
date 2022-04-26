@@ -1,7 +1,7 @@
-﻿using Client.Models;
-using EmbPortal.Shared.Requests;
+﻿using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Client.Services.Interfaces
@@ -11,6 +11,8 @@ namespace Client.Services.Interfaces
         Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search);
         Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search);
         Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id);
+        Task<string> ExportToExcelAsync();
+        Task<IResult> UploadWorkOrderItemsAsync(int workOrderId, FileUploadRequest content);
         Task<IResult> DeleteWorkOrder(int id);
         Task<IResult<int>> CreateWorkOrder(WorkOrderRequest request);
         Task<IResult> UpdateWorkOrder(int id, WorkOrderRequest request);

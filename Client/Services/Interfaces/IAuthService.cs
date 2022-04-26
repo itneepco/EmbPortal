@@ -1,5 +1,5 @@
-﻿using Client.Models;
-using EmbPortal.Shared.Requests;
+﻿using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 
 namespace Client.Services.Interfaces

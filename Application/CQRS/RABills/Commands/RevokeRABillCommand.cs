@@ -28,7 +28,6 @@ namespace Application.CQRS.RABills.Commands
         public async Task<Unit> Handle(RevokeRABillCommand request, CancellationToken cancellationToken)
         {
             var raBill = await _context.RABills.FindAsync(request.Id);
-            int latestRABillId = await _context.RABills.Select(p => p.Id).MaxAsync();
 
             if (raBill == null)
             {
@@ -40,7 +39,10 @@ namespace Application.CQRS.RABills.Commands
                 throw new BadRequestException("RA Bill has not been approved yet");
             }
 
-            if(raBill.Id != latestRABillId)
+            int latestRABillId = await _context.RABills.Where(p => p.MeasurementBookId == raBill.MeasurementBookId)
+                .Select(p => p.Id).MaxAsync();
+
+            if (raBill.Id != latestRABillId)
             {
                 throw new BadRequestException("Only the latest RA Bill can be revoked");
             }

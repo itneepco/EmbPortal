@@ -1,4 +1,4 @@
-﻿using Client.Models;
+﻿using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;

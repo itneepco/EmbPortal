@@ -4,7 +4,7 @@
         Disabled="@(WorkOrderStatus != "PUBLISHED")"
         Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
-<Table Loading="@loading" TItem="MBookResponse" Size="@TableSize.Small" DataSource="@mbooks" HidePagination>
+<Table Loading="@loading" TItem="MBookResponse" Size="@TableSize.Small" DataSource="@mbooks">
     <RowTemplate>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />

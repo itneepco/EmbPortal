@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using Client.Extensions;
-using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;

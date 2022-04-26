@@ -5,7 +5,7 @@
     Add MB Sheet
 </Button>
 
-<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" HidePagination Bordered>
+<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" Bordered>
     <RowTemplate>
         <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurement Date" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
@@ -61,7 +61,11 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" HidePagination Bordered>
+        <Table DataSource="rowData.Data.Items" 
+               @bind-PageSize="rowData.Data.Items.Count"
+               Size="@TableSize.Small"
+               HidePagination Bordered>
+
             <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="34%" />
             <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="20%" />
             <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />

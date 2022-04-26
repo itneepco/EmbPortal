@@ -2,6 +2,7 @@
        DataSource="@ModelItems"
        Size="@TableSize.Small"
        RowClassName="@(x => x.Data.CurrentRAQty > x.Data.AvailableQty ? "danger" : null)"
+       @bind-PageSize="@ModelItems.Count"
        Bordered HidePagination>
 
     <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="32%"></Column>

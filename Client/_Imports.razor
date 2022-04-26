@@ -13,7 +13,6 @@
 
 @using Client
 @using Client.Shared
-@using Client.Models
 @using Client.Components
 @using Client.Pages
 @using Client.Components.WorkOrder
@@ -35,6 +34,8 @@
 @inject MessageService messageService
 @inject ModalService modalService
 @inject NotificationService noticeService
+
+@inject IJSRuntime _jsRuntime;
 
 @*emb services*@
 @inject IProjectService projectservice

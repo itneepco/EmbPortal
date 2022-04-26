@@ -6,7 +6,7 @@
     Add RA Bill
 </Button>
 
-<Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" HidePagination Bordered>
+<Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" Bordered>
     <RowTemplate>
         <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)"/>
         <Column Title="RA Bill Amount" TData="decimal" Width="15%">
@@ -61,7 +61,11 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" Size="@TableSize.Small" HidePagination Bordered>
+        <Table DataSource="rowData.Data.Items" 
+               @bind-PageSize="rowData.Data.Items.Count" 
+               Size="@TableSize.Small" 
+               HidePagination Bordered>
+
             <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
             <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
             <Column Title="Measured Qty" TData="float" Width="8%">

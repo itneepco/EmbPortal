@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Client.Models
+namespace EmbPortal.Shared.Responses
 {
     public interface IResult
     {

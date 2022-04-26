@@ -1,5 +1,4 @@
 ﻿using Client.Extensions;
-using Client.Models;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
@@ -84,6 +83,19 @@ namespace Client.Services
         public async Task<IResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
         {
             var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/{orderItemId}/Publish", "");
+            return await response.ToResult();
+        }
+
+        public async Task<string> ExportToExcelAsync()
+        {
+            var response = await _httpClient.GetAsync($"/api/WorkOrder/Item/Download");
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
+        }
+
+        public async Task<IResult> UploadWorkOrderItemsAsync(int workOrderId, FileUploadRequest content)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/Upload", content);
             return await response.ToResult();
         }
     }

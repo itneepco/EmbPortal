@@ -10,6 +10,10 @@ using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using System;
+using System.Linq;
+using Application.Exceptions;
 
 namespace Api.Controllers
 {
@@ -133,6 +137,34 @@ namespace Api.Controllers
             await Mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpPost("{workOrderId}/Items/Upload")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UploadWorkOrderItems(int workOrderId, FileUploadRequest request)
+        {
+            var command = new ImportWorkOrderItemCommand(workOrderId, request.FileContent);
+            var result = await Mediator.Send(command);
+
+            if(result.Succeeded)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = result.Errors });
+            }
+        }
+
+        [HttpGet("Item/Download")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> DownloadOrderItemTemplate()
+        {
+            var result = await Mediator.Send(new CreateWorkOrderItemTemplateCommand());
+
+            return Ok(Convert.ToBase64String(result));
         }
     }
 }
