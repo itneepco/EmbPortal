@@ -97,7 +97,7 @@ namespace Application.CQRS.WorkOrders.Command
                 "PoQuantity"
             };
 
-            var result = await _excelService.CreateTemplateAsync(fields, "Work Order Items");
+            var result = await _excelService.CreateTemplateAsync(fields, "Sheet1");
             return result;
         }
     }
