@@ -20,10 +20,12 @@
     <AntDesign.Col Flex="1"></AntDesign.Col>
     
     <AntDesign.Col>
-        <InputFile OnChange="@OnImportData" />
+        <InputFile @key=@inputFileId OnChange="@OnImportData" />
 
         <Button Icon="@(IconType.Outline.Upload)"
                 OnClick="_ => OnUploadFile()"
+                Loading="@loading"
+                Disabled="@(selectedFile == null)"
                 Type="@(ButtonType.Primary)">
             Upload Items
         </Button>
@@ -102,6 +104,8 @@
     bool loading;
     IBrowserFile selectedFile;
 
+    private string inputFileId = Guid.NewGuid().ToString();
+
     void OpenSideDrawer(int itemId = 0)
     {
         currentLineItem = Items.FirstOrDefault(p => p.Id == itemId);
@@ -178,6 +182,8 @@
     private async Task OnUploadFile()
     {
         if (selectedFile == null) return;
+        
+        loading = true;
 
         Stream stream = selectedFile.OpenReadStream();
         MemoryStream ms = new MemoryStream();
@@ -190,11 +196,14 @@
         ms.Close();
 
         var result = await workOrderService.UploadWorkOrderItemsAsync(WorkOrderId, uploadedFile);
+        loading = false;
 
         if (result.Succeeded)
         {
             await OnItemUpdate();
             await messageService.Success("Successfully Uploaded Work Order Items");
+            inputFileId = Guid.NewGuid().ToString();
+            StateHasChanged();
         }
         else
         {

@@ -8,18 +8,26 @@
        Loading="@loading"
        HidePagination Bordered>
 
-    <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="32%" />
-    <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="18%" />
-    <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
+    <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="33%" />
+    <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="15%" />
+    <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
     <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
-    <Column Title="L" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
-    <Column Title="B" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
-    <Column Title="H" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
+    <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
+    <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
+    <Column Title="Val3" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
     <Column RowSpan="GetRowSpan(context)" Title="Total Qty" TData="decimal" Width="8%">
         @GetMBookItemTotalQtyInMBSheet(context.MBookItemId).ToString("0.00")
     </Column>
-    <ActionColumn Title="Action" Width="10%">
+    <ActionColumn Title="Action" Width="14%">
         <Row Justify="center" Gutter="6">
+            <AntDesign.Col>
+                <Button Icon="@(IconType.Outline.Upload)"
+                        Size="@ButtonSize.Small"
+                        Type="@ButtonType.Primary"
+                        Shape="@ButtonShape.CircleOutline"
+                        OnClick="_=> OpenFileUploadModal(context)">
+                </Button>
+            </AntDesign.Col>
             <AntDesign.Col>
                 <Button Icon="@(IconType.Outline.Edit)"
                         Size="@ButtonSize.Small"
@@ -48,6 +56,8 @@
                        CurrentMBSheetItem="@currentMBSheetItem"
                        OnItemSubmit="@OnItemSubmit" />
 
+<FileUploadComponent @bind-Visible="modalVisible" CurrentMBSheetItem="@currentMBSheetItem"/>
+
 @code {
     [CascadingParameter(Name = "MBookId")]
     public int MBookId { get; set; }
@@ -64,6 +74,7 @@
     MBSheetItemResponse currentMBSheetItem;
     bool drawerVisible = false;
     bool loading = false;
+    bool modalVisible = false;
 
     int GetRowSpan(MBSheetItemResponse currItem)
     {
@@ -126,5 +137,11 @@
     {
         return MBSheetItems.Where(i => i.MBookItemId == mBookItemId)
             .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
+    }
+
+    void OpenFileUploadModal(MBSheetItemResponse item)
+    {
+        currentMBSheetItem = item;
+        modalVisible = true;
     }
 }

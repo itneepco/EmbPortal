@@ -76,5 +76,11 @@ namespace Client.Services
             var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}");
             return await response.ToResult();
         }
+
+        public async Task<IResult<List<UploadResult>>> UploadFiles(int mbSheetId, int itemId, MultipartFormDataContent content)
+        {
+            var response = await _httpClient.PostAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Uploads", content);
+            return await response.ToResult<List<UploadResult>>();
+        }
     }
 }

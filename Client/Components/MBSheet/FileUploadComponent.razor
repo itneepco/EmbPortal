@@ -1,0 +1,166 @@
+﻿@using System.Net.Http.Headers
+@using EmbPortal.Shared.Constants
+
+<Modal Title="Upload Files"
+       Visible="@Visible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel">
+
+    <p>
+        <label>
+            Upload up to @maxAllowedFiles files:
+            <InputFile @key=@inputFileId OnChange="@OnInputFileChange" multiple />
+        </label>
+    </p>
+
+    @if (files.Count > 0)
+    {
+        <div class="card">
+            <div class="card-body">
+                <ul>
+                    @foreach (var file in files)
+                    {
+                        <li>
+                            File: @file.Name
+                            <br>
+                            @if (FileUpload(uploadResults, file.Name, out var result))
+                            {
+                                <span>
+                                    Stored File Name: @result.StoredFileName
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    There was an error uploading the file
+                                    (Error: @result.ErrorCode).
+                                </span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+</Modal>
+
+@code{
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> VisibleChanged { get; set; }
+
+    [Parameter]
+    public MBSheetItemResponse CurrentMBSheetItem { get; set; }
+
+    [CascadingParameter(Name = "MBSheetId")]
+    public int MBSheetId { get; set; }
+
+    private List<File> files = new();
+    private List<UploadResult> uploadResults = new();
+    private int maxAllowedFiles = FileConstant.MaxFilesCount;
+    private long maxFileSize = FileConstant.MaxFileSize;
+    private string inputFileId = Guid.NewGuid().ToString();
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        VisibleChanged.InvokeAsync(false);
+        ResetModal();
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        VisibleChanged.InvokeAsync(false);
+        ResetModal();
+    }
+
+    void ResetModal()
+    {
+        uploadResults = new();
+        uploadResults = new();
+        inputFileId = Guid.NewGuid().ToString();
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var upload = false;
+
+        using var content = new MultipartFormDataContent();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            if (uploadResults.SingleOrDefault(
+                f => f.FileName == file.Name) is null)
+            {
+                try
+                {
+                    var fileContent =
+                        new StreamContent(file.OpenReadStream(maxFileSize));
+
+                    fileContent.Headers.ContentType =
+                        new MediaTypeHeaderValue(file.ContentType);
+
+                    files.Add(new() { Name = file.Name });
+
+                    content.Add(
+                        content: fileContent,
+                        name: "\"files\"",
+                        fileName: file.Name
+                    );
+
+                    upload = true;
+                }
+                catch (Exception ex)
+                {
+                    messageService.Error(ex.Message);
+
+                    uploadResults.Add(new()
+                    {
+                        FileName = file.Name,
+                        ErrorCode = 6,
+                        Uploaded = false
+                    });
+                }
+            }
+        }
+
+        if (upload)
+        {
+            if (CurrentMBSheetItem == null) return;
+
+            var response = await mbSheetService.UploadFiles(MBSheetId, CurrentMBSheetItem.Id, content);
+
+            var newUploadResults = response.Data;
+
+            if (newUploadResults is not null)
+            {
+                uploadResults = uploadResults.Concat(newUploadResults).ToList();
+            }
+
+            inputFileId = Guid.NewGuid().ToString();
+        }
+
+        StateHasChanged();
+    }
+
+    private static bool FileUpload(IList<UploadResult> uploadResults,
+        string fileName, out UploadResult result)
+    {
+        result = uploadResults.SingleOrDefault(f => f.FileName == fileName) ?? new();
+
+        if (!result.Uploaded)
+        {
+            // TODO
+            result.ErrorCode = 5;
+        }
+
+        return result.Uploaded;
+    }
+
+    private class File
+    {
+        public string Name { get; set; }
+    }
+}

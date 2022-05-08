@@ -26,4 +26,7 @@
     <ProjectReference Include="..\Shared\EmbPortal.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<Folder Include="Files\" />
+  </ItemGroup>
 </Project>

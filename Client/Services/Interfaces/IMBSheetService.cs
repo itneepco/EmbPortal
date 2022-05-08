@@ -1,6 +1,7 @@
 ﻿using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Client.Services.Interfaces
@@ -17,5 +18,6 @@ namespace Client.Services.Interfaces
         Task<IResult<int>> CreateMBSheetItem(int mbSheetId, MBSheetItemRequest request);
         Task<IResult> UpdateMBSheetItem(int mbSheetId, int itemId, MBSheetItemRequest request);
         Task<IResult> DeleteMBSheetItem(int mbSheetId, int itemId);
+        Task<IResult<List<UploadResult>>> UploadFiles(int mbSheetId, int itemId, MultipartFormDataContent content);
     }
 }

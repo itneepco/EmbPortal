@@ -4,6 +4,7 @@ using Application.CQRS.MBSheets.Query;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,6 +15,13 @@ namespace Api.Controllers
     [Authorize]
     public class MBSheetController : ApiController
     {
+        private readonly IWebHostEnvironment env;
+
+        public MBSheetController(IWebHostEnvironment env)
+        {
+            this.env = env;
+        }
+
         [HttpGet("MBook/{mBookId}")]
         public async Task<ActionResult<List<MBSheetResponse>>> GetMBSheetsByMBookId(int mBookId)
         {
@@ -120,6 +128,16 @@ namespace Api.Controllers
             await Mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpPost("{mbSheetId}/Item/{itemId}/Uploads")]
+        [ProducesResponseType(typeof(IList<UploadResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IList<UploadResult>>> PostFile(int mbSheetId, int itemId, [FromForm] IEnumerable<IFormFile> files)
+        {
+            var command = new UploadMBSheetAttachmentsCommand(files, env.ContentRootPath);
+
+            return Ok(await Mediator.Send(command));
         }
     }
 }

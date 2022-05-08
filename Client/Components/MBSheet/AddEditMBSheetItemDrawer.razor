@@ -11,7 +11,7 @@
           ValidateMode="@FormValidateMode.Complex"
           Loading="@loading">
 
-        <FormItem Label="Select Measurement Book Line Item" Required>
+        <FormItem Label="Select Measurement Book Line Item" Required Style="margin-bottom:12px">
             <Select DataSource="@mbItemsStatuses"
                     @bind-Value="@mbItemId"
                     ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
@@ -22,19 +22,19 @@
             </Select>
         </FormItem>
 
-        <FormItem Label="Work Description">
+        <FormItem Label="Work Description" Style="margin-bottom:12px">
             <Input Placeholder="General Remarks" @bind-Value="@context.Description" TValue="string" />
         </FormItem>
 
         <Row Gutter="12">
             <AntDesign.Col Span="12">
-                <FormItem Label="Uom">
+                <FormItem Label="Uom" Style="margin-bottom:12px">
                     <Input Placeholder="Uom" @bind-Value="@context.Uom" Disabled />
                 </FormItem>
             </AntDesign.Col>
 
             <AntDesign.Col Span="12">
-                <FormItem Label="Nos">
+                <FormItem Label="Nos" Style="margin-bottom:12px">
                     <Input Placeholder="Nos" @bind-Value="@context.Nos" TValue="int" />
                 </FormItem>
             </AntDesign.Col>
@@ -42,14 +42,14 @@
 
         <Row Gutter="12">
             <AntDesign.Col Flex="1">
-                <FormItem Label="Value 1" Rules=@(valueGreaterThanZero)>
+                <FormItem Label="Value 1" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
                     <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
                 </FormItem>
             </AntDesign.Col>
             @if (context.Dimension > 1)
             {
                 <AntDesign.Col Flex="1">
-                    <FormItem Label="Value 2" Rules=@(valueGreaterThanZero)>
+                    <FormItem Label="Value 2" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
                         <Input Placeholder="Value 2" @bind-Value="@context.Value2" TValue="float" />
                     </FormItem>
                 </AntDesign.Col>
@@ -58,7 +58,7 @@
             @if (context.Dimension > 2)
             {
                 <AntDesign.Col Flex="1">
-                    <FormItem Label="Value 3" Rules=@(valueGreaterThanZero)>
+                    <FormItem Label="Value 3" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
                         <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
                     </FormItem>
                 </AntDesign.Col>
