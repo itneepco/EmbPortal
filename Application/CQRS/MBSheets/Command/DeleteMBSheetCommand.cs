@@ -1,14 +1,16 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using EmbPortal.Shared.Constants;
 using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.CQRS.MBSheets.Command
 {
-    public record DeleteMBSheetCommand(int Id) : IRequest
+    public record DeleteMBSheetCommand(int Id, string ContentRoot) : IRequest
     {
     }
 
@@ -24,6 +26,8 @@ namespace Application.CQRS.MBSheets.Command
         public async Task<Unit> Handle(DeleteMBSheetCommand request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets
+                .Include(p => p.Items)
+                    .ThenInclude(i => i.Attachments)
                 .FirstOrDefaultAsync(p => p.Id == request.Id);
 
             if (mbSheet == null)
@@ -37,6 +41,22 @@ namespace Application.CQRS.MBSheets.Command
             }
 
             _context.MBSheets.Remove(mbSheet);
+
+
+            // Remove all attachment files when MB Sheet is removed
+            foreach (var item in mbSheet.Items)
+            {
+                foreach (var attachment in item.Attachments)
+                {
+                    var path = Path.Combine(request.ContentRoot, FileConstant.FolderName, attachment.FileNormalizedName);
+
+                    if (File.Exists(path)) // check if file exist
+                    {
+                        File.Delete(path); // delete file from storage
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;

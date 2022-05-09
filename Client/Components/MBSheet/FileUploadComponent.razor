@@ -1,12 +1,12 @@
 ﻿@using System.Net.Http.Headers
 @using EmbPortal.Shared.Constants
 
-<Modal Title="Upload Files"
+<Modal Title="@(IsUpload ? "Upload Files" : "Download Files")"
        Visible="@Visible"
        OnOk="@HandleOk"
        OnCancel="@HandleCancel">
 
-    @if (CurrentMBSheetItem != null)
+    @if (IsUpload)
     {
         <p>
             <label>
@@ -26,23 +26,21 @@
                             <br>
                             @if (FileUpload(uploadResults, file.Name, out var result))
                             {
-                                <span>
-                                    Stored File Name: @result.StoredFileName
-                                </span>
+                                <span>Stored File Name: @result.StoredFileName</span>
                             }
                             else
                             {
-                                <span>
-                                    There was an error uploading the file
-                                    (Error: @result.ErrorCode).
-                                </span>
+                                <span>There was an error uploading the file(Error: @result.ErrorCode).</span>
                             }
                         </li>
                     }
                 </ul>
             </Spin>
         }
+    }
 
+    @if (CurrentMBSheetItem != null)
+    {
         <Table TItem="ItemAttachmentResponse"
                DataSource="@CurrentMBSheetItem.Attachments"
                Loading="@loading"
@@ -55,21 +53,25 @@
                             OkText="Yes"
                             CancelText="No">
                     <Button Icon="@(IconType.Outline.Download)"
-                            Type="@ButtonType.Primary"
                             Shape="@ButtonShape.CircleOutline"
                             Size="@ButtonSize.Small">
                     </Button>
                 </Popconfirm>
-                <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> OnDeleteAttachment(context)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)"
-                            Shape="@ButtonShape.CircleOutline"
-                            Danger
-                            Size="@ButtonSize.Small">
-                    </Button>
-                </Popconfirm>
+
+                @if (IsUpload)
+                {
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="() => OnDeleteAttachment(context)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)"
+                                Shape="@ButtonShape.CircleOutline"
+                                Danger
+                                Style="margin-left: 0.25rem"
+                                Size="@ButtonSize.Small">
+                        </Button>
+                    </Popconfirm>
+                }
             </ActionColumn>
         </Table>
     }
@@ -93,6 +95,9 @@
 
     [CascadingParameter(Name = "MBSheetId")]
     public int MBSheetId { get; set; }
+
+    [Parameter]
+    public bool IsUpload { get; set; } = false;
 
     private List<File> files = new();
     private List<UploadResult> uploadResults = new();
@@ -133,7 +138,7 @@
         }
     }
 
-    void OnDownloadAttachment(ItemAttachmentResponse attachment)
+    async Task OnDownloadAttachment(ItemAttachmentResponse attachment)
     {
         
     }

@@ -92,7 +92,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteMBSheet(int id)
         {
-            var command = new DeleteMBSheetCommand(id);
+            var command = new DeleteMBSheetCommand(id, env.ContentRootPath);
             await Mediator.Send(command);
 
             return NoContent();

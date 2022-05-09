@@ -61,14 +61,14 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" 
+        <Table DataSource="rowData.Data.Items"
                PageSize="rowData.Data.Items.Count"
                Size="@TableSize.Small"
                HidePagination Bordered>
 
             <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="34%" />
-            <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="20%" />
-            <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
+            <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
+            <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
             <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
             <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
             <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
@@ -77,9 +77,20 @@
             <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
                 @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
             </Column>
+            <ActionColumn Title="Action" Width="6%">
+                <Button Icon="@(IconType.Outline.Download)"
+                        Size="@ButtonSize.Small"
+                        Type="@ButtonType.Primary"
+                        Shape="@ButtonShape.CircleOutline"
+                        OnClick="_=> OpenFileUploadModal(context)">
+                </Button>
+            </ActionColumn>
         </Table>
     </ExpandTemplate>
 </Table>
+
+<FileUploadComponent @bind-Visible="modalVisible"
+                     CurrentMBSheetItem="@currentMBSheetItem" />
 
 @code {
     [Parameter]
@@ -91,6 +102,9 @@
     string employeeCode;
     List<MBSheetResponse> mbSheets = new();
     bool loading = false;
+
+    MBSheetItemResponse currentMBSheetItem;
+    bool modalVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -168,6 +182,12 @@
         }
     }
 
+    void OpenFileUploadModal(MBSheetItemResponse item)
+    {
+        currentMBSheetItem = item;
+        modalVisible = true;
+    }
+
     void GoToAddPage()
     {
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet");
@@ -178,7 +198,7 @@
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
     }
 
-    int GetRowSpan(MBSheetItemResponse currItem, List<MBSheetItemResponse> items)
+    private int GetRowSpan(MBSheetItemResponse currItem, List<MBSheetItemResponse> items)
     {
         int count = items.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
 
@@ -194,7 +214,7 @@
         return 1;
     }
 
-    float GetMBookItemTotalQtyInMBSheet(int mBookItemId, List<MBSheetItemResponse> items)
+    private float GetMBookItemTotalQtyInMBSheet(int mBookItemId, List<MBSheetItemResponse> items)
     {
         return items.Where(i => i.MBookItemId == mBookItemId)
             .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
