@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using System.Collections.Generic;
 
 namespace Domain.Entities.MBSheetAggregate
 {
@@ -7,7 +8,6 @@ namespace Domain.Entities.MBSheetAggregate
         public int Id { get; private set; }
         public int Nos { get; private set; }
         public string Description { get; private set; }
-        public string AttachmentUrl { get; private set; }
         public float Value1 { get; private set; }
         public float Value2 { get; private set; }
         public float Value3 { get; private set; }
@@ -20,6 +20,9 @@ namespace Domain.Entities.MBSheetAggregate
         
         public int MBSheetId { get; set; }
         public MBSheet MBSheet { get; set; }
+
+        private readonly List<ItemAttachment> _attachments = new List<ItemAttachment>();
+        public IReadOnlyList<ItemAttachment> Attachments => _attachments.AsReadOnly();
 
         public MBSheetItem(string mbItemDescription, string description, string uom, int dimension, decimal rate, int mBookItemId, int nos, float value1, float value2, float value3)
         {
@@ -62,6 +65,16 @@ namespace Domain.Entities.MBSheetAggregate
         public void SetValue3(float value3)
         {
             Value3 = value3;
+        }
+
+        public void AddAttachment(ItemAttachment attachment)
+        {
+            _attachments.Add(attachment);
+        }
+
+        public void RemoveAttachment(ItemAttachment attachment)
+        {
+            _attachments.Remove(attachment);
         }
     }
 }

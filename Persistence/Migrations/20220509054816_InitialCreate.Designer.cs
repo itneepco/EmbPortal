@@ -9,8 +9,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220228074635_RABillAdded")]
-    partial class RABillAdded
+    [Migration("20220509054816_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,6 +121,46 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.ItemAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Created")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileNormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MBSheetItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MBSheetItemId");
+
+                    b.ToTable("ItemAttachment");
+                });
+
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
                 {
                     b.Property<int>("Id")
@@ -188,10 +228,6 @@ namespace Persistence.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("AttachmentUrl")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
 
                     b.Property<long>("Created")
                         .HasColumnType("INTEGER");
@@ -604,6 +640,9 @@ namespace Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");
 
@@ -750,6 +789,17 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.ItemAttachment", b =>
+                {
+                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheetItem", "MBSheetItem")
+                        .WithMany("Attachments")
+                        .HasForeignKey("MBSheetItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MBSheetItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
                 {
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
@@ -849,7 +899,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
                     b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany()
+                        .WithMany("WorkOrderItems")
                         .HasForeignKey("UomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -923,6 +973,11 @@ namespace Persistence.Migrations
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
                 {
                     b.Navigation("MBSheetItems");
@@ -941,6 +996,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Uom", b =>
+                {
+                    b.Navigation("WorkOrderItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>

@@ -53,8 +53,8 @@ namespace Application.CQRS.RABills.Commands
                 var raItemQtyStatus = raItemQtyStatuses.FirstOrDefault(p => p.MBookItemId == item.MBookItemId);
                 var raItemRequest = request.Data.Items.Find(p => p.MBookItemId == item.MBookItemId);
 
-                item.SetAcceptedMeasuredQty(mbItemQtyStatus.AcceptedMeasuredQty);
-                item.SetTillLastRAQty(raItemQtyStatus.ApprovedRAQty);
+                item.SetAcceptedMeasuredQty(mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0);
+                item.SetTillLastRAQty(raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0);
                 item.SetCurrentRAQty(raItemRequest.CurrentRAQty);
                 item.SetRemarks(raItemRequest.Remarks);
             }

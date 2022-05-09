@@ -32,6 +32,7 @@ namespace Application.CQRS.MBSheets.Query
         {
             return await _context.MBSheets
                 .Include(p => p.Items)
+                    .ThenInclude(i => i.Attachments)
                 .Where(p => p.MeasurementBookId == request.MBookId)
                 .OrderBy(p => p.MeasurementDate)
                 .AsNoTracking()

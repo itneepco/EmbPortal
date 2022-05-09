@@ -56,6 +56,8 @@ namespace Application.Mappings
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
 
+            CreateMap<ItemAttachment, ItemAttachmentResponse>();
+
             CreateMap<RABill, RABillResponse>();
 
             CreateMap<RABillItem, RABillItemResponse>()

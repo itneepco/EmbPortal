@@ -6,17 +6,18 @@
        OnOk="@HandleOk"
        OnCancel="@HandleCancel">
 
-    <p>
-        <label>
-            Upload up to @maxAllowedFiles files:
-            <InputFile @key=@inputFileId OnChange="@OnInputFileChange" multiple />
-        </label>
-    </p>
-
-    @if (files.Count > 0)
+    @if (CurrentMBSheetItem != null)
     {
-        <div class="card">
-            <div class="card-body">
+        <p>
+            <label>
+                Upload up to @maxAllowedFiles files:
+                <InputFile @key=@inputFileId OnChange="@OnInputFileChange" multiple />
+            </label>
+        </p>
+
+        @if (files.Count > 0 && uploadResults.Count > 0)
+        {
+            <Spin Spinning="@loading">
                 <ul>
                     @foreach (var file in files)
                     {
@@ -39,10 +40,39 @@
                         </li>
                     }
                 </ul>
-            </div>
-        </div>
-    }
+            </Spin>
+        }
 
+        <Table TItem="ItemAttachmentResponse"
+               DataSource="@CurrentMBSheetItem.Attachments"
+               Loading="@loading"
+               HidePagination Bordered>
+
+            <Column Title="File Name" TData="string" DataIndex="@nameof(context.FileName)" Width="70%" />
+            <ActionColumn Title="Actions" Width="30%">
+                <Popconfirm Title="Sure to download?"
+                            OnConfirm="()=> OnDownloadAttachment(context)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Download)"
+                            Type="@ButtonType.Primary"
+                            Shape="@ButtonShape.CircleOutline"
+                            Size="@ButtonSize.Small">
+                    </Button>
+                </Popconfirm>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> OnDeleteAttachment(context)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)"
+                            Shape="@ButtonShape.CircleOutline"
+                            Danger
+                            Size="@ButtonSize.Small">
+                    </Button>
+                </Popconfirm>
+            </ActionColumn>
+        </Table>
+    }
 </Modal>
 
 @code{
@@ -55,6 +85,12 @@
     [Parameter]
     public MBSheetItemResponse CurrentMBSheetItem { get; set; }
 
+    [Parameter]
+    public EventCallback<MBSheetItemResponse> CurrentMBSheetItemChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemSubmit { get; set; }
+
     [CascadingParameter(Name = "MBSheetId")]
     public int MBSheetId { get; set; }
 
@@ -63,6 +99,7 @@
     private int maxAllowedFiles = FileConstant.MaxFilesCount;
     private long maxFileSize = FileConstant.MaxFileSize;
     private string inputFileId = Guid.NewGuid().ToString();
+    private bool loading;
 
     private void HandleOk(MouseEventArgs e)
     {
@@ -76,9 +113,34 @@
         ResetModal();
     }
 
+    async Task OnDeleteAttachment(ItemAttachmentResponse attachment)
+    {
+        loading = true;
+        var result = await mbSheetService.DeleteMBSheetItemAttachment(MBSheetId, CurrentMBSheetItem.Id, attachment.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            CurrentMBSheetItem.Attachments = CurrentMBSheetItem.Attachments
+                .Where(p => p.Id != attachment.Id).ToList();
+
+            await CurrentMBSheetItemChanged.InvokeAsync(CurrentMBSheetItem);
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void OnDownloadAttachment(ItemAttachmentResponse attachment)
+    {
+        
+    }
+
     void ResetModal()
     {
-        uploadResults = new();
+        files = new();
         uploadResults = new();
         inputFileId = Guid.NewGuid().ToString();
     }
@@ -128,7 +190,8 @@
 
         if (upload)
         {
-            if (CurrentMBSheetItem == null) return;
+            loading = true;
+            StateHasChanged();
 
             var response = await mbSheetService.UploadFiles(MBSheetId, CurrentMBSheetItem.Id, content);
 
@@ -137,12 +200,14 @@
             if (newUploadResults is not null)
             {
                 uploadResults = uploadResults.Concat(newUploadResults).ToList();
+                await OnItemSubmit.InvokeAsync();
             }
 
             inputFileId = Guid.NewGuid().ToString();
-        }
 
-        StateHasChanged();
+            loading = false;
+            StateHasChanged();
+        }
     }
 
     private static bool FileUpload(IList<UploadResult> uploadResults,
@@ -153,6 +218,7 @@
         if (!result.Uploaded)
         {
             // TODO
+            Console.WriteLine(result);
             result.ErrorCode = 5;
         }
 

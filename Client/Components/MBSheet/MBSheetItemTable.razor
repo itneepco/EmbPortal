@@ -56,7 +56,9 @@
                        CurrentMBSheetItem="@currentMBSheetItem"
                        OnItemSubmit="@OnItemSubmit" />
 
-<FileUploadComponent @bind-Visible="modalVisible" CurrentMBSheetItem="@currentMBSheetItem"/>
+<FileUploadComponent @bind-Visible="modalVisible" 
+                     @bind-CurrentMBSheetItem="@currentMBSheetItem"
+                     OnItemSubmit="@OnItemSubmit"/>
 
 @code {
     [CascadingParameter(Name = "MBookId")]

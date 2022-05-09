@@ -10,6 +10,8 @@ namespace EmbPortal.Shared.Requests
         public decimal UnitRate { get; set; }
         public float AcceptedMeasuredQty { get; set; }
         public float TillLastRAQty { get; set; }
+
+        [Range(0, float.MaxValue)]
         public float CurrentRAQty { get; set; }
 
         [MaxLength(100)]

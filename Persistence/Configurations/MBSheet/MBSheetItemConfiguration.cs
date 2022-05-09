@@ -11,10 +11,12 @@ namespace Persistence.Configurations
             builder.Property(p => p.Uom).HasMaxLength(20).IsRequired();
             builder.Property(p => p.Description).HasMaxLength(100).IsRequired();
             builder.Property(p => p.MBookItemDescription).HasMaxLength(250).IsRequired();
-            builder.Property(p => p.AttachmentUrl).HasMaxLength(100);
 
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+
+            // Backing fields
+            builder.Navigation(p => p.Attachments).HasField("_attachments");
         }
     }
 }

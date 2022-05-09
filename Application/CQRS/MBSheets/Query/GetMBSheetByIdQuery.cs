@@ -30,6 +30,7 @@ namespace Application.CQRS.MBSheets.Query
         {
             var mbSheet = await _context.MBSheets
                 .Include(p => p.Items)
+                    .ThenInclude(i => i.Attachments)
                 .ProjectTo<MBSheetResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == request.Id);

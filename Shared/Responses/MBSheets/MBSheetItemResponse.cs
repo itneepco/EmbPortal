@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EmbPortal.Shared.Responses
 {
@@ -15,6 +16,8 @@ namespace EmbPortal.Shared.Responses
         public decimal UnitRate { get; set; }
         public int MBookItemId { get; set; }
         public string MBookItemDescription { get; set; }
+        public List<ItemAttachmentResponse> Attachments { get; set; }
+
         public float Quantity
         {
             get

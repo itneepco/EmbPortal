@@ -124,7 +124,7 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteMBSheetItem(int mbSheetId, int itemId)
         {
-            var command = new DeleteMBSheetItemCommand(itemId, mbSheetId);
+            var command = new DeleteMBSheetItemCommand(itemId, mbSheetId, env.ContentRootPath);
             await Mediator.Send(command);
 
             return NoContent();
@@ -135,7 +135,17 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<UploadResult>>> PostFile(int mbSheetId, int itemId, [FromForm] IEnumerable<IFormFile> files)
         {
-            var command = new UploadMBSheetAttachmentsCommand(files, env.ContentRootPath);
+            var command = new UploadMBSheetAttachmentsCommand(mbSheetId, itemId , files, env.ContentRootPath);
+
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("{mbSheetId}/Item/{itemId}/Uploads/{attachmentId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteFile(int mbSheetId, int itemId, int attachmentId)
+        {
+            var command = new RemoveMBSheetAttachmentCommand(mbSheetId, itemId, attachmentId, env.ContentRootPath);
 
             return Ok(await Mediator.Send(command));
         }
