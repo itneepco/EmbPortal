@@ -20,5 +20,6 @@ namespace Client.Services.Interfaces
         Task<IResult> DeleteMBSheetItem(int mbSheetId, int itemId);
         Task<IResult<List<UploadResult>>> UploadFiles(int mbSheetId, int itemId, MultipartFormDataContent content);
         Task<IResult> DeleteMBSheetItemAttachment(int mbSheetId, int itemId, int attachmentId);
+        Task<string> DownloadMBSheetItemAttachment(int mbSheetId, int itemId, int attachmentId);
     }
 }

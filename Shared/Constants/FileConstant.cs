@@ -2,8 +2,8 @@
 {
     public static class FileConstant
     {
-        public static int MaxFilesCount = 5;
-        public static int MaxFileSize = 1024 * 1024 * 2;
+        public static int MaxFilesCount = 1;
+        public static int MaxFileSize = 1024 * 1024 * 1;
         public static string FolderName = "Files";
     }
 }

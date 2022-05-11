@@ -27,6 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Folder Include="Files\**" />
+	<Content Include="Files\**" />
   </ItemGroup>
 </Project>

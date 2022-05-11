@@ -79,14 +79,21 @@ namespace Client.Services
 
         public async Task<IResult<List<UploadResult>>> UploadFiles(int mbSheetId, int itemId, MultipartFormDataContent content)
         {
-            var response = await _httpClient.PostAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Uploads", content);
+            var response = await _httpClient.PostAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Attachment", content);
             return await response.ToResult<List<UploadResult>>();
         }
 
         public async Task<IResult> DeleteMBSheetItemAttachment(int mbSheetId, int itemId, int attachmentId)
         {
-            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Uploads/{attachmentId}");
+            var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Attachment/{attachmentId}");
             return await response.ToResult();
+        }
+
+        public async Task<string> DownloadMBSheetItemAttachment(int mbSheetId, int itemId, int attachmentId)
+        {
+            var response = await _httpClient.GetAsync($"/api/MBSheet/{mbSheetId}/Item/{itemId}/Attachment/{attachmentId}/Download");
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
         }
     }
 }

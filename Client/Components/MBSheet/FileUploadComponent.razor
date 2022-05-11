@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http.Headers
 @using EmbPortal.Shared.Constants
+@using System.IO
 
 <Modal Title="@(IsUpload ? "Upload Files" : "Download Files")"
        Visible="@Visible"
@@ -8,10 +9,11 @@
 
     @if (IsUpload)
     {
+        <p>Please upload pdf, excel, png and jpeg files only</p>
         <p>
             <label>
-                Upload up to @maxAllowedFiles files:
-                <InputFile @key=@inputFileId OnChange="@OnInputFileChange" multiple />
+                Upload file (Maximum size 1MB):
+                <InputFile @key=@inputFileId OnChange="@OnInputFileChange" accept=".xlsx, .pdf, .png, .jpeg" />
             </label>
         </p>
 
@@ -21,18 +23,24 @@
                 <ul>
                     @foreach (var file in files)
                     {
-                        <li>
-                            File: @file.Name
-                            <br>
-                            @if (FileUpload(uploadResults, file.Name, out var result))
-                            {
-                                <span>Stored File Name: @result.StoredFileName</span>
-                            }
-                            else
-                            {
-                                <span>There was an error uploading the file(Error: @result.ErrorCode).</span>
-                            }
-                        </li>
+                    <li>
+                        File: @file.Name
+                        <br>
+                        @if (FileUpload(uploadResults, file.Name, out var result))
+                        {
+                            <span style="color: cadetblue">
+                                Stored File Name: @result.StoredFileName
+                                <Icon Type="check-square" Theme="fill" />
+                            </span>
+                        }
+                        else
+                        {
+                            <span style="color: saddlebrown">
+                                There was an error uploading the file(Error: @result.ErrorCode).
+                                <Icon Type="close-square" Theme="fill" />
+                            </span>
+                        }
+                    </li>
                     }
                 </ul>
             </Spin>
@@ -44,6 +52,7 @@
         <Table TItem="ItemAttachmentResponse"
                DataSource="@CurrentMBSheetItem.Attachments"
                Loading="@loading"
+               Size="TableSize.Small"
                HidePagination Bordered>
 
             <Column Title="File Name" TData="string" DataIndex="@nameof(context.FileName)" Width="70%" />
@@ -93,9 +102,6 @@
     [Parameter]
     public EventCallback<bool> OnItemSubmit { get; set; }
 
-    [CascadingParameter(Name = "MBSheetId")]
-    public int MBSheetId { get; set; }
-
     [Parameter]
     public bool IsUpload { get; set; } = false;
 
@@ -121,7 +127,7 @@
     async Task OnDeleteAttachment(ItemAttachmentResponse attachment)
     {
         loading = true;
-        var result = await mbSheetService.DeleteMBSheetItemAttachment(MBSheetId, CurrentMBSheetItem.Id, attachment.Id);
+        var result = await mbSheetService.DeleteMBSheetItemAttachment(CurrentMBSheetItem.MBSheetId, CurrentMBSheetItem.Id, attachment.Id);
         loading = false;
 
         if (result.Succeeded)
@@ -140,7 +146,34 @@
 
     async Task OnDownloadAttachment(ItemAttachmentResponse attachment)
     {
-        
+        var base64 = await mbSheetService.DownloadMBSheetItemAttachment(CurrentMBSheetItem.MBSheetId, CurrentMBSheetItem.Id, attachment.Id);
+
+        string mimeType = "application/unknown";
+        string extension = Path.GetExtension(attachment.FileName);
+
+        if (extension.ToUpper() == ".PDF")
+        {
+            mimeType = "application/pdf";
+        }
+        if (extension.ToUpper() == ".JPG" || extension.ToUpper() == ".JPEG")
+        {
+            mimeType = "image/jpeg";
+        }
+        if (extension.ToUpper() == ".PNG")
+        {
+            mimeType = "image/png";
+        }
+        if(extension.ToUpper() == ".XLSX")
+        {
+            mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        }
+
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = attachment.FileName,
+            MimeType = mimeType
+        });
     }
 
     void ResetModal()
@@ -163,11 +196,9 @@
             {
                 try
                 {
-                    var fileContent =
-                        new StreamContent(file.OpenReadStream(maxFileSize));
+                    var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
 
-                    fileContent.Headers.ContentType =
-                        new MediaTypeHeaderValue(file.ContentType);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
                     files.Add(new() { Name = file.Name });
 
@@ -181,7 +212,9 @@
                 }
                 catch (Exception ex)
                 {
-                    messageService.Error(ex.Message);
+                    Console.WriteLine(ex);
+
+                    await messageService.Error("Maximum file size should be 1MB");
 
                     uploadResults.Add(new()
                     {
@@ -198,7 +231,7 @@
             loading = true;
             StateHasChanged();
 
-            var response = await mbSheetService.UploadFiles(MBSheetId, CurrentMBSheetItem.Id, content);
+            var response = await mbSheetService.UploadFiles(CurrentMBSheetItem.MBSheetId, CurrentMBSheetItem.Id, content);
 
             var newUploadResults = response.Data;
 
@@ -206,9 +239,9 @@
             {
                 uploadResults = uploadResults.Concat(newUploadResults).ToList();
                 await OnItemSubmit.InvokeAsync();
+                inputFileId = Guid.NewGuid().ToString();
+                await messageService.Success("Uploaded the file successfully");
             }
-
-            inputFileId = Guid.NewGuid().ToString();
 
             loading = false;
             StateHasChanged();
@@ -222,7 +255,6 @@
 
         if (!result.Uploaded)
         {
-            // TODO
             Console.WriteLine(result);
             result.ErrorCode = 5;
         }

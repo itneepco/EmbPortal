@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -130,7 +131,7 @@ namespace Api.Controllers
             return NoContent();
         }
 
-        [HttpPost("{mbSheetId}/Item/{itemId}/Uploads")]
+        [HttpPost("{mbSheetId}/Item/{itemId}/Attachment")]
         [ProducesResponseType(typeof(IList<UploadResult>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IList<UploadResult>>> PostFile(int mbSheetId, int itemId, [FromForm] IEnumerable<IFormFile> files)
@@ -140,7 +141,7 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpDelete("{mbSheetId}/Item/{itemId}/Uploads/{attachmentId}")]
+        [HttpDelete("{mbSheetId}/Item/{itemId}/Attachment/{attachmentId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteFile(int mbSheetId, int itemId, int attachmentId)
@@ -148,6 +149,16 @@ namespace Api.Controllers
             var command = new RemoveMBSheetAttachmentCommand(mbSheetId, itemId, attachmentId, env.ContentRootPath);
 
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("{mbSheetId}/Item/{itemId}/Attachment/{attachmentId}/Download")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<string>> DownloadOrderItemTemplate(int mbSheetId, int itemId, int attachmentId)
+        {
+            var result = await Mediator.Send(new DownloadMBSheetAttachmentCommand(mbSheetId, itemId, attachmentId, env.ContentRootPath));
+
+            return Ok(Convert.ToBase64String(result));
         }
     }
 }
