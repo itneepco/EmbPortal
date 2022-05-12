@@ -19,22 +19,30 @@ namespace Persistence.Seed
                         DisplayName = "Admin",
                         Designation = "Manager",
                         Email = "admin@neepco.com",
+                        UserName = "001233",
+                        PhoneNumber = "8976453420"
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Engineer In Charge",
+                        Designation = "Manager",
+                        Email = "eng@neepco.com",
                         UserName = "001234",
                         PhoneNumber = "8976453420"
                     },
                     new AppUser
                     {
-                        DisplayName = "Bob Willis",
+                        DisplayName = "Validation Officer",
                         Designation = "Manager",
-                        Email = "bob@neepco.com",
+                        Email = "val@neepco.com",
                         UserName = "001235",
                         PhoneNumber = "9876543210"
                     },
                     new AppUser
                     {
-                        DisplayName = "Tom Joe",
+                        DisplayName = "Measurement Officer",
                         Designation = "Manager",
-                        Email = "tom@neepco.com",
+                        Email = "mea@neepco.com",
                         UserName = "001236",
                         PhoneNumber = "9876543210"
                     }
@@ -62,7 +70,12 @@ namespace Persistence.Seed
                         await userManager.AddToRoleAsync(user, "Admin");
                     }
 
-                    if (user.Email == "bob@neepco.com")
+                    if (user.Email == "eng@neepco.com")
+                    {
+                        await userManager.AddToRoleAsync(user, "Manager");
+                    }
+
+                    if (user.Email == "val@neepco.com")
                     {
                         await userManager.AddToRoleAsync(user, "Manager");
                     }

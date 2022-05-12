@@ -8,6 +8,7 @@ using Client.Services.Interfaces;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using AntDesign.ProLayout;
 
 namespace Client
 {
@@ -18,8 +19,10 @@ namespace Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddAntDesign()
-                .AddAuthorizationCore()
+            builder.Services.AddAntDesign();
+            builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
+
+            builder.Services.AddAuthorizationCore()
                 .AddBlazoredLocalStorage()
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

@@ -10,42 +10,57 @@
     </Authorizing>
 
     <Authorized>
-        <Layout Id="layout">
-            <AppNavBar />
-
-            <Content Class="content">
-                @Body
-            </Content>
-
-            <Footer Class="footer">EMP Portal &copy;2021 Created by IT NEEPCO</Footer>
-        </Layout>
+        <AntDesign.ProLayout.BasicLayout MenuData="_menuData" 
+                                         Title="EMB Portal" 
+                                         Logo="@("https://upload.wikimedia.org/wikipedia/en/7/74/North_Eastern_Electric_Power_Corporation_Logo.svg")">
+            <RightContentRender>
+                <AppNavBar />
+            </RightContentRender>
+            <ChildContent>
+                <div id="main">
+                    @Body
+                </div>
+            </ChildContent>
+            <FooterRender>
+                <FooterView Copyright="2021 IT NEEPCO" Links="@_links" />
+            </FooterRender>
+        </AntDesign.ProLayout.BasicLayout>
     </Authorized>
 </AuthorizeView>
 
 <style>
-    .content {
-        background: #fff;
-        padding: 24px;
-        margin: 24px 16px;
-        min-height: 500px;
-        flex-grow: 1
-    }
-
-    #layout {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
-    .logo {
-        width: 120px;
-        height: 31px;
-        background: rgba(255, 255, 255, 0.2);
-        margin: 16px 24px 16px 0;
-        float: left;
-    }
-    .footer {
-        text-align: center;
-        background: #fff;
+    #main {
+        padding: 18px;
+        background: white;
+        min-height: 75vh;
     }
 </style>
+
+@code {
+    private readonly MenuDataItem[] _menuData =
+    {
+        new MenuDataItem
+        {
+            Path = "/",
+            Name = "Dashboard",
+            Key = "dashboard",
+            Icon = "dashboard",
+        },
+        new MenuDataItem
+        {
+            Path = "/workorder",
+            Name = "Work Orders",
+            Key = "workorder",
+            Icon = "container",
+        },
+        new MenuDataItem
+        {
+            Path = "/mbooks",
+            Name = "Measurement Books",
+            Key = "mbook",
+            Icon = "snippets",
+        }
+    };
+
+    private LinkItem[] _links = { };
+}

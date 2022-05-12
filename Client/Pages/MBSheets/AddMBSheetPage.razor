@@ -1,43 +1,39 @@
 ﻿@page "/mbook/{MBookId}/mbsheet"
 @attribute [Authorize]
 
-<Row Justify="center">
-    <AntDesign.Col Lg="20" Md="22" Sm="24">
-        <h3>Add MB Sheet</h3>
+<h3>Add MB Sheet</h3>
 
-        <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
-            <Row Gutter="16">
-                <AntDesign.Col Span="14">
-                    <FormItem Label="MB Sheet Title">
-                        <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
-                    </FormItem>
-                </AntDesign.Col>
-                <AntDesign.Col Span="6">
-                    <FormItem Label="Measurement Date">
-                        <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                    </FormItem>
-                </AntDesign.Col>
-                <AntDesign.Col Span="4">
-                    <FormItem Label="Action">
-                        <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
-                    </FormItem>
-                </AntDesign.Col>
-            </Row>
-        </Form>
+<Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+    <Row Gutter="16">
+        <AntDesign.Col Span="14">
+            <FormItem Label="MB Sheet Title">
+                <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="6">
+            <FormItem Label="Measurement Date">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+        </AntDesign.Col>
+        <AntDesign.Col Span="4">
+            <FormItem Label="Action">
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </FormItem>
+        </AntDesign.Col>
+    </Row>
+</Form>
 
-        @if (mbSheet != null)
-        {
-            <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
-                <CascadingValue Value="@mbSheet.Id" Name="MBSheetId">
-                    <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
-                </CascadingValue>
-            </CascadingValue>
-        }
+@if (mbSheet != null)
+{
+    <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
+        <CascadingValue Value="@mbSheet.Id" Name="MBSheetId">
+            <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
+        </CascadingValue>
+    </CascadingValue>
+}
 
-        <Row Justify="start" Style="margin-top: 2rem;">
-            <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
-        </Row>
-    </AntDesign.Col>
+<Row Justify="start" Style="margin-top: 2rem;">
+    <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
 </Row>
 
 @code {

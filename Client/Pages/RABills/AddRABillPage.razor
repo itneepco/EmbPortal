@@ -1,35 +1,31 @@
 ﻿@page "/mbook/{MBookId}/rabill"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Manager")]
 
-<Row Justify="center">
-    <AntDesign.Col Xl="20" Md="22" Sm="24">
-        <h3>Add Recurring Account Bill</h3>
-        <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
-            <Row Gutter="16">
-                <AntDesign.Col Span="16">
-                    <FormItem Label="RA Bill Title">
-                        <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
-                    </FormItem>
-                </AntDesign.Col>
-                <AntDesign.Col Span="8">
-                    <FormItem Label="RA Bill Date">
-                        <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                    </FormItem>
-                </AntDesign.Col>
-            </Row>
+<h3>Add Recurring Account Bill</h3>
 
-            <RABillItemTable ModelItems="@model.Items" />
-
-            <FormItem Style="margin-top: 1rem">
-                <Row Justify="end">
-                    <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
-                    <Button HtmlType="submit" Type="@ButtonType.Primary">Submit</Button>
-                </Row>
+<Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+    <Row Gutter="16">
+        <AntDesign.Col Span="16">
+            <FormItem Label="RA Bill Title">
+                <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
             </FormItem>
-        </Form>
-    </AntDesign.Col>
-</Row>
+        </AntDesign.Col>
+        <AntDesign.Col Span="8">
+            <FormItem Label="RA Bill Date">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+        </AntDesign.Col>
+    </Row>
 
+    <RABillItemTable ModelItems="@model.Items" />
+
+    <FormItem Style="margin-top: 1rem">
+        <Row Justify="end">
+            <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Cancel</Button>
+            <Button HtmlType="submit" Type="@ButtonType.Primary">Submit</Button>
+        </Row>
+    </FormItem>
+</Form>
 
 @code {
     [Parameter]
@@ -86,7 +82,7 @@
         }
         else
         {
-            if(result.Errors.Count == 0)
+            if (result.Errors.Count == 0)
             {
                 await messageService.Error(result.Message);
                 return;

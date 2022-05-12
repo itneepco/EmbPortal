@@ -1,61 +1,20 @@
 ﻿
-<Header>
-    <div class="logo" />
-    <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Horizontal" DefaultSelectedKeys=@(new[]{"1"})>
-        <MenuItem Key="1">
-            <MenuLink Href="/">
-                <span>Dashboard</span>
-            </MenuLink>
-        </MenuItem>
-        <MenuItem Key="5">
-            <MenuLink Href="/mbooks">
-                <span>Measurement Books</span>
-            </MenuLink>
-        </MenuItem>
-
-        @* For administrator and managers only *@
-        @if (currentUser != null && (currentUser.IsInRole("Admin") || currentUser.IsInRole("Manager")))
-        {
-            <MenuItem Key="2">
-                <MenuLink Href="/workorder">
-                    <span>Work Orders</span>
-                </MenuLink>
-            </MenuItem>
-        }
-
-        @* For administrator only *@
-        @*@if (currentUser != null && currentUser.IsInRole("Admin"))
-        {
-            <MenuItem Key="3">
-                <MenuLink Href="/users">
-                    <span>Users</span>
-                </MenuLink>
-            </MenuItem>
-            <MenuItem Key="4">
-                <MenuLink Href="/uoms">
-                    <span>Uoms</span>
-                </MenuLink>
-            </MenuItem>
-        }*@
-
-        <div class="profile">
-            <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
-                <Overlay>
-                    <Menu>
-                        <MenuItem>Profile</MenuItem>
-                        <MenuItem OnClick="@LogoutUser">Logout</MenuItem>
-                    </Menu>
-                </Overlay>
-                <ChildContent>
-                    <a @onclick:preventDefault class="username">
-                        <span>@displayName</span>
-                    </a>
-                    <Avatar Icon="user" />
-                </ChildContent>
-            </Dropdown>
-        </div>
-    </Menu>
-</Header>
+<div class="profile">
+    <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
+        <Overlay>
+            <Menu>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem OnClick="@LogoutUser">Logout</MenuItem>
+            </Menu>
+        </Overlay>
+        <ChildContent>
+            <a @onclick:preventDefault class="username">
+                <span>@displayName</span>
+            </a>
+            <Avatar Icon="user" />
+        </ChildContent>
+    </Dropdown>
+</div>
 
 <style>
     .profile {
@@ -65,17 +24,7 @@
 
     .username {
         margin-right: 0.25rem;
-        color: white;
-    }
-
-    .ant-menu-item-selected, .ant-menu-item:hover {
-        background: #001529 !important;
-    }
-
-    .ant-menu-item-selected > .ant-menu-title-content {
-        padding: 6px 12px;
-        background: #1890ff;
-        border-radius: 2px;
+        color: black;
     }
 </style>
 

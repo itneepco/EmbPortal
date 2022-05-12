@@ -28,6 +28,8 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
+            @if(currentUser != null && currentUser.IsInRole("Manager"))
+            {
             <Row Justify="ceter">
                 @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
                 {
@@ -57,6 +59,7 @@
                     </Popconfirm>
                 }
             </Row>
+            }
         </ActionColumn>
     </RowTemplate>
 
@@ -92,9 +95,13 @@
     List<RABillResponse> raBills = new();
     bool loading = false;
     int latestRaBillId => raBills.Select(p => p.Id).Max();
+    private ClaimsPrincipal currentUser;
 
     protected override async Task OnInitializedAsync()
     {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        currentUser = state.User;
+
         await LoadRABills();
     }
 

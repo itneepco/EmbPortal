@@ -1,16 +1,17 @@
 ﻿@page "/"
 @attribute [Authorize]
 
-<div class="text-center">
-    
+<div class="text-center">    
     @if (currentUser != null && (currentUser.IsInRole("Admin")))
     {
       <AdminDashboard></AdminDashboard>
     }
-    
-       
-
+    else
+    {
+        <EmbDashboard />
+    }
 </div>
+
 @code{
     private ClaimsPrincipal currentUser;
     protected override async Task OnInitializedAsync()
