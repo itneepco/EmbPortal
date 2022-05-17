@@ -8,8 +8,8 @@ namespace Client.Services.Interfaces
 {
     public interface IWorkOrderService
     {
-        Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search);
-        Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search);
+        Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search, int status);
+        Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search, int status);
         Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id);
         Task<string> ExportToExcelAsync();
         Task<IResult> UploadWorkOrderItemsAsync(int workOrderId, FileUploadRequest content);

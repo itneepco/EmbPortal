@@ -2,12 +2,16 @@
 using Application.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Entities.WorkOrderAggregate;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,6 +26,7 @@ namespace Application.CQRS.WorkOrders.Query
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+        private Expression<Func<WorkOrder, bool>> Criteria { set; get; }
 
         public GetOrdersByCreatorPaginationQueryHandler(IAppDbContext context, IMapper mapper, ICurrentUserService currentUserService)
         {
@@ -32,9 +37,30 @@ namespace Application.CQRS.WorkOrders.Query
 
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByCreatorPaginationQuery request, CancellationToken cancellationToken)
         {
-            return await _context.WorkOrders
+            var query = _context.WorkOrders
                 .Include(p => p.Project)
                 .Include(p => p.Contractor)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.data.Search))
+            {
+                Criteria = (m =>
+                    m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
+                    m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
+                    m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
+                );
+
+                query = query.Where(Criteria);
+            }
+
+            if(request.data.Status > 0) // Query based on the status of the work order
+            {
+                Criteria = m => m.Status == (WorkOrderStatus) request.data.Status;
+
+                query = query.Where(Criteria);
+            }
+
+            return await query
                 .Where(p => p.EngineerInCharge == _currentUserService.EmployeeCode)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)

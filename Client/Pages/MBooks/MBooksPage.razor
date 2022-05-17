@@ -11,8 +11,19 @@
     <AntDesign.Col Flex="2" />
     <AntDesign.Col Flex="1">
         <Row>
+            <AntDesign.Col>
+                <Select DataSource="@statuses"
+                        @bind-Value="@status"
+                        ValueName="@nameof(MBookStatusSL.Val)"
+                        LabelName="@nameof(MBookStatusSL.Desc)"
+                        Placeholder="Filter by Status"
+                        OnSelectedItemChanged="(context) => OnSelectedItemChangedHandler(context)"
+                        Style="margin-right: 0.75rem"
+                        AllowClear>
+                </Select>
+            </AntDesign.Col>
             <AntDesign.Col Flex="1">
-                <Input Placeholder="Search" @bind-Value="@search" />
+                <Input Placeholder="Search by order no, contractor or title" @bind-Value="@search" />
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
@@ -49,24 +60,51 @@
     int total = 0;
     bool loading = false;
     string search;
+    int status;
+
+    List<MBookStatusSL> statuses = new();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadMBooksAsync();
+
+        var items = from MBookStatus d
+                    in Enum.GetValues(typeof(MBookStatus))
+                    where (int)d > 1
+                    select new MBookStatusSL { Val = (int)d, Desc = d.ToString() };
+
+        statuses = items.ToList();
     }
 
     async Task LoadMBooksAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await mBookService.GetMBooksByUserIdPagination(pageIndex, pageSize, search);
+        var response = await mBookService.GetMBooksByUserIdPagination(pageIndex, pageSize, search, status);
         mBooks = response.Items;
         total = response.TotalCount;
         loading = false;
+        StateHasChanged();
     }
 
     void ViewDetail(int id)
     {
         navManager.NavigateTo($"/mbooks/{id}");
+    }
+
+    private async Task OnSelectedItemChangedHandler(MBookStatusSL value)
+    {
+        if (value == null)
+        {
+            status = 0;
+        }
+
+        await LoadMBooksAsync();
+    }
+
+    private class MBookStatusSL
+    {
+        public string Desc { get; set; }
+        public int Val { get; set; }
     }
 }

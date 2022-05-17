@@ -22,14 +22,16 @@ namespace Client.Services
             return await response.ToResult<WorkOrderDetailResponse>();
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search)
+        public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search, int status = 0)
         {
-            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/Project/{projectId}?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
+            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
+                ($"/api/WorkOrder/Project/{projectId}?pageNumber={pageIndex}&pageSize={pageSize}&search={search}&status={status}");
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search)
+        public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search, int status=0)
         {
-            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>($"/api/WorkOrder/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
+            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
+                ($"/api/WorkOrder/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}&status={status}");
         }
 
         public async Task<IResult> DeleteWorkOrder(int id)

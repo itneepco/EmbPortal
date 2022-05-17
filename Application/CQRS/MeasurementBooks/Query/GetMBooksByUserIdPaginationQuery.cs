@@ -41,6 +41,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             var query = _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
                     .ThenInclude(o => o.Contractor)
+                .Where(p => p.Status != MBookStatus.CREATED)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.Data.Search))
@@ -53,14 +54,18 @@ namespace Application.CQRS.MeasurementBooks.Query
                 query = query.Where(Criteria);
             }
 
+            if (request.Data.Status > 1) // Query based on the status of the measurement book
+            {
+                Criteria = m => m.Status == (MBookStatus)request.Data.Status;
+                query = query.Where(Criteria);
+            }
+
             Criteria = (m =>
                 m.MeasurementOfficer == _userService.EmployeeCode ||
                 m.ValidatingOfficer == _userService.EmployeeCode ||
                 m.WorkOrder.EngineerInCharge == _userService.EmployeeCode
             );
             query = query.Where(Criteria);
-
-            query = query.Where(p => p.Status == MBookStatus.PUBLISHED);
 
             return await query.OrderBy(p => p.WorkOrder.OrderDate)
                 .ProjectTo<MBookHeaderResponse>(_mapper.ConfigurationProvider)

@@ -22,9 +22,10 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<MBookResponse>>($"/api/MBook/WorkOrder/{orderId}");
         }
 
-        public async Task<PaginatedList<MBookHeaderResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search)
+        public async Task<PaginatedList<MBookHeaderResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search, int status)
         {
-            return await _httpClient.GetFromJsonAsync<PaginatedList<MBookHeaderResponse>>($"/api/MBook/CurrentUser?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
+            return await _httpClient.GetFromJsonAsync<PaginatedList<MBookHeaderResponse>>
+                ($"/api/MBook/CurrentUser?pageNumber={pageIndex}&pageSize={pageSize}&search={search}&status={status}");
         }
 
         public async Task<List<MBItemStatusResponse>> GetCurrentMBItemsStatus(int id)

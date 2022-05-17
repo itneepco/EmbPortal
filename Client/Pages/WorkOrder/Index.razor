@@ -33,8 +33,19 @@
     <AntDesign.Col Flex="2" />
     <AntDesign.Col Flex="1">
         <Row>
+            <AntDesign.Col>
+                <Select DataSource="@statuses"
+                        @bind-Value="@status"
+                        ValueName="@nameof(WorkStatusSL.Val)"
+                        LabelName="@nameof(WorkStatusSL.Desc)"
+                        Placeholder="Filter by Status"
+                        OnSelectedItemChanged="(context) => OnSelectedItemChangedHandler(context)"
+                        Style="margin-right: 0.75rem"
+                        AllowClear>
+                </Select>
+            </AntDesign.Col>
             <AntDesign.Col Flex="1">
-                <Input Placeholder="Search" @bind-Value="@search" />
+                <Input Placeholder="Search by order no, contractor or title" @bind-Value="@search" />
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
@@ -58,9 +69,9 @@
 
     <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
     <Column @bind-Field="@context.OrderNo" Width="15%" />
-    <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="10%" />
+    <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="14%" />
     <Column @bind-Field="@context.ContractorName" Width="20%" />
-    <Column @bind-Field="@context.Title" Width="40%" />
+    <Column @bind-Field="@context.Title" Width="36%" />
     <Column @bind-Field="@context.Status" Width="10%">
         @if (context.Status == WorkOrderStatus.COMPLETED.ToString())
         {
@@ -77,12 +88,12 @@
     </Column>
 </Table>
 
-<p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
-
 @code {
     List<WorkOrderResponse> workOrders = new();
 
     IEnumerable<WorkOrderResponse> selectedRows;
+
+    List<WorkStatusSL> statuses = new();
 
     int pageIndex = 1;
     int pageSize = 10;
@@ -90,20 +101,28 @@
     bool loading = false;
     bool drawerVisible = false;
     string search;
+    int status;
 
     async Task LoadWorkOrdersAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await workOrderService.GetUserWorkOrdersPagination(pageIndex, pageSize, search);
+        var response = await workOrderService.GetUserWorkOrdersPagination(pageIndex, pageSize, search, status);
         workOrders = response.Items;
         total = response.TotalCount;
         loading = false;
+        StateHasChanged();
     }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadWorkOrdersAsync();
+
+        var items = from WorkOrderStatus d
+                    in Enum.GetValues(typeof(WorkOrderStatus))
+                    select new WorkStatusSL { Val = (int)d, Desc = d.ToString() };
+
+        statuses = items.ToList();
     }
 
     async Task ConfirmDelete(int id)
@@ -142,5 +161,21 @@
     void CloseSideBar()
     {
         drawerVisible = false;
+    }
+
+    private async Task OnSelectedItemChangedHandler(WorkStatusSL value)
+    {
+        if(value == null)
+        {
+            status = 0;
+        }
+
+        await LoadWorkOrdersAsync();
+    }
+
+    private class WorkStatusSL
+    {
+        public string Desc { get; set; }
+        public int Val { get; set; }
     }
 }

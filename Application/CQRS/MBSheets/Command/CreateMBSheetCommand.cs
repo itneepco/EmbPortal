@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,11 @@ namespace Application.CQRS.MBSheets.Command
             if (mBook == null)
             {
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
+            }
+
+            if(mBook.Status == MBookStatus.CREATED)
+            {
+                throw new BadRequestException("Please publish Measurement Book before creating any MB Sheets");
             }
 
             var mbSheet = new MBSheet

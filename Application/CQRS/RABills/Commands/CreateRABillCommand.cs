@@ -55,6 +55,11 @@ namespace Application.CQRS.RABills.Commands
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
             }
 
+            if (mBook.Status == MBookStatus.CREATED)
+            {
+                throw new BadRequestException("Please publish Measurement Book before creating any RA Bills");
+            }
+
             List<MBookItemQtyStatus> mBItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
             List<RAItemQtyStatus> raItemQtyStatuses = await _billService.GetRAItemQtyStatus(mBook.Id);
 

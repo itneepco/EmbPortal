@@ -2,12 +2,9 @@
 @layout MainLayout
 @attribute [AllowAnonymous]
 
-@inject IAuthService authService
-@inject MessageService messageService
-@inject NavigationManager navManager
 @inject EMBStateProvider stateProvider
 
-<Card Bordered="false" Title=@("EMB Login") Style="width: 500px; margin : auto">
+<Card Title=@("EMB Login") Style="width: 500px; margin : 50px auto">
     <Body>
         <Form Model="@model"
               Loading="@loading"

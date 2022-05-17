@@ -6,6 +6,7 @@ using Application.Interfaces;
 using Domain.Entities.MeasurementBookAggregate;
 using MediatR;
 using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Enums;
 
 namespace Application.CQRS.MeasurementBooks.Command
 {
@@ -33,6 +34,11 @@ namespace Application.CQRS.MeasurementBooks.Command
             }
 
             var workOrder = await _orderService.GetWorkOrderWithItems(req.data.WorkOrderId);
+
+            if(workOrder.Status == WorkOrderStatus.CREATED)
+            {
+                throw new BadRequestException("Please publish Work Order before creating any Measurement Books");
+            }
 
             var measurementBook = new MeasurementBook
             (

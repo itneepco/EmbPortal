@@ -12,6 +12,7 @@ using EmbPortal.Shared.Responses;
 using System;
 using Domain.Entities.WorkOrderAggregate;
 using System.Linq.Expressions;
+using EmbPortal.Shared.Enums;
 
 namespace Application.WorkOrders.Query
 {
@@ -45,6 +46,13 @@ namespace Application.WorkOrders.Query
                     m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
                     m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
                 );
+
+                query = query.Where(Criteria);
+            }
+
+            if (request.data.Status > 0) // Query based on the status of the work order
+            {
+                Criteria = m => m.Status == (WorkOrderStatus)request.data.Status;
 
                 query = query.Where(Criteria);
             }
