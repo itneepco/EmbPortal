@@ -4,13 +4,13 @@
 
 @inject EMBStateProvider stateProvider
 
-<Card Title=@("EMB Login") Style="width: 500px; margin : 50px auto">
+<Card TitleTemplate="titleTemplate" Style="width: 460px; margin: auto; margin-top: 80px;" Class="shadow">
     <Body>
         <Form Model="@model"
               Loading="@loading"
               OnFinish="@OnFinish"
-              LabelColSpan="8"
-              WrapperColSpan="16">
+              LabelColSpan="6"
+              WrapperColSpan="18">
 
             <FormItem Label="Email">
                 <Input @bind-Value="@context.Email" />
@@ -20,25 +20,43 @@
                 <InputPassword @bind-Value="@context.Password" />
             </FormItem>
 
-            <FormItem WrapperColOffset="8" WrapperColSpan="16">
+            <FormItem WrapperColOffset="6" WrapperColSpan="18">
                 <Button Type="@ButtonType.Primary" HtmlType="submit">Submit</Button>
                 <Button OnClick="@ResetForm">Clear</Button>
             </FormItem>
+
+            <p style="text-align: center">Forgot password? Click here</p>
         </Form>
 
-        <p>Admin id: admin@neepco.com</p>
+        @*<p>Admin id: admin@neepco.com</p>
         <p>Manager id: eng@neepco.com, Emp Code: 001234</p>
         <p>Validator id: val@neepco.com, Emp Code: 001235</p>
         <p>Measurer id: mea@neepco.com, Emp Code: 001236</p>
-        <p>Default password: Pass@123</p>
+        <p>Default password: Pass@123</p>*@
     </Body>
 </Card>
 
+<style>
+    body {
+        background: rgb(34,31,91);
+        background: linear-gradient(90deg, rgba(34,31,91,0.9023984593837535) 0%, rgba(201,201,184,0.9023984593837535) 50%, rgba(124,153,232,0.6895133053221288) 100%);
+    }
+    
+    .shadow {
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
+
+</style>
 
 @code
 {
     LoginRequest model = new();
     bool loading;
+
+    RenderFragment titleTemplate =@<div>
+        <img alt="Logo" src="images/logo90.gif" width="44"/>
+        <span style="margin-left: 10px; font-size: 18px">NEEPCO EMB Portal</span>
+    </div>;
 
     async Task OnFinish(EditContext editContext)
     {

@@ -1,6 +1,6 @@
 ﻿<Drawer Closable="true"
         Width="550"
-        Title="@(CurrentContractor == null ?  "Add Contractor" : "Edit Contractor")"
+        Title="@(CurrentProject == null ?  "Add Location" : "Edit Location")"
         Visible="@Visible"
         OnClose="@Close">
 
@@ -8,7 +8,7 @@
         <FormItem Label="Name">
             <Input @bind-Value="@context.Name" TValue="string" />
         </FormItem>
-       
+
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
             <AntDesign.Col>
@@ -21,7 +21,7 @@
 
 @code{
     [Parameter]
-    public ContractorResponse CurrentContractor { get; set; }
+    public ProjectResponse CurrentProject { get; set; }
 
     [Parameter]
     public bool Visible { get; set; }
@@ -32,15 +32,16 @@
     [Parameter]
     public EventCallback<bool> OnItemUpdate { get; set; }
 
-    ContractorRequest model = new();
+
+    ProjectRequest model = new();
     bool loading = false;
 
     protected override void OnParametersSet()
     {
-        if (CurrentContractor != null)
+        if (CurrentProject != null)
         {
             // for editing existing line item
-            model.Name = CurrentContractor.Name;
+            model.Name = CurrentProject.Name;
         }
         else
         {
@@ -52,13 +53,13 @@
     {
         loading = true;
         dynamic result;
-        if (CurrentContractor == null)
+        if (CurrentProject == null)
         {
-            result = await contractorService.CreateContractor(model);
+            result = await projectservice.CreateProject(model);
         }
         else
         {
-            result = await contractorService.UpdateContractor(CurrentContractor.Id, model);
+            result = await projectservice.UpdateProject(CurrentProject.Id, model);
         }
         loading = false;
 

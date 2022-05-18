@@ -1,18 +1,20 @@
-﻿
+﻿@attribute [Authorize(Roles = "Admin")]
+
 <Tabs @bind-ActiveKey="@activeKey" OnChange="OnTabChange" Animated>
     <TabPane Tab="Users" Key="1">
-        <UsersPage></UsersPage>
+        <Users></Users>
     </TabPane>
     <TabPane Tab="Contractors" Key="2">
-       <Contractors></Contractors>
+        <Contractors></Contractors>
     </TabPane>
-    <TabPane Tab="Unit of Measurement" Key="4">
-       <UomsPage></UomsPage>
+    <TabPane Tab="Unit of Measurements" Key="3">
+        <Uoms></Uoms>
     </TabPane>
-    <TabPane Tab="Location" Key="4">
-        Content of Tab Pane 3
+    <TabPane Tab="Locations" Key="4">
+        <Locations></Locations>
     </TabPane>
 </Tabs>
+
 @code{
     string activeKey { get; set; } = "1";
 

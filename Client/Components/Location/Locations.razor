@@ -2,17 +2,17 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Contractor</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Location</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
                 <SpaceItem>
-                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit Contractor</Button>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit Location</Button>
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Sure to Delete Contractor?"
                                 Placement="@Placement.Bottom"
-                                OnConfirm="() => DeleteUom(selectedRows.First().Id)"
+                                OnConfirm="() => DeleteLocation(selectedRows.First().Id)"
                                 OkText="Yes"
                                 CancelText="No">
                         <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Delete</Button>
@@ -29,69 +29,57 @@
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
-                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadContractorsAsync" />
+                    <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Search" OnClick="@LoadLocationsAsync" />
                 </Tooltip>
             </AntDesign.Col>
         </Row>
     </AntDesign.Col>
 </Row>
 
-<AddEditContractorDrawer CurrentContractor="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadContractorsAsync" />
+<AddEditLocationDrawer CurrentProject="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadLocationsAsync" />
 
-<Table TItem="ContractorResponse"
-       DataSource="@contractors"
+<Table TItem="ProjectResponse"
+       DataSource="@projects"
        Loading="loading"
-       OnChange="@LoadContractorsAsync"
-       Total="total"
        Size="@TableSize.Small"
-       @bind-PageIndex="pageIndex"
-       @bind-PageSize="pageSize"
+       OnChange="@LoadLocationsAsync"
        @bind-SelectedRows="selectedRows">
 
     <Selection Key="@context.Id.ToString()" Type="radio" />
     <Column @bind-Field="@context.Name" />
-   
-    
 </Table>
 
-<p>PageIndex: @pageIndex | PageSize: @pageSize | Total: @total</p>
-
 @code{
-    List<ContractorResponse> contractors = new();
-    IEnumerable<ContractorResponse> selectedRows;
+    List<ProjectResponse> projects = new();
+    IEnumerable<ProjectResponse> selectedRows;
 
-    int pageIndex = 1;
-    int pageSize = 10;
-    int total = 0;
     bool loading = false;
     bool drawerVisible = false;
     string search;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadContractorsAsync();
+        await LoadLocationsAsync();
     }
 
-    async Task LoadContractorsAsync()
+    async Task LoadLocationsAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await contractorService.GetContractorsPagination(pageIndex, pageSize, search);
-        contractors = response.Items;
-        total = response.TotalCount;
+        projects = await projectservice.GetAllProjects();
         loading = false;
     }
 
-    async Task DeleteUom(int id)
+    async Task DeleteLocation(int id)
     {
         loading = true;
-        var result = await contractorService.DeleteContractor(id);
+        var result = await projectservice.DeleteProject(id);
         loading = false;
         selectedRows = null;
 
         if (result.Succeeded)
         {
-            contractors = contractors.Where(item => item.Id != id).ToList();
+            projects = projects.Where(item => item.Id != id).ToList();
             StateHasChanged();
             await messageService.Success(result.Message);
         }

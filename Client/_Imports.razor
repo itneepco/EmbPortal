@@ -16,6 +16,8 @@
 @using Client.Shared
 @using Client.Components
 @using Client.Pages
+@using Client.Components.Uom
+@using Client.Components.Location
 @using Client.Components.WorkOrder
 @using Client.Components.Contractor
 @using Client.Components.MBook
@@ -38,7 +40,6 @@
 
 @inject IJSRuntime _jsRuntime;
 @inject NavigationManager navManager
-
 @*emb services*@
 @inject IProjectService projectservice
 @inject IContractorService contractorService
