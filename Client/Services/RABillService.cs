@@ -58,5 +58,12 @@ namespace Client.Services
             var response = await _httpClient.PutAsJsonAsync($"/api/RABill/{raBillId}/Revoke", "");
             return await response.ToResult();
         }
+
+        public async Task<string> GeneratePdf(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/RABill/{id}/Download");
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
+        }
     }
 }

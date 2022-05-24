@@ -61,7 +61,7 @@ namespace Application.CQRS.WorkOrders.Query
             }
 
             return await query
-                .Where(p => p.EngineerInCharge == _currentUserService.EmployeeCode)
+                .Where(p => p.CreatedBy == _currentUserService.EmployeeCode)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

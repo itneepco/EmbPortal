@@ -44,6 +44,7 @@ namespace Application.CQRS.RABills.Commands
             }
 
             MeasurementBook mBook = await _context.MeasurementBooks
+                .Include(p => p.WorkOrder)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                 .Where(p => p.Id == request.Data.MeasurementBookId)
@@ -66,7 +67,8 @@ namespace Application.CQRS.RABills.Commands
             var raBill = new RABill(
                 title: request.Data.Title,
                 billDate: (DateTime)request.Data.BillDate,
-                mBookId: mBook.Id
+                mBookId: mBook.Id,
+                acceptingOfficer: mBook.WorkOrder.EngineerInCharge
             );
 
             foreach (var item in request.Data.Items)

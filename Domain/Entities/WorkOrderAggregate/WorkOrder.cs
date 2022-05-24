@@ -99,6 +99,11 @@ namespace Domain.Entities.WorkOrderAggregate
             OrderNo = orderNo;
         }
 
+        public void SetEngineerInCharge(string engineerInCharge)
+        {
+            EngineerInCharge = engineerInCharge;
+        }
+
         public void SetOrderDate(DateTime orderDate)
         {
             OrderDate = orderDate;

@@ -1,5 +1,6 @@
 ﻿@page "/workorder"
-@attribute [Authorize(Roles="Admin, Manager")]
+@page "/workorder/{StatusParam}"
+@attribute [Authorize(Roles = "Admin, Manager")]
 
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
@@ -95,6 +96,9 @@
 
     List<WorkStatusSL> statuses = new();
 
+    [Parameter]
+    public string? StatusParam { get; set; }
+
     int pageIndex = 1;
     int pageSize = 10;
     int total = 0;
@@ -116,6 +120,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if(!string.IsNullOrEmpty(StatusParam))
+        {
+            status = int.Parse(StatusParam);
+        }
+
         await LoadWorkOrdersAsync();
 
         var items = from WorkOrderStatus d
@@ -146,7 +155,7 @@
 
     void ViewDetail(int id)
     {
-        navManager.NavigateTo($"/workorder/{id}");
+        navManager.NavigateTo($"/orderdetail/{id}");
     }
 
     void OpenSideDrawer(bool isAdd = false)
@@ -165,7 +174,7 @@
 
     private async Task OnSelectedItemChangedHandler(WorkStatusSL value)
     {
-        if(value == null)
+        if (value == null)
         {
             status = 0;
         }

@@ -43,6 +43,7 @@ namespace Application.CQRS.WorkOrders.Command
             workOrder.SetAgreementDate((DateTime)request.data.AgreementDate);
             workOrder.SetProjectId(request.data.ProjectId);
             workOrder.SetContractorId(request.data.ContractorId);
+            workOrder.SetEngineerInCharge(request.data.EngineerInCharge);
 
             await _context.SaveChangesAsync(cancellationToken);
 

@@ -8,7 +8,7 @@
 
 <Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" Bordered>
     <RowTemplate>
-        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)"/>
+        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
         <Column Title="RA Bill Amount" TData="decimal" Width="15%">
             Rs. @context.RABillTotalAmount.ToString("0.00")
         </Column>
@@ -28,45 +28,60 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            @if(currentUser != null && currentUser.IsInRole("Manager"))
-            {
             <Row Justify="ceter">
-                @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
+                @if (employeeCode == context.AcceptingOfficer)
                 {
-                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
 
-                    <Popconfirm Title="Sure to delete?"
-                                OnConfirm="()=> DeleteRABill(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger />
-                    </Popconfirm>
+                    @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
+                    {
+                        <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
 
-                    <Popconfirm Title="Sure to approve RA Bill?"
-                                OnConfirm="()=> ApproveRABill(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Approve</Button>
-                    </Popconfirm>
+                        <Popconfirm Title="Sure to delete?"
+                                    OnConfirm="()=> DeleteRABill(context.Id)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger />
+                        </Popconfirm>
+
+                        <Popconfirm Title="Sure to approve RA Bill?"
+                                    OnConfirm="()=> ApproveRABill(context.Id)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Approve</Button>
+                        </Popconfirm>
+                    }
+
+                    @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId)
+                    {
+                        <Popconfirm Title="Sure to Revoke RA Bill Status?"
+                                    OnConfirm="()=> RevokeRABillStatus(context.Id)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Danger Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Revoke</Button>
+                        </Popconfirm>
+                    }
                 }
-                @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId)
-                {
-                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
-                                OnConfirm="()=> RevokeRABillStatus(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Danger Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Revoke</Button>
-                    </Popconfirm>
-                }
+                @* Button to generate pdf report *@
+                <Popconfirm Title="Sure to download?"
+                            OnConfirm="() => GeneratePdf(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Download)"
+                            Shape="@ButtonShape.CircleOutline"
+                            Loading="@loading"
+                            Style="margin-left: 0.25rem"
+                            Size="@ButtonSize.Small">
+                    </Button>
+                </Popconfirm>
+
             </Row>
-            }
         </ActionColumn>
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" 
-               PageSize="rowData.Data.Items.Count" 
-               Size="@TableSize.Small" 
+        <Table DataSource="rowData.Data.Items"
+               PageSize="rowData.Data.Items.Count"
+               Size="@TableSize.Small"
                HidePagination Bordered>
 
             <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
@@ -95,12 +110,13 @@
     List<RABillResponse> raBills = new();
     bool loading = false;
     int latestRaBillId => raBills.Select(p => p.Id).Max();
-    private ClaimsPrincipal currentUser;
+
+    string employeeCode;
 
     protected override async Task OnInitializedAsync()
     {
         var state = await stateProvider.GetAuthenticationStateAsync();
-        currentUser = state.User;
+        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
 
         await LoadRABills();
     }
@@ -174,5 +190,22 @@
         {
             await messageService.Error(result.Message);
         }
+    }
+
+    async Task GeneratePdf(int id)
+    {
+        loading = true;
+        var base64 = await raBillService.GeneratePdf(id);
+        loading = false;
+
+        string mimeType = "application/pdf";
+        string name = Guid.NewGuid().ToString();
+
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = name,
+            MimeType = mimeType
+        });
     }
 }

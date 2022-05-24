@@ -3,6 +3,20 @@
         Visible="@Visible" OnClose="@Close">
     <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
         <Row Gutter="16">
+            <AntDesign.Col Span="24">
+                <FormItem Label="Contractor">
+                    <Select DataSource="@contractors"
+                            @bind-Value="@context.ContractorId"
+                            ValueName="@nameof(ContractorResponse.Id)"
+                            LabelName="@nameof(ContractorResponse.Name)"
+                            Style="width: 100%"
+                            Placeholder="Select a contractor"
+                            AllowClear>
+                    </Select>
+                </FormItem>
+            </AntDesign.Col>
+        </Row>
+        <Row Gutter="16">
             <AntDesign.Col Span="12">
                 <FormItem Label="Project">
                     <Select DataSource="@projects"
@@ -16,15 +30,8 @@
                 </FormItem>
             </AntDesign.Col>
             <AntDesign.Col Span="12">
-                <FormItem Label="Contractor">
-                    <Select DataSource="@contractors"
-                            @bind-Value="@context.ContractorId"
-                            ValueName="@nameof(ContractorResponse.Id)"
-                            LabelName="@nameof(ContractorResponse.Name)"
-                            Style="width: 100%"
-                            Placeholder="Select a contractor"
-                            AllowClear>
-                    </Select>
+                <FormItem Label="Engineer In Charge">
+                    <Input Placeholder="Engineer In Charge" TValue="string" @bind-Value="@context.EngineerInCharge" />
                 </FormItem>
             </AntDesign.Col>
         </Row>
@@ -106,6 +113,7 @@
             model.Title = WorkOrder.Title;
             model.ProjectId = WorkOrder.ProjectId;
             model.ContractorId = WorkOrder.ContractorId;
+            model.EngineerInCharge = WorkOrder.EngineerInCharge;
         }
         else
         {
@@ -146,7 +154,7 @@
 
         Close();
         var orderId = WorkOrder != null ? WorkOrder.Id : result.Data;
-        navManager.NavigateTo($"/workorder/{orderId}");
+        navManager.NavigateTo($"/orderdetail/{orderId}");
         await messageService.Success(result.Message);
     }
 }

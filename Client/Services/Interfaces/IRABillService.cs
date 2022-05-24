@@ -14,5 +14,6 @@ namespace Client.Services.Interfaces
         Task<IResult> ApproveRABill(int raBillId);
         Task<IResult> RevokeRABill(int raBillId);
         Task<IResult> DeleteRABill(int id);
+        Task<string> GeneratePdf(int id);
     }
 }

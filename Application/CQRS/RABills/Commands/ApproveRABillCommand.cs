@@ -38,6 +38,11 @@ namespace Application.CQRS.RABills.Commands
                 throw new BadRequestException("RA Bill has already been approved");
             }
 
+            if (raBill.AcceptingOfficer != _currentUserService.EmployeeCode)
+            {
+                throw new BadRequestException("Only Engineer-in-charge can accept the MB Sheet");
+            }
+
             raBill.MarkAsApproved();
             await _context.SaveChangesAsync(cancellationToken);
 

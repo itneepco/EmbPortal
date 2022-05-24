@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
 using EmbPortal.Shared.Requests;
 using MediatR;
@@ -31,6 +32,8 @@ namespace Application.CQRS.RABills.Commands
         public async Task<Unit> Handle(EditRABillCommand request, CancellationToken cancellationToken)
         {
             RABill raBill = await _context.RABills
+                .Include(p => p.MeasurementBook)
+                    .ThenInclude(p => p.WorkOrder)
                 .Include(p => p.Items)
                 .FirstOrDefaultAsync(p => p.Id == request.RaBillId);
 
@@ -41,6 +44,7 @@ namespace Application.CQRS.RABills.Commands
 
             raBill.SetTitle(request.Data.Title);
             raBill.SetBillDate((DateTime)request.Data.BillDate);
+            raBill.SetAcceptingOfficer(raBill.MeasurementBook.WorkOrder.EngineerInCharge);
 
             //Fetch the line item status from db
             List<MBookItemQtyStatus> mBItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(raBill.MeasurementBookId);

@@ -12,6 +12,7 @@ namespace EmbPortal.Shared.Responses
         public RABillStatus Status { get; set; }
         public DateTime BillDate { get; set; }
         public DateTime ApprovalDate { get; set; }
+        public string AcceptingOfficer { get; set; }
         public int MeasurementBookId { get; set; }
         public List<RABillItemResponse> Items { get; set; }
 

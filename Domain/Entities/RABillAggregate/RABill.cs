@@ -13,6 +13,7 @@ namespace Domain.Entities.RABillAggregate
         public RABillStatus Status { get; private set; }
         public DateTime BillDate { get; private set; }
         public DateTime ApprovalDate { get; private set; }
+        public string AcceptingOfficer { get; private set; }
         public int MeasurementBookId { get; private set; }
         public MeasurementBook MeasurementBook { get; private set; }
 
@@ -23,12 +24,13 @@ namespace Domain.Entities.RABillAggregate
         {
         }
 
-        public RABill(string title, DateTime billDate, int mBookId)
+        public RABill(string title, DateTime billDate, int mBookId, string acceptingOfficer)
         {
             Title = title;
             BillDate = billDate;
             MeasurementBookId = mBookId;
             Status = RABillStatus.CREATED;
+            AcceptingOfficer = acceptingOfficer;
         }
 
         public void AddLineItem(RABillItem item)
@@ -55,6 +57,11 @@ namespace Domain.Entities.RABillAggregate
         public void SetTitle(string title)
         {
             this.Title = title;
+        }
+
+        public void SetAcceptingOfficer(string acceptingOfficer)
+        {
+            this.AcceptingOfficer = acceptingOfficer;
         }
 
         public void SetBillDate(DateTime billDate)

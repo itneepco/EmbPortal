@@ -19,10 +19,9 @@
 
         @if (files.Count > 0 && uploadResults.Count > 0)
         {
-            <Spin Spinning="@loading">
-                <ul>
-                    @foreach (var file in files)
-                    {
+            <ul>
+                @foreach (var file in files)
+                {
                     <li>
                         File: @file.Name
                         <br>
@@ -41,9 +40,8 @@
                             </span>
                         }
                     </li>
-                    }
-                </ul>
-            </Spin>
+                }
+            </ul>
         }
     }
 
@@ -240,6 +238,9 @@
                 uploadResults = uploadResults.Concat(newUploadResults).ToList();
                 await OnItemSubmit.InvokeAsync();
                 inputFileId = Guid.NewGuid().ToString();
+
+                ResetModal();
+                await VisibleChanged.InvokeAsync(false);
                 await messageService.Success("Uploaded the file successfully");
             }
 

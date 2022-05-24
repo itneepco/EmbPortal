@@ -1,6 +1,16 @@
 ﻿@page "/mbooks/{Id}/{Tab?}"
 @attribute [Authorize]
 
+<Breadcrumb Style="margin-bottom: 0.5rem">
+	<BreadcrumbItem Href="/mbooks">
+		<Icon Type="snippets" />
+		<span>Measurement Books</span>
+	</BreadcrumbItem>
+	<BreadcrumbItem>
+		Details
+	</BreadcrumbItem>
+</Breadcrumb>
+
 @if (data != null)
 {
 <Tabs @bind-ActiveKey="@activeKey" Animated>

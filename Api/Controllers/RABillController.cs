@@ -6,6 +6,7 @@ using EmbPortal.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -88,6 +89,16 @@ namespace Api.Controllers
             await Mediator.Send(command);
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/Download")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<string>> DownloadOrderItemTemplate(int id)
+        {
+            var result = await Mediator.Send(new GeneratePdfCommand(id));
+
+            return Ok(Convert.ToBase64String(result));
         }
     }
 }

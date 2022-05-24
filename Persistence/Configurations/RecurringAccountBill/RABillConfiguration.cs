@@ -10,6 +10,7 @@ namespace Persistence.Configurations.RecurringAccountBill
         public void Configure(EntityTypeBuilder<RABill> builder)
         {
             builder.Property(p => p.Title).HasMaxLength(100).IsRequired();
+            builder.Property(p => p.AcceptingOfficer).HasMaxLength(6).IsRequired();
 
             builder.Property(p => p.CreatedBy).HasMaxLength(6);
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);

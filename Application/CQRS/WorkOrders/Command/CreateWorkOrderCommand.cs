@@ -16,12 +16,10 @@ namespace Application.WorkOrders.Command
     public class CreateWorkOrderCommandHandler : IRequestHandler<CreateWorkOrderCommand, int>
     {
         private readonly IAppDbContext _context;
-        private readonly ICurrentUserService _currentUserService;
 
         public CreateWorkOrderCommandHandler(IAppDbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
-            _currentUserService = currentUserService;
         }
 
         public async Task<int> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
@@ -35,7 +33,7 @@ namespace Application.WorkOrders.Command
                 agreementDate: (DateTime)request.data.AgreementDate,
                 projectId: request.data.ProjectId,
                 contractorId: request.data.ContractorId,
-                engineerInCharge: "001234" //_currentUserService.EmployeeCode
+                engineerInCharge: request.data.EngineerInCharge
             );
 
             _context.WorkOrders.Add(workOrder);
