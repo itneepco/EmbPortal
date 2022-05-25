@@ -34,10 +34,10 @@
 
 <Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" Loading="@loading">
     <RowTemplate>
-        <Column TData="string" DataIndex="@nameof(context.Description)" Width="46%" />
-        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="8%" />
-        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="8%" />
-        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="8%" />
+        <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%" />
+        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="9%" />
+        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="9%" />
+        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="9%" />
         <Column TData="string" Width="10%" Title="Status">
             @if (context.Status == WorkOrderItemStatus.PUBLISHED)
             {
@@ -49,34 +49,33 @@
             }
         </Column>
 
-        <ActionColumn Title="Action" Width="20%">
-            <Row Justify="ceter">
-                <Button Icon="@(IconType.Outline.Edit)"
-                        Size="@ButtonSize.Small"
-                        Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
-                        OnClick="_=> OpenSideDrawer(context.Id)"
-                        Style="margin-right: 0.2rem" />
-
-                <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> OnDeleteItem(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)"
+        <ActionColumn Title="Action" Width="18%">
+            <Row>
+                @if (OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.CREATED)
+                {
+                    <Button Icon="@(IconType.Outline.Edit)"
                             Size="@ButtonSize.Small"
-                            Disabled="@(OrderStatus != WorkOrderStatus.CREATED.ToString() && context.Status == WorkOrderItemStatus.PUBLISHED)"
-                            Danger Style="margin-right: 0.2rem" />
-                </Popconfirm>
+                            OnClick="_=> OpenSideDrawer(context.Id)"
+                            Style="margin-right: 0.2rem" />
 
-                <Popconfirm Title="Sure to publish order item?"
-                            OnConfirm="() => PublishOrderItem(context)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Size="@ButtonSize.Small"
-                            Disabled="@(OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.PUBLISHED)"
-                            Style="margin-left: 0.15rem">
-                        Publish
-                    </Button>
-                </Popconfirm>
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="()=> OnDeleteItem(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)"
+                                Size="@ButtonSize.Small"
+                                Danger Style="margin-right: 0.2rem" />
+                    </Popconfirm>
+
+                    <Popconfirm Title="Sure to publish order item?"
+                                OnConfirm="() => PublishOrderItem(context)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Size="@ButtonSize.Small">
+                            Publish
+                        </Button>
+                    </Popconfirm>
+                }
             </Row>
         </ActionColumn>
     </RowTemplate>

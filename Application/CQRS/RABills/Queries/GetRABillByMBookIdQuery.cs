@@ -30,6 +30,7 @@ namespace Application.CQRS.RABills.Queries
         {
             return await _context.RABills
                 .Include(p => p.Items)
+                .Include(p => p.Deductions)
                 .Where(p => p.MeasurementBookId == request.MBookId)
                 .OrderBy(p => p.BillDate)
                 .AsNoTracking()

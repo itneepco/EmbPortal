@@ -97,10 +97,5 @@ namespace Application.CQRS.RABills.Commands
             await _context.SaveChangesAsync(cancellationToken);
             return raBill.Id;
         }
-
-        private Exception BadRequestException(string v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

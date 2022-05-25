@@ -78,9 +78,9 @@ namespace Application.CQRS.MBSheets.Command
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            var item = mbSheet.Items.FirstOrDefault(p => p.GetHashCode() == request.Data.GetHashCode());
+            var item = mbSheet.Items.Last();
 
-            return item != null ? item.Id : 0;
+            return item.Id;
         }
     }
 }

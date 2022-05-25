@@ -108,5 +108,27 @@ namespace Api.Controllers
 
             return Ok(Convert.ToBase64String(result));
         }
+
+        [HttpPost("{id}/Deduction")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> CreateRADeduction(RADeductionRequest data, int id)
+        {
+            var command = new CreateRADeductionCommand(data, id);
+
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("{id}/Deduction/{deductionId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteRADeduction(int id, int deductionId)
+        {
+            var command = new DeleteRADeductionCommand(id, deductionId);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
     }
 }

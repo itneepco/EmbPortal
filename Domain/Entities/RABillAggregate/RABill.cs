@@ -20,6 +20,9 @@ namespace Domain.Entities.RABillAggregate
         private readonly List<RABillItem> _items = new List<RABillItem>();
         public IReadOnlyList<RABillItem> Items => _items.AsReadOnly();
 
+        private readonly List<RADeduction> _deductions = new List<RADeduction>();
+        public IReadOnlyList<RADeduction> Deductions => _deductions.AsReadOnly();
+
         public RABill()
         {
         }
@@ -41,6 +44,16 @@ namespace Domain.Entities.RABillAggregate
         public void RemoveLineItem(RABillItem item)
         {
             _items.Remove(item);
+        }
+
+        public void AddDeduction(RADeduction deduction)
+        {
+            _deductions.Add(deduction);
+        }
+
+        public void RemoveDeduction(RADeduction deduction)
+        {
+            _deductions.Remove(deduction);
         }
 
         public void MarkAsApproved()
