@@ -8,6 +8,7 @@ namespace Client.Services.Interfaces
     public interface IRABillService
     {
         Task<List<RABillResponse>> GetRABillsByMBookId(int mBookId);
+        Task<List<RABillInfoResponse>> GetUserPendingRABills();
         Task<IResult<RABillResponse>> GetRABillById(int mbSheetId);
         Task<IResult<int>> CreateRABill(RABillRequest request);
         Task<IResult> EditRABill(int id, RABillRequest request);

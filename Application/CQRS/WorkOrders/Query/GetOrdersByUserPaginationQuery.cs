@@ -17,11 +17,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Query
 {
-    public record GetOrdersByCreatorPaginationQuery(PagedRequest data) : IRequest<PaginatedList<WorkOrderResponse>>
+    public record GetOrdersByUserPaginationQuery(PagedRequest data) : IRequest<PaginatedList<WorkOrderResponse>>
     {
     }
 
-    public class GetOrdersByCreatorPaginationQueryHandler : IRequestHandler<GetOrdersByCreatorPaginationQuery, PaginatedList<WorkOrderResponse>>
+    public class GetOrdersByCreatorPaginationQueryHandler : IRequestHandler<GetOrdersByUserPaginationQuery, PaginatedList<WorkOrderResponse>>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -35,7 +35,7 @@ namespace Application.CQRS.WorkOrders.Query
             _currentUserService = currentUserService;
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByCreatorPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByUserPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.WorkOrders
                 .Include(p => p.Project)
@@ -60,8 +60,9 @@ namespace Application.CQRS.WorkOrders.Query
                 query = query.Where(Criteria);
             }
 
+            var currEmpCode = _currentUserService.EmployeeCode;
             return await query
-                .Where(p => p.CreatedBy == _currentUserService.EmployeeCode)
+                .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

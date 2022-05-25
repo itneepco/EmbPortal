@@ -17,7 +17,8 @@
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button Style="margin-top: 16px;">
+                        <Button OnClick="@LoadPendingMBValidations"
+                                Style="margin-top: 16px;">
                             View
                         </Button>
                     </AntDesign.Col>
@@ -27,7 +28,8 @@
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                        <Button OnClick="@LoadPendingMBApprovals"
+                                Style="margin-top: 16px;" Type="@ButtonType.Primary">
                             View
                         </Button>
                     </AntDesign.Col>
@@ -53,7 +55,8 @@
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button Style="margin-top: 16px;" 
+                        <Button OnClick="@LoadPendingRABills"
+                                Style="margin-top: 16px;" 
                                 Type="@ButtonType.Primary">
                             View
                         </Button>
@@ -118,5 +121,20 @@
     void LoadCompletedOrders()
     {
         navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.COMPLETED}");
+    }
+
+    void LoadPendingRABills()
+    {
+        navManager.NavigateTo($"/rabills/pending");
+    }
+
+    void LoadPendingMBValidations()
+    {
+        navManager.NavigateTo($"/mbooks/");
+    }
+
+    void LoadPendingMBApprovals()
+    {
+        navManager.NavigateTo($"/mbooks/");
     }
 }

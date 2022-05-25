@@ -60,6 +60,13 @@ namespace Application.Mappings
 
             CreateMap<RABill, RABillResponse>();
 
+            CreateMap<RABill, RABillInfoResponse>()
+                .ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.OrderNo))
+                .ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.OrderDate))
+                .ForMember(m => m.Contractor, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.Contractor.Name))
+                .ForMember(m => m.MBookTitle, opt => opt.MapFrom(p => p.MeasurementBook.Title))
+                .ForMember(m => m.RABillTitle, opt => opt.MapFrom(p => p.Title));
+
             CreateMap<RABillItem, RABillItemResponse>()
                 .ForMember(dest => dest.MBookItemDescription, opt => opt.MapFrom(src => src.ItemDescription));
         }

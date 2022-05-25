@@ -28,39 +28,7 @@
             }
         </Column>
         <ActionColumn Title="Action" Width="20%">
-            <Row Justify="ceter">
-                @if (employeeCode == context.AcceptingOfficer)
-                {
-
-                    @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
-                    {
-                        <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
-
-                        <Popconfirm Title="Sure to delete?"
-                                    OnConfirm="()=> DeleteRABill(context.Id)"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger />
-                        </Popconfirm>
-
-                        <Popconfirm Title="Sure to approve RA Bill?"
-                                    OnConfirm="()=> ApproveRABill(context.Id)"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Approve</Button>
-                        </Popconfirm>
-                    }
-
-                    @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId)
-                    {
-                        <Popconfirm Title="Sure to Revoke RA Bill Status?"
-                                    OnConfirm="()=> RevokeRABillStatus(context.Id)"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Danger Size="@ButtonSize.Small" Loading="@loading" style="margin-left: 0.15rem">Revoke</Button>
-                        </Popconfirm>
-                    }
-                }
+            <Row Justify="left">
                 @* Button to generate pdf report *@
                 <Popconfirm Title="Sure to download?"
                             OnConfirm="() => GeneratePdf(context.Id)"
@@ -69,11 +37,48 @@
                     <Button Icon="@(IconType.Outline.Download)"
                             Shape="@ButtonShape.CircleOutline"
                             Loading="@loading"
-                            Style="margin-left: 0.25rem"
+                            Type="@ButtonType.Primary"
+                            Style="margin-right: 0.25rem"
                             Size="@ButtonSize.Small">
                     </Button>
                 </Popconfirm>
 
+                @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
+                {
+                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
+
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="() => DeleteRABill(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)" 
+                                Size="@ButtonSize.Small" 
+                                Loading="@loading" Danger 
+                                style="margin-right: 0.15rem" />
+                    </Popconfirm>
+
+                    @if (employeeCode == context.AcceptingOfficer)
+                    {
+                        <Popconfirm Title="Sure to approve RA Bill?"
+                                    OnConfirm="() => ApproveRABill(context.Id)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Size="@ButtonSize.Small" 
+                                    Loading="@loading" 
+                                    style="margin-right: 0.15rem">Approve</Button>
+                        </Popconfirm>
+                    }
+                }
+
+                @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId && employeeCode == context.AcceptingOfficer)
+                {
+                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
+                                OnConfirm="()=> RevokeRABillStatus(context.Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Size="@ButtonSize.Small" Loading="@loading">Revoke</Button>
+                    </Popconfirm>
+                }
             </Row>
         </ActionColumn>
     </RowTemplate>
@@ -125,6 +130,7 @@
     {
         loading = true;
         raBills = await raBillService.GetRABillsByMBookId(MBookId);
+        raBills = raBills.OrderByDescending(p => p.BillDate).ToList();
         loading = false;
     }
 

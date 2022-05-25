@@ -41,6 +41,11 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<RABillResponse>>($"/api/RABill/MBook/{mBookId}");
         }
 
+        public async Task<List<RABillInfoResponse>> GetUserPendingRABills()
+        {
+            return await _httpClient.GetFromJsonAsync<List<RABillInfoResponse>>($"/api/RABill/Pending");
+        }
+
         public async Task<IResult<RABillResponse>> GetRABillById(int id)
         {
             var response = await _httpClient.GetAsync($"/api/RABill/{id}");

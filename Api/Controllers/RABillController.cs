@@ -23,6 +23,14 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(query));
         }
 
+        [HttpGet("Pending")]
+        public async Task<ActionResult<IList<RABillInfoResponse>>> GetPendingRABills()
+        {
+            var query = new GetApprovalPendingRABillQuery();
+
+            return Ok(await Mediator.Send(query));
+        }
+
         [HttpGet("{raBillId}")]
         [ProducesResponseType(typeof(RABillResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

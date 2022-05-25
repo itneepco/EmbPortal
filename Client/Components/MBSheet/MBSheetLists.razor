@@ -118,6 +118,8 @@
     {
         loading = true;
         mbSheets = await mbSheetService.GetMBSheetsByMBookId(MBookId);
+        mbSheets = mbSheets.OrderByDescending(p => p.MeasurementDate).ToList();
+
         foreach (var mbSheet in mbSheets)
         {
             mbSheet.Items = mbSheet.Items

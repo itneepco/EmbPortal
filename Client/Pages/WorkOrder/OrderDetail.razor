@@ -2,13 +2,17 @@
 @attribute [Authorize]
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
-	<BreadcrumbItem Href="/workorder">
-		<Icon Type="container" />
-		<span>Work Order</span>
-	</BreadcrumbItem>
-	<BreadcrumbItem>
-		Details
-	</BreadcrumbItem>
+    <BreadcrumbItem Href="/">
+        <Icon Type="dashboard" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="/workorder">
+        <Icon Type="container" />
+        <span>Work Order</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        Details
+    </BreadcrumbItem>
 </Breadcrumb>
 
 @if (data != null)

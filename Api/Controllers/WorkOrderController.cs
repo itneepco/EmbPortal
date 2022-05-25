@@ -10,10 +10,7 @@ using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using System.IO;
 using System;
-using System.Linq;
-using Application.Exceptions;
 
 namespace Api.Controllers
 {
@@ -23,7 +20,7 @@ namespace Api.Controllers
         [HttpGet("self")]
         public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByCreator([FromQuery] PagedRequest request)
         {
-            var query = new GetOrdersByCreatorPaginationQuery(request);
+            var query = new GetOrdersByUserPaginationQuery(request);
 
             return Ok(await Mediator.Send(query));
         }
