@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.RABills.Queries
 {
-    public record GetRABillByIdQuery(int Id) : IRequest<RABillResponse>
+    public record GetRABillByIdQuery(int Id) : IRequest<RABillDetailResponse>
     {
     }
 
-    public class GetRABillByIdQueryHandler : IRequestHandler<GetRABillByIdQuery, RABillResponse>
+    public class GetRABillByIdQueryHandler : IRequestHandler<GetRABillByIdQuery, RABillDetailResponse>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -25,11 +25,12 @@ namespace Application.CQRS.RABills.Queries
             _mapper = mapper;
         }
 
-        public async Task<RABillResponse> Handle(GetRABillByIdQuery request, CancellationToken cancellationToken)
+        public async Task<RABillDetailResponse> Handle(GetRABillByIdQuery request, CancellationToken cancellationToken)
         {
             var raBill = await _context.RABills
                 .Include(p => p.Items)
-                .ProjectTo<RABillResponse>(_mapper.ConfigurationProvider)
+                .Include(p => p.Deductions)
+                .ProjectTo<RABillDetailResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == request.Id);
 

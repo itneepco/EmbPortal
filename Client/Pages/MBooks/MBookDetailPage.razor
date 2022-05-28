@@ -18,7 +18,7 @@
 @if (data != null)
 {
 <Tabs @bind-ActiveKey="@activeKey" Animated>
-    <TabPane Tab="Measurement Book Detail" Key="1">
+    <TabPane Tab="Measurement Book Detail" Key="tab1">
         <Descriptions Bordered Size="@DescriptionsSize.Small">
             <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
             <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
@@ -35,9 +35,13 @@
             <DescriptionsItem Title="Work Description">@data.WorkOrder.Title</DescriptionsItem>
         </Descriptions>
 
-        <Divider>Measurement Book Items</Divider>
+        <Divider Plain>Measurement Book Items</Divider>
 
-        <Table TItem="MBookItemResponse" DataSource="@data.Items" Size="@TableSize.Small" HidePagination Bordered>
+        <Table TItem="MBookItemResponse" 
+               DataSource="@data.Items" 
+               Size="@TableSize.Small" 
+               Bordered>
+
             <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%"></Column>
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%"></Column>
             <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
@@ -45,7 +49,7 @@
             <Column Title="Measured Qty (Cum)" TData="float" Width="10%">
                 @context.CumulativeMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Measured Qty (Approved)" TData="float" Width="10%">
+            <Column Title="Measured Qty (App)" TData="float" Width="10%">
                 @context.AcceptedMeasuredQty.ToString("0.00")
             </Column>
             <Column Title="Till Last RA" TData="float" Width="10%">
@@ -57,11 +61,11 @@
         </Table>
     </TabPane>
 
-    <TabPane Tab="Measurement Book Sheet" Key="2">
+    <TabPane Tab="Measurement Book Sheet" Key="tab2">
         <MBSheetLists MBookId="int.Parse(Id)" MBItems="@data.Items" />
     </TabPane>
 
-    <TabPane Tab="Recurring Account Bill" Key="3">
+    <TabPane Tab="Recurring Account Bill" Key="tab3">
         <RABillList MBookId="int.Parse(Id)" />
     </TabPane>
 </Tabs>
@@ -82,12 +86,22 @@ else
 
     public MBookDetailResponse data { get; set; }
 
-    string activeKey = "1";
+    string activeKey = "tab1";
 
     protected override async Task OnInitializedAsync()
     {
         await LoadMBookDetailsAsync();
-        activeKey = Tab ?? "1";
+
+        if (string.IsNullOrWhiteSpace(Tab)) return;
+
+        if(Tab == "tab2")
+        {
+            activeKey = "tab2";
+        }
+        if(Tab == "tab3")
+        {
+            activeKey = "tab3";
+        }
     }
 
     async Task LoadMBookDetailsAsync()

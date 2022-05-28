@@ -1,17 +1,47 @@
-﻿<Button OnClick="() => GoToAddPage()"
-        Icon="@IconType.Outline.Plus"
-        Type="@ButtonType.Primary"
-        Disabled="@raBills.Any(p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)"
-        style="margin-bottom: 0.5rem;">
-    Add RA Bill
-</Button>
+﻿<Row Style="margin-bottom: 0.75rem">
+    <Space>
+        <SpaceItem>
+            <Button OnClick="() => GoToAddPage()"
+                    Icon="@IconType.Outline.Plus"
+                    Type="@ButtonType.Primary"
+                    Disabled="@raBills.Any(p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)">
+                Add RA Bill
+            </Button>
+        </SpaceItem>
+        @if (selectedRows != null)
+        {
+            @if (selectedRows.First().Status != RABillStatus.APPROVED)
+            {
+                <SpaceItem>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => GoToEditPage(selectedRows.First().Id)">Edit</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Popconfirm Title="Are you sure delete this order?"
+                                Placement="@Placement.Bottom"
+                                OnConfirm="@(() => DeleteRABill(selectedRows.First().Id))"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
+                    </Popconfirm>
+                </SpaceItem>
+            }
+            <SpaceItem>
+                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
+            </SpaceItem>
+        }
+    </Space>
+</Row>
 
-<Table Loading="@loading" TItem="RABillResponse" Size="@TableSize.Small" DataSource="@raBills" Bordered>
+<Table Loading="@loading"
+       TItem="RABillResponse"
+       Size="@TableSize.Small"
+       @bind-SelectedRows="selectedRows"
+       DataSource="@raBills">
+
     <RowTemplate>
+        <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
         <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
-        <Column Title="RA Bill Amount" TData="decimal" Width="15%">
-            Rs. @context.RABillTotalAmount.ToString("0.00")
-        </Column>
+        <Column Title="Accepting Officer" TData="string" DataIndex="@nameof(context.AcceptingOfficer)" Width="15%" />
         <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="10%" />
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == RABillStatus.APPROVED)
@@ -27,85 +57,7 @@
                 <Tag Color="green">@context.Status</Tag>
             }
         </Column>
-        <ActionColumn Title="Action" Width="20%">
-            <Row Justify="left">
-                @* Button to generate pdf report *@
-                <Popconfirm Title="Sure to download?"
-                            OnConfirm="() => GeneratePdf(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Download)"
-                            Shape="@ButtonShape.CircleOutline"
-                            Loading="@loading"
-                            Type="@ButtonType.Primary"
-                            Style="margin-right: 0.25rem"
-                            Size="@ButtonSize.Small">
-                    </Button>
-                </Popconfirm>
-
-                @if (context.Status == RABillStatus.CREATED || context.Status == RABillStatus.REVOKED)
-                {
-                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
-
-                    <Popconfirm Title="Sure to delete?"
-                                OnConfirm="() => DeleteRABill(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)" 
-                                Size="@ButtonSize.Small" 
-                                Loading="@loading" Danger 
-                                style="margin-right: 0.15rem" />
-                    </Popconfirm>
-
-                    @if (employeeCode == context.AcceptingOfficer)
-                    {
-                        <Popconfirm Title="Sure to approve RA Bill?"
-                                    OnConfirm="() => ApproveRABill(context.Id)"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Size="@ButtonSize.Small" 
-                                    Loading="@loading" 
-                                    style="margin-right: 0.15rem">Approve</Button>
-                        </Popconfirm>
-                    }
-                }
-
-                @if (context.Status == RABillStatus.APPROVED && context.Id == latestRaBillId && employeeCode == context.AcceptingOfficer)
-                {
-                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
-                                OnConfirm="()=> RevokeRABillStatus(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Danger Size="@ButtonSize.Small" Loading="@loading">Revoke</Button>
-                    </Popconfirm>
-                }
-            </Row>
-        </ActionColumn>
     </RowTemplate>
-
-    <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items"
-               PageSize="rowData.Data.Items.Count"
-               Size="@TableSize.Small"
-               HidePagination Bordered>
-
-            <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
-            <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
-            <Column Title="Measured Qty" TData="float" Width="8%">
-                @context.AcceptedMeasuredQty.ToString("0.00")
-            </Column>
-            <Column Title="Till Last RA" TData="float" Width="8%">
-                @context.TillLastRAQty.ToString("0.00")
-            </Column>
-            <Column Title="Current RA Qty" TData="float" Width="8%">
-                @context.CurrentRAQty.ToString("0.00")
-            </Column>
-            <Column Title="Current RA (Rs)" TData="decimal" Width="10%">
-                @context.CurrentRAAmount.ToString("0.00")
-            </Column>
-            <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="15%" />
-        </Table>
-    </ExpandTemplate>
 </Table>
 
 @code {
@@ -116,6 +68,7 @@
     bool loading = false;
     int latestRaBillId => raBills.Select(p => p.Id).Max();
 
+    IEnumerable<RABillResponse> selectedRows;
     string employeeCode;
 
     protected override async Task OnInitializedAsync()
@@ -160,6 +113,12 @@
     void GoToEditPage(int raBillId)
     {
         navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
+    }
+
+
+    void ViewDetail(int id)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill/{id}/details");
     }
 
     async Task RevokeRABillStatus(int id)

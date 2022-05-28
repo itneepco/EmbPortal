@@ -1,4 +1,4 @@
-﻿namespace EmbPortal.Shared.Responses.RABills
+﻿namespace EmbPortal.Shared.Responses
 {
     public class RADeductionResponse
     {

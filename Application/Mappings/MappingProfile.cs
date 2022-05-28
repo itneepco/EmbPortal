@@ -6,7 +6,6 @@ using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
-using EmbPortal.Shared.Responses.RABills;
 
 namespace Application.Mappings
 {
@@ -60,6 +59,8 @@ namespace Application.Mappings
             CreateMap<ItemAttachment, ItemAttachmentResponse>();
 
             CreateMap<RABill, RABillResponse>();
+
+            CreateMap<RABill, RABillDetailResponse>();
 
             CreateMap<RABill, RABillInfoResponse>()
                 .ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.OrderNo))

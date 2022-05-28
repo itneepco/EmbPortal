@@ -1,0 +1,148 @@
+﻿@page "/mbook/{MBookId}/rabill/{RABillId}/details"
+
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="dashboard" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">
+        <Icon Type="snippets" />
+        <span>Measurement Books</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        RA Bill Details
+    </BreadcrumbItem>
+</Breadcrumb>
+
+@if (raBill != null)
+{
+    <Divider Plain>RA Deductions</Divider>
+
+    <Button Icon="@(IconType.Outline.Plus)"
+            Type="@(ButtonType.Primary)"
+            Style="margin-bottom: 0.5rem;"
+            OnClick="@OpenSideDrawer">
+        Add Deductions
+    </Button>
+
+    <Table DataSource="raBill.Deductions"
+           PageSize="raBill.Deductions.Count"
+           Size="@TableSize.Small"
+           Loading="@loading"
+           HidePagination Bordered>
+
+        <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
+        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
+        <ActionColumn Title="Action" Width="20%">
+            <Popconfirm Title="Sure to delete?"
+                        OnConfirm="()=> DeleteRADeduction(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                <Button Icon="@(IconType.Outline.Delete)" 
+                        Size="@ButtonSize.Small" 
+                        Loading="@loading" Danger>
+                    Delete
+                </Button>
+            </Popconfirm>
+        </ActionColumn>
+    </Table>
+
+    <Divider Plain>RA Bill Items</Divider>
+
+    <Table DataSource="raBill.Items.Where(p => p.CurrentRAQty > 0)"
+           PageSize="raBill.Items.Count"
+           Size="@TableSize.Small"
+           Loading="@loading"
+           HidePagination Bordered>
+
+        <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
+        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
+        <Column Title="Measured Qty" TData="float" Width="8%">
+            @context.AcceptedMeasuredQty.ToString("0.00")
+        </Column>
+        <Column Title="Till Last RA" TData="float" Width="8%">
+            @context.TillLastRAQty.ToString("0.00")
+        </Column>
+        <Column Title="Current RA Qty" TData="float" Width="8%">
+            @context.CurrentRAQty.ToString("0.00")
+        </Column>
+        <Column Title="Current RA (Rs)" TData="decimal" Width="10%">
+            @context.CurrentRAAmount.ToString("0.00")
+        </Column>
+        <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="15%" />
+    </Table>
+
+    <AddRADeductionDrawer RABillId="@(int.Parse(RABillId))" 
+                          Visible="@drawerVisible" 
+                          OnClose="@CloseSideBar" 
+                          OnItemUpdate="@LoadRABillDetailsAsync" />
+}
+else
+{
+    <Spin>
+        <Empty />
+    </Spin>
+}
+
+@code {
+    [Parameter]
+    public string MBookId { get; set; }
+
+    [Parameter]
+    public string RABillId { get; set; }
+
+    public RABillDetailResponse raBill { get; set; }
+    bool loading;
+    bool drawerVisible;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRABillDetailsAsync();
+    }
+
+    async Task LoadRABillDetailsAsync()
+    {
+        loading = true;
+        var result = await raBillService.GetRABillById(int.Parse(RABillId));
+
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}/tab3");
+            await messageService.Warning(result.Message);
+            return;
+        }
+
+        raBill = result.Data;
+
+        loading = false;
+        StateHasChanged();
+    }
+
+    async Task DeleteRADeduction(int deductionId)
+    {
+        loading = true;
+        var result = await raBillService.DeleteRADeduction(int.Parse(RABillId), deductionId);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBill.Deductions = raBill.Deductions.Where(item => item.Id != deductionId).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    void OpenSideDrawer()
+    {
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
+    }
+}

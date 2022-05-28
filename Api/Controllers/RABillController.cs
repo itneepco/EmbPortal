@@ -32,9 +32,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("{raBillId}")]
-        [ProducesResponseType(typeof(RABillResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RABillDetailResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RABillResponse>> GetRABillById(int raBillId)
+        public async Task<ActionResult<RABillDetailResponse>> GetRABillById(int raBillId)
         {
             var query = new GetRABillByIdQuery(raBillId);
 

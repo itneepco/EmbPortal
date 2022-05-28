@@ -46,10 +46,10 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<RABillInfoResponse>>($"/api/RABill/Pending");
         }
 
-        public async Task<IResult<RABillResponse>> GetRABillById(int id)
+        public async Task<IResult<RABillDetailResponse>> GetRABillById(int id)
         {
             var response = await _httpClient.GetAsync($"/api/RABill/{id}");
-            return await response.ToResult<RABillResponse>();
+            return await response.ToResult<RABillDetailResponse>();
         }
 
         public async Task<IResult> ApproveRABill(int raBillId)
@@ -69,6 +69,18 @@ namespace Client.Services
             var response = await _httpClient.GetAsync($"/api/RABill/{id}/Download");
             var data = await response.Content.ReadAsStringAsync();
             return data;
+        }
+
+        public async Task<IResult<int>> CreateRADeduction(int raBillId, RADeductionRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/RABill/{raBillId}/Deduction", request);
+            return await response.ToResult<int>();
+        }
+
+        public async Task<IResult> DeleteRADeduction(int raBillId, int deductionId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/RABill/{raBillId}/Deduction/{deductionId}");
+            return await response.ToResult();
         }
     }
 }
