@@ -17,6 +17,10 @@ namespace EmbPortal.Shared.Responses
         public List<RABillItemResponse> Items { get; set; }
         public List<RADeductionResponse> Deductions { get; set; }
 
-        public decimal RABillTotalAmount => Items.Aggregate((decimal)0, (curr, item) => curr + item.CurrentRAAmount);
+        public decimal TotalAmount => Items.Aggregate((decimal)0, (curr, item) => curr + item.CurrentRAAmount);
+
+        public decimal TotalDeduction => Deductions.Aggregate((decimal)0, (curr, item) => curr + item.Amount);
+
+        public decimal NetAmount => TotalAmount - TotalDeduction;
     }
 }

@@ -8,9 +8,9 @@
                 Add RA Bill
             </Button>
         </SpaceItem>
-        @if (selectedRows != null)
+        @if (selectedRows != null && selectedRows.Count() > 0)
         {
-            @if (selectedRows.First().Status != RABillStatus.APPROVED)
+            @if (selectedRows.First()?.Status != RABillStatus.APPROVED)
             {
                 <SpaceItem>
                     <Button Icon="@(IconType.Outline.Edit)" OnClick="() => GoToEditPage(selectedRows.First().Id)">Edit</Button>
@@ -28,6 +28,18 @@
             <SpaceItem>
                 <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
             </SpaceItem>
+
+            @if (selectedRows.First()?.Status == RABillStatus.APPROVED && selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
+            {
+                <SpaceItem>
+                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
+                                OnConfirm="()=> RevokeRABill(selectedRows.First().Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Icon="@IconType.Outline.CarryOut" Loading="@loading">Revoke</Button>
+                    </Popconfirm>
+                </SpaceItem>
+            }
         }
     </Space>
 </Row>
@@ -96,13 +108,31 @@
         if (result.Succeeded)
         {
             raBills = raBills.Where(item => item.Id != id).ToList();
-            StateHasChanged();
             await messageService.Success(result.Message);
         }
         else
         {
             await messageService.Error(result.Message);
         }
+        StateHasChanged();
+    }
+
+    async Task RevokeRABill(int id)
+    {
+        loading = true;
+        var result = await raBillService.RevokeRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadRABills();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+        StateHasChanged();
     }
 
     void GoToAddPage()
@@ -115,62 +145,8 @@
         navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
     }
 
-
     void ViewDetail(int id)
     {
         navManager.NavigateTo($"/mbook/{MBookId}/rabill/{id}/details");
-    }
-
-    async Task RevokeRABillStatus(int id)
-    {
-        loading = true;
-        var result = await raBillService.RevokeRABill(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await LoadRABills();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task ApproveRABill(int id)
-    {
-        loading = true;
-        var result = await raBillService.ApproveRABill(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await LoadRABills();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task GeneratePdf(int id)
-    {
-        loading = true;
-        var base64 = await raBillService.GeneratePdf(id);
-        loading = false;
-
-        string mimeType = "application/pdf";
-        string name = Guid.NewGuid().ToString();
-
-        await _jsRuntime.InvokeVoidAsync("Download", new
-        {
-            ByteArray = base64,
-            FileName = name,
-            MimeType = mimeType
-        });
     }
 }

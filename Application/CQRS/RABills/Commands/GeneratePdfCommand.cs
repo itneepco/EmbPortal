@@ -73,7 +73,7 @@ namespace Application.CQRS.RABills.Commands
                 Cell remarks = new Cell(1, 13).Add(new Paragraph("Remarks"));
                 table.AddCell(remarks);
 
-                foreach (var item in raBill.Items)
+                foreach (var item in raBill.Items.Where(p => p.CurrentRAQty > 0))
                 {
                     desc = new Cell(1, 35).Add(new Paragraph(item.ItemDescription));
                     table.AddCell(desc);

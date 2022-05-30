@@ -16,36 +16,49 @@
 
 @if (raBill != null)
 {
-    <Divider Plain>RA Deductions</Divider>
-
-    <Button Icon="@(IconType.Outline.Plus)"
-            Type="@(ButtonType.Primary)"
-            Style="margin-bottom: 0.5rem;"
-            OnClick="@OpenSideDrawer">
-        Add Deductions
-    </Button>
-
-    <Table DataSource="raBill.Deductions"
-           PageSize="raBill.Deductions.Count"
-           Size="@TableSize.Small"
-           Loading="@loading"
-           HidePagination Bordered>
-
-        <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
-        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
-        <ActionColumn Title="Action" Width="20%">
-            <Popconfirm Title="Sure to delete?"
-                        OnConfirm="()=> DeleteRADeduction(context.Id)"
+    <Row Style="margin-bottom: 0.75rem">
+        <AntDesign.Col>
+            <h3>RA Bill Details</h3>
+        </AntDesign.Col>
+        <AntDesign.Col Flex="1"></AntDesign.Col>
+        <AntDesign.Col>
+            <Popconfirm Title="Sure to download?"
+                        OnConfirm="@GeneratePdf"
                         OkText="Yes"
                         CancelText="No">
-                <Button Icon="@(IconType.Outline.Delete)" 
-                        Size="@ButtonSize.Small" 
-                        Loading="@loading" Danger>
-                    Delete
+                <Button Icon="@(IconType.Outline.Download)"
+                        Shape="@ButtonShape.CircleOutline"
+                        Loading="@downloading">
+                    Download
                 </Button>
             </Popconfirm>
-        </ActionColumn>
-    </Table>
+
+            @if (raBill.Status != RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            {
+                <Popconfirm Title="Approve RA Bill?"
+                            OnConfirm="@ApproveRABill"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)"
+                            Type="@ButtonType.Primary"
+                            Loading="@loading"
+                            style="margin-right: 0.15rem">
+                        Approve
+                    </Button>
+                </Popconfirm>
+            }
+        </AntDesign.Col>
+    </Row>
+
+
+    <Descriptions Bordered Size="@DescriptionsSize.Small">
+        <DescriptionsItem Title="Title">@raBill.Title</DescriptionsItem>
+        <DescriptionsItem Title="Status">@raBill.Status</DescriptionsItem>
+        <DescriptionsItem Title="Accepting Officer">@raBill.AcceptingOfficer</DescriptionsItem>
+        <DescriptionsItem Title="Total Amount (Rs)">@raBill.TotalAmount</DescriptionsItem>
+        <DescriptionsItem Title="Total Deduction (Rs)">@raBill.TotalDeduction</DescriptionsItem>
+        <DescriptionsItem Title="Net Amount (Rs)">@raBill.NetAmount</DescriptionsItem>
+    </Descriptions>
 
     <Divider Plain>RA Bill Items</Divider>
 
@@ -72,9 +85,45 @@
         <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="15%" />
     </Table>
 
-    <AddRADeductionDrawer RABillId="@(int.Parse(RABillId))" 
-                          Visible="@drawerVisible" 
-                          OnClose="@CloseSideBar" 
+    <Divider Plain>RA Deductions</Divider>
+
+    <Button Icon="@(IconType.Outline.Plus)"
+            Type="@(ButtonType.Primary)"
+            Style="margin-bottom: 0.5rem;"
+            Disabled="raBill.Status == RABillStatus.APPROVED"
+            OnClick="@OpenSideDrawer">
+        Add Deductions
+    </Button>
+
+    <Table DataSource="raBill.Deductions"
+           PageSize="raBill.Deductions.Count"
+           Size="@TableSize.Small"
+           Loading="@loading"
+           HidePagination Bordered>
+
+        <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
+        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
+        <ActionColumn Title="Action" Width="20%">
+            @if (raBill.Status != RABillStatus.APPROVED)
+            {
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> DeleteRADeduction(context.Id)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)"
+                            Size="@ButtonSize.Small"
+                            Loading="@loading" Danger>
+                        Delete
+                    </Button>
+                </Popconfirm>
+            }
+        </ActionColumn>
+    </Table>
+
+    //RABill Add Drawer
+    <AddRADeductionDrawer RABillId="@(int.Parse(RABillId))"
+                          Visible="@drawerVisible"
+                          OnClose="@CloseSideBar"
                           OnItemUpdate="@LoadRABillDetailsAsync" />
 }
 else
@@ -93,10 +142,15 @@ else
 
     public RABillDetailResponse raBill { get; set; }
     bool loading;
+    bool downloading;
     bool drawerVisible;
+    string employeeCode;
 
     protected override async Task OnInitializedAsync()
     {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
+
         await LoadRABillDetailsAsync();
     }
 
@@ -127,6 +181,41 @@ else
         if (result.Succeeded)
         {
             raBill.Deductions = raBill.Deductions.Where(item => item.Id != deductionId).ToList();
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task GeneratePdf()
+    {
+        downloading = true;
+        var base64 = await raBillService.GeneratePdf(raBill.Id);
+        downloading = false;
+
+        string mimeType = "application/pdf";
+        string name = Guid.NewGuid().ToString();
+
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = name,
+            MimeType = mimeType
+        });
+    }
+
+    async Task ApproveRABill()
+    {
+        loading = true;
+        var result = await raBillService.ApproveRABill(raBill.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBill.Status = RABillStatus.APPROVED;
             StateHasChanged();
             await messageService.Success(result.Message);
         }
