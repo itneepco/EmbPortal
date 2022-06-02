@@ -7,10 +7,18 @@
 
 <Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" Bordered>
     <RowTemplate>
-        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="40%" />
-        <Column Title="Measurement Date" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
-        <Column Title="Measuring Officer" @bind-Field="@context.MeasurementOfficer" Width="10%" />
-        <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" Width="10%" />
+        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="32%" />
+        <Column Title="Measurement Date" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
+        <Column Title="Measuring Officer" Width="14%" TData="string">
+            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
+            </Tooltip>
+        </Column>
+        <Column Title="Validating Officer" Width="14%" TData="string">
+            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
+            </Tooltip>
+        </Column>
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
             {
@@ -25,7 +33,7 @@
                 <Tag Color="green">@context.Status</Tag>
             }
         </Column>
-        <ActionColumn Title="Action" Width="20%">
+        <ActionColumn Title="Action" Width="18%">
             <Row Justify="ceter">
             @if (context.Status == MBSheetStatus.CREATED.ToString())
             {
@@ -44,7 +52,7 @@
                             OnConfirm="()=> ValidateMBSheet(context.Id)"
                             OkText="Yes"
                             CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
                 </Popconfirm>
             }
             @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.AcceptingOfficer)
@@ -53,7 +61,7 @@
                             OnConfirm="()=> AcceptMBSheet(context.Id)"
                             OkText="Yes"
                             CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                    <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
                 </Popconfirm>
             }
             </Row>

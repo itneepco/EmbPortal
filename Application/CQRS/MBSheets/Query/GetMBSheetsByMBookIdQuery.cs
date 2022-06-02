@@ -31,6 +31,9 @@ namespace Application.CQRS.MBSheets.Query
         public async Task<List<MBSheetResponse>> Handle(GetMBSheetsByMBookIdQuery request, CancellationToken cancellationToken)
         {
             return await _context.MBSheets
+                .Include(p => p.Measurer)
+                .Include(p => p.Validator)
+                .Include(p => p.Acceptor)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.Attachments)
                 .Where(p => p.MeasurementBookId == request.MBookId)

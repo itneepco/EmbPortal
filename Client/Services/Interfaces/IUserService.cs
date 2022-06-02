@@ -9,6 +9,7 @@ namespace Client.Services.Interfaces
     {
         Task<List<string>> GetRoles();
         Task<List<string>> GetUserRoles(string userId);
+        Task<List<UserResponse>> GetAllUsers();
         Task<PaginatedList<UserResponse>> GetUsersPagination(int pageIndex, int pageSize, string search);
         Task<IResult> RegisterUser(UserRequest request);
         Task<IResult> UpdateUser(string userId, UserRequest request);

@@ -1,4 +1,5 @@
-﻿using Domain.Entities.MeasurementBookAggregate;
+﻿using Domain.Entities.Identity;
+using Domain.Entities.MeasurementBookAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,6 +17,14 @@ namespace Persistence.Configurations
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
 
             builder.HasMany(p => p.Items).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(p => p.Measurer).WithOne()
+                .HasPrincipalKey<AppUser>(p => p.UserName)
+                .HasForeignKey<MeasurementBook>(p => p.MeasurementOfficer);
+
+            builder.HasOne(p => p.Validator).WithOne()
+                .HasPrincipalKey<AppUser>(p => p.UserName)
+                .HasForeignKey<MeasurementBook>(p => p.ValidatingOfficer);
 
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");

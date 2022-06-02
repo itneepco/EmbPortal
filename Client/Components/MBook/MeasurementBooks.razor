@@ -7,8 +7,16 @@
 <Table Loading="@loading" TItem="MBookResponse" Size="@TableSize.Small" DataSource="@mbooks">
     <RowTemplate>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
-        <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />
-        <Column Title="Validating Officer" @bind-Field="@context.ValidatingOfficer" Width="15%" />
+        <Column Title="Measurement Officer" Width="16%" TData="string">
+            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
+            </Tooltip>
+        </Column>
+        <Column Title="Validating Officer" Width="16%" TData="string">
+            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
+            </Tooltip>
+        </Column>
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBookStatus.COMPLETED.ToString())
             {
@@ -23,7 +31,7 @@
                 <Tag Color="green">@context.Status</Tag>
             }
         </Column>
-        <ActionColumn Title="Action" Width="20%">
+        <ActionColumn Title="Action" Width="18%">
             <Row Justify="ceter">
                 @if (context.Status == MBookStatus.CREATED.ToString())
                 {
@@ -38,7 +46,7 @@
                                 OnConfirm="()=> PublishMBook(context.Id)"
                                 OkText="Yes"
                                 CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
+                        <Button Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
                     </Popconfirm>
                 }
             </Row>

@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.WorkOrders.Query
 {
-    public record GetWorkOrderByIdQuery(int id) : IRequest<WorkOrderResponse>
+    public record GetWorkOrderByIdQuery(int id) : IRequest<WorkOrderDetailResponse>
     {
     }
 
-    public class GetWorkOrderByIdQueryHandler : IRequestHandler<GetWorkOrderByIdQuery, WorkOrderResponse>
+    public class GetWorkOrderByIdQueryHandler : IRequestHandler<GetWorkOrderByIdQuery, WorkOrderDetailResponse>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ namespace Application.CQRS.WorkOrders.Query
             _currentUserService = currentUserService;
         }
 
-        public async Task<WorkOrderResponse> Handle(GetWorkOrderByIdQuery request, CancellationToken cancellationToken)
+        public async Task<WorkOrderDetailResponse> Handle(GetWorkOrderByIdQuery request, CancellationToken cancellationToken)
         {
             var currEmpCode = _currentUserService.EmployeeCode;
             var workOrder = await _context.WorkOrders

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 
@@ -20,6 +21,8 @@ namespace Domain.Entities.WorkOrderAggregate
         public int ProjectId { get; private set; }
         public int ContractorId { get; private set; }
         public string EngineerInCharge { get; private set; }
+        public AppUser Engineer { get; private set; }
+
         public DateTime CommencementDate { get; private set; }
         public DateTime CompletionDate { get; private set; }
 

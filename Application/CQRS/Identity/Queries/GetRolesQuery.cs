@@ -1,5 +1,4 @@
-﻿using EmbPortal.Shared.Responses;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;

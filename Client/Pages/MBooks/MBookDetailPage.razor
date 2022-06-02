@@ -21,8 +21,18 @@
     <TabPane Tab="Measurement Book Detail" Key="tab1">
         <Descriptions Bordered Size="@DescriptionsSize.Small">
             <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
-            <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
-            <DescriptionsItem Title="Validating Officer">@data.ValidatingOfficer</DescriptionsItem>
+            
+            <DescriptionsItem Title="Measurement Officer">
+                <Tooltip Title="@data.Measurer.ToString()" Placement="@Placement.Bottom">
+                    <span style="cursor: pointer">@data.Measurer?.DisplayName</span>
+                </Tooltip>
+            </DescriptionsItem>
+            
+            <DescriptionsItem Title="Validating Officer">
+                <Tooltip Title="@data.Validator.ToString()" Placement="@Placement.Bottom">
+                    <span style="cursor: pointer">@data.Validator?.DisplayName</span>
+                </Tooltip>
+            </DescriptionsItem>
 
             <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
             <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate</DescriptionsItem>

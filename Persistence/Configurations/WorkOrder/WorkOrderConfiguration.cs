@@ -1,3 +1,4 @@
+using Domain.Entities.Identity;
 using Domain.Entities.WorkOrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -17,6 +18,10 @@ namespace Persistence.Configurations
             builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
 
             builder.HasMany(p => p.Items).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(p => p.Engineer).WithOne()
+                .HasPrincipalKey<AppUser>(p => p.UserName)
+                .HasForeignKey<WorkOrder>(p => p.EngineerInCharge);
 
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");

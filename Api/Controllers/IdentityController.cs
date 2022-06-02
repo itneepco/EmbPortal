@@ -46,6 +46,14 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(query));
         }
 
+        [Authorize]
+        [HttpGet("all")]
+        public async Task<ActionResult<PaginatedList<UserResponse>>> GetAllUsers()
+        {
+            var query = new GetAllUsersQuery();
+            return Ok(await Mediator.Send(query));
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("{userId}/Roles")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetUserRoles(string userId)

@@ -31,7 +31,14 @@
             </AntDesign.Col>
             <AntDesign.Col Span="12">
                 <FormItem Label="Engineer In Charge">
-                    <Input Placeholder="Engineer In Charge" TValue="string" @bind-Value="@context.EngineerInCharge" />
+                    <Select DataSource="@users"
+                            Style="width: 100%"
+                            @bind-Value="@context.EngineerInCharge"
+                            ValueName="@nameof(UserResponse.EmployeeCode)"
+                            LabelName="@nameof(UserResponse.LongName)"
+                            Placeholder="Select a project"
+                            AllowClear>
+                    </Select>
                 </FormItem>
             </AntDesign.Col>
         </Row>
@@ -89,6 +96,7 @@
 
     List<ProjectResponse> projects = new();
     List<ContractorResponse> contractors = new();
+    List<UserResponse> users = new();
 
     bool loading = false;
 
@@ -100,6 +108,11 @@
     async Task LoadContractors()
     {
         contractors = await contractorService.GetAllContractors();
+    }
+
+    async Task LoadUsers()
+    {
+        users = await userService.GetAllUsers();
     }
 
     protected override void OnParametersSet()
@@ -125,6 +138,7 @@
     {
         await LoadProjects();
         await LoadContractors();
+        await LoadUsers();
     }
 
     void Close()

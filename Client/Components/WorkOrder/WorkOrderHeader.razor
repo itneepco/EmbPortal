@@ -17,7 +17,11 @@
         }
     </DescriptionsItem>
     <DescriptionsItem Title="Project" Span="2">@WorkOrder.ProjectName</DescriptionsItem>
-    <DescriptionsItem Title="Engineer In Charge" Span="2">@WorkOrder.EngineerInCharge</DescriptionsItem>
+    <DescriptionsItem Title="Engineer In Charge" Span="2">
+        <Tooltip Title="@WorkOrder.Engineer.ToString()" Placement="@Placement.Bottom">
+            <span style="cursor: pointer">@WorkOrder.Engineer?.DisplayName</span>
+        </Tooltip>
+    </DescriptionsItem>
     <DescriptionsItem Title="Work Description" Span="4">@WorkOrder.Title</DescriptionsItem>
 </Descriptions>
 
