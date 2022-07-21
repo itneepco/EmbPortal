@@ -4,17 +4,17 @@ using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Persistence;
-using System.Linq;
+using System;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Api
 {
-   public class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {

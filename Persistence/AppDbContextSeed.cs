@@ -14,7 +14,6 @@ namespace Persistence
             try
             {             
                 await UomSeed.SeedAsync(context);
-                await MBookSeed.SeedAsync(context);
             }
             catch (Exception exception)
             {

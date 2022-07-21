@@ -43,8 +43,6 @@ namespace Application.CQRS.MeasurementBooks.Query
         {
             var query = _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
-                .Include(p => p.WorkOrder.Contractor)
-                .Include(p => p.WorkOrder.Project)
                 .Include(p => p.Items)
                 .AsQueryable();
 

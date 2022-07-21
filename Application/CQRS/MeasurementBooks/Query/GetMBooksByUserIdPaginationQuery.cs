@@ -40,7 +40,6 @@ namespace Application.CQRS.MeasurementBooks.Query
         {
             var query = _context.MeasurementBooks
                 .Include(p => p.WorkOrder)
-                    .ThenInclude(o => o.Contractor)
                 .Where(p => p.Status != MBookStatus.CREATED)
                 .AsQueryable();
 

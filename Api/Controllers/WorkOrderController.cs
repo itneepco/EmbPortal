@@ -10,13 +10,24 @@ using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Http;
 using System;
+using System.Text;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace Api.Controllers
 {
     [Authorize(Roles = "Admin, Manager")]
     public class WorkOrderController : ApiController
     {
+        private readonly IConfiguration _config;
+        public WorkOrderController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpGet("self")]
         public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByCreator([FromQuery] PagedRequest request)
         {
@@ -135,5 +146,43 @@ namespace Api.Controllers
 
             return NoContent();
         }
+
+
+        [HttpGet("sap/{purchaseOrderId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PurchaseOrder), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(string purchaseOrderId)
+        {
+            try
+            {
+                var url = $"{_config["POUrl"]}/{purchaseOrderId}";
+                using var httpClient = new HttpClient();
+                var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", 
+                    Convert.ToBase64String(authToken));
+
+                var response = await httpClient.GetAsync(url);
+
+                var responseAsString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var purchaseOrder = JsonSerializer.Deserialize<PurchaseOrder>(responseAsString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    return Ok(purchaseOrder);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return NotFound();
+        }
+
     }
 }

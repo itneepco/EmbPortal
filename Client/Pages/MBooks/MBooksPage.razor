@@ -17,7 +17,7 @@
                         ValueName="@nameof(MBookStatusSL.Val)"
                         LabelName="@nameof(MBookStatusSL.Desc)"
                         Placeholder="Filter by Status"
-                        OnSelectedItemChanged="(context) => OnSelectedItemChangedHandler(context)"
+                        OnSelectedItemChanged="async (context) => await OnSelectedItemChangedHandler(context)"
                         Style="margin-right: 0.75rem"
                         AllowClear>
                 </Select>

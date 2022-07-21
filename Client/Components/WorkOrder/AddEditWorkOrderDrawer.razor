@@ -1,43 +1,70 @@
-﻿<Drawer Closable="true" Width="700"
-        Title="@(WorkOrder == null ?  "Add Work order" : "Edit Work Order")" 
+﻿<Drawer Closable="true" Width="850"
+        Title="@("Fetch PO from SAP")"
         Visible="@Visible" OnClose="@Close">
-    <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
-        <Row Gutter="16">
-            <AntDesign.Col Span="12">
-                <FormItem Label="Engineer In Charge">
-                    <Input Placeholder="Engineer In Charge" TValue="string" @bind-Value="@context.EngineerInCharge" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="24">
-                <FormItem Label="Work Description">
-                    <TextArea Placeholder="Please enter work description" Rows="4" @bind-Value="@context.Title" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="16">
-                <FormItem Label="Work Order No">
-                    <Input Placeholder="Work Order No" TValue="string" @bind-Value="@context.OrderNo" />
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="8">
-                <FormItem Label="Work Order Date">
-                    <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.OrderDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
 
-        <FormItem WrapperColOffset="18" WrapperColSpan="6">
-            <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
-            <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
-        </FormItem>
-    </Form>
+    <Row Gutter="16">
+        <AntDesign.Col Span="16">
+            <Input Placeholder="Purchase Order No" TValue="string" @bind-Value="poNumber" />
+        </AntDesign.Col>
+        <AntDesign.Col Span="8">
+            <Button Type="@ButtonType.Primary" OnClick="@SearchPO">Fetch</Button>
+        </AntDesign.Col>
+    </Row>
+
+    @if (purchaseOrder != null)
+    {
+        <Descriptions Size="@DescriptionsSize.Small"
+                  Bordered
+                  Layout="@DescriptionsLayout.Vertical"
+                  Style="margin-top: 1rem; margin-bottom: 1rem;">
+            <DescriptionsItem Title="Order No">@purchaseOrder.OrderNo</DescriptionsItem>
+            <DescriptionsItem Title="Order Date">@purchaseOrder.OrderDate</DescriptionsItem>
+            <DescriptionsItem Title="Contractor">@purchaseOrder.ContractorName</DescriptionsItem>
+            <DescriptionsItem Title="Project">@purchaseOrder.ProjectName</DescriptionsItem>
+        </Descriptions>
+
+        <Table TItem="OrderItem"
+           PageSize="@purchaseOrder.Items.Count"
+           Size="@TableSize.Small"
+           DataSource="@purchaseOrder.Items"
+           HidePagination>
+            <RowTemplate>
+                <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+                <Column Title="Description" @bind-Field="@context.Description" Width="80%" />
+            </RowTemplate>
+
+            <ExpandTemplate Context="rowData">
+                <Table TItem="ServiceItem"
+                   PageSize="rowData.Data.Details.Count"
+                   DataSource="rowData.Data.Details"
+                   Bordered HidePagination>
+                    <Column TData="int" Title="SubItem No" Width="15%">context.SubItemNo</Column>
+                    <Column TData="int" Title="Service No" Width="15%">context.ServiceNo</Column>
+                    <Column TData="string" Title="Description">context.ShortDesc</Column>
+                    <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="15%" />
+                    <Column Title="Unit Rate" TData="string" DataIndex="@nameof(context.UnitRate)" Width="15%" />
+                    <Column Title="Quantity" TData="string" DataIndex="@nameof(context.Quantity)" Width="15%" />
+                </Table>
+            </ExpandTemplate>
+        </Table>
+
+        <Form Style="margin-top: 1rem;" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
+            <FormItem WrapperColOffset="18" WrapperColSpan="6">
+                <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </FormItem>
+        </Form>
+    }
+    else
+    {
+        <Spin Spinning="loading">
+            <Empty Style="margin-top: 2rem" />
+        </Spin>
+    }
 </Drawer>
 
 
-@code{
+@code {
     [Parameter]
     public WorkOrderResponse WorkOrder { get; set; }
 
@@ -47,24 +74,29 @@
     [Parameter]
     public bool Visible { get; set; }
 
+    PurchaseOrder purchaseOrder;
+
     WorkOrderRequest model { get; set; } = new();
     bool loading;
+    string poNumber;
 
-    protected override void OnParametersSet()
+    async Task SearchPO()
     {
-        if (WorkOrder != null)
+        if (String.IsNullOrWhiteSpace(poNumber)) return;
+
+        purchaseOrder = null;
+        loading = true;
+        StateHasChanged();
+
+        var result = await workOrderService.FetchPOFromSAP(poNumber);
+        if (!result.Succeeded)
         {
-            model.OrderNo = WorkOrder.OrderNo;
-            model.OrderDate = WorkOrder.OrderDate;
-            model.Title = WorkOrder.Title;
-            model.Project = WorkOrder.Project;
-            model.Contractor = WorkOrder.Contractor;
-            model.EngineerInCharge = WorkOrder.EngineerInCharge;
+            await messageService.Error("The PO could not be fetch from SAP");
+            return;
         }
-        else
-        {
-            model = new();
-        }
+
+        purchaseOrder = result.Data;
+        loading = false;
     }
 
     void Close()
@@ -78,7 +110,7 @@
         dynamic result;
         if (WorkOrder != null)
         {
-            result = await workOrderService.UpdateWorkOrder(WorkOrder.Id , model);
+            result = await workOrderService.UpdateWorkOrder(WorkOrder.Id, model);
         }
         else
         {
