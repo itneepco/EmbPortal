@@ -37,17 +37,14 @@ namespace Application.CQRS.WorkOrders.Query
 
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByUserPaginationQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.WorkOrders
-                .Include(p => p.Project)
-                .Include(p => p.Contractor)
-                .AsQueryable();
+            var query = _context.WorkOrders.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))
             {
                 Criteria = (m =>
                     m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
                     m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
+                    m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);

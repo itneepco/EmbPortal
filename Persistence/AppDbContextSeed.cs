@@ -12,11 +12,8 @@ namespace Persistence
         public static async Task SeedAsync(AppDbContext context, ILoggerFactory loggerFactory)
         {
             try
-            {
-                await ProjectSeed.SeedAsync(context);                
+            {             
                 await UomSeed.SeedAsync(context);
-                await ContractorSeed.SeedAsync(context);
-                await WorkOrderSeed.SeedAsync(context);
                 await MBookSeed.SeedAsync(context);
             }
             catch (Exception exception)

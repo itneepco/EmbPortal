@@ -3,32 +3,6 @@
         Visible="@Visible" OnClose="@Close">
     <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
         <Row Gutter="16">
-            <AntDesign.Col Span="24">
-                <FormItem Label="Contractor">
-                    <Select DataSource="@contractors"
-                            @bind-Value="@context.ContractorId"
-                            ValueName="@nameof(ContractorResponse.Id)"
-                            LabelName="@nameof(ContractorResponse.Name)"
-                            Style="width: 100%"
-                            Placeholder="Select a contractor"
-                            AllowClear>
-                    </Select>
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="12">
-                <FormItem Label="Project">
-                    <Select DataSource="@projects"
-                            Style="width: 100%"
-                            @bind-Value="@context.ProjectId"
-                            ValueName="@nameof(ProjectResponse.Id)"
-                            LabelName="@nameof(ProjectResponse.Name)"
-                            Placeholder="Select a project"
-                            AllowClear>
-                    </Select>
-                </FormItem>
-            </AntDesign.Col>
             <AntDesign.Col Span="12">
                 <FormItem Label="Engineer In Charge">
                     <Input Placeholder="Engineer In Charge" TValue="string" @bind-Value="@context.EngineerInCharge" />
@@ -54,18 +28,6 @@
                 </FormItem>
             </AntDesign.Col>
         </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="16">
-                <FormItem Label="Agreement No">
-                    <Input Placeholder="Agreement No" TValue="string" @bind-Value="@context.AgreementNo" />
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="8">
-                <FormItem Label="Agreement Date">
-                    <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.AgreementDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
 
         <FormItem WrapperColOffset="18" WrapperColSpan="6">
             <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
@@ -86,21 +48,7 @@
     public bool Visible { get; set; }
 
     WorkOrderRequest model { get; set; } = new();
-
-    List<ProjectResponse> projects = new();
-    List<ContractorResponse> contractors = new();
-
-    bool loading = false;
-
-    async Task LoadProjects()
-    {
-        projects = await projectservice.GetAllProjects();
-    }
-
-    async Task LoadContractors()
-    {
-        contractors = await contractorService.GetAllContractors();
-    }
+    bool loading;
 
     protected override void OnParametersSet()
     {
@@ -108,23 +56,15 @@
         {
             model.OrderNo = WorkOrder.OrderNo;
             model.OrderDate = WorkOrder.OrderDate;
-            model.AgreementNo = WorkOrder.AgreementNo;
-            model.AgreementDate = WorkOrder.AgreementDate;
             model.Title = WorkOrder.Title;
-            model.ProjectId = WorkOrder.ProjectId;
-            model.ContractorId = WorkOrder.ContractorId;
+            model.Project = WorkOrder.Project;
+            model.Contractor = WorkOrder.Contractor;
             model.EngineerInCharge = WorkOrder.EngineerInCharge;
         }
         else
         {
             model = new();
         }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadProjects();
-        await LoadContractors();
     }
 
     void Close()

@@ -11,7 +11,7 @@ namespace Domain.Entities
         public string Name { get;  set; }
         public string Description { get; set; }
         public UomDimension Dimension { get; set; }
-        public IReadOnlyList<WorkOrderItem> WorkOrderItems { get; set; }
+        //public IReadOnlyList<WorkOrderItem> WorkOrderItems { get; set; }
 
         private Uom()
         {

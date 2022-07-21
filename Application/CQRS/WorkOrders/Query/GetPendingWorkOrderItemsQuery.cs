@@ -35,7 +35,7 @@ namespace Application.CQRS.WorkOrders.Query
                 response.Add(new PendingOrderItemResponse
                 {
                     ItemId = item.Id,
-                    Description = item.Description
+                    Description = item.ItemDescription
                 });
             }
 

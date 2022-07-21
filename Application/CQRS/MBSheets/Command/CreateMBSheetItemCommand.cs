@@ -63,7 +63,7 @@ namespace Application.CQRS.MBSheets.Command
                 uom: mBookItem.WorkOrderItem.Uom.Name,
                 dimension: ((int)mBookItem.WorkOrderItem.Uom.Dimension),
                 rate: mBookItem.WorkOrderItem.UnitRate,
-                mbItemDescription: mBookItem.WorkOrderItem.Description,
+                mbItemDescription: mBookItem.WorkOrderItem.ShortServiceDesc,
                 mBookItemId: mBookItem.Id,
                 // --- END ---
 

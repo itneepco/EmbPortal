@@ -84,7 +84,9 @@ namespace Application.CQRS.RABills.Commands
 
                 raBill.AddLineItem(new RABillItem(
                     mbItemId: mBookItem.Id,
-                    desc: mBookItem.WorkOrderItem.Description,
+                    subItemNo: mBookItem.WorkOrderItem.SubItemNo,
+                    serviceNo: mBookItem.WorkOrderItem.ServiceNo,
+                    serviceDescription: mBookItem.WorkOrderItem.ShortServiceDesc,
                     rate: mBookItem.WorkOrderItem.UnitRate,
                     acceptedMeasuredQty: mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
                     tillLastRAQty: raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0,

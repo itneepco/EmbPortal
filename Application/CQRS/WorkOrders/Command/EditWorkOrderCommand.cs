@@ -39,10 +39,8 @@ namespace Application.CQRS.WorkOrders.Command
             workOrder.SetOrderNo(request.data.OrderNo);
             workOrder.SetOrderDate((DateTime)request.data.OrderDate);
             workOrder.SetTitle(request.data.Title);
-            workOrder.SetAgreementNo(request.data.AgreementNo);
-            workOrder.SetAgreementDate((DateTime)request.data.AgreementDate);
-            workOrder.SetProjectId(request.data.ProjectId);
-            workOrder.SetContractorId(request.data.ContractorId);
+            workOrder.SetProject(request.data.Project);
+            workOrder.SetContractor(request.data.Contractor);
             workOrder.SetEngineerInCharge(request.data.EngineerInCharge);
 
             await _context.SaveChangesAsync(cancellationToken);

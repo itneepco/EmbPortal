@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
+#nullable disable
+
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
@@ -13,38 +15,7 @@ namespace Persistence.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.11");
-
-            modelBuilder.Entity("Domain.Entities.Contractor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("Created")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Contractors");
-                });
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
             modelBuilder.Entity("Domain.Entities.Identity.AppUser", b =>
                 {
@@ -116,7 +87,7 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.ItemAttachment", b =>
@@ -373,36 +344,6 @@ namespace Persistence.Migrations
                     b.ToTable("MeasurementBooks");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Project", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("Created")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
-                });
-
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
                     b.Property<int>("Id")
@@ -473,7 +414,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ItemDescription")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
@@ -491,6 +432,16 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Remarks")
                         .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ServiceNo")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubItemNo")
+                        .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.Property<float>("TillLastRAQty")
@@ -563,6 +514,9 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Uoms");
                 });
 
@@ -572,21 +526,8 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("AgreementDate")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AgreementNo")
-                        .HasMaxLength(60)
+                    b.Property<string>("Contractor")
                         .HasColumnType("TEXT");
-
-                    b.Property<long>("CommencementDate")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("CompletionDate")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ContractorId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<long>("Created")
                         .HasColumnType("INTEGER");
@@ -613,8 +554,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Project")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
@@ -625,10 +566,6 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContractorId");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("WorkOrders");
                 });
@@ -646,9 +583,14 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("ItemDescription")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ItemNo")
+                        .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
@@ -658,15 +600,31 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("LongServiceDesc")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
                     b.Property<float>("PoQuantity")
                         .HasColumnType("REAL");
 
                     b.Property<string>("ServiceNo")
+                        .IsRequired()
                         .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShortServiceDesc")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubItemNo")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");
@@ -709,7 +667,7 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -732,7 +690,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -755,7 +713,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -777,7 +735,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -792,7 +750,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -811,7 +769,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.ItemAttachment", b =>
@@ -913,31 +871,12 @@ namespace Persistence.Migrations
                     b.Navigation("RABill");
                 });
 
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
-                {
-                    b.HasOne("Domain.Entities.Contractor", "Contractor")
-                        .WithMany("WorkOrders")
-                        .HasForeignKey("ContractorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Project", "Project")
-                        .WithMany("WorkOrders")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Contractor");
-
-                    b.Navigation("Project");
-                });
-
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
                     b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany("WorkOrderItems")
+                        .WithMany()
                         .HasForeignKey("UomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
@@ -999,11 +938,6 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Contractor", b =>
-                {
-                    b.Navigation("WorkOrders");
-                });
-
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
                 {
                     b.Navigation("Items");
@@ -1024,21 +958,11 @@ namespace Persistence.Migrations
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Project", b =>
-                {
-                    b.Navigation("WorkOrders");
-                });
-
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
                     b.Navigation("Deductions");
 
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Uom", b =>
-                {
-                    b.Navigation("WorkOrderItems");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>

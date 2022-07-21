@@ -14,19 +14,13 @@ namespace EmbPortal.Shared.Requests
         [Required]
         public DateTime? OrderDate { get; set; }
 
-        [Required, MaxLength(60)]
-        public string AgreementNo { get; set; }
-
         [Required, MaxLength(6)]
         public string EngineerInCharge { get; set; }
 
         [Required]
-        public DateTime? AgreementDate { get; set; }
+        public string Project { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a project"), Required]
-        public int ProjectId { get; set; }
-
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a contractor"), Required]
-        public int ContractorId { get; set; }
+        [Required]
+        public string Contractor { get; set; }
     }
 }

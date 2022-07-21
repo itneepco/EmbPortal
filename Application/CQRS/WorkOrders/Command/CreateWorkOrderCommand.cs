@@ -29,10 +29,8 @@ namespace Application.WorkOrders.Command
                 orderNo: request.data.OrderNo,
                 orderDate: (DateTime)request.data.OrderDate,
                 title: request.data.Title,
-                agreementNo: request.data.AgreementNo,
-                agreementDate: (DateTime)request.data.AgreementDate,
-                projectId: request.data.ProjectId,
-                contractorId: request.data.ContractorId,
+                project: request.data.Project,
+                contractor: request.data.Contractor,
                 engineerInCharge: request.data.EngineerInCharge
             );
 

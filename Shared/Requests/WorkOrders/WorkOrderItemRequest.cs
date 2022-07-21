@@ -4,8 +4,12 @@ namespace EmbPortal.Shared.Requests
 {
     public class WorkOrderItemRequest
     {
-        [Required, MaxLength(250)]
-        public string Description { get; set; }
+        public string ItemNo { get; set; }
+        public string ItemDescription { get; set; }
+        public string SubItemNo { get; set; }
+        public string ServiceNo { get; set; }
+        public string ShortServiceDesc { get; set; }
+        public string LongServiceDesc { get; set; }
 
         [Required, Range(1, int.MaxValue, ErrorMessage = "Please select a uom")]
         public int UomId { get; set; }

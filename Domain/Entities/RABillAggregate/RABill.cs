@@ -14,6 +14,7 @@ namespace Domain.Entities.RABillAggregate
         public DateTime BillDate { get; private set; }
         public DateTime ApprovalDate { get; private set; }
         public string AcceptingOfficer { get; private set; }
+
         public int MeasurementBookId { get; private set; }
         public MeasurementBook MeasurementBook { get; private set; }
 

@@ -54,7 +54,7 @@ namespace Application.CQRS.MeasurementBooks.Query
                 itemStatusResponses.Add(new MBItemStatusResponse
                 {
                     MBookItemId = item.Id,
-                    ItemDescription = item.WorkOrderItem.Description,
+                    ItemDescription = item.WorkOrderItem.ShortServiceDesc,
                     UnitRate = item.WorkOrderItem.UnitRate,
                     Dimension = (int)item.WorkOrderItem.Uom.Dimension,
                     Uom = item.WorkOrderItem.Uom.Name,

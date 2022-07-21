@@ -34,10 +34,15 @@ namespace Application.CQRS.WorkOrders.Command
             {
                 throw new NotFoundException(nameof(workOrder), request.workOrderId);
             }
-                       
+
 
             workOrder.AddUpdateLineItem(
-                description: request.data.Description,
+                itemNo: request.data.ItemNo,
+                itemDesc: request.data.ItemDescription,
+                subItemNo: request.data.SubItemNo,
+                serviceNo: request.data.ServiceNo,
+                shortServiceDesc: request.data.ShortServiceDesc,
+                longServiceDesc: request.data.LongServiceDesc,
                 uomId: request.data.UomId,
                 unitRate: request.data.UnitRate,
                 poQuantity: request.data.PoQuantity
@@ -45,7 +50,7 @@ namespace Application.CQRS.WorkOrders.Command
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            var workOrderitem = workOrder.Items.FirstOrDefault(p => p.Description == request.data.Description);
+            var workOrderitem = workOrder.Items.FirstOrDefault(p => p.ServiceNo == request.data.ServiceNo);
             return workOrderitem.Id;
         }
     }

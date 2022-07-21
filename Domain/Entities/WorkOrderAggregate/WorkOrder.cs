@@ -9,22 +9,15 @@ namespace Domain.Entities.WorkOrderAggregate
 {
     public class WorkOrder : AuditableEntity, IAggregateRoot
     {
-
         public int Id { get; private set; }
         public string OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
         public WorkOrderStatus Status { get; private set; }
         public string Title { get; private set; }
-        public string AgreementNo { get; private set; }
-        public DateTime AgreementDate { get; private set; }
-        public int ProjectId { get; private set; }
-        public int ContractorId { get; private set; }
         public string EngineerInCharge { get; private set; }
-        public DateTime CommencementDate { get; private set; }
-        public DateTime CompletionDate { get; private set; }
 
-        public Project Project { get; private set; }
-        public Contractor Contractor { get; private set; }
+        public string Project { get; private set; }
+        public string Contractor { get; private set; }
 
         private readonly List<WorkOrderItem> _items = new List<WorkOrderItem>();
         public IReadOnlyList<WorkOrderItem> Items => _items.AsReadOnly();
@@ -36,20 +29,35 @@ namespace Domain.Entities.WorkOrderAggregate
         {
         }
 
-        public WorkOrder(string orderNo, DateTime orderDate, string title, string agreementNo, DateTime agreementDate, int projectId, int contractorId, string engineerInCharge)
+        public WorkOrder(
+            string orderNo, 
+            DateTime orderDate, 
+            string title, 
+            string project, 
+            string contractor, 
+            string engineerInCharge
+        )
         {
             OrderNo = orderNo;
             OrderDate = orderDate;
             Title = title;
-            AgreementNo = agreementNo;
-            AgreementDate = agreementDate;
-            ProjectId = projectId;
-            ContractorId = contractorId;
+            Project = project;
+            Contractor = contractor;
             Status = WorkOrderStatus.CREATED;
             EngineerInCharge = engineerInCharge;
         }
 
-        public void AddUpdateLineItem(string description, int uomId, decimal unitRate, float poQuantity, int id=0)
+        public void AddUpdateLineItem(
+            string itemNo,
+            string itemDesc,
+            string subItemNo,
+            string serviceNo,
+            string shortServiceDesc,
+            string longServiceDesc,
+            int uomId, 
+            decimal unitRate, 
+            float poQuantity, 
+            int id=0)
         {
             if(Status == WorkOrderStatus.COMPLETED) return;
 
@@ -57,7 +65,12 @@ namespace Domain.Entities.WorkOrderAggregate
             if (id != 0)
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
-                item.SetDescription(description);
+                item.SetItemDescription(itemNo);
+                item.SetItemDescription(itemDesc);
+                item.SetItemDescription(subItemNo);
+                item.SetItemDescription(serviceNo);
+                item.SetShortServiceDesc(shortServiceDesc);
+                item.SetLongServiceDesc(longServiceDesc);
                 item.SetUomId(uomId);
                 item.SetUnitRate(unitRate);
                 item.SetPoQuantity(poQuantity);
@@ -65,7 +78,17 @@ namespace Domain.Entities.WorkOrderAggregate
             }
             else // new item
             {
-                _items.Add(new WorkOrderItem(description, uomId, unitRate, poQuantity));
+                _items.Add(new WorkOrderItem(
+                    itemNo: itemNo, 
+                    itemDesc: itemDesc, 
+                    subItemNo: subItemNo, 
+                    serviceNo: serviceNo, 
+                    shortServiceDesc: shortServiceDesc, 
+                    longServiceDesc: longServiceDesc, 
+                    uomId: uomId, 
+                    unitRate: unitRate, 
+                    poQuantity: poQuantity
+                ));
             }
         }
 
@@ -114,24 +137,14 @@ namespace Domain.Entities.WorkOrderAggregate
             Title = title;
         }
 
-        public void SetAgreementNo(string agreementNo)
+        public void SetProject(string project)
         {
-            AgreementNo = agreementNo;
+            Project = project;
         }
 
-        public void SetAgreementDate(DateTime agreementDate)
+        public void SetContractor(string contractor)
         {
-            AgreementDate = agreementDate;
-        }
-
-        public void SetProjectId(int projectId)
-        {
-            ProjectId = projectId;
-        }
-
-        public void SetContractorId(int contractorId)
-        {
-            ContractorId = contractorId;
+            Contractor = contractor;
         }
     }
 }
