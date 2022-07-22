@@ -4,12 +4,14 @@ using Application.Interfaces;
 using Domain.Entities.WorkOrderAggregate;
 using Infrastructure.Interfaces;
 using MediatR;
-using EmbPortal.Shared.Requests;
 using System;
+using EmbPortal.Shared.Responses;
+using System.Linq;
+using Application.Exceptions;
 
 namespace Application.WorkOrders.Command
 {
-    public record CreateWorkOrderCommand(WorkOrderRequest data) : IRequest<int>
+    public record CreateWorkOrderCommand(string EngineerInCharge, PurchaseOrder PurchaseOrder) : IRequest<int>
     {
     }
 
@@ -24,20 +26,48 @@ namespace Application.WorkOrders.Command
 
         public async Task<int> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
         {
+            var uoms = _context.Uoms.ToList();
+
             var workOrder = new WorkOrder
             (
-                orderNo: request.data.OrderNo,
-                orderDate: (DateTime)request.data.OrderDate,
-                title: request.data.Title,
-                project: request.data.Project,
-                contractor: request.data.Contractor,
-                engineerInCharge: request.data.EngineerInCharge
+                orderNo: request.PurchaseOrder.OrderNo.ToString(),
+                orderDate: request.PurchaseOrder.OrderDate,
+                project: request.PurchaseOrder.ProjectName,
+                contractor: request.PurchaseOrder.ContractorName,
+                engineerInCharge: request.EngineerInCharge
             );
+
+            foreach (var item in request.PurchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)))
+            {
+                foreach (var subItem in item.Details.Where(p => !bool.Parse(p.IsDeleted)))
+                {
+                    var uom = uoms.Find(p => p.Name.ToLower() == subItem.Uom.ToLower());
+                    if(uom == null)
+                    {
+                        throw new NotFoundException($"Please create the uom - {subItem.Uom} in the master database first");
+                    }
+
+                    workOrder.AddUpdateLineItem(
+                        itemNo: item.ItemNo,
+                        itemDesc: item.Description,
+                        subItemNo: subItem.SubItemNo,
+                        serviceNo: subItem.ServiceNo,
+                        shortServiceDesc: subItem.ShortDesc,
+                        longServiceDesc: subItem.LongDesc,
+                        uomId: uom.Id,
+                        unitRate: subItem.UnitRate,
+                        poQuantity: subItem.Quantity
+                    );
+                }
+            }
 
             _context.WorkOrders.Add(workOrder);
             await _context.SaveChangesAsync(cancellationToken);
 
             return workOrder.Id;
+
+
+            throw new NotImplementedException();
         }
     }
 }

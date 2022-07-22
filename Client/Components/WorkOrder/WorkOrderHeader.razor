@@ -1,9 +1,13 @@
 ﻿<Descriptions Bordered Size="@DescriptionsSize.Middle">
-    <DescriptionsItem Title="Order No" Span="2">@WorkOrder.OrderNo</DescriptionsItem>
-    <DescriptionsItem Title="Order Date" Span="2"> @WorkOrder.OrderDate</DescriptionsItem>
-    <DescriptionsItem Title="Agreement No" Span="2"> @WorkOrder.AgreementNo</DescriptionsItem>
-    <DescriptionsItem Title="Agreement Date" Span="2"> @WorkOrder.AgreementDate</DescriptionsItem>
-    <DescriptionsItem Title="Contractor" Span="2">@WorkOrder.Contractor</DescriptionsItem>
+    <DescriptionsItem Title="Order No" Span="2">
+        @WorkOrder.OrderNo
+    </DescriptionsItem>
+    <DescriptionsItem Title="Order Date" Span="2">
+        @WorkOrder.OrderDate.ToString("dd/MM/yyyy")
+    </DescriptionsItem>
+    <DescriptionsItem Title="Contractor" Span="2">
+        @WorkOrder.Contractor
+    </DescriptionsItem>
     <DescriptionsItem Title="Status" Span="2">
         <Tag Color="green">@WorkOrder.Status</Tag>
         @if (WorkOrder.Status == WorkOrderStatus.CREATED.ToString())
@@ -16,9 +20,12 @@
             </Popconfirm>
         }
     </DescriptionsItem>
-    <DescriptionsItem Title="Project" Span="2">@WorkOrder.Project</DescriptionsItem>
-    <DescriptionsItem Title="Engineer In Charge" Span="2">@WorkOrder.EngineerInCharge</DescriptionsItem>
-    <DescriptionsItem Title="Work Description" Span="4">@WorkOrder.Title</DescriptionsItem>
+    <DescriptionsItem Title="Project" Span="2">
+        @WorkOrder.Project
+    </DescriptionsItem>
+    <DescriptionsItem Title="Engineer In Charge" Span="2">
+        @WorkOrder.EngineerInCharge
+    </DescriptionsItem>
 </Descriptions>
 
 @code {

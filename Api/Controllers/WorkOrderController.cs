@@ -16,6 +16,7 @@ using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -23,9 +24,11 @@ namespace Api.Controllers
     public class WorkOrderController : ApiController
     {
         private readonly IConfiguration _config;
-        public WorkOrderController(IConfiguration config)
+        private readonly ILogger<WorkOrderController> _logger;
+        public WorkOrderController(IConfiguration config, ILogger<WorkOrderController> logger)
         {
             _config = config;
+            _logger = logger;
         }
 
         [HttpGet("self")]
@@ -57,20 +60,16 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
         {
-            var command = new CreateWorkOrderCommand(data);
+            var purchaseOrder = await FetchPODetailsFromSAP(data.OrderNo);
+
+            if (purchaseOrder == null)
+            {
+                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
+            }
+
+            var command = new CreateWorkOrderCommand(data.EngineerInCharge, purchaseOrder);
 
             return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateWorkOrder(int id, WorkOrderRequest data)
-        {
-            var command = new EditWorkOrderCommand(id, data);
-            await Mediator.Send(command);
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -152,14 +151,26 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(PurchaseOrder), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(string purchaseOrderId)
+        public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(long purchaseOrderId)
+        {
+            var purchaseOrder = await FetchPODetailsFromSAP(purchaseOrderId);
+
+            if (purchaseOrder == null)
+            {
+                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
+            }
+
+            return Ok(purchaseOrder);
+        }
+
+        private async Task<PurchaseOrder> FetchPODetailsFromSAP(long purchaseOrderId)
         {
             try
             {
                 var url = $"{_config["POUrl"]}/{purchaseOrderId}";
                 using var httpClient = new HttpClient();
                 var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", 
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
                     Convert.ToBase64String(authToken));
 
                 var response = await httpClient.GetAsync(url);
@@ -173,16 +184,15 @@ namespace Api.Controllers
                         PropertyNameCaseInsensitive = true
                     });
 
-                    return Ok(purchaseOrder);
+                    return purchaseOrder;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError(ex.StackTrace);
             }
 
-            return NotFound();
+            return null;
         }
-
     }
 }

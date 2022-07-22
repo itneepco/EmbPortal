@@ -1,26 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
 {
     public class WorkOrderRequest
     {
-        [Required, MaxLength(250)]
-        public string Title { get; set; }
-
-        [Required, MaxLength(60)]
-        public string OrderNo { get; set; }
-
         [Required]
-        public DateTime? OrderDate { get; set; }
+        public long OrderNo { get; set; }
 
         [Required, MaxLength(6)]
+        [Display(Name = "Engineer In Charge")]
         public string EngineerInCharge { get; set; }
 
-        [Required]
-        public string Project { get; set; }
-
-        [Required]
-        public string Contractor { get; set; }
     }
 }

@@ -78,7 +78,6 @@ namespace Persistence.Migrations
                     OrderNo = table.Column<string>(type: "TEXT", maxLength: 60, nullable: false),
                     OrderDate = table.Column<long>(type: "INTEGER", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     EngineerInCharge = table.Column<string>(type: "TEXT", nullable: true),
                     Project = table.Column<string>(type: "TEXT", nullable: true),
                     Contractor = table.Column<string>(type: "TEXT", nullable: true),
@@ -231,12 +230,12 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ItemNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    ItemNo = table.Column<int>(type: "INTEGER", nullable: false),
                     ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    SubItemNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    ServiceNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    SubItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
                     ShortServiceDesc = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    LongServiceDesc = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    LongServiceDesc = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
                     UomId = table.Column<int>(type: "INTEGER", nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     PoQuantity = table.Column<float>(type: "REAL", nullable: false),
@@ -359,8 +358,8 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    SubItemNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    ServiceNo = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    SubItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
                     ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     AcceptedMeasuredQty = table.Column<float>(type: "REAL", nullable: false),
@@ -573,6 +572,12 @@ namespace Persistence.Migrations
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkOrders_OrderNo",
+                table: "WorkOrders",
+                column: "OrderNo",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

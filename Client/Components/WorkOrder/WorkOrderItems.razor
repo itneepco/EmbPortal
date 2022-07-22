@@ -1,220 +1,49 @@
 ﻿@using System.IO;
 
-<Row Style="margin-bottom: 0.75rem">
-    <AntDesign.Col>
-        <Button Icon="@(IconType.Outline.Plus)"
-                Type="@(ButtonType.Primary)"
-                OnClick="_=> OpenSideDrawer()"
-                Disabled="@(OrderStatus == "COMPLETED")"
-                Style="margin-bottom: 1rem">
-            Add Item
-        </Button>
-
-        <Button Icon="@(IconType.Outline.Download)"
-                OnClick="_ => DownloadTemplate()"
-                Type="@(ButtonType.Default)">
-            Download Template
-        </Button>
-    </AntDesign.Col>
-
-    <AntDesign.Col Flex="1"></AntDesign.Col>
-    
-    <AntDesign.Col>
-        <InputFile @key=@inputFileId OnChange="@OnImportData" />
-
-        <Button Icon="@(IconType.Outline.Upload)"
-                OnClick="_ => OnUploadFile()"
-                Loading="@loading"
-                Disabled="@(selectedFile == null)"
-                Type="@(ButtonType.Primary)">
-            Upload Items
-        </Button>
-    </AntDesign.Col>
-</Row>
-
-<Table DataSource="Items" TItem="WorkOrderItemResponse" Size="@TableSize.Small" Loading="@loading">
+<Table TItem="OrderItem"
+       PageSize="@OrderItems.Count"
+       Size="@TableSize.Small"
+       DataSource="@OrderItems"
+       HidePagination>
     <RowTemplate>
-        <Column TData="string" DataIndex="@nameof(context.Description)" Width="45%" />
-        <Column TData="string" DataIndex="@nameof(context.Uom)" Width="9%" />
-        <Column TData="float" DataIndex="@nameof(context.UnitRate)" Width="9%" />
-        <Column TData="float" DataIndex="@nameof(context.PoQuantity)" Width="9%" />
-        <Column TData="string" Width="10%" Title="Status">
-            @if (context.Status == WorkOrderItemStatus.PUBLISHED)
-            {
-                <Tag Color="blue">@context.Status</Tag>
-            }
-            else
-            {
-                <Tag Color="green">@context.Status</Tag>
-            }
-        </Column>
-
-        <ActionColumn Title="Action" Width="18%">
-            <Row>
-                @if (OrderStatus == WorkOrderStatus.CREATED.ToString() || context.Status == WorkOrderItemStatus.CREATED)
-                {
-                    <Button Icon="@(IconType.Outline.Edit)"
-                            Size="@ButtonSize.Small"
-                            OnClick="_=> OpenSideDrawer(context.Id)"
-                            Style="margin-right: 0.2rem" />
-
-                    <Popconfirm Title="Sure to delete?"
-                                OnConfirm="()=> OnDeleteItem(context.Id)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)"
-                                Size="@ButtonSize.Small"
-                                Danger Style="margin-right: 0.2rem" />
-                    </Popconfirm>
-
-                    <Popconfirm Title="Sure to publish order item?"
-                                OnConfirm="() => PublishOrderItem(context)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Size="@ButtonSize.Small">
-                            Publish
-                        </Button>
-                    </Popconfirm>
-                }
-            </Row>
-        </ActionColumn>
+        <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+        <Column Title="Description" @bind-Field="@context.Description" Width="80%" />
     </RowTemplate>
 
+    <ExpandTemplate Context="rowData">
+        <Table TItem="WorkOrderItemResponse"
+               DataSource="@Items.Where(p => p.ItemNo == rowData.Data.ItemNo)"
+               Bordered>
+            <Column TData="int" Title="SubItem No" Width="15%">@context.SubItemNo</Column>
+            <Column TData="int" Title="Service No" Width="15%">@context.ServiceNo</Column>
+            <Column TData="string" Title="Description" Width="34%">@context.ShortServiceDesc</Column>
+            <Column TData="string" Title="Uom" DataIndex="@nameof(context.Uom)" Width="12%" />
+            <Column TData="decimal" Title="Unit Rate" DataIndex="@nameof(context.UnitRate)" Width="12%" />
+            <Column TData="decimal" Title="Quantity" DataIndex="@nameof(context.PoQuantity)" Width="12%" />
+        </Table>
+    </ExpandTemplate>
 </Table>
 
-<AddEditOrderItemDrawer LineItem="@currentLineItem" Visible="@drawerVisible" OnItemUpdate="@OnItemUpdate" OnClose="@OnCloseSideBar" />
-
 @code {
-    [CascadingParameter]
-    public int WorkOrderId { get; set; }
-
-    [CascadingParameter]
-    public string OrderStatus { get; set; }
-
     [Parameter]
     public List<WorkOrderItemResponse> Items { get; set; }
 
-    [Parameter]
-    public EventCallback ReloadPage { get; set; }
+    public List<OrderItem> OrderItems = new();
 
-    WorkOrderItemResponse currentLineItem;
+    public List<ServiceItem> ServiceItems = new();
 
-    bool drawerVisible;
-    bool loading;
-    IBrowserFile selectedFile;
-
-    private string inputFileId = Guid.NewGuid().ToString();
-
-    void OpenSideDrawer(int itemId = 0)
+    protected override void OnParametersSet()
     {
-        currentLineItem = Items.FirstOrDefault(p => p.Id == itemId);
-        drawerVisible = true;
-    }
-
-    void OnCloseSideBar()
-    {
-        drawerVisible = false;
-    }
-
-    async Task OnDeleteItem(int itemId)
-    {
-        loading = true;
-        var result = await workOrderService.DeleteWorkOrderItem(WorkOrderId, itemId);
-        loading = false;
-
-        if (result.Succeeded)
+        foreach (var item in Items)
         {
-            await ReloadPage.InvokeAsync();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task OnItemUpdate()
-    {
-        await ReloadPage.InvokeAsync();
-    }
-
-    async Task PublishOrderItem(WorkOrderItemResponse item)
-    {
-        loading = true;
-        var result = await workOrderService.PublishWorkOrderItem(WorkOrderId, item.Id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            item.Status = WorkOrderItemStatus.PUBLISHED;
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task DownloadTemplate()
-    {
-        var base64 = await workOrderService.ExportToExcelAsync();
-        await _jsRuntime.InvokeVoidAsync("Download", new
-        {
-            ByteArray = base64,
-            FileName = $"{"Template"}_{DateTime.Now:ddMMyyyyHHmmss}.xlsx",
-            MimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        });
-    }
-
-    private void OnImportData(InputFileChangeEventArgs e)
-    {
-        // Get the selected file
-        var file = e.File;
-
-        // Check if the file is null then return from the method
-        if (file == null) return;
-
-        this.selectedFile = file;
-    }
-
-    private async Task OnUploadFile()
-    {
-        if (selectedFile == null) return;
-        
-        loading = true;
-
-        Stream stream = selectedFile.OpenReadStream();
-        MemoryStream ms = new MemoryStream();
-        await stream.CopyToAsync(ms);
-        stream.Close();
-
-        FileUploadRequest uploadedFile = new FileUploadRequest();
-        uploadedFile.FileName = selectedFile.Name;
-        uploadedFile.FileContent = ms.ToArray();
-        ms.Close();
-
-        var result = await workOrderService.UploadWorkOrderItemsAsync(WorkOrderId, uploadedFile);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await OnItemUpdate();
-            await messageService.Success("Successfully Uploaded Work Order Items");
-            inputFileId = Guid.NewGuid().ToString();
-            StateHasChanged();
-        }
-        else
-        {
-            if (result.Errors.Count == 0)
+            var orderItem = OrderItems.Find(p => p.ItemNo == item.ItemNo);
+            if (orderItem == null)
             {
-                await messageService.Error(result.Message);
-                return;
-            }
-
-            foreach (var error in result.Errors)
-            {
-                await messageService.Error(error);
+                OrderItems.Add(new OrderItem
+                {
+                        ItemNo = item.ItemNo,
+                        Description = item.ItemDescription
+                });
             }
         }
     }

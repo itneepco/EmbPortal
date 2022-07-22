@@ -434,15 +434,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ServiceNo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<long>("ServiceNo")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("SubItemNo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("SubItemNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<float>("TillLastRAQty")
                         .HasColumnType("REAL");
@@ -560,12 +556,10 @@ namespace Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderNo")
+                        .IsUnique();
 
                     b.ToTable("WorkOrders");
                 });
@@ -588,10 +582,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ItemNo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ItemNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
@@ -601,17 +593,14 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LongServiceDesc")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<float>("PoQuantity")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("ServiceNo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<long>("ServiceNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ShortServiceDesc")
                         .IsRequired()
@@ -621,10 +610,8 @@ namespace Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("SubItemNo")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("SubItemNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");

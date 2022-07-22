@@ -16,10 +16,11 @@
         <Descriptions Size="@DescriptionsSize.Small"
                   Bordered
                   Layout="@DescriptionsLayout.Vertical"
-                  Style="margin-top: 1rem; margin-bottom: 1rem;">
+                  Style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
             <DescriptionsItem Title="Order No">@purchaseOrder.OrderNo</DescriptionsItem>
             <DescriptionsItem Title="Order Date">@purchaseOrder.OrderDate</DescriptionsItem>
             <DescriptionsItem Title="Contractor">@purchaseOrder.ContractorName</DescriptionsItem>
+            <DescriptionsItem Title="Project Code">@purchaseOrder.ProjectId</DescriptionsItem>
             <DescriptionsItem Title="Project">@purchaseOrder.ProjectName</DescriptionsItem>
         </Descriptions>
 
@@ -38,18 +39,27 @@
                    PageSize="rowData.Data.Details.Count"
                    DataSource="rowData.Data.Details"
                    Bordered HidePagination>
-                    <Column TData="int" Title="SubItem No" Width="15%">context.SubItemNo</Column>
-                    <Column TData="int" Title="Service No" Width="15%">context.ServiceNo</Column>
-                    <Column TData="string" Title="Description">context.ShortDesc</Column>
-                    <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="15%" />
-                    <Column Title="Unit Rate" TData="string" DataIndex="@nameof(context.UnitRate)" Width="15%" />
-                    <Column Title="Quantity" TData="string" DataIndex="@nameof(context.Quantity)" Width="15%" />
+                    <Column TData="int" Title="SubItem No" Width="15%">@context.SubItemNo</Column>
+                    <Column TData="int" Title="Service No" Width="15%">@context.ServiceNo</Column>
+                    <Column TData="string" Title="Description" Width="34%">@context.ShortDesc</Column>
+                    <Column TData="string" Title="Uom" DataIndex="@nameof(context.Uom)" Width="12%" />
+                    <Column TData="decimal" Title="Unit Rate" DataIndex="@nameof(context.UnitRate)" Width="12%" />
+                    <Column TData="decimal" Title="Quantity" DataIndex="@nameof(context.Quantity)" Width="12%" />
                 </Table>
             </ExpandTemplate>
         </Table>
 
-        <Form Style="margin-top: 1rem;" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
-            <FormItem WrapperColOffset="18" WrapperColSpan="6">
+        <Form Style="margin-top: 1.25rem;" 
+                Layout="@FormLayout.Vertical" 
+                Loading="loading" 
+                Model="@model" 
+                OnFinish="@OnSubmit">
+
+            <FormItem Label="Engineer In Charge" WrapperColSpan="16">
+                <Input @bind-Value="@context.EngineerInCharge" />
+            </FormItem>
+            
+            <FormItem WrapperColSpan="6">
                 <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
                 <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
             </FormItem>
@@ -58,7 +68,7 @@
     else
     {
         <Spin Spinning="loading">
-            <Empty Style="margin-top: 2rem" />
+            <Empty Style="margin-top: 2.5rem" />
         </Spin>
     }
 </Drawer>
@@ -87,35 +97,23 @@
         purchaseOrder = null;
         loading = true;
         StateHasChanged();
+        loading = false;
 
         var result = await workOrderService.FetchPOFromSAP(poNumber);
         if (!result.Succeeded)
         {
-            await messageService.Error("The PO could not be fetch from SAP");
+            await messageService.Error(result.Message);
             return;
         }
 
         purchaseOrder = result.Data;
-        loading = false;
-    }
-
-    void Close()
-    {
-        OnClose.InvokeAsync();
     }
 
     async Task OnSubmit(EditContext context)
     {
         loading = true;
-        dynamic result;
-        if (WorkOrder != null)
-        {
-            result = await workOrderService.UpdateWorkOrder(WorkOrder.Id, model);
-        }
-        else
-        {
-            result = await workOrderService.CreateWorkOrder(model);
-        }
+        model.OrderNo = purchaseOrder.OrderNo;
+        var result = await workOrderService.CreateWorkOrder(model);
         loading = false;
 
         if (!result.Succeeded)
@@ -128,5 +126,10 @@
         var orderId = WorkOrder != null ? WorkOrder.Id : result.Data;
         navManager.NavigateTo($"/orderdetail/{orderId}");
         await messageService.Success(result.Message);
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
     }
 }

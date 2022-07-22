@@ -13,7 +13,6 @@ namespace Domain.Entities.WorkOrderAggregate
         public string OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
         public WorkOrderStatus Status { get; private set; }
-        public string Title { get; private set; }
         public string EngineerInCharge { get; private set; }
 
         public string Project { get; private set; }
@@ -32,7 +31,6 @@ namespace Domain.Entities.WorkOrderAggregate
         public WorkOrder(
             string orderNo, 
             DateTime orderDate, 
-            string title, 
             string project, 
             string contractor, 
             string engineerInCharge
@@ -40,7 +38,6 @@ namespace Domain.Entities.WorkOrderAggregate
         {
             OrderNo = orderNo;
             OrderDate = orderDate;
-            Title = title;
             Project = project;
             Contractor = contractor;
             Status = WorkOrderStatus.CREATED;
@@ -48,10 +45,10 @@ namespace Domain.Entities.WorkOrderAggregate
         }
 
         public void AddUpdateLineItem(
-            string itemNo,
+            int itemNo,
             string itemDesc,
-            string subItemNo,
-            string serviceNo,
+            int subItemNo,
+            long serviceNo,
             string shortServiceDesc,
             string longServiceDesc,
             int uomId, 
@@ -65,10 +62,10 @@ namespace Domain.Entities.WorkOrderAggregate
             if (id != 0)
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
-                item.SetItemDescription(itemNo);
+                item.SetItemNo(itemNo);
                 item.SetItemDescription(itemDesc);
-                item.SetItemDescription(subItemNo);
-                item.SetItemDescription(serviceNo);
+                item.SetSubItemNo(subItemNo);
+                item.SetServiceNo(serviceNo);
                 item.SetShortServiceDesc(shortServiceDesc);
                 item.SetLongServiceDesc(longServiceDesc);
                 item.SetUomId(uomId);
@@ -131,12 +128,6 @@ namespace Domain.Entities.WorkOrderAggregate
         {
             OrderDate = orderDate;
         }
-
-        public void SetTitle(string title)
-        {
-            Title = title;
-        }
-
         public void SetProject(string project)
         {
             Project = project;

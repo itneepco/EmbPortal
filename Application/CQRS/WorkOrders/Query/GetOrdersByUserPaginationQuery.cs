@@ -43,7 +43,6 @@ namespace Application.CQRS.WorkOrders.Query
             {
                 Criteria = (m =>
                     m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
                     m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 

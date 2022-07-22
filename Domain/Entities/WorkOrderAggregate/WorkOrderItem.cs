@@ -7,10 +7,10 @@ namespace Domain.Entities.WorkOrderAggregate
     public class WorkOrderItem : AuditableEntity
     {
         public int Id { get; private set; }
-        public string ItemNo { get; private set; }
+        public int ItemNo { get; private set; }
         public string ItemDescription { get; set; }
-        public string SubItemNo { get; private set; }
-        public string ServiceNo { get; private set; }
+        public int SubItemNo { get; private set; }
+        public long ServiceNo { get; private set; }
         public string ShortServiceDesc { get; private set; }
         public string LongServiceDesc { get; private set; }
         public int UomId { get; private set; }
@@ -25,10 +25,10 @@ namespace Domain.Entities.WorkOrderAggregate
         }
 
         public WorkOrderItem(
-            string itemNo,
+            int itemNo,
             string itemDesc,
-            string subItemNo,
-            string serviceNo,
+            int subItemNo,
+            long serviceNo,
             string shortServiceDesc,
             string longServiceDesc,
             int uomId, 
@@ -36,10 +36,10 @@ namespace Domain.Entities.WorkOrderAggregate
             float poQuantity
         )
         {
-            SetItemDescription(itemNo);
+            SetItemNo(itemNo);
             SetItemDescription(itemDesc);
-            SetItemDescription(subItemNo);
-            SetItemDescription(serviceNo);
+            SetSubItemNo(subItemNo);
+            SetServiceNo(serviceNo);
             SetShortServiceDesc(shortServiceDesc);
             SetLongServiceDesc(longServiceDesc);
             SetUomId(uomId);
@@ -49,17 +49,17 @@ namespace Domain.Entities.WorkOrderAggregate
             Status = WorkOrderItemStatus.CREATED;
         }
 
-        public void SetItemNo(string itemNo)
+        public void SetItemNo(int itemNo)
         {
             ItemNo = itemNo;
         }
 
-        public void SetSubItemNo(string subItemNo)
+        public void SetSubItemNo(int subItemNo)
         {
             SubItemNo = subItemNo;
         }
 
-        public void SetServiceNo(string serviceNo)
+        public void SetServiceNo(long serviceNo)
         {
             ServiceNo = serviceNo;
         }
