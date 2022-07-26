@@ -4,26 +4,18 @@
         Disabled="@(WorkOrderStatus != "PUBLISHED")"
         Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
-<Table Loading="@loading" TItem="MBookResponse" Size="@TableSize.Small" DataSource="@mbooks">
+<Table Loading="@loading" 
+        TItem="MBookResponse" 
+        Size="@TableSize.Small" 
+        DataSource="@mbooks"
+        Responsive="false"
+        ScrollX="650">
+
     <RowTemplate>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
-        <Column Title="Measurement Officer" @bind-Field="@context.MeasurementOfficer" Width="15%" />
-        <Column Title="Validating Officer" @bind-Field="@context.ValidatingOfficer" Width="15%" />
-        <Column @bind-Field="@context.Status" Width="10%">
-            @if (context.Status == MBookStatus.COMPLETED.ToString())
-            {
-                <Tag Color="gold">@context.Status</Tag>
-            }
-            else if (context.Status == MBookStatus.PUBLISHED.ToString())
-            {
-                <Tag Color="blue">@context.Status</Tag>
-            }
-            else
-            {
-                <Tag Color="green">@context.Status</Tag>
-            }
-        </Column>
-        <ActionColumn Title="Action" Width="20%">
+        <Column Title="Measurer" @bind-Field="@context.MeasurementOfficer" Width="18%" />
+        <Column Title="Validator" @bind-Field="@context.ValidatingOfficer" Width="17%" />
+        <ActionColumn Title="Action" Width="25%">
             <Row Justify="ceter">
                 @if (context.Status == MBookStatus.CREATED.ToString())
                 {
@@ -46,8 +38,9 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" HidePagination>
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="55%" />
+        <Table DataSource="rowData.Data.Items" HidePagination Responsive="false">
+            <Column TData="string" Title="Service No" Width="15%">@context.ServiceNo</Column>
+            <Column TData="string" Title="Service Description" Width="40%">@context.ShortServiceDesc</Column>
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%" />
             <Column Title="Quantity" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%" />
             <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%" />

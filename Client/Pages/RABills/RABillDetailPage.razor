@@ -51,7 +51,7 @@
     </Row>
 
 
-    <Descriptions Bordered Size="@DescriptionsSize.Small">
+    <Descriptions Bordered Size="@DescriptionsSize.Small" Column="column">
         <DescriptionsItem Title="Title">@raBill.Title</DescriptionsItem>
         <DescriptionsItem Title="Status">@raBill.Status</DescriptionsItem>
         <DescriptionsItem Title="Accepting Officer">@raBill.AcceptingOfficer</DescriptionsItem>
@@ -67,8 +67,9 @@
            Size="@TableSize.Small"
            Loading="@loading"
            HidePagination Bordered>
-
-        <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
+        
+        <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="10%" />
+        <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="33%" />
         <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
         <Column Title="Measured Qty" TData="float" Width="8%">
             @context.AcceptedMeasuredQty.ToString("0.00")
@@ -145,6 +146,15 @@ else
     bool downloading;
     bool drawerVisible;
     string employeeCode;
+
+    private Dictionary<string, int> column = new Dictionary<string, int> {
+        { "xxl", 3 },
+        { "xl", 3},
+        { "lg", 2},
+        { "md", 2},
+        { "sm", 1},
+        { "xs", 1}
+    };
 
     protected override async Task OnInitializedAsync()
     {

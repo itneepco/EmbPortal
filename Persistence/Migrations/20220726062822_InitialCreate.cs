@@ -57,7 +57,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 5, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Dimension = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
@@ -75,10 +75,10 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    OrderNo = table.Column<string>(type: "TEXT", maxLength: 60, nullable: false),
+                    OrderNo = table.Column<long>(type: "INTEGER", nullable: false),
                     OrderDate = table.Column<long>(type: "INTEGER", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    EngineerInCharge = table.Column<string>(type: "TEXT", nullable: true),
+                    EngineerInCharge = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Project = table.Column<string>(type: "TEXT", nullable: true),
                     Contractor = table.Column<string>(type: "TEXT", nullable: true),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
@@ -204,7 +204,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WorkOrderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     ValidatingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
@@ -269,7 +269,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     MeasurementDate = table.Column<long>(type: "INTEGER", nullable: false),
                     ValidationOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
@@ -300,7 +300,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     BillDate = table.Column<long>(type: "INTEGER", nullable: false),
                     ApprovalDate = table.Column<long>(type: "INTEGER", nullable: false),
@@ -358,14 +358,16 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     SubItemNo = table.Column<int>(type: "INTEGER", nullable: false),
                     ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
-                    ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    ShortServiceDesc = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     AcceptedMeasuredQty = table.Column<float>(type: "REAL", nullable: false),
                     TillLastRAQty = table.Column<float>(type: "REAL", nullable: false),
                     CurrentRAQty = table.Column<float>(type: "REAL", nullable: false),
-                    Remarks = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Remarks = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
                     MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     RABillId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
@@ -411,16 +413,17 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
+                    ShortServiceDesc = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     Nos = table.Column<int>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Value1 = table.Column<float>(type: "REAL", nullable: false),
                     Value2 = table.Column<float>(type: "REAL", nullable: false),
                     Value3 = table.Column<float>(type: "REAL", nullable: false),
-                    Uom = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Uom = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
                     Dimension = table.Column<int>(type: "INTEGER", nullable: false),
                     MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    MBookItemDescription = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     MBSheetId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),

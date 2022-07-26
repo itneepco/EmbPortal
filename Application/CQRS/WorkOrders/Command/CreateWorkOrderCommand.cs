@@ -8,6 +8,7 @@ using System;
 using EmbPortal.Shared.Responses;
 using System.Linq;
 using Application.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.WorkOrders.Command
 {
@@ -26,11 +27,17 @@ namespace Application.WorkOrders.Command
 
         public async Task<int> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
         {
+            var workOrderDb = await _context.WorkOrders.FirstOrDefaultAsync(p => p.OrderNo == request.PurchaseOrder.OrderNo);
+            if (workOrderDb != null)
+            {
+                throw new BadRequestException("Purchase order already exists in the database");
+            }
+
             var uoms = _context.Uoms.ToList();
 
             var workOrder = new WorkOrder
             (
-                orderNo: request.PurchaseOrder.OrderNo.ToString(),
+                orderNo: request.PurchaseOrder.OrderNo,
                 orderDate: request.PurchaseOrder.OrderDate,
                 project: request.PurchaseOrder.ProjectName,
                 contractor: request.PurchaseOrder.ContractorName,

@@ -10,7 +10,7 @@ namespace Domain.Entities.WorkOrderAggregate
     public class WorkOrder : AuditableEntity, IAggregateRoot
     {
         public int Id { get; private set; }
-        public string OrderNo { get; private set; }
+        public long OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
         public WorkOrderStatus Status { get; private set; }
         public string EngineerInCharge { get; private set; }
@@ -29,7 +29,7 @@ namespace Domain.Entities.WorkOrderAggregate
         }
 
         public WorkOrder(
-            string orderNo, 
+            long orderNo, 
             DateTime orderDate, 
             string project, 
             string contractor, 
@@ -114,7 +114,7 @@ namespace Domain.Entities.WorkOrderAggregate
             }
         }
 
-        public void SetOrderNo(string orderNo)
+        public void SetOrderNo(long orderNo)
         {
             OrderNo = orderNo;
         }

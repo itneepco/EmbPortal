@@ -41,14 +41,17 @@
        Total="total"
        @bind-PageIndex="pageIndex"
        @bind-PageSize="pageSize"
-       @bind-SelectedRows="selectedRows">
+       @bind-SelectedRows="selectedRows"
+       Size="@TableSize.Small"
+       Responsive="false"
+       ScrollX="600">
 
     <Selection Key="@context.OrderNo" Type="radio" />
     <Column @bind-Field="@context.Title" />
     <Column @bind-Field="@context.Contractor" />
     <Column @bind-Field="@context.OrderNo" />
     <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" />
-    <Column @bind-Field="@context.Status" />
+    @*<Column @bind-Field="@context.Status" />*@
 </Table>
 
 @code {

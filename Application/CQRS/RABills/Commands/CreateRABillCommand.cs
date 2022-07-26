@@ -83,7 +83,8 @@ namespace Application.CQRS.RABills.Commands
                 }
 
                 raBill.AddLineItem(new RABillItem(
-                    mbItemId: mBookItem.Id,
+                    itemNo: mBookItem.WorkOrderItem.ItemNo,
+                    itemDescription: mBookItem.WorkOrderItem.ItemDescription,
                     subItemNo: mBookItem.WorkOrderItem.SubItemNo,
                     serviceNo: mBookItem.WorkOrderItem.ServiceNo,
                     serviceDescription: mBookItem.WorkOrderItem.ShortServiceDesc,
@@ -91,7 +92,8 @@ namespace Application.CQRS.RABills.Commands
                     acceptedMeasuredQty: mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
                     tillLastRAQty: raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0,
                     currentRAQty: item.CurrentRAQty,
-                    remarks: item.Remarks
+                    remarks: item.Remarks,
+                    mbItemId: mBookItem.Id
                 ));
             }
 

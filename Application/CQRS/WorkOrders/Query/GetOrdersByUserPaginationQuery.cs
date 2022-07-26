@@ -42,7 +42,7 @@ namespace Application.CQRS.WorkOrders.Query
             if (!string.IsNullOrEmpty(request.data.Search))
             {
                 Criteria = (m =>
-                    m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
+                    m.OrderNo.ToString().Contains(request.data.Search.ToLower()) ||
                     m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 

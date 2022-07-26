@@ -8,11 +8,14 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkOrder> builder)
         {
-            builder.Property(p => p.OrderNo).HasMaxLength(60).IsRequired();
+            builder.Property(p => p.OrderNo).IsRequired();
             builder.Property(p => p.OrderDate).IsRequired();
 
-            builder.Property(p => p.CreatedBy).HasMaxLength(6);
-            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+            builder.Property(p => p.EngineerInCharge)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength)
+                .IsRequired();
+
+            builder.HasIndex(p => p.OrderNo).IsUnique();
 
             builder.HasMany(p => p.Items).WithOne().OnDelete(DeleteBehavior.Cascade);
 
@@ -20,7 +23,12 @@ namespace Persistence.Configurations
             builder.Navigation(p => p.Items).HasField("_items");
             builder.Navigation(p => p.MeasurementBooks).HasField("_measurementBooks");
 
-            builder.HasIndex(p => p.OrderNo).IsUnique();
+
+            builder.Property(p => p.CreatedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
+
+            builder.Property(p => p.LastModifiedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
         }
     }
 }

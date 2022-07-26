@@ -8,15 +8,28 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<MBSheetItem> builder)
         {
-            builder.Property(p => p.Uom).HasMaxLength(20).IsRequired();
-            builder.Property(p => p.Description).HasMaxLength(100).IsRequired();
-            builder.Property(p => p.MBookItemDescription).HasMaxLength(250).IsRequired();
+            builder.Property(p => p.Uom)
+                .HasMaxLength(PersistenceConsts.UomLength)
+                .IsRequired();
+            
+            builder.Property(p => p.Description)
+                .HasMaxLength(PersistenceConsts.LongDescLength)
+                .IsRequired();
 
-            builder.Property(p => p.CreatedBy).HasMaxLength(6);
-            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+            builder.Property(p => p.ServiceNo).IsRequired();
+
+            builder.Property(p => p.ShortServiceDesc)
+                .HasMaxLength(PersistenceConsts.ShortDescLength)
+                .IsRequired();
 
             // Backing fields
             builder.Navigation(p => p.Attachments).HasField("_attachments");
+
+            builder.Property(p => p.CreatedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
+
+            builder.Property(p => p.LastModifiedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
         }
     }
 }

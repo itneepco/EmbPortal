@@ -47,7 +47,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             {
                 Criteria = (m =>
                     m.Title.ToLower().Contains(request.Data.Search.ToLower()) ||
-                    m.WorkOrder.OrderNo.ToLower().Contains(request.Data.Search.ToLower()) ||
+                    m.WorkOrder.OrderNo.ToString().Contains(request.Data.Search.ToLower()) ||
                     m.WorkOrder.Contractor.ToLower().Contains(request.Data.Search.ToLower())
                 );
                 query = query.Where(Criteria);

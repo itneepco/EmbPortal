@@ -11,11 +11,11 @@ namespace Persistence.Configurations
             builder.Property(p => p.Name).HasMaxLength(5).IsRequired();
             builder.HasIndex(p => p.Name).IsUnique();
 
-            builder.Property(p => p.Description).HasMaxLength(20).IsRequired();
+            builder.Property(p => p.Description).HasMaxLength(PersistenceConsts.ShortDescLength).IsRequired();
             builder.Property(p => p.Dimension).IsRequired();
 
-            builder.Property(p => p.CreatedBy).HasMaxLength(6);
-            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+            builder.Property(p => p.CreatedBy).HasMaxLength(PersistenceConsts.EmpCodeLength);
+            builder.Property(p => p.LastModifiedBy).HasMaxLength(PersistenceConsts.EmpCodeLength);
         }
     }
 }

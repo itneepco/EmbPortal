@@ -4,7 +4,10 @@
        PageSize="@OrderItems.Count"
        Size="@TableSize.Small"
        DataSource="@OrderItems"
+       Responsive="false"
+       ScrollX="450"
        HidePagination>
+
     <RowTemplate>
         <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
         <Column Title="Description" @bind-Field="@context.Description" Width="80%" />

@@ -5,9 +5,11 @@ namespace Domain.Entities.RABillAggregate
     public class RABillItem : AuditableEntity
     {
         public int Id { get; private set; }
-        public int SubItemNo { get; set; }
-        public long ServiceNo { get; set; }
+        public int ItemNo { get; private set; }
         public string ItemDescription { get; private set; }
+        public int SubItemNo { get; private set; }
+        public long ServiceNo { get; private set; }
+        public string ShortServiceDesc { get; private set; }
         public decimal UnitRate { get; private set; }
         public float AcceptedMeasuredQty { get; private set; }
         public float TillLastRAQty { get; private set; }
@@ -22,6 +24,8 @@ namespace Domain.Entities.RABillAggregate
         }
 
         public RABillItem(
+            int itemNo,
+            string itemDescription,
             int subItemNo,
             long serviceNo,
             string serviceDescription,
@@ -31,11 +35,14 @@ namespace Domain.Entities.RABillAggregate
             float currentRAQty,
             string remarks,
             int mbItemId)
-        {   
+        {
+            ItemNo = itemNo;
+            ItemDescription = itemDescription;
             SubItemNo = subItemNo;
             ServiceNo = serviceNo;
-            ItemDescription = serviceDescription;
+            ShortServiceDesc = serviceDescription;
             UnitRate = rate;
+
             AcceptedMeasuredQty = acceptedMeasuredQty;
             TillLastRAQty = tillLastRAQty;
             CurrentRAQty = currentRAQty;

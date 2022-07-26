@@ -1,4 +1,4 @@
-﻿<Descriptions Bordered Size="@DescriptionsSize.Middle">
+﻿<Descriptions Bordered Size="@DescriptionsSize.Middle" Column="@column">
     <DescriptionsItem Title="Order No" Span="2">
         @WorkOrder.OrderNo
     </DescriptionsItem>
@@ -36,6 +36,15 @@
     public EventCallback WorkOrderPublished { get; set; }
 
     bool loading = false;
+
+    private Dictionary<string, int> column = new Dictionary<string, int> {
+        { "xxl", 3 },
+        { "xl", 3},
+        { "lg", 2},
+        { "md", 2},
+        { "sm", 1},
+        { "xs", 1}
+    };
 
     async Task PublishOrder()
     {

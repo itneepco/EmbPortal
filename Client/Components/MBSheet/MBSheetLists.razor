@@ -5,12 +5,18 @@
     Add MB Sheet
 </Button>
 
-<Table Loading="@loading" TItem="MBSheetResponse" Size="@TableSize.Small" DataSource="@mbSheets" Bordered>
+<Table Loading="@loading" 
+        TItem="MBSheetResponse" 
+        Size="@TableSize.Small" 
+        DataSource="@mbSheets" 
+        ScrollX="1000"
+        Bordered>
+
     <RowTemplate>
         <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="40%" />
-        <Column Title="Measurement Date" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
-        <Column Title="Measuring Officer" @bind-Field="@context.MeasurementOfficer" Width="10%" />
-        <Column Title="Validating Officer" @bind-Field="@context.ValidationOfficer" Width="10%" />
+        <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
+        <Column Title="Measurer" @bind-Field="@context.MeasurementOfficer" Width="10%" />
+        <Column Title="Validator" @bind-Field="@context.ValidationOfficer" Width="10%" />
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
             {
@@ -66,17 +72,26 @@
                Size="@TableSize.Small"
                HidePagination Bordered>
 
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="34%" />
-            <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="long" Title="Service No" Width="8%">
+                @context.ServiceNo
+            </Column>
+
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="string" Title="Service Description" Width="26%">
+                @context.ShortServiceDesc
+            </Column>
+
+            <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
             <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
             <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
             <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
             <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
             <Column Title="Val3" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
             <Column Title="Qty" TData="string" Width="6%">@context.Quantity.ToString("0.00")</Column>
+            
             <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
                 @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
             </Column>
+            
             <ActionColumn Title="Action" Width="6%">
                 <Button Icon="@(IconType.Outline.Download)"
                         Size="@ButtonSize.Small"

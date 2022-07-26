@@ -31,7 +31,11 @@ namespace Application.Mappings
             CreateMap<MeasurementBook, MBookResponse>();
 
             CreateMap<MBookItem, MBookItemResponse>()
-                .ForMember(m => m.Description, opt => opt.MapFrom(p => p.WorkOrderItem.ShortServiceDesc))
+                .ForMember(m => m.ItemNo, opt => opt.MapFrom(p => p.WorkOrderItem.ItemNo))
+                .ForMember(m => m.ItemDescription, opt => opt.MapFrom(p => p.WorkOrderItem.ItemDescription))
+                .ForMember(m => m.SubItemNo, opt => opt.MapFrom(p => p.WorkOrderItem.SubItemNo))
+                .ForMember(m => m.ServiceNo, opt => opt.MapFrom(p => p.WorkOrderItem.ServiceNo))
+                .ForMember(m => m.ShortServiceDesc, opt => opt.MapFrom(p => p.WorkOrderItem.ShortServiceDesc))
                 .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Name))
                 .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Dimension))
                 .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
@@ -59,8 +63,7 @@ namespace Application.Mappings
                 .ForMember(m => m.MBookTitle, opt => opt.MapFrom(p => p.MeasurementBook.Title))
                 .ForMember(m => m.RABillTitle, opt => opt.MapFrom(p => p.Title));
 
-            CreateMap<RABillItem, RABillItemResponse>()
-                .ForMember(dest => dest.MBookItemDescription, opt => opt.MapFrom(src => src.ItemDescription));
+            CreateMap<RABillItem, RABillItemResponse>();
 
             CreateMap<RADeduction, RADeductionResponse>();
         }

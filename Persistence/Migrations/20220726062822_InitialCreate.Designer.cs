@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220722105352_InitialCreate")]
+    [Migration("20220726062822_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,7 +176,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("ValidationDate")
@@ -209,7 +209,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Dimension")
@@ -225,23 +225,26 @@ namespace Persistence.Migrations
                     b.Property<int>("MBSheetId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("MBookItemDescription")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("MBookItemId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Nos")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long>("ServiceNo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortServiceDesc")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("UnitRate")
                         .HasColumnType("REAL");
 
                     b.Property<string>("Uom")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(8)
                         .HasColumnType("TEXT");
 
                     b.Property<float>("Value1")
@@ -328,7 +331,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ValidatingOfficer")
@@ -385,7 +388,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -419,6 +422,9 @@ namespace Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ItemNo")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("TEXT");
 
@@ -433,11 +439,16 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Remarks")
-                        .HasMaxLength(100)
+                        .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("ServiceNo")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShortServiceDesc")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SubItemNo")
                         .HasColumnType("INTEGER");
@@ -492,7 +503,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Dimension")
@@ -535,6 +546,8 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EngineerInCharge")
+                        .IsRequired()
+                        .HasMaxLength(6)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastModified")
@@ -547,10 +560,8 @@ namespace Persistence.Migrations
                     b.Property<long>("OrderDate")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OrderNo")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("TEXT");
+                    b.Property<long>("OrderNo")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Project")
                         .HasColumnType("TEXT");

@@ -19,26 +19,31 @@
 {
 <Tabs @bind-ActiveKey="@activeKey" Animated>
     <TabPane Tab="Measurement Book Detail" Key="tab1">
-        <Descriptions Bordered Size="@DescriptionsSize.Small">
+        <Descriptions Bordered Size="@DescriptionsSize.Small" Column="@column">
             <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
             <DescriptionsItem Title="Measurement Officer">@data.MeasurementOfficer</DescriptionsItem>
             <DescriptionsItem Title="Validating Officer">@data.ValidatingOfficer</DescriptionsItem>
 
             <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
-            <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate</DescriptionsItem>
+            <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate.ToString("dd/MM/yyyy")</DescriptionsItem>
             <DescriptionsItem Title="Contractor">@data.WorkOrder.Contractor</DescriptionsItem>
             <DescriptionsItem Title="Project">@data.WorkOrder.Project</DescriptionsItem>
+            <DescriptionsItem Title="Item Description">@data.Items.First()?.ItemDescription</DescriptionsItem>
         </Descriptions>
 
         <Divider Plain>Measurement Book Items</Divider>
 
         <Table TItem="MBookItemResponse" 
                DataSource="@data.Items" 
-               Size="@TableSize.Small" 
+               Size="@TableSize.Small"
+               ScrollX="600"
+               Responsive="false"
                Bordered>
 
-            <Column TData="string" DataIndex="@nameof(context.Description)" Width="40%"></Column>
-            <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%"></Column>
+            <Column Title="SubItem No" TData="long" Width="8%">@context.SubItemNo</Column>
+            <Column Title="Service No" TData="long" Width="9%">@context.ServiceNo</Column>
+            <Column Title="Service Description" TData="string" Width="25%">@context.ShortServiceDesc</Column>
+            <Column Title="Uom" TData="string" Width="8%">@context.Uom</Column>
             <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
             <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%"></Column>
             <Column Title="Measured Qty (Cum)" TData="float" Width="10%">
@@ -50,9 +55,6 @@
             <Column Title="Till Last RA" TData="float" Width="10%">
                 @context.TillLastRAQty.ToString("0.00")
             </Column>
-            @*<Column Title="Measurement Progess (Cum)" TData="int" Width="10%">
-                <Progress Size=ProgressSize.Small Percent=@context.MeasurementProgess />
-            </Column>*@
         </Table>
     </TabPane>
 
@@ -82,6 +84,15 @@ else
     public MBookDetailResponse data { get; set; }
 
     string activeKey = "tab1";
+
+    private Dictionary<string, int> column = new Dictionary<string, int> {
+        { "xxl", 3 },
+        { "xl", 3},
+        { "lg", 2},
+        { "md", 2},
+        { "sm", 1},
+        { "xs", 1}
+    };
 
     protected override async Task OnInitializedAsync()
     {

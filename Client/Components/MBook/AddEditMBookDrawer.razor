@@ -10,25 +10,38 @@
                         <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" AutoFocus />
                     </FormItem>
                 </AntDesign.Col>
+                
+                <AntDesign.Col Span="7">
+                    <FormItem Label="Validating Officer">
+                        <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
+                    </FormItem>
+                </AntDesign.Col>
 
                 <AntDesign.Col Span="7">
                     <FormItem Label="Measurement Officer">
                         <Input TValue="string" @bind-Value="@context.MeasurementOfficer" />
                     </FormItem>
                 </AntDesign.Col>
-                <AntDesign.Col Span="7">
-                    <FormItem Label="Validating Officer">
-                        <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
-                    </FormItem>
-                </AntDesign.Col>
             </Row>
         </Form>
 
-        <Divider Orientation="left" Plain>Select Line Items</Divider>
+        <Select DataSource="@lineItems"
+                @bind-Value="@selectedItemNo"
+                Placeholder="Please select line item"
+                ValueName="@nameof(LineItem.ItemNo)"
+                LabelName="@nameof(LineItem.ItemDescription)"
+                Style="margin-bottom: 1rem; width: 100%">
+        </Select>
 
-        <Table @ref="table" DataSource="@pendingItems" @bind-SelectedRows="selectedRows" Size="TableSize.Small" HidePagination>
-            <Selection Key="@context.ItemId.ToString()" />
-            <Column Title="Line Item Description" @bind-Field="@context.Description"></Column>
+        <Table @ref="table"
+               DataSource="@pendingItems.Where(p => p.ItemNo == selectedItemNo)"
+               @bind-SelectedRows="selectedRows"
+               Size="TableSize.Small"
+               Bordered
+               HidePagination>
+            <Selection Key="@context.WorkOrderItemId.ToString()" Width="10%" />
+            <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="30%"></Column>
+            <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="70%"></Column>
         </Table>
 
         <Row Style="margin-top: 2rem">
@@ -42,7 +55,7 @@
 </Drawer>
 
 
-@code{
+@code {
     [CascadingParameter]
     public int WorkOrderId { get; set; }
 
@@ -58,17 +71,17 @@
     [Parameter]
     public EventCallback<bool> OnItemUpdate { get; set; }
 
-    Form<MBookRequest> form;
-
     ITable table;
+    Form<MBookRequest> form;
 
     MBookRequest model { get; set; } = new();
 
     List<PendingOrderItemResponse> pendingItems = new();
+    List<LineItem> lineItems = new();
 
-    IEnumerable<PendingOrderItemResponse> selectedRows;
-
+    int selectedItemNo;
     bool loading = false;
+    IEnumerable<PendingOrderItemResponse> selectedRows;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -91,17 +104,34 @@
             foreach (var mBookitem in MBook.Items)
             {
                 var item = new PendingOrderItemResponse
-                {
-                    ItemId = mBookitem.WorkOrderItemId,
-                    Description = mBookitem.Description
-                };
+                    {
+                        WorkOrderItemId = mBookitem.WorkOrderItemId,
+                        ItemNo = mBookitem.ItemNo,
+                        ItemDescription = mBookitem.ItemDescription,
+                        ServiceNo = mBookitem.ServiceNo,
+                        SubItemNo = mBookitem.SubItemNo,
+                        ShortServiceDesc = mBookitem.ShortServiceDesc
+                    };
                 pendingItems.Add(item);
                 existingItems.Add(item);
             }
             selectedRows = existingItems.AsEnumerable();
             StateHasChanged();
         }
+
+        foreach (var pendingItem in pendingItems)
+        {
+            var lineItem = lineItems.Find(p => p.ItemNo == pendingItem.ItemNo);
+            if (lineItem != null) continue;
+
+            lineItems.Add(new LineItem
+                {
+                    ItemNo = pendingItem.ItemNo,
+                    ItemDescription = pendingItem.ItemDescription
+                });
+        }
     }
+
 
     async Task LoadPendingOrderItemsAsync()
     {
@@ -128,9 +158,9 @@
         foreach (var item in selectedRows)
         {
             model.Items.Add(new MBookItemRequest
-            {
-                WorkOrderItemId = item.ItemId
-            });
+                {
+                    WorkOrderItemId = item.WorkOrderItemId
+                });
         }
 
         loading = true;
@@ -162,5 +192,12 @@
         OnClose.InvokeAsync();
         form.ValidationReset();
         pendingItems.Clear();
+        lineItems.Clear();
+    }
+
+    private class LineItem
+    {
+        public int ItemNo { get; set; }
+        public string ItemDescription { get; set; }
     }
 }

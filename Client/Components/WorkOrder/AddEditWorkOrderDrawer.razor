@@ -107,6 +107,13 @@
         }
 
         purchaseOrder = result.Data;
+
+        // filter out deleted items
+        purchaseOrder.Items = purchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)).ToList();
+        foreach (var item in purchaseOrder.Items)
+        {
+            item.Details = item.Details.Where(p => !bool.Parse(p.IsDeleted)).ToList();
+        }
     }
 
     async Task OnSubmit(EditContext context)

@@ -6,17 +6,17 @@ namespace Domain.Entities.MBSheetAggregate
     public class MBSheetItem :AuditableEntity
     {
         public int Id { get; private set; }
-        public int Nos { get; private set; }
+        public long ServiceNo { get; set; }
+        public string ShortServiceDesc { get; private set; }
         public string Description { get; private set; }
+        public int Nos { get; private set; }
         public float Value1 { get; private set; }
         public float Value2 { get; private set; }
         public float Value3 { get; private set; }
         public string Uom { get; private set; }
         public decimal UnitRate { get; private set; }
         public int Dimension { get; private set; }
-        
         public int MBookItemId { get; private set; }
-        public string MBookItemDescription { get; private set; }
         
         public int MBSheetId { get; set; }
         public MBSheet MBSheet { get; set; }
@@ -24,9 +24,23 @@ namespace Domain.Entities.MBSheetAggregate
         private readonly List<ItemAttachment> _attachments = new List<ItemAttachment>();
         public IReadOnlyList<ItemAttachment> Attachments => _attachments.AsReadOnly();
 
-        public MBSheetItem(string mbItemDescription, string description, string uom, int dimension, decimal rate, int mBookItemId, int nos, float value1, float value2, float value3)
+        public MBSheetItem(
+            long serviceNo, 
+            string serviceDesc, 
+            string description, 
+            string uom, 
+            int dimension, 
+            decimal rate, 
+            int mBookItemId, 
+            int nos, 
+            float value1, 
+            float value2, 
+            float value3
+        )
         {
-            MBookItemDescription = mbItemDescription;
+            ServiceNo = serviceNo;
+            ShortServiceDesc = serviceDesc;
+
             Description = description;
             Uom = uom;
             Dimension = dimension;
