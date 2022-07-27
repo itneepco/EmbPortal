@@ -33,6 +33,7 @@ namespace Application.CQRS.WorkOrders.Query
         {
             var currEmpCode = _currentUserService.EmployeeCode;
             var workOrder = await _context.WorkOrders
+                .Include(p => p.Engineer)
                 .Include(p => p.Items)
                    .ThenInclude(s => s.Uom)
                 .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)

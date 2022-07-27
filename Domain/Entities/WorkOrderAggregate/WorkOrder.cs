@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 
@@ -13,10 +14,11 @@ namespace Domain.Entities.WorkOrderAggregate
         public long OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
         public WorkOrderStatus Status { get; private set; }
-        public string EngineerInCharge { get; private set; }
-
         public string Project { get; private set; }
         public string Contractor { get; private set; }
+
+        public string EngineerInCharge { get; private set; }
+        public AppUser Engineer { get; private set; }
 
         private readonly List<WorkOrderItem> _items = new List<WorkOrderItem>();
         public IReadOnlyList<WorkOrderItem> Items => _items.AsReadOnly();

@@ -39,6 +39,8 @@ namespace Application.CQRS.MeasurementBooks.Query
         public async Task<PaginatedList<MBookHeaderResponse>> Handle(GetMBooksByUserIdPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.MeasurementBooks
+                .Include(p => p.Measurer)
+                .Include(p => p.Validator)
                 .Include(p => p.WorkOrder)
                 .Where(p => p.Status != MBookStatus.CREATED)
                 .AsQueryable();

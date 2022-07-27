@@ -51,10 +51,18 @@
     </Row>
 
 
-    <Descriptions Bordered Size="@DescriptionsSize.Small" Column="column">
+    <Descriptions 
+            Layout="@DescriptionsLayout.Vertical"
+            Bordered Size="@DescriptionsSize.Small" 
+            Column="column">
+
         <DescriptionsItem Title="Title">@raBill.Title</DescriptionsItem>
         <DescriptionsItem Title="Status">@raBill.Status</DescriptionsItem>
-        <DescriptionsItem Title="Accepting Officer">@raBill.AcceptingOfficer</DescriptionsItem>
+        <DescriptionsItem Title="Accepting Officer">
+            <Tooltip Title="@raBill.Acceptor.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@raBill.Acceptor?.DisplayName</span>
+            </Tooltip>
+        </DescriptionsItem>
         <DescriptionsItem Title="Total Amount (Rs)">@raBill.TotalAmount</DescriptionsItem>
         <DescriptionsItem Title="Total Deduction (Rs)">@raBill.TotalDeduction</DescriptionsItem>
         <DescriptionsItem Title="Net Amount (Rs)">@raBill.NetAmount</DescriptionsItem>

@@ -35,7 +35,6 @@ namespace Application.CQRS.RABills.Queries
                .Include(p => p.Items)
                .Include(p => p.MeasurementBook)
                     .ThenInclude(m => m.WorkOrder)
-                        .ThenInclude(o => o.Contractor)
                .Where(p => p.AcceptingOfficer == _currentUserService.EmployeeCode && p.Status != EmbPortal.Shared.Enums.RABillStatus.APPROVED)
                .OrderBy(p => p.BillDate)
                .AsNoTracking()

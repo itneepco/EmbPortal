@@ -30,7 +30,7 @@ namespace Persistence.Migrations
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     DisplayName = table.Column<string>(type: "TEXT", maxLength: 60, nullable: false),
                     Designation = table.Column<string>(type: "TEXT", maxLength: 60, nullable: true),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -48,6 +48,7 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.UniqueConstraint("AK_AspNetUsers_UserName", x => x.UserName);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,28 +68,6 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Uoms", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WorkOrders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrderNo = table.Column<long>(type: "INTEGER", nullable: false),
-                    OrderDate = table.Column<long>(type: "INTEGER", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    EngineerInCharge = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
-                    Project = table.Column<string>(type: "TEXT", nullable: true),
-                    Contractor = table.Column<string>(type: "TEXT", nullable: true),
-                    Created = table.Column<long>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
-                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkOrders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,13 +177,41 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WorkOrders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    OrderNo = table.Column<long>(type: "INTEGER", nullable: false),
+                    OrderDate = table.Column<long>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    Project = table.Column<string>(type: "TEXT", nullable: true),
+                    Contractor = table.Column<string>(type: "TEXT", nullable: true),
+                    EngineerInCharge = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    Created = table.Column<long>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true),
+                    LastModified = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "TEXT", maxLength: 6, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkOrders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WorkOrders_AspNetUsers_EngineerInCharge",
+                        column: x => x.EngineerInCharge,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MeasurementBooks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     WorkOrderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     ValidatingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
@@ -216,6 +223,18 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MeasurementBooks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MeasurementBooks_AspNetUsers_MeasurementOfficer",
+                        column: x => x.MeasurementOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MeasurementBooks_AspNetUsers_ValidatingOfficer",
+                        column: x => x.ValidatingOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_MeasurementBooks_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
@@ -269,13 +288,13 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     MeasurementDate = table.Column<long>(type: "INTEGER", nullable: false),
-                    ValidationOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    MeasurementOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     ValidationDate = table.Column<long>(type: "INTEGER", nullable: false),
-                    AcceptingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
+                    ValidationOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     AcceptingDate = table.Column<long>(type: "INTEGER", nullable: false),
+                    AcceptingOfficer = table.Column<string>(type: "TEXT", maxLength: 6, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     MeasurementBookId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
@@ -286,6 +305,24 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MBSheets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MBSheets_AspNetUsers_AcceptingOfficer",
+                        column: x => x.AcceptingOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MBSheets_AspNetUsers_MeasurementOfficer",
+                        column: x => x.MeasurementOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MBSheets_AspNetUsers_ValidationOfficer",
+                        column: x => x.ValidationOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_MBSheets_MeasurementBooks_MeasurementBookId",
                         column: x => x.MeasurementBookId,
@@ -300,7 +337,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     BillDate = table.Column<long>(type: "INTEGER", nullable: false),
                     ApprovalDate = table.Column<long>(type: "INTEGER", nullable: false),
@@ -314,6 +351,12 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RABills", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RABills_AspNetUsers_AcceptingOfficer",
+                        column: x => x.AcceptingOfficer,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_RABills_MeasurementBooks_MeasurementBookId",
                         column: x => x.MeasurementBookId,
@@ -367,7 +410,7 @@ namespace Persistence.Migrations
                     AcceptedMeasuredQty = table.Column<float>(type: "REAL", nullable: false),
                     TillLastRAQty = table.Column<float>(type: "REAL", nullable: false),
                     CurrentRAQty = table.Column<float>(type: "REAL", nullable: false),
-                    Remarks = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    Remarks = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
                     MBookItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     RABillId = table.Column<int>(type: "INTEGER", nullable: false),
                     Created = table.Column<long>(type: "INTEGER", nullable: false),
@@ -536,9 +579,39 @@ namespace Persistence.Migrations
                 column: "MBSheetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MBSheets_AcceptingOfficer",
+                table: "MBSheets",
+                column: "AcceptingOfficer",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MBSheets_MeasurementBookId",
                 table: "MBSheets",
                 column: "MeasurementBookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MBSheets_MeasurementOfficer",
+                table: "MBSheets",
+                column: "MeasurementOfficer",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MBSheets_ValidationOfficer",
+                table: "MBSheets",
+                column: "ValidationOfficer",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MeasurementBooks_MeasurementOfficer",
+                table: "MeasurementBooks",
+                column: "MeasurementOfficer",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MeasurementBooks_ValidatingOfficer",
+                table: "MeasurementBooks",
+                column: "ValidatingOfficer",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -549,6 +622,12 @@ namespace Persistence.Migrations
                 name: "IX_RABillItem_RABillId",
                 table: "RABillItem",
                 column: "RABillId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RABills_AcceptingOfficer",
+                table: "RABills",
+                column: "AcceptingOfficer",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RABills_MeasurementBookId",
@@ -575,6 +654,12 @@ namespace Persistence.Migrations
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkOrders_EngineerInCharge",
+                table: "WorkOrders",
+                column: "EngineerInCharge",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkOrders_OrderNo",
@@ -613,9 +698,6 @@ namespace Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "MBSheetItem");
 
             migrationBuilder.DropTable(
@@ -638,6 +720,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "WorkOrders");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

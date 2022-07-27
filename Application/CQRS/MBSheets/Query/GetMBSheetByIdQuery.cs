@@ -5,7 +5,6 @@ using AutoMapper.QueryableExtensions;
 using EmbPortal.Shared.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,6 +28,9 @@ namespace Application.CQRS.MBSheets.Query
         public async Task<MBSheetResponse> Handle(GetMBSheetByIdQuery request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets
+                .Include(p => p.Measurer)
+                .Include(p => p.Validator)
+                .Include(p => p.Acceptor)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.Attachments)
                 .ProjectTo<MBSheetResponse>(_mapper.ConfigurationProvider)

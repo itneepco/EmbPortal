@@ -10,5 +10,12 @@ namespace EmbPortal.Shared.Responses
         public string Designation { get; set; }
         public string EmployeeCode { get; set; }
         public string PhoneNumber { get; set; }
+
+        public override string ToString()
+        {
+            return $"{DisplayName}, {Designation} ({EmployeeCode})";
+        }
+
+        public string LongName => $"{DisplayName} ({EmployeeCode})";
     }
 }

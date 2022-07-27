@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220726062822_InitialCreate")]
+    [Migration("20220726103916_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,6 +77,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
@@ -176,7 +177,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("ValidationDate")
@@ -189,7 +190,16 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AcceptingOfficer")
+                        .IsUnique();
+
                     b.HasIndex("MeasurementBookId");
+
+                    b.HasIndex("MeasurementOfficer")
+                        .IsUnique();
+
+                    b.HasIndex("ValidationOfficer")
+                        .IsUnique();
 
                     b.ToTable("MBSheets");
                 });
@@ -331,7 +341,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ValidatingOfficer")
@@ -343,6 +353,12 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MeasurementOfficer")
+                        .IsUnique();
+
+                    b.HasIndex("ValidatingOfficer")
+                        .IsUnique();
 
                     b.HasIndex("WorkOrderId");
 
@@ -388,10 +404,13 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(250)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AcceptingOfficer")
+                        .IsUnique();
 
                     b.HasIndex("MeasurementBookId");
 
@@ -439,7 +458,7 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Remarks")
-                        .HasMaxLength(250)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("ServiceNo")
@@ -570,6 +589,9 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EngineerInCharge")
+                        .IsUnique();
 
                     b.HasIndex("OrderNo")
                         .IsUnique();
@@ -785,13 +807,40 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
                 {
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Acceptor")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MBSheetAggregate.MBSheet", "AcceptingOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
                         .WithMany()
                         .HasForeignKey("MeasurementBookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Measurer")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MBSheetAggregate.MBSheet", "MeasurementOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Validator")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MBSheetAggregate.MBSheet", "ValidationOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Acceptor");
+
                     b.Navigation("MeasurementBook");
+
+                    b.Navigation("Measurer");
+
+                    b.Navigation("Validator");
                 });
 
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
@@ -829,22 +878,49 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Measurer")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Validator")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "ValidatingOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
                         .WithMany("MeasurementBooks")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Measurer");
+
+                    b.Navigation("Validator");
+
                     b.Navigation("WorkOrder");
                 });
 
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Acceptor")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.RABillAggregate.RABill", "AcceptingOfficer")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
                         .WithMany()
                         .HasForeignKey("MeasurementBookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Acceptor");
 
                     b.Navigation("MeasurementBook");
                 });
@@ -869,6 +945,18 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("RABill");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
+                {
+                    b.HasOne("Domain.Entities.Identity.AppUser", "Engineer")
+                        .WithOne()
+                        .HasForeignKey("Domain.Entities.WorkOrderAggregate.WorkOrder", "EngineerInCharge")
+                        .HasPrincipalKey("Domain.Entities.Identity.AppUser", "UserName")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Engineer");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>

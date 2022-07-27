@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Enums;
 
@@ -11,8 +12,13 @@ namespace Domain.Entities.MeasurementBookAggregate
         public int Id { get; private set; }
         public int WorkOrderId { get; private set; }
         public string Title { get; private set; }
+        
         public string MeasurementOfficer { get; private set; }
+        public AppUser Measurer { get; private set; }
+        
         public string ValidatingOfficer { get; private set; }
+        public AppUser Validator { get; private set; }
+        
         public MBookStatus Status { get; private set; }
         public WorkOrder WorkOrder { get; private set; }
 

@@ -58,6 +58,7 @@ namespace Application.CQRS.WorkOrders.Query
 
             var currEmpCode = _currentUserService.EmployeeCode;
             return await query
+                .Include(p => p.Engineer)
                 .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)

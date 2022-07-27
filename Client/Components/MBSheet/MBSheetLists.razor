@@ -13,10 +13,18 @@
         Bordered>
 
     <RowTemplate>
-        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="40%" />
-        <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="10%" />
-        <Column Title="Measurer" @bind-Field="@context.MeasurementOfficer" Width="10%" />
-        <Column Title="Validator" @bind-Field="@context.ValidationOfficer" Width="10%" />
+        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
+        <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
+        <Column Title="Measurer" TData="string" Width="10%">
+            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
+            </Tooltip>
+        </Column>
+        <Column Title="Validator" TData="string" Width="10%">
+            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
+            </Tooltip>
+        </Column>
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
             {

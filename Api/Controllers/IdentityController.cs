@@ -38,6 +38,14 @@ namespace Api.Controllers
             return Ok(await Mediator.Send(new GetCurrentUserQuery(email)));
         }
 
+        [Authorize]
+        [HttpGet("all")]
+        public async Task<ActionResult<PaginatedList<UserResponse>>> GetAllUsers()
+        {
+            var query = new GetAllUsersQuery();
+            return Ok(await Mediator.Send(query));
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)

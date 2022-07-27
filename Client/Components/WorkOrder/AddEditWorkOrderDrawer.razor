@@ -49,16 +49,23 @@
             </ExpandTemplate>
         </Table>
 
-        <Form Style="margin-top: 1.25rem;" 
-                Layout="@FormLayout.Vertical" 
-                Loading="loading" 
-                Model="@model" 
-                OnFinish="@OnSubmit">
+        <Form Style="margin-top: 1.25rem;"
+          Layout="@FormLayout.Vertical"
+          Loading="loading"
+          Model="@model"
+          OnFinish="@OnSubmit">
 
             <FormItem Label="Engineer In Charge" WrapperColSpan="16">
-                <Input @bind-Value="@context.EngineerInCharge" />
+                <Select DataSource="@users"
+                    Style="width: 100%"
+                    @bind-Value="@context.EngineerInCharge"
+                    ValueName="@nameof(UserResponse.EmployeeCode)"
+                    LabelName="@nameof(UserResponse.LongName)"
+                    Placeholder="Select Engineer In Charge"
+                    AllowClear>
+                </Select>
             </FormItem>
-            
+
             <FormItem WrapperColSpan="6">
                 <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
                 <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
@@ -85,10 +92,16 @@
     public bool Visible { get; set; }
 
     PurchaseOrder purchaseOrder;
-
+    List<UserResponse> users = new();
     WorkOrderRequest model { get; set; } = new();
+
     bool loading;
     string poNumber;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userService.GetAllUsers();
+    }
 
     async Task SearchPO()
     {

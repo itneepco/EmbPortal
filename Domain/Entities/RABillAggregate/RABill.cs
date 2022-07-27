@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 using System;
@@ -14,6 +15,7 @@ namespace Domain.Entities.RABillAggregate
         public DateTime BillDate { get; private set; }
         public DateTime ApprovalDate { get; private set; }
         public string AcceptingOfficer { get; private set; }
+        public AppUser Acceptor { get; private set; }
 
         public int MeasurementBookId { get; private set; }
         public MeasurementBook MeasurementBook { get; private set; }

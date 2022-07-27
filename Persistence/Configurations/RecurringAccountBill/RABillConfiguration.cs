@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using Domain.Entities.RABillAggregate;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Domain.Entities.Identity;
 
 namespace Persistence.Configurations.RecurringAccountBill
 {
@@ -16,6 +16,11 @@ namespace Persistence.Configurations.RecurringAccountBill
 
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");
+
+            builder.HasOne(p => p.Acceptor).WithOne()
+                .HasPrincipalKey<AppUser>(p => p.UserName)
+                .HasForeignKey<RABill>(p => p.AcceptingOfficer)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.CreatedBy)
                 .HasMaxLength(PersistenceConsts.EmpCodeLength);

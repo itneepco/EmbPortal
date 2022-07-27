@@ -23,7 +23,7 @@
                 </Select>
             </AntDesign.Col>
             <AntDesign.Col Flex="1">
-                <Input Placeholder="Search by order no, contractor or title" @bind-Value="@search" />
+                <Input Placeholder="Search by order no or title" @bind-Value="@search" />
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
@@ -48,10 +48,22 @@
 
     <Selection Key="@context.OrderNo" Type="radio" />
     <Column @bind-Field="@context.Title" />
-    <Column @bind-Field="@context.Contractor" />
     <Column @bind-Field="@context.OrderNo" />
     <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" />
-    @*<Column @bind-Field="@context.Status" />*@
+    <Column @bind-Field="@context.Status">
+         @if (context.Status == WorkOrderStatus.COMPLETED.ToString())
+        {
+            <Tag Color="gold">@context.Status</Tag>
+        }
+        else if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="green">@context.Status</Tag>
+        }
+    </Column>
 </Table>
 
 @code {

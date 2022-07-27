@@ -35,8 +35,7 @@ namespace Application.WorkOrders.Query
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByProjectPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.WorkOrders
-                .Include(p => p.Project)
-                .Include(p => p.Contractor)
+                .Include(p => p.Engineer)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))

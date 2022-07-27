@@ -5,21 +5,35 @@
     <Spin Spinning="loading">
         <Form @ref="form" Model="@model" Layout="@FormLayout.Vertical">
             <Row Gutter="16">
-                <AntDesign.Col Span="10">
+                <AntDesign.Col Span="24">
                     <FormItem Label="Title">
                         <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" AutoFocus />
                     </FormItem>
                 </AntDesign.Col>
                 
-                <AntDesign.Col Span="7">
+                <AntDesign.Col Span="12">
                     <FormItem Label="Validating Officer">
-                        <Input TValue="string" @bind-Value="@context.ValidatingOfficer" />
+                        <Select DataSource="@users"
+                            Style="width: 100%"
+                            @bind-Value="@context.ValidatingOfficer"
+                            ValueName="@nameof(UserResponse.EmployeeCode)"
+                            LabelName="@nameof(UserResponse.LongName)"
+                            Placeholder="Select Validating Officer"
+                            AllowClear>
+                        </Select>
                     </FormItem>
                 </AntDesign.Col>
 
-                <AntDesign.Col Span="7">
+                <AntDesign.Col Span="12">
                     <FormItem Label="Measurement Officer">
-                        <Input TValue="string" @bind-Value="@context.MeasurementOfficer" />
+                        <Select DataSource="@users"
+                            Style="width: 100%"
+                            @bind-Value="@context.MeasurementOfficer"
+                            ValueName="@nameof(UserResponse.EmployeeCode)"
+                            LabelName="@nameof(UserResponse.LongName)"
+                            Placeholder="Select Measurement Officer"
+                            AllowClear>
+                        </Select>
                     </FormItem>
                 </AntDesign.Col>
             </Row>
@@ -78,10 +92,16 @@
 
     List<PendingOrderItemResponse> pendingItems = new();
     List<LineItem> lineItems = new();
+    List<UserResponse> users = new();
 
     int selectedItemNo;
     bool loading = false;
     IEnumerable<PendingOrderItemResponse> selectedRows;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userService.GetAllUsers();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
