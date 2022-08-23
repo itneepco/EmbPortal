@@ -56,8 +56,10 @@ namespace Application.WorkOrders.Command
 
                     workOrder.AddUpdateLineItem(
                         itemNo: item.ItemNo,
+                        pacakageNo: item.PackageNo,
                         itemDesc: item.Description,
                         subItemNo: subItem.SubItemNo,
+                        subItemPacakageNo: subItem.SubItemPackageNo,
                         serviceNo: subItem.ServiceNo,
                         shortServiceDesc: subItem.ShortDesc,
                         longServiceDesc: subItem.LongDesc,

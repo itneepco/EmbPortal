@@ -6,8 +6,10 @@ namespace Domain.Entities.RABillAggregate
     {
         public int Id { get; private set; }
         public int ItemNo { get; private set; }
+        public string PackageNo { get; private set; }
         public string ItemDescription { get; private set; }
         public int SubItemNo { get; private set; }
+        public string SubItemPackageNo { get; private set; }
         public long ServiceNo { get; private set; }
         public string ShortServiceDesc { get; private set; }
         public decimal UnitRate { get; private set; }
@@ -25,8 +27,10 @@ namespace Domain.Entities.RABillAggregate
 
         public RABillItem(
             int itemNo,
+            string packageNo,
             string itemDescription,
             int subItemNo,
+            string subItemPackageNo,
             long serviceNo,
             string serviceDescription,
             decimal rate,
@@ -37,12 +41,13 @@ namespace Domain.Entities.RABillAggregate
             int mbItemId)
         {
             ItemNo = itemNo;
+            PackageNo = packageNo;
             ItemDescription = itemDescription;
             SubItemNo = subItemNo;
+            SubItemPackageNo = subItemPackageNo;
             ServiceNo = serviceNo;
             ShortServiceDesc = serviceDescription;
             UnitRate = rate;
-
             AcceptedMeasuredQty = acceptedMeasuredQty;
             TillLastRAQty = tillLastRAQty;
             CurrentRAQty = currentRAQty;

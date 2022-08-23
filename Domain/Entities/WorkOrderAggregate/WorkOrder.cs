@@ -48,8 +48,10 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public void AddUpdateLineItem(
             int itemNo,
+            string pacakageNo,
             string itemDesc,
             int subItemNo,
+            string subItemPacakageNo,
             long serviceNo,
             string shortServiceDesc,
             string longServiceDesc,
@@ -65,8 +67,10 @@ namespace Domain.Entities.WorkOrderAggregate
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
                 item.SetItemNo(itemNo);
+                item.SetPackageNo(pacakageNo);
                 item.SetItemDescription(itemDesc);
                 item.SetSubItemNo(subItemNo);
+                item.SetSubItemPackageNo(subItemPacakageNo);
                 item.SetServiceNo(serviceNo);
                 item.SetShortServiceDesc(shortServiceDesc);
                 item.SetLongServiceDesc(longServiceDesc);
@@ -78,14 +82,16 @@ namespace Domain.Entities.WorkOrderAggregate
             else // new item
             {
                 _items.Add(new WorkOrderItem(
-                    itemNo: itemNo, 
-                    itemDesc: itemDesc, 
-                    subItemNo: subItemNo, 
-                    serviceNo: serviceNo, 
-                    shortServiceDesc: shortServiceDesc, 
-                    longServiceDesc: longServiceDesc, 
-                    uomId: uomId, 
-                    unitRate: unitRate, 
+                    itemNo: itemNo,
+                    packageNo: pacakageNo,
+                    itemDesc: itemDesc,
+                    subItemNo: subItemNo,
+                    subItemPackageNo: subItemPacakageNo,
+                    serviceNo: serviceNo,
+                    shortServiceDesc: shortServiceDesc,
+                    longServiceDesc: longServiceDesc,
+                    uomId: uomId,
+                    unitRate: unitRate,
                     poQuantity: poQuantity
                 ));
             }

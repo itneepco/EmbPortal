@@ -84,8 +84,10 @@ namespace Application.CQRS.RABills.Commands
 
                 raBill.AddLineItem(new RABillItem(
                     itemNo: mBookItem.WorkOrderItem.ItemNo,
+                    packageNo: mBookItem.WorkOrderItem.PackageNo,
                     itemDescription: mBookItem.WorkOrderItem.ItemDescription,
                     subItemNo: mBookItem.WorkOrderItem.SubItemNo,
+                    subItemPackageNo: mBookItem.WorkOrderItem.SubItemPackageNo,
                     serviceNo: mBookItem.WorkOrderItem.ServiceNo,
                     serviceDescription: mBookItem.WorkOrderItem.ShortServiceDesc,
                     rate: mBookItem.WorkOrderItem.UnitRate,

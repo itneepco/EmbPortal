@@ -47,6 +47,21 @@
                     </Button>
                 </Popconfirm>
             }
+
+            @if (raBill.Status == RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            {
+                <Popconfirm Title="Post to SAP"
+                    OnConfirm="@PostRABill"
+                    OkText="Yes"
+                    CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)"
+                    Type="@ButtonType.Primary"
+                    Loading="@loading"
+                    style="margin-right: 0.15rem">
+                        Post to SAP
+                    </Button>
+                </Popconfirm>
+            }
         </AntDesign.Col>
     </Row>
 
@@ -188,6 +203,9 @@ else
 
         loading = false;
         StateHasChanged();
+    }
+    async Task PostRABill()
+    {
     }
 
     async Task DeleteRADeduction(int deductionId)

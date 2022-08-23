@@ -8,11 +8,14 @@ namespace Domain.Entities.WorkOrderAggregate
     {
         public int Id { get; private set; }
         public int ItemNo { get; private set; }
+        public string PackageNo { get; private set; }
         public string ItemDescription { get; set; }
         public int SubItemNo { get; private set; }
+        public string SubItemPackageNo { get; private set; }
         public long ServiceNo { get; private set; }
         public string ShortServiceDesc { get; private set; }
         public string LongServiceDesc { get; private set; }
+       
         public int UomId { get; private set; }
         public decimal UnitRate { get; private set; }
         public float PoQuantity { get; private set; }
@@ -26,19 +29,23 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public WorkOrderItem(
             int itemNo,
+            string packageNo,
             string itemDesc,
             int subItemNo,
+            string subItemPackageNo,
             long serviceNo,
             string shortServiceDesc,
             string longServiceDesc,
-            int uomId, 
-            decimal unitRate, 
+            int uomId,
+            decimal unitRate,
             float poQuantity
         )
         {
             SetItemNo(itemNo);
+            SetPackageNo(packageNo);
             SetItemDescription(itemDesc);
             SetSubItemNo(subItemNo);
+            SetSubItemPackageNo(subItemPackageNo);
             SetServiceNo(serviceNo);
             SetShortServiceDesc(shortServiceDesc);
             SetLongServiceDesc(longServiceDesc);
@@ -98,5 +105,17 @@ namespace Domain.Entities.WorkOrderAggregate
         {
             Status = WorkOrderItemStatus.PUBLISHED;
         }
+
+        public void SetPackageNo(string packageNo)
+        {
+            PackageNo = packageNo;
+        }
+
+        public void SetSubItemPackageNo(string subItemPackageNo)
+        {
+            SubItemPackageNo = subItemPackageNo;
+        }
+
+
     }
 }

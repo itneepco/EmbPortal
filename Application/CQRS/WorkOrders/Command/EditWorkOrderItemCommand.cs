@@ -50,8 +50,10 @@ namespace Application.CQRS.WorkOrders.Command
             workOrder.AddUpdateLineItem(
                 id: request.Id,
                 itemNo: request.Data.ItemNo,
+                pacakageNo:request.Data.PackageNo,
                 itemDesc: request.Data.ItemDescription,
                 subItemNo: request.Data.SubItemNo,
+                subItemPacakageNo: request.Data.SubItemPackageNo,
                 serviceNo: request.Data.ServiceNo,
                 shortServiceDesc: request.Data.ShortServiceDesc,
                 longServiceDesc: request.Data.LongServiceDesc,

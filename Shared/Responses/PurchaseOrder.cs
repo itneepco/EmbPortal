@@ -17,6 +17,7 @@ namespace EmbPortal.Shared.Responses
     public class OrderItem
     {
         public int ItemNo { get; set; }
+        public string PackageNo { get; set; }
         public string Description { get; set; }
         public string IsDeleted { get; set; }
         public List<ServiceItem> Details { get; set; }
@@ -25,7 +26,9 @@ namespace EmbPortal.Shared.Responses
     public class ServiceItem
     {
         public int SubItemNo { get; set; }
+        public string SubItemPackageNo { get; set; }
         public long ServiceNo { get; set; }
+        
         public string ShortDesc { get; set; }
         public string LongDesc { get; set; }
         public decimal UnitRate { get; set; }

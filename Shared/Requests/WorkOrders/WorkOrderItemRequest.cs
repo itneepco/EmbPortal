@@ -5,8 +5,10 @@ namespace EmbPortal.Shared.Requests
     public class WorkOrderItemRequest
     {
         public int ItemNo { get; set; }
+        public string PackageNo { get; set; }
         public string ItemDescription { get; set; }
         public int SubItemNo { get; set; }
+        public string SubItemPackageNo { get; set; }
         public long ServiceNo { get; set; }
         public string ShortServiceDesc { get; set; }
         public string LongServiceDesc { get; set; }

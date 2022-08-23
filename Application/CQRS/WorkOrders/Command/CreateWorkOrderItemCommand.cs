@@ -38,8 +38,10 @@ namespace Application.CQRS.WorkOrders.Command
 
             workOrder.AddUpdateLineItem(
                 itemNo: request.data.ItemNo,
+                pacakageNo: request.data.PackageNo,
                 itemDesc: request.data.ItemDescription,
                 subItemNo: request.data.SubItemNo,
+                subItemPacakageNo: request.data.SubItemPackageNo,
                 serviceNo: request.data.ServiceNo,
                 shortServiceDesc: request.data.ShortServiceDesc,
                 longServiceDesc: request.data.LongServiceDesc,

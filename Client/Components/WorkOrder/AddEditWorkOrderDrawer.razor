@@ -110,7 +110,7 @@
         purchaseOrder = null;
         loading = true;
         StateHasChanged();
-        loading = false;
+
 
         var result = await workOrderService.FetchPOFromSAP(poNumber);
         if (!result.Succeeded)
@@ -120,7 +120,7 @@
         }
 
         purchaseOrder = result.Data;
-
+        loading = false;
         // filter out deleted items
         purchaseOrder.Items = purchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)).ToList();
         foreach (var item in purchaseOrder.Items)

@@ -69,7 +69,10 @@ namespace Domain.Entities.RABillAggregate
         {
             Status = RABillStatus.REVOKED;
         }
-
+        public void MarkAsPosted()
+        {
+            Status = RABillStatus.POSTED;
+        }
         public void SetTitle(string title)
         {
             this.Title = title;
