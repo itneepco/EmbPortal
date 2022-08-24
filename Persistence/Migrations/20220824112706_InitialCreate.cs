@@ -250,8 +250,10 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageNo = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     SubItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    SubItemPackageNo = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
                     ShortServiceDesc = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     LongServiceDesc = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
@@ -402,8 +404,10 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    PackageNo = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     ItemDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     SubItemNo = table.Column<int>(type: "INTEGER", nullable: false),
+                    SubItemPackageNo = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     ServiceNo = table.Column<long>(type: "INTEGER", nullable: false),
                     ShortServiceDesc = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     UnitRate = table.Column<double>(type: "REAL", nullable: false),
@@ -581,8 +585,7 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_MBSheets_AcceptingOfficer",
                 table: "MBSheets",
-                column: "AcceptingOfficer",
-                unique: true);
+                column: "AcceptingOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MBSheets_MeasurementBookId",
@@ -592,26 +595,22 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_MBSheets_MeasurementOfficer",
                 table: "MBSheets",
-                column: "MeasurementOfficer",
-                unique: true);
+                column: "MeasurementOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MBSheets_ValidationOfficer",
                 table: "MBSheets",
-                column: "ValidationOfficer",
-                unique: true);
+                column: "ValidationOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_MeasurementOfficer",
                 table: "MeasurementBooks",
-                column: "MeasurementOfficer",
-                unique: true);
+                column: "MeasurementOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_ValidatingOfficer",
                 table: "MeasurementBooks",
-                column: "ValidatingOfficer",
-                unique: true);
+                column: "ValidatingOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -626,8 +625,7 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RABills_AcceptingOfficer",
                 table: "RABills",
-                column: "AcceptingOfficer",
-                unique: true);
+                column: "AcceptingOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RABills_MeasurementBookId",
@@ -658,8 +656,7 @@ namespace Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_WorkOrders_EngineerInCharge",
                 table: "WorkOrders",
-                column: "EngineerInCharge",
-                unique: true);
+                column: "EngineerInCharge");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkOrders_OrderNo",

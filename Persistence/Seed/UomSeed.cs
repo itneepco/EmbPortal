@@ -19,7 +19,8 @@ namespace Persistence.Seed
                 new Uom("M2", "Square Meter", UomDimension.TWODIMENSION),
                 new Uom("MN", "MN", UomDimension.ONEDIMENSION),
                 new Uom("QT", "QT", UomDimension.ONEDIMENSION),
-                new Uom("Kg",  "Kilogram", UomDimension.ONEDIMENSION)
+                new Uom("Kg",  "Kilogram", UomDimension.ONEDIMENSION),
+                new Uom("QTL",  "Quintal", UomDimension.ONEDIMENSION)
             };
 
             context.Uoms.AddRange(Uoms);

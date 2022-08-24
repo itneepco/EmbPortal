@@ -22,7 +22,7 @@
         </AntDesign.Col>
         <AntDesign.Col Flex="1"></AntDesign.Col>
         <AntDesign.Col>
-            <Popconfirm Title="Sure to download?"
+            @*<Popconfirm Title="Sure to download?"
                         OnConfirm="@GeneratePdf"
                         OkText="Yes"
                         CancelText="No">
@@ -31,9 +31,10 @@
                         Loading="@downloading">
                     Download
                 </Button>
-            </Popconfirm>
+            </Popconfirm>*@
 
-            @if (raBill.Status != RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            @if ((raBill.Status == RABillStatus.CREATED || raBill.Status == RABillStatus.REVOKED) 
+                  && employeeCode == raBill.AcceptingOfficer)
             {
                 <Popconfirm Title="Approve RA Bill?"
                             OnConfirm="@ApproveRABill"
@@ -114,7 +115,7 @@
     <Button Icon="@(IconType.Outline.Plus)"
             Type="@(ButtonType.Primary)"
             Style="margin-bottom: 0.5rem;"
-            Disabled="raBill.Status == RABillStatus.APPROVED"
+            Disabled="raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED"
             OnClick="@OpenSideDrawer">
         Add Deductions
     </Button>
@@ -204,9 +205,6 @@ else
         loading = false;
         StateHasChanged();
     }
-    async Task PostRABill()
-    {
-    }
 
     async Task DeleteRADeduction(int deductionId)
     {
@@ -252,6 +250,25 @@ else
         if (result.Succeeded)
         {
             raBill.Status = RABillStatus.APPROVED;
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+
+    async Task PostRABill()
+    {
+        loading = true;
+        var result = await raBillService.PostRABillToSAP(raBill.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBill.Status = RABillStatus.POSTED;
             StateHasChanged();
             await messageService.Success(result.Message);
         }

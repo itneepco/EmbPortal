@@ -24,9 +24,9 @@ namespace Persistence.Configurations
             builder.Navigation(p => p.Items).HasField("_items");
             builder.Navigation(p => p.MeasurementBooks).HasField("_measurementBooks");
 
-            builder.HasOne(p => p.Engineer).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<WorkOrder>(p => p.EngineerInCharge)
+            builder.HasOne(p => p.Engineer).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.EngineerInCharge)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.CreatedBy)

@@ -25,14 +25,14 @@ namespace Persistence.Configurations
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.Measurer).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<MeasurementBook>(p => p.MeasurementOfficer)
+            builder.HasOne(p => p.Measurer).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.MeasurementOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Validator).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<MeasurementBook>(p => p.ValidatingOfficer)
+            builder.HasOne(p => p.Validator).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.ValidatingOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Backing fields

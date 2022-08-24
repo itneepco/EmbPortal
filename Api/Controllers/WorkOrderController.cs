@@ -168,8 +168,9 @@ namespace Api.Controllers
             try
             {
                 var url = $"{_config["POUrl"]}/{purchaseOrderId}";
-                using var httpClient = new HttpClient();
                 var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
+                
+                using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
                     Convert.ToBase64String(authToken));
 

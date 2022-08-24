@@ -17,9 +17,9 @@ namespace Persistence.Configurations.RecurringAccountBill
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");
 
-            builder.HasOne(p => p.Acceptor).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<RABill>(p => p.AcceptingOfficer)
+            builder.HasOne(p => p.Acceptor).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.AcceptingOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.CreatedBy)

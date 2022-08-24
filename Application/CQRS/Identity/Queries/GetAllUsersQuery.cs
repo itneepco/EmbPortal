@@ -32,7 +32,7 @@ namespace Application.CQRS.Identity.Queries
         public async Task<IReadOnlyList<UserResponse>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
             return await _userManager.Users
-                .OrderBy(p => p.DisplayName)
+                .OrderBy(p => p.UserName)
                 .AsNoTracking()
                 .ProjectToListAsync<UserResponse>(_mapper.ConfigurationProvider);
         }

@@ -28,19 +28,19 @@ namespace Persistence.Configurations
             // Backing fields
             builder.Navigation(p => p.Items).HasField("_items");
 
-            builder.HasOne(p => p.Measurer).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<MBSheet>(p => p.MeasurementOfficer)
+            builder.HasOne(p => p.Measurer).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.MeasurementOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Validator).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<MBSheet>(p => p.ValidationOfficer)
+            builder.HasOne(p => p.Validator).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.ValidationOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Acceptor).WithOne()
-                .HasPrincipalKey<AppUser>(p => p.UserName)
-                .HasForeignKey<MBSheet>(p => p.AcceptingOfficer)
+            builder.HasOne(p => p.Acceptor).WithMany()
+                .HasPrincipalKey(p => p.UserName)
+                .HasForeignKey(p => p.AcceptingOfficer)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.CreatedBy)

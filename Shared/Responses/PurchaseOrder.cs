@@ -28,7 +28,6 @@ namespace EmbPortal.Shared.Responses
         public int SubItemNo { get; set; }
         public string SubItemPackageNo { get; set; }
         public long ServiceNo { get; set; }
-        
         public string ShortDesc { get; set; }
         public string LongDesc { get; set; }
         public decimal UnitRate { get; set; }

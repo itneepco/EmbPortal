@@ -14,6 +14,7 @@ namespace Client.Services.Interfaces
         Task<IResult> EditRABill(int id, RABillRequest request);
         Task<IResult> ApproveRABill(int raBillId);
         Task<IResult> RevokeRABill(int raBillId);
+        Task<IResult> PostRABillToSAP(int raBillId);
         Task<IResult> DeleteRABill(int id);
         Task<string> GeneratePdf(int id);
         Task<IResult<int>> CreateRADeduction(int raBillId, RADeductionRequest request);

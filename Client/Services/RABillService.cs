@@ -64,6 +64,12 @@ namespace Client.Services
             return await response.ToResult();
         }
 
+        public async Task<IResult> PostRABillToSAP(int raBillId)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/RABill/{raBillId}/PostToSAP", "");
+            return await response.ToResult();
+        }
+
         public async Task<string> GeneratePdf(int id)
         {
             var response = await _httpClient.GetAsync($"/api/RABill/{id}/Download");
