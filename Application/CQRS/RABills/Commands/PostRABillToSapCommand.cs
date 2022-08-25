@@ -61,6 +61,7 @@ namespace Application.CQRS.RABills.Commands
             {
                 var sapSEItem = new SapSESubItem
                 {
+                    ServiceNo = item.ServiceNo,
                     SubItemNo = item.SubItemNo,
                     SubItemPackageNo = item.SubItemPackageNo,
                     Quantity = item.CurrentRAQty,
@@ -120,6 +121,7 @@ namespace Application.CQRS.RABills.Commands
     class SapSESubItem
     {
         public long SubItemNo { get; set; }
+        public long ServiceNo { get; set; }
         public string SubItemPackageNo { get; set; }
         public float Quantity { get; set; }
     }

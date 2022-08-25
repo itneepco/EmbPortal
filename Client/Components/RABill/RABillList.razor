@@ -10,7 +10,8 @@
         </SpaceItem>
         @if (selectedRows != null && selectedRows.Count() > 0)
         {
-            @if (selectedRows.First()?.Status != RABillStatus.APPROVED)
+            @if (!(selectedRows.First()?.Status == RABillStatus.APPROVED ||
+                 selectedRows.First()?.Status == RABillStatus.POSTED))
             {
                 <SpaceItem>
                     <Button Icon="@(IconType.Outline.Edit)" OnClick="() => GoToEditPage(selectedRows.First().Id)">Edit</Button>
@@ -29,7 +30,8 @@
                 <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
             </SpaceItem>
 
-            @if (selectedRows.First()?.Status == RABillStatus.APPROVED && selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
+            @if (selectedRows.First()?.Status == RABillStatus.APPROVED &&
+                 selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
             {
                 <SpaceItem>
                     <Popconfirm Title="Sure to Revoke RA Bill Status?"
