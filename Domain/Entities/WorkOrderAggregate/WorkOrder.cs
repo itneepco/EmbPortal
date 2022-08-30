@@ -60,8 +60,6 @@ namespace Domain.Entities.WorkOrderAggregate
             float poQuantity, 
             int id=0)
         {
-            if(Status == WorkOrderStatus.COMPLETED) return;
-
             // for item update
             if (id != 0)
             {
@@ -99,18 +97,12 @@ namespace Domain.Entities.WorkOrderAggregate
 
         public void RemoveLineItem(int id)
         {
-            if (Status == WorkOrderStatus.COMPLETED) return;
-
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if(item != null) // if item exists in the list
             {                
                 _items.Remove(item);
             }
-        }
-        
-        public void MarkCompleted() {
-            Status = WorkOrderStatus.COMPLETED;
         }
 
         public void MarkPublished()

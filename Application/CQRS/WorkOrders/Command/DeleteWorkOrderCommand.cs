@@ -28,7 +28,7 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.id);
             }
 
-            if(workOrder.Status == WorkOrderStatus.PUBLISHED || workOrder.Status == WorkOrderStatus.COMPLETED)
+            if(workOrder.Status == WorkOrderStatus.PUBLISHED)
             {
                 throw new BadRequestException("Published work order cannot be deleted");
             }

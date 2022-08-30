@@ -160,5 +160,21 @@ namespace Api.Controllers
 
             return Ok(Convert.ToBase64String(result));
         }
+
+        [HttpGet("Pending/Approval")]
+        public async Task<ActionResult<IList<MBSheetInfoResponse>>> GetPendingApprovalMBSheets()
+        {
+            var query = new GetPendingApprovalMBSheetQuery();
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("Pending/Validation")]
+        public async Task<ActionResult<IList<MBSheetInfoResponse>>> GetPendingValidationMBSheets()
+        {
+            var query = new GetPendingValidationMBSheetQuery();
+
+            return Ok(await Mediator.Send(query));
+        }
     }
 }

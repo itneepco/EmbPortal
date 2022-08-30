@@ -3,7 +3,6 @@
     public enum WorkOrderStatus
     {
         CREATED = 1,
-        PUBLISHED = 2,
-        COMPLETED = 3
+        PUBLISHED = 2
     }
 }

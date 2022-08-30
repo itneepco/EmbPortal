@@ -35,12 +35,26 @@ namespace Application.CQRS.RABills.Commands
         {
             var raBill = await _context.RABills
                 .Include(i => i.Items)
+                .Include(i => i.Deductions)
                 .Include(p => p.MeasurementBook)
                 .ThenInclude(m => m.WorkOrder)
                 .FirstOrDefaultAsync(p => p.Id == request.RABillId && p.Status == RABillStatus.APPROVED);
+
             if (raBill == null)
             {
                 throw new NotFoundException("RA Bill Not found for posting");
+            }
+
+            if (raBill.Items.Count == 0)
+            {
+                throw new NotFoundException("This RA Bill has no line items");
+            }
+
+            // Create remarks based on the deduction amounts
+            var remarks = "";
+            foreach (var item in raBill.Deductions)
+            {
+                remarks += $"Amount: {item.Amount}, Description: {item.Description}\n";
             }
 
             var sapSEHeader = new SapSEHeader
@@ -52,12 +66,15 @@ namespace Application.CQRS.RABills.Commands
                     {
                         ItemNo = raBill.Items.First().ItemNo,
                         PackageNo = raBill.Items.First().PackageNo,
+                        Remarks = remarks,
                         Details = new()
                     }
                 }
             };
 
-            foreach (var item in raBill.Items)
+            // select only those items whose quantity is non zero - for type safety
+            var items = raBill.Items.Where(i => i.CurrentRAQty > 0);
+            foreach (var item in items)
             {
                 var sapSEItem = new SapSESubItem
                 {
@@ -66,7 +83,7 @@ namespace Application.CQRS.RABills.Commands
                     SubItemPackageNo = item.SubItemPackageNo,
                     Quantity = item.CurrentRAQty,
                 };
-                sapSEHeader.Items[0].Details.Add(sapSEItem);
+                sapSEHeader.Items.First().Details.Add(sapSEItem);
             }
 
             //--- post to RA Bill to sap ---
@@ -82,8 +99,9 @@ namespace Application.CQRS.RABills.Commands
             if (response.IsSuccessStatusCode)
             {
                 raBill.MarkAsPosted();
-
                 await _context.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation("Successfully posted the RA Bill to SAP");
             }
             else
             {
@@ -94,6 +112,7 @@ namespace Application.CQRS.RABills.Commands
 
                 foreach (var item in result.Response)
                 {
+                    _logger.LogError(responseAsString);
                     _logger.LogError($"Code: {item.Code}, Message: {item.Message}");
                 }
 
@@ -115,6 +134,7 @@ namespace Application.CQRS.RABills.Commands
     {
         public long ItemNo { get; set; }
         public string PackageNo { get; set; }
+        public string Remarks { get; set; }
         public List<SapSESubItem> Details { get; set; }
     }
 

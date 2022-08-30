@@ -95,5 +95,15 @@ namespace Client.Services
             var data = await response.Content.ReadAsStringAsync();
             return data;
         }
+
+        public async Task<List<MBSheetInfoResponse>> GetPendingValidationMBSheets()
+        {
+            return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Valdiation");
+        }
+
+        public async Task<List<MBSheetInfoResponse>> GetPendingApprovalMBSheets()
+        {
+            return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Approval");
+        }
     }
 }

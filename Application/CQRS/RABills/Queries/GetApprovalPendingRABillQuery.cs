@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Mappings;
 using AutoMapper;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
@@ -35,7 +36,8 @@ namespace Application.CQRS.RABills.Queries
                .Include(p => p.Items)
                .Include(p => p.MeasurementBook)
                     .ThenInclude(m => m.WorkOrder)
-               .Where(p => p.AcceptingOfficer == _currentUserService.EmployeeCode && p.Status != EmbPortal.Shared.Enums.RABillStatus.APPROVED)
+               .Where(p => p.AcceptingOfficer == _currentUserService.EmployeeCode && 
+                          !(p.Status == RABillStatus.APPROVED || p.Status == RABillStatus.POSTED))
                .OrderBy(p => p.BillDate)
                .AsNoTracking()
                .ProjectToListAsync<RABillInfoResponse>(_mapper.ConfigurationProvider);

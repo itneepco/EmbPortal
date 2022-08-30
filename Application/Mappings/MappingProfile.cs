@@ -43,11 +43,15 @@ namespace Application.Mappings
 
             CreateMap<MeasurementBook, MBookHeaderResponse>()
                 .ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.WorkOrder.OrderNo))
-                .ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.WorkOrder.OrderDate));
+                .ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.WorkOrder.OrderDate))
+                .ForMember(m => m.Contractor, opt => opt.MapFrom(p => p.WorkOrder.Contractor));
 
             CreateMap<MeasurementBook, MBookDetailResponse>();
 
             CreateMap<MBSheet, MBSheetResponse>();
+
+            CreateMap<MBSheet, MBSheetInfoResponse>()
+                .ForMember(m => m.MBookTitle, opt => opt.MapFrom(p => p.MeasurementBook.Title));
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
 
