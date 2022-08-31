@@ -12,7 +12,7 @@
                 <p>Measurement Sheets Summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Validation Pending" Value="1" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Validation Pending" Value="@stats.MBSheetValidation" ValueStyle="color: #3f8600;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
@@ -23,7 +23,7 @@
                         </Button>
                     </AntDesign.Col>
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Approval Pending" Value="1">
+                        <Statistic Title="Approval Pending" Value="@stats.MBSheetApproval">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
@@ -50,7 +50,7 @@
                 <p>RA Bill Summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col>
-                        <Statistic Title="Approval Pending" Value="1">
+                        <Statistic Title="Approval Pending" Value="@stats.RABillApproval">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
@@ -78,7 +78,7 @@
                 <p>Work orders summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Pending Orders" Value="1" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Pending Orders" Value="@stats.WorkOrderPending" ValueStyle="color: #3f8600;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
@@ -89,7 +89,7 @@
                         </Button>
                     </AntDesign.Col>
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Published Orders" Value="1">
+                        <Statistic Title="Published Orders" Value="@stats.WorkOrderPublished">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
@@ -113,6 +113,21 @@
 </style>
 
 @code {
+    DashboardStatsResponse stats = new();
+    bool loading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardStatsAsync();
+    }
+
+    async Task LoadDashboardStatsAsync()
+    {
+        loading = true;
+        stats = await dashboardService.GetDasbordStats();
+        loading = false;
+    }
+
     void LoadPendingOrders()
     {
         navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.CREATED}");
@@ -125,16 +140,16 @@
 
     void LoadPendingRABills()
     {
-        navManager.NavigateTo($"/rabill/pending");
+        navManager.NavigateTo($"/rabills/pending");
     }
 
     void LoadPendingMBValidations()
     {
-        navManager.NavigateTo($"/mbook/pending/validation");
+        navManager.NavigateTo($"/mbsheets/pending/validation");
     }
 
     void LoadPendingMBApprovals()
     {
-        navManager.NavigateTo($"/mbook/pending/approval");
+        navManager.NavigateTo($"/mbsheets/pending/approval");
     }
 }

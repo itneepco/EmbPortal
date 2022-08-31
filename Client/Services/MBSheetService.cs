@@ -98,7 +98,7 @@ namespace Client.Services
 
         public async Task<List<MBSheetInfoResponse>> GetPendingValidationMBSheets()
         {
-            return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Valdiation");
+            return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Validation");
         }
 
         public async Task<List<MBSheetInfoResponse>> GetPendingApprovalMBSheets()

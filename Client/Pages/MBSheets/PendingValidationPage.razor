@@ -1,0 +1,55 @@
+﻿@page "/mbsheets/pending/validation"
+
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="dashboard" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        Pending MB Validations
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<h3>Pending Validation MB Sheets</h3>
+
+<Table Loading="@loading"
+       TItem="MBSheetInfoResponse"
+       Size="@TableSize.Small"
+       DataSource="@mbSheets">
+
+    <Column @bind-Field="@context.Title" Width="25%" />
+    <Column @bind-Field="@context.Status" Width="10%" />
+    <Column @bind-Field="@context.MeasurementDate" Format="dd-MM-yyyy" Width="15%" />
+    <Column @bind-Field="@context.MBookTitle" Width="30%" />
+    <ActionColumn Title="Action" Width="20%">
+        <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId)"
+                Type="@ButtonType.Primary"
+                Size="@ButtonSize.Small">
+            View
+        </Button>
+    </ActionColumn>
+
+</Table>
+
+@code {
+    bool loading;
+    List<MBSheetInfoResponse> mbSheets = new();
+
+    async Task LoadPendingValidationMBSheetsAsync()
+    {
+        loading = true;
+        mbSheets = await mbSheetService.GetPendingValidationMBSheets();
+        loading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPendingValidationMBSheetsAsync();
+    }
+
+    void GoToMBookDetailPage(int mBookId)
+    {
+        navManager.NavigateTo($"/mbooks/{mBookId}/tab2");
+    }
+}

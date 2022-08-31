@@ -51,7 +51,7 @@ namespace Application.CQRS.RABills.Commands
             }
 
             // Create remarks based on the deduction amounts
-            var remarks = "";
+            var remarks = "Remarks --> ";
             foreach (var item in raBill.Deductions)
             {
                 remarks += $"Amount: {item.Amount}, Description: {item.Description}\n";

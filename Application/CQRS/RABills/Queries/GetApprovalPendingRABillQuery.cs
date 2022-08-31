@@ -37,7 +37,7 @@ namespace Application.CQRS.RABills.Queries
                .Include(p => p.MeasurementBook)
                     .ThenInclude(m => m.WorkOrder)
                .Where(p => p.AcceptingOfficer == _currentUserService.EmployeeCode && 
-                          !(p.Status == RABillStatus.APPROVED || p.Status == RABillStatus.POSTED))
+                          (p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED))
                .OrderBy(p => p.BillDate)
                .AsNoTracking()
                .ProjectToListAsync<RABillInfoResponse>(_mapper.ConfigurationProvider);
