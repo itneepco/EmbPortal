@@ -22,6 +22,9 @@ namespace Persistence.Configurations
                 .HasMaxLength(PersistenceConsts.ShortDescLength)
                 .IsRequired();
 
+            builder.Property(p => p.UnitRate)
+                   .HasPrecision(10, 2);
+
             // Backing fields
             builder.Navigation(p => p.Attachments).HasField("_attachments");
 

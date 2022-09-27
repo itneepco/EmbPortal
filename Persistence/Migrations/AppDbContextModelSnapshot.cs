@@ -247,7 +247,8 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("UnitRate")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Uom")
                         .IsRequired()
@@ -480,7 +481,8 @@ namespace Persistence.Migrations
                         .HasColumnType("float");
 
                     b.Property<decimal>("UnitRate")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
@@ -662,7 +664,8 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("UnitRate")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(12, 2)
+                        .HasColumnType("decimal(12,2)");
 
                     b.Property<int>("UomId")
                         .HasColumnType("int");

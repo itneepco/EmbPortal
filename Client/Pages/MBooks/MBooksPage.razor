@@ -14,6 +14,8 @@
             <AntDesign.Col>
                 <Select DataSource="@statuses"
                         @bind-Value="@status"
+                        TItem="MBookStatusSL"
+                        TItemValue="int"
                         ValueName="@nameof(MBookStatusSL.Val)"
                         LabelName="@nameof(MBookStatusSL.Desc)"
                         Placeholder="Filter by Status"

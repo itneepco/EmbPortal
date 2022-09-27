@@ -37,6 +37,8 @@
             <AntDesign.Col>
                 <Select DataSource="@statuses"
                         @bind-Value="@status"
+                        TItem="WorkStatusSL"
+                        TItemValue="int"
                         ValueName="@nameof(WorkStatusSL.Val)"
                         LabelName="@nameof(WorkStatusSL.Desc)"
                         Placeholder="Filter by Status"

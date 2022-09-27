@@ -82,6 +82,9 @@
 
 
 @code {
+    List<string> _items;
+    IEnumerable<string> _selectedValues;
+
     [Parameter]
     public WorkOrderResponse WorkOrder { get; set; }
 
@@ -97,6 +100,7 @@
 
     bool loading;
     string poNumber;
+    string empCode;
 
     protected override async Task OnInitializedAsync()
     {

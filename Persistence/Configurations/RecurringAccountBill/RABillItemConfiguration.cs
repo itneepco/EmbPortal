@@ -22,6 +22,9 @@ namespace Persistence.Configurations.RecurringAccountBill
                 .HasMaxLength(PersistenceConsts.ShortDescLength)
                 .IsRequired();
 
+            builder.Property(p => p.UnitRate)
+                   .HasPrecision(10, 2);
+
             builder.Property(p => p.Remarks).HasMaxLength(PersistenceConsts.RemarksLegth);
 
             builder.Property(p => p.CreatedBy)

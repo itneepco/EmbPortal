@@ -116,7 +116,7 @@
     DashboardStatsResponse stats = new();
     bool loading;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await LoadDashboardStatsAsync();
     }
@@ -126,6 +126,7 @@
         loading = true;
         stats = await dashboardService.GetDasbordStats();
         loading = false;
+        StateHasChanged();
     }
 
     void LoadPendingOrders()

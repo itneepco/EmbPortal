@@ -15,9 +15,9 @@ namespace Persistence
             {
                 var connectionString = config.GetConnectionString("DefaultConnection");
                 //x.UseSqlite(config.GetConnectionString("DefaultConnection"));
-               var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
-                x.UseMySql(connectionString, serverVersion);
 
+                var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+                x.UseMySql(connectionString, serverVersion);
             });
           services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 

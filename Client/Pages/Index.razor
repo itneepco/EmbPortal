@@ -2,14 +2,20 @@
 @attribute [Authorize]
 
 <div class="text-center">    
-    @if (currentUser != null && (currentUser.IsInRole("Admin")))
-    {
-      <AdminDashboard></AdminDashboard>
+    @if (currentUser != null){
+        @if (currentUser.IsInRole("Admin"))
+        {
+            <AdminDashboard></AdminDashboard>
+        }
+        else
+        {
+            <EmbDashboard />
+        }
     }
-    else
-    {
-        <EmbDashboard />
+    else {
+        <p>Authorizing...</p>
     }
+    
 </div>
 
 @code{

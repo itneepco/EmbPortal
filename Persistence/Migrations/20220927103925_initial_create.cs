@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initial_create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -322,7 +322,7 @@ namespace Persistence.Migrations
                     LongServiceDesc = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UomId = table.Column<int>(type: "int", nullable: false),
-                    UnitRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    UnitRate = table.Column<decimal>(type: "decimal(12,2)", precision: 12, scale: 2, nullable: false),
                     PoQuantity = table.Column<float>(type: "float", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     WorkOrderId = table.Column<int>(type: "int", nullable: true),
@@ -496,7 +496,7 @@ namespace Persistence.Migrations
                     ServiceNo = table.Column<long>(type: "bigint", nullable: false),
                     ShortServiceDesc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UnitRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    UnitRate = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     AcceptedMeasuredQty = table.Column<float>(type: "float", nullable: false),
                     TillLastRAQty = table.Column<float>(type: "float", nullable: false),
                     CurrentRAQty = table.Column<float>(type: "float", nullable: false),
@@ -563,7 +563,7 @@ namespace Persistence.Migrations
                     Value3 = table.Column<float>(type: "float", nullable: false),
                     Uom = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UnitRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    UnitRate = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     Dimension = table.Column<int>(type: "int", nullable: false),
                     MBookItemId = table.Column<int>(type: "int", nullable: false),
                     MBSheetId = table.Column<int>(type: "int", nullable: false),

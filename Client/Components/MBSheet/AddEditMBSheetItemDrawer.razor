@@ -14,6 +14,8 @@
         <FormItem Label="Select Service Item" Required Style="margin-bottom:12px">
             <Select DataSource="@mbItemsStatuses"
                     @bind-Value="@mbItemId"
+                    TItem="MBItemStatusResponse"
+                    TItemValue="int"
                     ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
                     LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
                     Placeholder="Select Service Item"

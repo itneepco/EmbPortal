@@ -26,7 +26,10 @@ namespace Persistence.Configurations
             builder.Property(p => p.LongServiceDesc)
                 .HasMaxLength(PersistenceConsts.LongDescLength);
             
-            builder.Property(p => p.UnitRate).IsRequired();
+            builder.Property(p => p.UnitRate)
+                   .IsRequired()
+                   .HasPrecision(12, 2);
+
             builder.Property(p => p.UomId).IsRequired();
             builder.Property(p => p.PoQuantity).IsRequired();
 
