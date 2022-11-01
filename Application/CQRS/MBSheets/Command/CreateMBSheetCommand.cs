@@ -39,14 +39,20 @@ namespace Application.CQRS.MBSheets.Command
                 throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
             }
 
-            if(mBook.Status == MBookStatus.CREATED)
+            if (mBook.Status == MBookStatus.CREATED)
             {
                 throw new BadRequestException("Please publish Measurement Book before creating any MB Sheets");
             }
+            if(mBook.WorkOrder.OrderDate >= (DateTime)request.Data.MeasurementDate)
+            {
+                throw new BadRequestException("Measurement date cannot be earlier then PO Date");
+            }
 
+            var mbSheetCount = _context.MBSheets.Where(i => i.MeasurementBookId == mBook.Id).Count() + 1;
+            var title = mBook.Title+"-Sheet-"+(mbSheetCount);
             var mbSheet = new MBSheet
             (
-               title: request.Data.Title,
+               title: title,
                measurementBookId: request.Data.MeasurementBookId,
                measurementOfficer: mBook.MeasurementOfficer,
                measurementDate: (DateTime)request.Data.MeasurementDate,

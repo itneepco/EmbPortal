@@ -35,7 +35,7 @@ namespace Application.CQRS.MBSheets.Command
             }
 
             mbSheet.SetMeasurementDate((DateTime)request.Data.MeasurementDate);
-            mbSheet.SetTitle(request.Data.Title);
+            //mbSheet.SetTitle(request.Data.Title);
 
             await _context.SaveChangesAsync(cancellationToken);
 

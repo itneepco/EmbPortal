@@ -1,10 +1,8 @@
 ﻿using Domain.Entities.Identity;
-using System.Threading.Tasks;
 
-namespace Infrastructure.Interfaces
+namespace Infrastructure.Interfaces;
+
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        Task<string> CreateToken(AppUser user);
-    }
+    Task<string> CreateToken(AppUser user);
 }

@@ -12,17 +12,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.WorkOrders.Command
 {
-    public record CreateWorkOrderCommand(string EngineerInCharge, PurchaseOrder PurchaseOrder) : IRequest<int>
+    public record CreateWorkOrderCommand(PurchaseOrder PurchaseOrder) : IRequest<int>
     {
     }
 
     public class CreateWorkOrderCommandHandler : IRequestHandler<CreateWorkOrderCommand, int>
     {
         private readonly IAppDbContext _context;
+        private readonly ICurrentUserService _currentUserService;
 
         public CreateWorkOrderCommandHandler(IAppDbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
+           _currentUserService = currentUserService;
         }
 
         public async Task<int> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
@@ -41,8 +43,8 @@ namespace Application.WorkOrders.Command
                 orderDate: request.PurchaseOrder.OrderDate,
                 project: request.PurchaseOrder.ProjectName,
                 contractor: request.PurchaseOrder.ContractorName,
-                engineerInCharge: request.EngineerInCharge
-            );
+                engineerInCharge: _currentUserService.EmployeeCode//request.EngineerInCharge
+            ); ;
 
             foreach (var item in request.PurchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)))
             {

@@ -55,7 +55,7 @@
           Model="@model"
           OnFinish="@OnSubmit">
 
-            <FormItem Label="Engineer In Charge" WrapperColSpan="16">
+           <!-- <FormItem Label="Engineer In Charge" WrapperColSpan="16">
                 <Select DataSource="@users"
                     Style="width: 100%"
                     @bind-Value="@context.EngineerInCharge"
@@ -65,7 +65,7 @@
                     AllowClear>
                 </Select>
             </FormItem>
-
+             -->
             <FormItem WrapperColSpan="6">
                 <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
                 <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
@@ -95,7 +95,7 @@
     public bool Visible { get; set; }
 
     PurchaseOrder purchaseOrder;
-    List<UserResponse> users = new();
+    //List<UserResponse> users = new();
     WorkOrderRequest model { get; set; } = new();
 
     bool loading;
@@ -104,7 +104,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        users = await userService.GetAllUsers();
+       //users = await userService.GetAllUsers();
     }
 
     async Task SearchPO()

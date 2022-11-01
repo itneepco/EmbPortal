@@ -67,7 +67,7 @@ namespace Api.Controllers
                 return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
             }
 
-            var command = new CreateWorkOrderCommand(data.EngineerInCharge, purchaseOrder);
+            var command = new CreateWorkOrderCommand(purchaseOrder);
 
             return Ok(await Mediator.Send(command));
         }

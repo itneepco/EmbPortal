@@ -35,7 +35,7 @@ namespace Application.CQRS.MBSheets.Query
 
             return await _context.MBSheets
               .Include(p => p.MeasurementBook)
-              .Where(p => p.Status == MBSheetStatus.CREATED && 
+              .Where(p => p.Status == MBSheetStatus.PUBLISHED && 
                           (p.ValidationOfficer == empCode || p.AcceptingOfficer == empCode))
               .AsNoTracking()
               .ProjectToListAsync<MBSheetInfoResponse>(_mapper.ConfigurationProvider);

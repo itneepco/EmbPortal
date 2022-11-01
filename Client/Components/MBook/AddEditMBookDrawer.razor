@@ -4,12 +4,7 @@
 
     <Spin Spinning="loading">
         <Form @ref="form" Model="@model" Layout="@FormLayout.Vertical">
-            <Row Gutter="16">
-                <AntDesign.Col Span="24">
-                    <FormItem Label="Title">
-                        <Input Placeholder="Measurement Book Name" @bind-Value="@context.Title" TValue="string" AutoFocus />
-                    </FormItem>
-                </AntDesign.Col>
+            <Row Gutter="16">                
                 
                 <AntDesign.Col Span="12">
                     <FormItem Label="Validating Officer">
@@ -115,7 +110,6 @@
 
         if (MBook != null)
         {
-            model.Title = MBook.Title;
             model.ValidatingOfficer = MBook.ValidatingOfficer;
             model.MeasurementOfficer = MBook.MeasurementOfficer;
 

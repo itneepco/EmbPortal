@@ -23,7 +23,8 @@ namespace EmbPortal.Shared.Responses
         {
             get
             {
-                return (decimal)PoQuantity * UnitRate;
+                var amt = (decimal)PoQuantity * UnitRate;
+                return decimal.Round(amt, 2, MidpointRounding.AwayFromZero);               
             }
         }
 

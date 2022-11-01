@@ -5,11 +5,7 @@
 
 <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
     <Row Gutter="16">
-        <AntDesign.Col Span="14">
-            <FormItem Label="MB Sheet Title">
-                <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
-            </FormItem>
-        </AntDesign.Col>
+       
         <AntDesign.Col Span="6">
             <FormItem Label="Measurement Date">
                 <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />

@@ -8,9 +8,7 @@ namespace EmbPortal.Shared.Requests
     {
         [Required]
         public int WorkOrderId { get; set; }
-
-        [Required, MaxLength(100)]
-        public string Title { get; set; }
+       
 
         [Required, EmployeeCode]
         [Display(Name = "Measurer")]

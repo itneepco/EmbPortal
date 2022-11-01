@@ -14,6 +14,7 @@ namespace Client.Services.Interfaces
         Task<List<MBSheetInfoResponse>> GetPendingApprovalMBSheets();
         Task<IResult<int>> CreateMBSheet(MBSheetRequest request);
         Task<IResult> EditMBSheet(int mbSheetId, MBSheetRequest request);
+        Task<IResult> PublishMBSheet(int mbSheetId);
         Task<IResult> DeleteMBSheet(int mbSheetId);
         Task<IResult> ValidateMBSheet(int mbSheetId);
         Task<IResult> AcceptMBSheet(int mbSheetId);

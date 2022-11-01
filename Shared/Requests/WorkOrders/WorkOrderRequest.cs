@@ -8,9 +8,5 @@ namespace EmbPortal.Shared.Requests
         [Required]
         public long OrderNo { get; set; }
 
-        [Required, EmployeeCode]
-        [Display(Name = "Engineer In Charge")]
-        public string EngineerInCharge { get; set; }
-
     }
 }

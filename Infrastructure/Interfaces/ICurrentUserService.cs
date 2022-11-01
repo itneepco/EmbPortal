@@ -1,9 +1,9 @@
-﻿namespace Infrastructure.Interfaces
+﻿namespace Infrastructure.Interfaces;
+
+public interface ICurrentUserService
 {
-    public interface ICurrentUserService
-    {
-        string Email { get; }
-        string DisplayName { get; }
-        string EmployeeCode { get; }
-    }
+    string Email { get; }
+    string DisplayName { get; }
+    string EmployeeCode { get; }
 }
+

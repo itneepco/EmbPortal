@@ -30,6 +30,12 @@ namespace Client.Services
             return await response.ToResult();
         }
 
+        public async Task<IResult> PublishMBSheet(int id)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBSheet/{id}/Publish", "");
+            return await response.ToResult();
+        }
+
         public async Task<IResult> DeleteMBSheet(int mbSheetId)
         {
             var response = await _httpClient.DeleteAsync($"/api/MBSheet/{mbSheetId}");

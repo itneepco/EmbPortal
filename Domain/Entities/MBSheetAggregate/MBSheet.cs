@@ -61,6 +61,10 @@ namespace Domain.Entities.MBSheetAggregate
             Status = MBSheetStatus.ACCEPTED;
             AcceptingDate = DateTime.Now;
         }
+        public void MarkPublished()
+        {
+            Status = MBSheetStatus.PUBLISHED;
+        }
 
         public void MarkAsValidated()
         {

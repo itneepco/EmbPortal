@@ -39,11 +39,13 @@ namespace Application.CQRS.MeasurementBooks.Command
             {
                 throw new BadRequestException("Please publish Work Order before creating any Measurement Books");
             }
-
+            
+            var mbCount = _context.MeasurementBooks.Where( i => i.WorkOrderId == req.data.WorkOrderId ).Count()+1;            
+            var title = workOrder.OrderNo +"-MB-"+mbCount;
             var measurementBook = new MeasurementBook
             (
                 workOrderId: req.data.WorkOrderId,
-                title: req.data.Title,
+                title: title,
                 measurementOfficer: req.data.MeasurementOfficer,
                 validatingOfficer: req.data.ValidatingOfficer
             );

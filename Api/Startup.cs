@@ -8,9 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence;
-using System;
-using System.Net.Http.Headers;
-using System.Text;
 
 namespace Api
 {
