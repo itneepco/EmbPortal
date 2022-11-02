@@ -5,89 +5,87 @@ using Domain.Entities.Identity;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Enums;
 
-namespace Domain.Entities.MeasurementBookAggregate
+namespace Domain.Entities.MeasurementBookAggregate;
+public class MeasurementBook : AuditableEntity, IAggregateRoot
 {
-    public class MeasurementBook : AuditableEntity, IAggregateRoot
+    public int Id { get; private set; }
+    public int WorkOrderId { get; private set; }
+    public string Title { get; private set; }
+    
+    public string MeasurementOfficer { get; private set; }
+    public AppUser Measurer { get; private set; }
+    
+    public string ValidatingOfficer { get; private set; }
+    public AppUser Validator { get; private set; }
+    
+    public MBookStatus Status { get; private set; }
+    public WorkOrder WorkOrder { get; private set; }
+
+    private readonly List<MBookItem> _items = new List<MBookItem>();
+    public IReadOnlyList<MBookItem> Items => _items.AsReadOnly();
+
+    public MeasurementBook()
     {
-        public int Id { get; private set; }
-        public int WorkOrderId { get; private set; }
-        public string Title { get; private set; }
-        
-        public string MeasurementOfficer { get; private set; }
-        public AppUser Measurer { get; private set; }
-        
-        public string ValidatingOfficer { get; private set; }
-        public AppUser Validator { get; private set; }
-        
-        public MBookStatus Status { get; private set; }
-        public WorkOrder WorkOrder { get; private set; }
+    }
 
-        private readonly List<MBookItem> _items = new List<MBookItem>();
-        public IReadOnlyList<MBookItem> Items => _items.AsReadOnly();
+    public MeasurementBook(int workOrderId, string title, string measurementOfficer, string validatingOfficer)
+    {
+        Title = title;
+        WorkOrderId = workOrderId;
+        MeasurementOfficer = measurementOfficer;
+        ValidatingOfficer = validatingOfficer;
+        Status = MBookStatus.CREATED;
+    }
 
-        public MeasurementBook()
+    public void AddUpdateLineItem(int wOrderItemId, int id=0)
+    {
+        if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
+
+        if (id != 0)  // for item update
         {
+            var item = _items.FirstOrDefault(p => p.Id == id);
+            item.SetWorkOrderItemNo(wOrderItemId);
         }
-
-        public MeasurementBook(int workOrderId, string title, string measurementOfficer, string validatingOfficer)
+        else  // new item
         {
-            Title = title;
-            WorkOrderId = workOrderId;
-            MeasurementOfficer = measurementOfficer;
-            ValidatingOfficer = validatingOfficer;
-            Status = MBookStatus.CREATED;
+            _items.Add(new MBookItem(wOrderItemId));
         }
+    }
 
-        public void AddUpdateLineItem(int wOrderItemId, int id=0)
+    public void RemoveByOrderItemId(int orderItemid)
+    {
+        if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
+
+        var item = _items.SingleOrDefault(p => p.WorkOrderItemId == orderItemid);
+
+        if (item != null) // if item exists in the list
         {
-            if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
-
-            if (id != 0)  // for item update
-            {
-                var item = _items.FirstOrDefault(p => p.Id == id);
-                item.SetWorkOrderItemNo(wOrderItemId);
-            }
-            else  // new item
-            {
-                _items.Add(new MBookItem(wOrderItemId));
-            }
+            _items.Remove(item);
         }
+    }
 
-        public void RemoveByOrderItemId(int orderItemid)
-        {
-            if (Status == MBookStatus.PUBLISHED || Status == MBookStatus.COMPLETED) return;
+    public void MarkPublished()
+    {
+        Status = MBookStatus.PUBLISHED;
+    }
 
-            var item = _items.SingleOrDefault(p => p.WorkOrderItemId == orderItemid);
+    public void SetTitle(string title)
+    {
+        Title = title;
+    }
 
-            if (item != null) // if item exists in the list
-            {
-                _items.Remove(item);
-            }
-        }
+    public void SetWorkOrderId(int workOrderId)
+    {
+        WorkOrderId = workOrderId;
+    }
 
-        public void MarkPublished()
-        {
-            Status = MBookStatus.PUBLISHED;
-        }
+    public void SetMeasurementOfficer(string measurementOfficer)
+    {
+        MeasurementOfficer = measurementOfficer;
+    }
 
-        public void SetTitle(string title)
-        {
-            Title = title;
-        }
-
-        public void SetWorkOrderId(int workOrderId)
-        {
-            WorkOrderId = workOrderId;
-        }
-
-        public void SetMeasurementOfficer(string measurementOfficer)
-        {
-            MeasurementOfficer = measurementOfficer;
-        }
-
-        public void SetValidatingOfficer(string validatingOfficer)
-        {
-            ValidatingOfficer = validatingOfficer;
-        }
+    public void SetValidatingOfficer(string validatingOfficer)
+    {
+        ValidatingOfficer = validatingOfficer;
     }
 }

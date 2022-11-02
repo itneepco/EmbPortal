@@ -8,6 +8,7 @@ using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 
 namespace Api.Controllers
 {
@@ -63,6 +64,30 @@ namespace Api.Controllers
         public async Task<ActionResult> UpdateMeasurementBook(int id, MBookRequest data)
         {
             var command = new EditMBookCommand(id, data);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/ChangeMeasurer")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ChangeMeasurer(int id, ChangeOfficerRequest data)
+        {
+            var command = new ChangeMeasurerCommand(id, data);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/ChangeValidator")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ChangeValidator(int id, ChangeOfficerRequest data)
+        {
+            var command = new ChangeValidatorCommand(id, data);
             await Mediator.Send(command);
 
             return NoContent();
