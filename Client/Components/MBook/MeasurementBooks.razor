@@ -43,21 +43,22 @@
                 }
                 @if (context.Status == MBookStatus.PUBLISHED.ToString())
                 {
+                    var mbookId = context.Id;
                     <Dropdown>
                         <Overlay>
                             <Menu>
                                 <MenuItem>
-                                    <a  onclick="">
-                                        Change Measurement Officer
+                                    <a @onclick="_ => OpenUpdateManagerDrawer(mbookId, UpdateManagerType.MEASURER)">
+                                        Change Measurer
                                     </a>
                                 </MenuItem>
                                 <MenuItem>
-                                    <a target="_blank" rel="noopener noreferrer" href="#">
-                                        Change Validation Officer
+                                    <a @onclick="_ => OpenUpdateManagerDrawer(mbookId, UpdateManagerType.VALIDATOR)">
+                                        Change Validator
                                     </a>
                                 </MenuItem>
                                 <MenuItem>
-                                    <a target="_blank" rel="noopener noreferrer" href="#">
+                                    <a @onclick="_ => OpenUpdateManagerDrawer(mbookId, UpdateManagerType.ENGINEER_INCHARGE)">
                                         Transfer Ownership
                                     </a>
                                 </MenuItem>
@@ -86,7 +87,16 @@
     </ExpandTemplate>
 </Table>
 
-<AddEditMBookDrawer MBook="currentMBook" Visible="@drawerVisible" OnClose="@OnCloseSideBar" OnItemUpdate="@OnUpdateItem" />
+<AddEditMBookDrawer MBook="currentMBook" 
+        Visible="@drawerVisible" 
+        OnClose="@OnCloseSideDrawer" 
+        OnItemUpdate="@OnUpdateItem" />
+
+<UpdateMBManagerDrawer MBook="currentMBook"
+        UpdateManagerType="@updateManagerType"
+        Visible="@managerDrawerVisible" 
+        OnClose="@OnCloseManagerUpdateDrawer" 
+        OnItemUpdate="@OnUpdateItem" />
 
 @code{
     [CascadingParameter]
@@ -96,10 +106,12 @@
     public string WorkOrderStatus { get; set; }
 
     MBookResponse currentMBook;
+    UpdateManagerType updateManagerType;
 
     List<MBookResponse> mbooks = new();
 
     bool drawerVisible;
+    bool managerDrawerVisible;
     bool loading;
 
     void OpenSideDrawer(int itemId = 0)
@@ -108,9 +120,22 @@
         drawerVisible = true;
     }
 
-    void OnCloseSideBar()
+    void OpenUpdateManagerDrawer(int itemId, UpdateManagerType type)
+    {
+        currentMBook = mbooks.FirstOrDefault(p => p.Id == itemId);
+        updateManagerType = type;
+
+        managerDrawerVisible = true;
+    }
+
+    void OnCloseSideDrawer()
     {
         drawerVisible = false;
+    }
+
+    void OnCloseManagerUpdateDrawer()
+    {
+        managerDrawerVisible = false;
     }
 
     protected override async Task OnInitializedAsync()
@@ -165,4 +190,6 @@
             await messageService.Error(result.Message);
         }
     }
+
+
 }

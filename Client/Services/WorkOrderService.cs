@@ -1,6 +1,8 @@
-﻿using Client.Extensions;
+﻿using AntDesign;
+using Client.Extensions;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -105,6 +107,12 @@ namespace Client.Services
         public async Task<IResult> UploadWorkOrderItemsAsync(int workOrderId, FileUploadRequest content)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/Upload", content);
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> ChangeEngineerIncharge(int id, ChangeOfficerRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Transfer", request);
             return await response.ToResult();
         }
     }

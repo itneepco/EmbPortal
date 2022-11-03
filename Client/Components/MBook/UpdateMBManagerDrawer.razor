@@ -1,0 +1,100 @@
+﻿<Drawer Closable="true" Width="400"
+        Visible="@Visible" OnClose="@Close"
+        Title="@title">
+
+    <Form OnFinish="@OnSubmit" Model="@model" Layout="@FormLayout.Vertical" Loading="loading">
+        <FormItem Label="Select Officer">
+            <Select DataSource="@users"
+                    Style="width: 100%"
+                    @bind-Value="context.Officer"
+                    ValueName="@nameof(UserResponse.EmployeeCode)"
+                    LabelName="@nameof(UserResponse.LongName)"
+                    Placeholder="Select Employee"
+                    AllowClear>
+            </Select>
+        </FormItem>
+
+        <Button HtmlType="submit" Type="@ButtonType.Primary" Style="margin-top: 1rem;">Save</Button>
+    </Form>
+
+</Drawer>
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public MBookResponse MBook { get; set; }
+
+    [Parameter]
+    public UpdateManagerType UpdateManagerType { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemUpdate { get; set; }
+
+    string title;
+    bool loading;
+    List<UserResponse> users = new();
+    ChangeOfficerRequest model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userService.GetAllUsers();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (UpdateManagerType == UpdateManagerType.MEASURER)
+        {
+            title = "Update Measurer";
+        }
+        else if (UpdateManagerType == UpdateManagerType.VALIDATOR)
+        {
+            title = "Update Validator";
+        }
+        else
+        {
+            title = "Transfer Ownership";
+        }
+    }
+
+    async Task OnSubmit()
+    {
+        Console.WriteLine("Hi");
+        dynamic result;
+        loading = true;
+        if (UpdateManagerType == UpdateManagerType.MEASURER)
+        {
+            result = await mBookService.ChangeMeasurer(MBook.Id, model);
+        }
+        else if (UpdateManagerType == UpdateManagerType.VALIDATOR)
+        {
+            result = await mBookService.ChangeValidator(MBook.Id, model);
+        }
+        else {
+            result = await workOrderService.ChangeEngineerIncharge(MBook.WorkOrderId, model);
+        }
+
+        if (result.Succeeded)
+        {
+            Close();
+            await OnItemUpdate.InvokeAsync();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+
+        loading = false;
+    }
+
+    void Close()
+    {
+        model = new();
+        OnClose.InvokeAsync();
+    }
+}

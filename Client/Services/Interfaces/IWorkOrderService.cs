@@ -1,4 +1,5 @@
 ﻿using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,5 +23,6 @@ namespace Client.Services.Interfaces
         Task<IResult> UpdateWorkOrderItem(int id, int itemId, WorkOrderItemRequest request);
         Task<IResult> DeleteWorkOrderItem(int id, int itemId);
         Task<IResult<List<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int id);
+        Task<IResult> ChangeEngineerIncharge(int id, ChangeOfficerRequest request);
     }
 }
