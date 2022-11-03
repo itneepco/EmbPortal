@@ -17,6 +17,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 
 namespace Api.Controllers
 {
@@ -90,6 +91,17 @@ namespace Api.Controllers
         public async Task<ActionResult> PublishWorkOrder(int workOrderId)
         {
             var command = new PublishWorkOrderCommand(workOrderId);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{workOrderId}/Transfer")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> TransferWorkOrder(int workOrderId, ChangeOfficerRequest data)
+        {
+            var command = new ChangeEngineerInChargeCommand(workOrderId, data);
             await Mediator.Send(command);
 
             return NoContent();
