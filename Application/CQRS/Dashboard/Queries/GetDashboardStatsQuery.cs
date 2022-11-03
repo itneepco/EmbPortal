@@ -36,7 +36,7 @@ namespace Application.CQRS.Dashboard.Queries
 
             var mbValidation = await _context.MBSheets
                                     .Where(p => (p.ValidationOfficer == empCode || p.AcceptingOfficer == empCode)
-                                                 && p.Status == MBSheetStatus.CREATED)
+                                                 && p.Status == MBSheetStatus.PUBLISHED)
                                     .CountAsync();
 
             var raApproval = await _context.RABills

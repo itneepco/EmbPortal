@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220927103925_initial_create")]
-    partial class initial_create
+    [Migration("20221103044327_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -249,8 +249,8 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("UnitRate")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Uom")
                         .IsRequired()
@@ -483,8 +483,8 @@ namespace Persistence.Migrations
                         .HasColumnType("float");
 
                     b.Property<decimal>("UnitRate")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -666,8 +666,8 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("UnitRate")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("decimal(12,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UomId")
                         .HasColumnType("int");

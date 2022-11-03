@@ -23,7 +23,7 @@
     <Column @bind-Field="@context.MBookTitle" Width="19%" />
     <Column @bind-Field="@context.RABillTitle" Width="19%" />
     <ActionColumn Title="Action" Width="8%">
-        <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId)" 
+        <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId, context.Id)" 
                 Type="@ButtonType.Primary"
                 Size="@ButtonSize.Small">View</Button>
     </ActionColumn>
@@ -47,8 +47,8 @@
         await LoadPendingRABillsAsync();
     }
 
-    void GoToMBookDetailPage(int mBookId)
+    void GoToMBookDetailPage(int mBookId, int raBillId)
     {
-        navManager.NavigateTo($"/mbooks/{mBookId}/tab3");
+        navManager.NavigateTo($"/mbook/{mBookId}/rabill/{raBillId}/details");
     }
 }

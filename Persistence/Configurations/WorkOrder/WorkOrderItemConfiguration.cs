@@ -28,7 +28,7 @@ namespace Persistence.Configurations
             
             builder.Property(p => p.UnitRate)
                    .IsRequired()
-                   .HasPrecision(12, 2);
+                   .HasPrecision(18, 2);
 
             builder.Property(p => p.UomId).IsRequired();
             builder.Property(p => p.PoQuantity).IsRequired();

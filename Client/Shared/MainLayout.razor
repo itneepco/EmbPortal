@@ -10,8 +10,8 @@
     </Authorizing>
 
     <Authorized>
-        <AntDesign.ProLayout.BasicLayout MenuData="_menuData" 
-                                         Title="EMB Portal" 
+        <AntDesign.ProLayout.BasicLayout MenuData="_menuData.ToArray()"
+                                         Title="EMB Portal"
                                          Logo="@("https://upload.wikimedia.org/wikipedia/en/7/74/North_Eastern_Electric_Power_Corporation_Logo.svg")">
             <RightContentRender>
                 <AppNavBar />
@@ -38,7 +38,7 @@
 </style>
 
 @code {
-    private readonly MenuDataItem[] _menuData =
+    List<MenuDataItem> _menuData = new()
     {
         new MenuDataItem
         {
@@ -60,7 +60,7 @@
             Name = "Measurement Books",
             Key = "mbook",
             Icon = "snippets",
-        }
+        }        
     };
 
     private LinkItem[] _links = { };

@@ -23,7 +23,7 @@ namespace Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.UnitRate)
-                   .HasPrecision(10, 2);
+                   .HasPrecision(18, 2);
 
             // Backing fields
             builder.Navigation(p => p.Attachments).HasField("_attachments");
