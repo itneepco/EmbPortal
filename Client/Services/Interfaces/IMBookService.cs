@@ -1,4 +1,5 @@
 ﻿using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,5 +16,7 @@ namespace Client.Services.Interfaces
         Task<IResult<int>> CreateMeasurementBook(MBookRequest request);
         Task<IResult> UpdateMeasurementBook(int id, MBookRequest request);
         Task<IResult> PublishMeasurementBook(int id);
+        Task<IResult> ChangeMeasurer(int id, ChangeOfficerRequest request);
+        Task<IResult> ChangeValidator(int id, ChangeOfficerRequest request);
     }
 }

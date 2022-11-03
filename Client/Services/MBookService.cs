@@ -1,6 +1,7 @@
 ﻿using Client.Extensions;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -60,6 +61,18 @@ namespace Client.Services
         public async Task<IResult> PublishMeasurementBook(int id)
         {
             var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}/Publish", "");
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> ChangeMeasurer(int id, ChangeOfficerRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}/ChangeMeasurer", request);
+            return await response.ToResult();
+        }
+
+        public async Task<IResult> ChangeValidator(int id, ChangeOfficerRequest request)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/MBook/{id}/ChangeValidator", request);
             return await response.ToResult();
         }
     }
