@@ -30,12 +30,16 @@ namespace Application.CQRS.WorkOrders.Query
             foreach (var item in workOrder.Items)
             {
                 // If work order item is already taken in some measurement book or is not yet published
-                if (item.MBookItem != null || item.Status != WorkOrderItemStatus.PUBLISHED) continue;
+                if (item.MBookItem != null) continue;
 
                 response.Add(new PendingOrderItemResponse
                 {
-                    ItemId = item.Id,
-                    Description = item.Description
+                    WorkOrderItemId = item.Id,
+                    ItemNo = item.ItemNo,
+                    ItemDescription = item.ItemDescription,
+                    SubItemNo = item.SubItemNo,
+                    ServiceNo = item.ServiceNo,
+                    ShortServiceDesc = item.ShortServiceDesc
                 });
             }
 

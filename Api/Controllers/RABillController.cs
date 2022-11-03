@@ -6,8 +6,10 @@ using EmbPortal.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
@@ -15,6 +17,13 @@ namespace Api.Controllers
     [Authorize]
     public class RABillController : ApiController
     {
+        private readonly IConfiguration _config;
+
+        public RABillController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpGet("MBook/{mBookId}")]
         public async Task<ActionResult<List<RABillResponse>>> GetRABillsByMBookId(int mBookId)
         {
@@ -82,6 +91,20 @@ namespace Api.Controllers
         public async Task<ActionResult> RevokeRABill(int id)
         {
             var command = new RevokeRABillCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/PostToSAP")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> PostRABillToSAP(int id)
+        {
+            var url = $"{_config["SESUrl"]}";
+            var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
+
+            var command = new PostRABillToSapCommand(id, url, authToken);
             await Mediator.Send(command);
 
             return NoContent();

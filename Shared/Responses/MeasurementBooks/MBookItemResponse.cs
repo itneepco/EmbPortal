@@ -6,7 +6,11 @@ namespace EmbPortal.Shared.Responses
     {
         public int Id { get; set; }
         public int WorkOrderItemId { get; set; }
-        public string Description { get; set; }
+        public int ItemNo { get; set; }
+        public string ItemDescription { get; set; }
+        public int SubItemNo { get; set; }
+        public long ServiceNo { get; set; }
+        public string ShortServiceDesc { get; set; }
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
         public float PoQuantity { get; set; }
@@ -19,7 +23,8 @@ namespace EmbPortal.Shared.Responses
         {
             get
             {
-                return (decimal)PoQuantity * UnitRate;
+                var amt = (decimal)PoQuantity * UnitRate;
+                return decimal.Round(amt, 2, MidpointRounding.AwayFromZero);               
             }
         }
 

@@ -10,13 +10,28 @@ using EmbPortal.Shared.Responses;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Http;
 using System;
+using System.Text;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using EmbPortal.Shared.Requests.MeasurementBooks;
 
 namespace Api.Controllers
 {
     [Authorize(Roles = "Admin, Manager")]
     public class WorkOrderController : ApiController
     {
+        private readonly IConfiguration _config;
+        private readonly ILogger<WorkOrderController> _logger;
+        public WorkOrderController(IConfiguration config, ILogger<WorkOrderController> logger)
+        {
+            _config = config;
+            _logger = logger;
+        }
+
         [HttpGet("self")]
         public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByCreator([FromQuery] PagedRequest request)
         {
@@ -26,7 +41,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("Project/{projectId}")]
-        public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByProjects(int projectId, [FromQuery] PagedRequest request)
+        public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByProjects(string projectId, [FromQuery] PagedRequest request)
         {
             var query = new GetOrdersByProjectPaginationQuery(projectId, request);
 
@@ -46,20 +61,16 @@ namespace Api.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
         {
-            var command = new CreateWorkOrderCommand(data);
+            var purchaseOrder = await FetchPODetailsFromSAP(data.OrderNo);
+
+            if (purchaseOrder == null)
+            {
+                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
+            }
+
+            var command = new CreateWorkOrderCommand(purchaseOrder);
 
             return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateWorkOrder(int id, WorkOrderRequest data)
-        {
-            var command = new EditWorkOrderCommand(id, data);
-            await Mediator.Send(command);
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -80,6 +91,17 @@ namespace Api.Controllers
         public async Task<ActionResult> PublishWorkOrder(int workOrderId)
         {
             var command = new PublishWorkOrderCommand(workOrderId);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPut("{workOrderId}/Transfer")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> TransferWorkOrder(int workOrderId, ChangeOfficerRequest data)
+        {
+            var command = new ChangeEngineerInChargeCommand(workOrderId, data);
             await Mediator.Send(command);
 
             return NoContent();
@@ -136,32 +158,54 @@ namespace Api.Controllers
             return NoContent();
         }
 
-        [HttpPost("{workOrderId}/Items/Upload")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> UploadWorkOrderItems(int workOrderId, FileUploadRequest request)
-        {
-            var command = new ImportWorkOrderItemCommand(workOrderId, request.FileContent);
-            var result = await Mediator.Send(command);
 
-            if(result.Succeeded)
+        [HttpGet("sap/{purchaseOrderId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PurchaseOrder), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(long purchaseOrderId)
+        {
+            var purchaseOrder = await FetchPODetailsFromSAP(purchaseOrderId);
+
+            if (purchaseOrder == null)
             {
-                return NoContent();
+                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
             }
-            else
-            {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = result.Errors });
-            }
+
+            return Ok(purchaseOrder);
         }
 
-        [HttpGet("Item/Download")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<string>> DownloadOrderItemTemplate()
+        private async Task<PurchaseOrder> FetchPODetailsFromSAP(long purchaseOrderId)
         {
-            var result = await Mediator.Send(new CreateWorkOrderItemTemplateCommand());
+            try
+            {
+                var url = $"{_config["POUrl"]}/{purchaseOrderId}";
+                var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
+                
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+                    Convert.ToBase64String(authToken));
 
-            return Ok(Convert.ToBase64String(result));
+                var response = await httpClient.GetAsync(url);
+
+                var responseAsString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var purchaseOrder = JsonSerializer.Deserialize<PurchaseOrder>(responseAsString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    return purchaseOrder;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.StackTrace);
+            }
+
+            return null;
         }
     }
 }

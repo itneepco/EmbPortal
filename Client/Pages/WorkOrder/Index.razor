@@ -6,7 +6,7 @@
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Item</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Purchase Order</Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
@@ -37,10 +37,12 @@
             <AntDesign.Col>
                 <Select DataSource="@statuses"
                         @bind-Value="@status"
+                        TItem="WorkStatusSL"
+                        TItemValue="int"
                         ValueName="@nameof(WorkStatusSL.Val)"
                         LabelName="@nameof(WorkStatusSL.Desc)"
                         Placeholder="Filter by Status"
-                        OnSelectedItemChanged="(context) => OnSelectedItemChangedHandler(context)"
+                        OnSelectedItemChanged="async (context) => await OnSelectedItemChangedHandler(context)"
                         Style="margin-right: 0.75rem"
                         AllowClear>
                 </Select>
@@ -70,15 +72,11 @@
 
     <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
     <Column @bind-Field="@context.OrderNo" Width="15%" />
-    <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="14%" />
-    <Column @bind-Field="@context.ContractorName" Width="20%" />
-    <Column @bind-Field="@context.Title" Width="36%" />
-    <Column @bind-Field="@context.Status" Width="10%">
-        @if (context.Status == WorkOrderStatus.COMPLETED.ToString())
-        {
-            <Tag Color="gold">@context.Status</Tag>
-        }
-        else if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
+    <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="15%" />
+    <Column @bind-Field="@context.Contractor" Width="25%" />
+    <Column @bind-Field="@context.Project" Width="25%" />
+    <Column @bind-Field="@context.Status" Width="15%">
+        @if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
         {
             <Tag Color="blue">@context.Status</Tag>
         }
@@ -97,7 +95,7 @@
     List<WorkStatusSL> statuses = new();
 
     [Parameter]
-    public string? StatusParam { get; set; }
+    public string StatusParam { get; set; }
 
     int pageIndex = 1;
     int pageSize = 10;

@@ -9,11 +9,19 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ItemAttachment> builder)
         {
-            builder.Property(p => p.FileName).HasMaxLength(50).IsRequired();
-            builder.Property(p => p.FileNormalizedName).HasMaxLength(50).IsRequired();
+            builder.Property(p => p.FileName)
+                .HasMaxLength(PersistenceConsts.FileNameLegth)
+                .IsRequired();
 
-            builder.Property(p => p.CreatedBy).HasMaxLength(6);
-            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+            builder.Property(p => p.FileNormalizedName)
+                .HasMaxLength(PersistenceConsts.FileNameLegth)
+                .IsRequired();
+
+            builder.Property(p => p.CreatedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
+
+            builder.Property(p => p.LastModifiedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
         }
     }
 }

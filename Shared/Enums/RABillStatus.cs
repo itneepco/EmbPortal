@@ -4,6 +4,7 @@
     {
         CREATED = 1,
         APPROVED = 2,
-        REVOKED = 3
+        REVOKED = 3,
+        POSTED = 4
     }
 }

@@ -2,6 +2,7 @@ using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Persistence
 {
@@ -12,7 +13,11 @@ namespace Persistence
         {
           services.AddDbContext<AppDbContext>(x =>
             {
-                x.UseSqlite(config.GetConnectionString("DefaultConnection"));
+                var connectionString = config.GetConnectionString("DefaultConnection");
+                //x.UseSqlite(config.GetConnectionString("DefaultConnection"));
+
+                var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+                x.UseMySql(connectionString, serverVersion);
             });
           services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 

@@ -6,10 +6,6 @@
         <Icon Type="dashboard" />
         <span>Dashboard</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="/workorder">
-        <Icon Type="container" />
-        <span>Work Order</span>
-    </BreadcrumbItem>
     <BreadcrumbItem>
         Details
     </BreadcrumbItem>
@@ -20,15 +16,15 @@
     <CascadingValue Value="@data.Id" TValue="int">
         <CascadingValue Value="@data.Status" TValue="string">
             <Tabs Animated>
-                <TabPane Tab="Work Order Header" Key="1">
+                <TabPane Tab="Work Order Details" Key="1">
                     <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@ReloadPage" />
+
+                    <Divider Plain>Order Items</Divider>
+                    
+                    <WorkOrderItems Items="@data.Items"/>
                 </TabPane>
 
-                <TabPane Tab="Work Order Line Items" Key="2">
-                    <WorkOrderItems Items="@data.Items" ReloadPage="@ReloadPage" />
-                </TabPane>
-
-                <TabPane Tab="Measurement Books" Key="3">
+                <TabPane Tab="Measurement Books" Key="2">
                     <MeasurementBooks/>
                 </TabPane>
             </Tabs>

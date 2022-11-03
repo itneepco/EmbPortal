@@ -16,6 +16,13 @@ namespace Client.Services
         {
             _httpClient = httpClient;
         }
+
+        public async Task<IResult<PurchaseOrder>> FetchPOFromSAP(string purchaseOrderNo)
+        {
+            var response = await _httpClient.GetAsync($"/api/WorkOrder/sap/{purchaseOrderNo}");
+            return await response.ToResult<PurchaseOrder>();
+        }
+
         public async Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
         {
             var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}");

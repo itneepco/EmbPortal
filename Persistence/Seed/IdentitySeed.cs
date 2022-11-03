@@ -24,7 +24,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "Engineer In Charge",
+                        DisplayName = "John Doe",
                         Designation = "Manager",
                         Email = "eng@neepco.com",
                         UserName = "001234",
@@ -32,7 +32,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "Validation Officer",
+                        DisplayName = "Foo Bar",
                         Designation = "Manager",
                         Email = "val@neepco.com",
                         UserName = "001235",
@@ -40,7 +40,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "Measurement Officer",
+                        DisplayName = "San Go",
                         Designation = "Manager",
                         Email = "mea@neepco.com",
                         UserName = "001236",

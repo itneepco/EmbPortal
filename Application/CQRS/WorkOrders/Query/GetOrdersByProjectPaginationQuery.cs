@@ -16,7 +16,7 @@ using EmbPortal.Shared.Enums;
 
 namespace Application.WorkOrders.Query
 {
-    public record GetOrdersByProjectPaginationQuery(int projectId, PagedRequest data) : IRequest<PaginatedList<WorkOrderResponse>>
+    public record GetOrdersByProjectPaginationQuery(string project, PagedRequest data) : IRequest<PaginatedList<WorkOrderResponse>>
     {
     }
 
@@ -35,16 +35,14 @@ namespace Application.WorkOrders.Query
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByProjectPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.WorkOrders
-                .Include(p => p.Project)
-                .Include(p => p.Contractor)
+                .Include(p => p.Engineer)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))
             {
                 Criteria = (m =>
-                    m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
+                    m.OrderNo.ToString().Contains(request.data.Search.ToLower()) ||
+                    m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);
@@ -58,7 +56,7 @@ namespace Application.WorkOrders.Query
             }
 
             return await query
-                .Where(p => p.ProjectId == request.projectId)
+                .Where(p => p.Project == request.project)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()

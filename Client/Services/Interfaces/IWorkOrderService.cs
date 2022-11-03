@@ -1,13 +1,13 @@
 ﻿using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Client.Services.Interfaces
 {
     public interface IWorkOrderService
     {
+        Task<IResult<PurchaseOrder>> FetchPOFromSAP(string purchaseOrderNo);
         Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search, int status);
         Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search, int status);
         Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id);

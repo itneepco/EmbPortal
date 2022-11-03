@@ -49,7 +49,14 @@ namespace Application.CQRS.WorkOrders.Command
             
             workOrder.AddUpdateLineItem(
                 id: request.Id,
-                description: request.Data.Description,
+                itemNo: request.Data.ItemNo,
+                pacakageNo:request.Data.PackageNo,
+                itemDesc: request.Data.ItemDescription,
+                subItemNo: request.Data.SubItemNo,
+                subItemPacakageNo: request.Data.SubItemPackageNo,
+                serviceNo: request.Data.ServiceNo,
+                shortServiceDesc: request.Data.ShortServiceDesc,
+                longServiceDesc: request.Data.LongServiceDesc,
                 uomId: request.Data.UomId,
                 unitRate: request.Data.UnitRate,
                 poQuantity: request.Data.PoQuantity

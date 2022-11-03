@@ -1,81 +1,90 @@
-﻿<Drawer Closable="true" Width="700"
-        Title="@(WorkOrder == null ?  "Add Work order" : "Edit Work Order")" 
+﻿<Drawer Closable="true" Width="850"
+        Title="@("Fetch PO from SAP")"
         Visible="@Visible" OnClose="@Close">
-    <Form Style="height:90%" Layout="@FormLayout.Vertical" Loading="loading" Model="@model" OnFinish="@OnSubmit">
-        <Row Gutter="16">
-            <AntDesign.Col Span="24">
-                <FormItem Label="Contractor">
-                    <Select DataSource="@contractors"
-                            @bind-Value="@context.ContractorId"
-                            ValueName="@nameof(ContractorResponse.Id)"
-                            LabelName="@nameof(ContractorResponse.Name)"
-                            Style="width: 100%"
-                            Placeholder="Select a contractor"
-                            AllowClear>
-                    </Select>
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="12">
-                <FormItem Label="Project">
-                    <Select DataSource="@projects"
-                            Style="width: 100%"
-                            @bind-Value="@context.ProjectId"
-                            ValueName="@nameof(ProjectResponse.Id)"
-                            LabelName="@nameof(ProjectResponse.Name)"
-                            Placeholder="Select a project"
-                            AllowClear>
-                    </Select>
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="12">
-                <FormItem Label="Engineer In Charge">
-                    <Input Placeholder="Engineer In Charge" TValue="string" @bind-Value="@context.EngineerInCharge" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="24">
-                <FormItem Label="Work Description">
-                    <TextArea Placeholder="Please enter work description" Rows="4" @bind-Value="@context.Title" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="16">
-                <FormItem Label="Work Order No">
-                    <Input Placeholder="Work Order No" TValue="string" @bind-Value="@context.OrderNo" />
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="8">
-                <FormItem Label="Work Order Date">
-                    <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.OrderDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
-        <Row Gutter="16">
-            <AntDesign.Col Span="16">
-                <FormItem Label="Agreement No">
-                    <Input Placeholder="Agreement No" TValue="string" @bind-Value="@context.AgreementNo" />
-                </FormItem>
-            </AntDesign.Col>
-            <AntDesign.Col Span="8">
-                <FormItem Label="Agreement Date">
-                    <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.AgreementDate" Format="dd-MM-yyyy" Style="width: 100%" />
-                </FormItem>
-            </AntDesign.Col>
-        </Row>
 
-        <FormItem WrapperColOffset="18" WrapperColSpan="6">
-            <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
-            <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
-        </FormItem>
-    </Form>
+    <Row Gutter="16">
+        <AntDesign.Col Span="16">
+            <Input Placeholder="Purchase Order No" TValue="string" @bind-Value="poNumber" />
+        </AntDesign.Col>
+        <AntDesign.Col Span="8">
+            <Button Type="@ButtonType.Primary" OnClick="@SearchPO">Fetch</Button>
+        </AntDesign.Col>
+    </Row>
+
+    @if (purchaseOrder != null)
+    {
+        <Descriptions Size="@DescriptionsSize.Small"
+                  Bordered
+                  Layout="@DescriptionsLayout.Vertical"
+                  Style="margin-top: 1.25rem; margin-bottom: 1.25rem;">
+            <DescriptionsItem Title="Order No">@purchaseOrder.OrderNo</DescriptionsItem>
+            <DescriptionsItem Title="Order Date">@purchaseOrder.OrderDate</DescriptionsItem>
+            <DescriptionsItem Title="Contractor">@purchaseOrder.ContractorName</DescriptionsItem>
+            <DescriptionsItem Title="Project Code">@purchaseOrder.ProjectId</DescriptionsItem>
+            <DescriptionsItem Title="Project">@purchaseOrder.ProjectName</DescriptionsItem>
+        </Descriptions>
+
+        <Table TItem="OrderItem"
+           PageSize="@purchaseOrder.Items.Count"
+           Size="@TableSize.Small"
+           DataSource="@purchaseOrder.Items"
+           HidePagination>
+            <RowTemplate>
+                <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+                <Column Title="Description" @bind-Field="@context.Description" Width="80%" />
+            </RowTemplate>
+
+            <ExpandTemplate Context="rowData">
+                <Table TItem="ServiceItem"
+                   PageSize="rowData.Data.Details.Count"
+                   DataSource="rowData.Data.Details"
+                   Bordered HidePagination>
+                    <Column TData="int" Title="SubItem No" Width="15%">@context.SubItemNo</Column>
+                    <Column TData="int" Title="Service No" Width="15%">@context.ServiceNo</Column>
+                    <Column TData="string" Title="Description" Width="34%">@context.ShortDesc</Column>
+                    <Column TData="string" Title="Uom" DataIndex="@nameof(context.Uom)" Width="12%" />
+                    <Column TData="decimal" Title="Unit Rate" DataIndex="@nameof(context.UnitRate)" Width="12%" />
+                    <Column TData="decimal" Title="Quantity" DataIndex="@nameof(context.Quantity)" Width="12%" />
+                </Table>
+            </ExpandTemplate>
+        </Table>
+
+        <Form Style="margin-top: 1.25rem;"
+          Layout="@FormLayout.Vertical"
+          Loading="loading"
+          Model="@model"
+          OnFinish="@OnSubmit">
+
+           <!-- <FormItem Label="Engineer In Charge" WrapperColSpan="16">
+                <Select DataSource="@users"
+                    Style="width: 100%"
+                    @bind-Value="@context.EngineerInCharge"
+                    ValueName="@nameof(UserResponse.EmployeeCode)"
+                    LabelName="@nameof(UserResponse.LongName)"
+                    Placeholder="Select Engineer In Charge"
+                    AllowClear>
+                </Select>
+            </FormItem>
+             -->
+            <FormItem WrapperColSpan="6">
+                <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </FormItem>
+        </Form>
+    }
+    else
+    {
+        <Spin Spinning="loading">
+            <Empty Style="margin-top: 2.5rem" />
+        </Spin>
+    }
 </Drawer>
 
 
-@code{
+@code {
+    List<string> _items;
+    IEnumerable<string> _selectedValues;
+
     [Parameter]
     public WorkOrderResponse WorkOrder { get; set; }
 
@@ -85,65 +94,51 @@
     [Parameter]
     public bool Visible { get; set; }
 
+    PurchaseOrder purchaseOrder;
+    //List<UserResponse> users = new();
     WorkOrderRequest model { get; set; } = new();
 
-    List<ProjectResponse> projects = new();
-    List<ContractorResponse> contractors = new();
-
-    bool loading = false;
-
-    async Task LoadProjects()
-    {
-        projects = await projectservice.GetAllProjects();
-    }
-
-    async Task LoadContractors()
-    {
-        contractors = await contractorService.GetAllContractors();
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (WorkOrder != null)
-        {
-            model.OrderNo = WorkOrder.OrderNo;
-            model.OrderDate = WorkOrder.OrderDate;
-            model.AgreementNo = WorkOrder.AgreementNo;
-            model.AgreementDate = WorkOrder.AgreementDate;
-            model.Title = WorkOrder.Title;
-            model.ProjectId = WorkOrder.ProjectId;
-            model.ContractorId = WorkOrder.ContractorId;
-            model.EngineerInCharge = WorkOrder.EngineerInCharge;
-        }
-        else
-        {
-            model = new();
-        }
-    }
+    bool loading;
+    string poNumber;
+    string empCode;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadProjects();
-        await LoadContractors();
+       //users = await userService.GetAllUsers();
     }
 
-    void Close()
+    async Task SearchPO()
     {
-        OnClose.InvokeAsync();
+        if (String.IsNullOrWhiteSpace(poNumber)) return;
+
+        purchaseOrder = null;
+        loading = true;
+        StateHasChanged();
+
+
+        var result = await workOrderService.FetchPOFromSAP(poNumber);
+        loading = false;
+        if (!result.Succeeded)
+        {
+            await messageService.Error(result.Message);
+            return;
+        }
+
+        purchaseOrder = result.Data;
+        
+        // filter out deleted items
+        purchaseOrder.Items = purchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)).ToList();
+        foreach (var item in purchaseOrder.Items)
+        {
+            item.Details = item.Details.Where(p => !bool.Parse(p.IsDeleted)).ToList();
+        }
     }
 
     async Task OnSubmit(EditContext context)
     {
         loading = true;
-        dynamic result;
-        if (WorkOrder != null)
-        {
-            result = await workOrderService.UpdateWorkOrder(WorkOrder.Id , model);
-        }
-        else
-        {
-            result = await workOrderService.CreateWorkOrder(model);
-        }
+        model.OrderNo = purchaseOrder.OrderNo;
+        var result = await workOrderService.CreateWorkOrder(model);
         loading = false;
 
         if (!result.Succeeded)
@@ -156,5 +151,10 @@
         var orderId = WorkOrder != null ? WorkOrder.Id : result.Data;
         navManager.NavigateTo($"/orderdetail/{orderId}");
         await messageService.Success(result.Message);
+    }
+
+    void Close()
+    {
+        OnClose.InvokeAsync();
     }
 }

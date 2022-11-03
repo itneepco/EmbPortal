@@ -11,12 +11,14 @@
           ValidateMode="@FormValidateMode.Complex"
           Loading="@loading">
 
-        <FormItem Label="Select Measurement Book Line Item" Required Style="margin-bottom:12px">
+        <FormItem Label="Select Service Item" Required Style="margin-bottom:12px">
             <Select DataSource="@mbItemsStatuses"
                     @bind-Value="@mbItemId"
+                    TItem="MBItemStatusResponse"
+                    TItemValue="int"
                     ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
                     LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
-                    Placeholder="Select Measurement Book Item"
+                    Placeholder="Select Service Item"
                     OnSelectedItemChanged="@(item => SelectLineItem(item))"
                     AllowClear>
             </Select>

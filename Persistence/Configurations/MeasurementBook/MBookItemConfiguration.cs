@@ -8,8 +8,11 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<MBookItem> builder)
         {
-            builder.Property(p => p.CreatedBy).HasMaxLength(6);
-            builder.Property(p => p.LastModifiedBy).HasMaxLength(6);
+            builder.Property(p => p.CreatedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
+
+            builder.Property(p => p.LastModifiedBy)
+                .HasMaxLength(PersistenceConsts.EmpCodeLength);
         }
     }
 }

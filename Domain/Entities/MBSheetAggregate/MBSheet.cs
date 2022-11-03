@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 using System;
@@ -10,12 +11,18 @@ namespace Domain.Entities.MBSheetAggregate
     {
         public int Id { get; private set; }
         public string Title { get; set; }
-        public string MeasurementOfficer { get; private set; }
         public DateTime MeasurementDate { get; private set; }
-        public string ValidationOfficer { get; private set; }
+        public string MeasurementOfficer { get; private set; }
+        public AppUser Measurer { get; private set; }
+
         public DateTime ValidationDate { get; private set; }
-        public string AcceptingOfficer { get; private set; }
+        public string ValidationOfficer { get; private set; }
+        public AppUser Validator { get; private set; }
+
         public DateTime AcceptingDate { get; private set; }
+        public string AcceptingOfficer { get; private set; }
+        public AppUser Acceptor { get; set; }
+
         public MBSheetStatus Status { get; private set; }
 
         public int MeasurementBookId { get; private set; }
@@ -53,6 +60,10 @@ namespace Domain.Entities.MBSheetAggregate
         {
             Status = MBSheetStatus.ACCEPTED;
             AcceptingDate = DateTime.Now;
+        }
+        public void MarkPublished()
+        {
+            Status = MBSheetStatus.PUBLISHED;
         }
 
         public void MarkAsValidated()

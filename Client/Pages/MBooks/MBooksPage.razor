@@ -14,16 +14,18 @@
             <AntDesign.Col>
                 <Select DataSource="@statuses"
                         @bind-Value="@status"
+                        TItem="MBookStatusSL"
+                        TItemValue="int"
                         ValueName="@nameof(MBookStatusSL.Val)"
                         LabelName="@nameof(MBookStatusSL.Desc)"
                         Placeholder="Filter by Status"
-                        OnSelectedItemChanged="(context) => OnSelectedItemChangedHandler(context)"
+                        OnSelectedItemChanged="async (context) => await OnSelectedItemChangedHandler(context)"
                         Style="margin-right: 0.75rem"
                         AllowClear>
                 </Select>
             </AntDesign.Col>
             <AntDesign.Col Flex="1">
-                <Input Placeholder="Search by order no, contractor or title" @bind-Value="@search" />
+                <Input Placeholder="Search by order no or title" @bind-Value="@search" />
             </AntDesign.Col>
             <AntDesign.Col Style="margin-left: 0.75rem">
                 <Tooltip Title="@IconType.Outline.Search">
@@ -41,14 +43,26 @@
        Total="total"
        @bind-PageIndex="pageIndex"
        @bind-PageSize="pageSize"
-       @bind-SelectedRows="selectedRows">
+       @bind-SelectedRows="selectedRows"
+       Size="@TableSize.Small"
+       Responsive="false"
+       ScrollX="600">
 
     <Selection Key="@context.OrderNo" Type="radio" />
     <Column @bind-Field="@context.Title" />
     <Column @bind-Field="@context.Contractor" />
     <Column @bind-Field="@context.OrderNo" />
     <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" />
-    <Column @bind-Field="@context.Status" />
+    <Column @bind-Field="@context.Status">
+        @if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="green">@context.Status</Tag>
+        }
+    </Column>
 </Table>
 
 @code {

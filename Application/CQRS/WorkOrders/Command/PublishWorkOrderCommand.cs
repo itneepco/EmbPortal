@@ -32,11 +32,6 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(workOrder), request.Id);
             }
 
-            if (workOrder.Status == WorkOrderStatus.COMPLETED)
-            {
-                throw new BadRequestException("The work order has already been completed");
-            }
-
             workOrder.MarkPublished();
             await _context.SaveChangesAsync(cancellationToken);
 

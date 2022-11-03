@@ -30,8 +30,8 @@ namespace Client
                 .AddScoped<EMBStateProvider>()
                 .AddScoped<AuthenticationStateProvider, EMBStateProvider>();
 
-            builder.Services.AddScoped<IProjectService, ProjectService>()
-                .AddScoped<IContractorService, ContractorService>()
+            builder.Services
+                .AddScoped<IDashboardService, DashboardService>()
                 .AddScoped<IWorkOrderService, WorkOrderService>()
                 .AddScoped<IUomService, UomService>()
                 .AddScoped<IMBookService, MBookService>()

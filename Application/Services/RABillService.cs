@@ -25,7 +25,8 @@ namespace Application.Services
         {
             List<RABill> raBills = await _context.RABills
                  .Include(p => p.Items)
-                 .Where(p => p.MeasurementBookId == mBookId && p.Status == RABillStatus.APPROVED)
+                 .Where(p => p.MeasurementBookId == mBookId && 
+                       (p.Status == RABillStatus.APPROVED || p.Status == RABillStatus.POSTED))
                  .AsNoTracking()
                  .ToListAsync();
 

@@ -26,12 +26,14 @@ namespace Api
                 {
                     var context = services.GetRequiredService<AppDbContext>();
                     await context.Database.MigrateAsync();
-                    await AppDbContextSeed.SeedAsync(context, loggerFactory);
 
                     // seeding users
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
+
+                    // seeding entities
+                    await AppDbContextSeed.SeedAsync(context, loggerFactory);
                 }   
                 catch (Exception ex)
                 {

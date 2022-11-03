@@ -37,17 +37,13 @@ namespace Application.CQRS.WorkOrders.Query
 
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByUserPaginationQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.WorkOrders
-                .Include(p => p.Project)
-                .Include(p => p.Contractor)
-                .AsQueryable();
+            var query = _context.WorkOrders.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))
             {
                 Criteria = (m =>
-                    m.OrderNo.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Title.ToLower().Contains(request.data.Search.ToLower()) ||
-                    m.Contractor.Name.ToLower().Contains(request.data.Search.ToLower())
+                    m.OrderNo.ToString().Contains(request.data.Search.ToLower()) ||
+                    m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 
                 query = query.Where(Criteria);
@@ -62,6 +58,7 @@ namespace Application.CQRS.WorkOrders.Query
 
             var currEmpCode = _currentUserService.EmployeeCode;
             return await query
+                .Include(p => p.Engineer)
                 .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)
                 .OrderByDescending(p => p.Created)
                 .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)

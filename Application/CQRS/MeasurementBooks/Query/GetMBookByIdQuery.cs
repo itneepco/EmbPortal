@@ -42,9 +42,9 @@ namespace Application.CQRS.MeasurementBooks.Query
         public async Task<MBookDetailResponse> Handle(GetMBookByIdQuery request, CancellationToken cancellationToken)
         {
             var query = _context.MeasurementBooks
+                .Include(p => p.Measurer)
+                .Include(p => p.Validator)
                 .Include(p => p.WorkOrder)
-                .Include(p => p.WorkOrder.Contractor)
-                .Include(p => p.WorkOrder.Project)
                 .Include(p => p.Items)
                 .AsQueryable();
 

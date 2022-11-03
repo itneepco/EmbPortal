@@ -1,6 +1,7 @@
 ﻿using Api.Models;
 using Application.CQRS.MBSheets.Command;
 using Application.CQRS.MBSheets.Query;
+using Application.CQRS.MeasurementBooks.Command;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -62,6 +63,19 @@ namespace Api.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("{id}/Publish")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> PublishMeasurementBook(int id)
+        {
+            var command = new PublishMBSheetCommand(id);
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+
 
         [HttpPut("{id}/Validate")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -159,6 +173,22 @@ namespace Api.Controllers
             var result = await Mediator.Send(new DownloadMBSheetAttachmentCommand(mbSheetId, itemId, attachmentId, env.ContentRootPath));
 
             return Ok(Convert.ToBase64String(result));
+        }
+
+        [HttpGet("Pending/Approval")]
+        public async Task<ActionResult<IList<MBSheetInfoResponse>>> GetPendingApprovalMBSheets()
+        {
+            var query = new GetPendingApprovalMBSheetQuery();
+
+            return Ok(await Mediator.Send(query));
+        }
+
+        [HttpGet("Pending/Validation")]
+        public async Task<ActionResult<IList<MBSheetInfoResponse>>> GetPendingValidationMBSheets()
+        {
+            var query = new GetPendingValidationMBSheetQuery();
+
+            return Ok(await Mediator.Send(query));
         }
     }
 }

@@ -17,7 +17,7 @@
         </AntDesign.Col>
     </Row>
 
-    <RABillItemTable ModelItems="@model.Items" />
+    <RABillItemTable ModelItems="@model.Items.Where(p => p.AvailableQty > 0).ToList()" />
 
     <FormItem Style="margin-top: 1rem">
         <Row Justify="end">

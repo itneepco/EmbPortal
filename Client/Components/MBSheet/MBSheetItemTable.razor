@@ -8,8 +8,13 @@
        Loading="@loading"
        HidePagination Bordered>
 
-    <Column RowSpan="GetRowSpan(context)" Title="MBook Item Description" @bind-Field="@context.MBookItemDescription" Width="33%" />
-    <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="15%" />
+    <Column RowSpan="GetRowSpan(context)" TData="long" Title="Service No" Width="8%">
+        @context.ServiceNo
+    </Column>
+    <Column RowSpan="GetRowSpan(context)" TData="string" Title="Service Description" Width="25%">
+        @context.ShortServiceDesc
+    </Column>
+    <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="15%" />
     <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
     <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
     <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>

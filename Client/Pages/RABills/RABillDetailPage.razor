@@ -5,9 +5,13 @@
         <Icon Type="dashboard" />
         <span>Dashboard</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">
+    <BreadcrumbItem Href="@($"/mbooks")">
         <Icon Type="snippets" />
         <span>Measurement Books</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">
+        <Icon Type="snippets" />
+        <span>RA Bills</span>
     </BreadcrumbItem>
     <BreadcrumbItem>
         RA Bill Details
@@ -22,7 +26,7 @@
         </AntDesign.Col>
         <AntDesign.Col Flex="1"></AntDesign.Col>
         <AntDesign.Col>
-            <Popconfirm Title="Sure to download?"
+            @*<Popconfirm Title="Sure to download?"
                         OnConfirm="@GeneratePdf"
                         OkText="Yes"
                         CancelText="No">
@@ -31,9 +35,10 @@
                         Loading="@downloading">
                     Download
                 </Button>
-            </Popconfirm>
+            </Popconfirm>*@
 
-            @if (raBill.Status != RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            @if ((raBill.Status == RABillStatus.CREATED || raBill.Status == RABillStatus.REVOKED) 
+                  && employeeCode == raBill.AcceptingOfficer)
             {
                 <Popconfirm Title="Approve RA Bill?"
                             OnConfirm="@ApproveRABill"
@@ -47,14 +52,37 @@
                     </Button>
                 </Popconfirm>
             }
+
+            @if (raBill.Status == RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            {
+                <Popconfirm Title="Post to SAP"
+                    OnConfirm="@PostRABill"
+                    OkText="Yes"
+                    CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)"
+                    Type="@ButtonType.Primary"
+                    Loading="@loading"
+                    style="margin-right: 0.15rem">
+                        Post to SAP
+                    </Button>
+                </Popconfirm>
+            }
         </AntDesign.Col>
     </Row>
 
 
-    <Descriptions Bordered Size="@DescriptionsSize.Small">
+    <Descriptions 
+            Layout="@DescriptionsLayout.Vertical"
+            Bordered Size="@DescriptionsSize.Small" 
+            Column="column">
+
         <DescriptionsItem Title="Title">@raBill.Title</DescriptionsItem>
         <DescriptionsItem Title="Status">@raBill.Status</DescriptionsItem>
-        <DescriptionsItem Title="Accepting Officer">@raBill.AcceptingOfficer</DescriptionsItem>
+        <DescriptionsItem Title="Accepting Officer">
+            <Tooltip Title="@raBill.Acceptor.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@raBill.Acceptor?.DisplayName</span>
+            </Tooltip>
+        </DescriptionsItem>
         <DescriptionsItem Title="Total Amount (Rs)">@raBill.TotalAmount</DescriptionsItem>
         <DescriptionsItem Title="Total Deduction (Rs)">@raBill.TotalDeduction</DescriptionsItem>
         <DescriptionsItem Title="Net Amount (Rs)">@raBill.NetAmount</DescriptionsItem>
@@ -67,8 +95,9 @@
            Size="@TableSize.Small"
            Loading="@loading"
            HidePagination Bordered>
-
-        <Column Title="Line Item Description" @bind-Field="@context.MBookItemDescription" Width="43%" />
+        
+        <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="10%" />
+        <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="33%" />
         <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
         <Column Title="Measured Qty" TData="float" Width="8%">
             @context.AcceptedMeasuredQty.ToString("0.00")
@@ -90,7 +119,7 @@
     <Button Icon="@(IconType.Outline.Plus)"
             Type="@(ButtonType.Primary)"
             Style="margin-bottom: 0.5rem;"
-            Disabled="raBill.Status == RABillStatus.APPROVED"
+            Disabled="raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED"
             OnClick="@OpenSideDrawer">
         Add Deductions
     </Button>
@@ -145,6 +174,15 @@ else
     bool downloading;
     bool drawerVisible;
     string employeeCode;
+
+    private Dictionary<string, int> column = new Dictionary<string, int> {
+        { "xxl", 3 },
+        { "xl", 3},
+        { "lg", 2},
+        { "md", 2},
+        { "sm", 1},
+        { "xs", 1}
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -216,6 +254,25 @@ else
         if (result.Succeeded)
         {
             raBill.Status = RABillStatus.APPROVED;
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+
+    async Task PostRABill()
+    {
+        loading = true;
+        var result = await raBillService.PostRABillToSAP(raBill.Id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBill.Status = RABillStatus.POSTED;
             StateHasChanged();
             await messageService.Success(result.Message);
         }

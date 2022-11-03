@@ -2,7 +2,11 @@
 {
     public class PendingOrderItemResponse
     {
-        public int ItemId { get; set; }
-        public string Description { get; set; }
+        public int WorkOrderItemId { get; set; }
+        public int ItemNo { get; set; }
+        public string ItemDescription { get; set; }
+        public int SubItemNo { get; set; }
+        public long ServiceNo { get; set; }
+        public string ShortServiceDesc { get; set; }
     }
 }

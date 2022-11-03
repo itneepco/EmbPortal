@@ -32,7 +32,7 @@ namespace Application.CQRS.MBSheets.Command
                 throw new NotFoundException(nameof(mbSheet), request.Id);
             }
 
-            if (mbSheet.Status != MBSheetStatus.CREATED)
+            if (mbSheet.Status != MBSheetStatus.PUBLISHED)
             {
                 throw new BadRequestException("MB Sheet has already been validated");
             }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Common;
+using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 
@@ -9,22 +10,15 @@ namespace Domain.Entities.WorkOrderAggregate
 {
     public class WorkOrder : AuditableEntity, IAggregateRoot
     {
-
         public int Id { get; private set; }
-        public string OrderNo { get; private set; }
+        public long OrderNo { get; private set; }
         public DateTime OrderDate { get; private set; }        
         public WorkOrderStatus Status { get; private set; }
-        public string Title { get; private set; }
-        public string AgreementNo { get; private set; }
-        public DateTime AgreementDate { get; private set; }
-        public int ProjectId { get; private set; }
-        public int ContractorId { get; private set; }
-        public string EngineerInCharge { get; private set; }
-        public DateTime CommencementDate { get; private set; }
-        public DateTime CompletionDate { get; private set; }
+        public string Project { get; private set; }
+        public string Contractor { get; private set; }
 
-        public Project Project { get; private set; }
-        public Contractor Contractor { get; private set; }
+        public string EngineerInCharge { get; private set; }
+        public AppUser Engineer { get; private set; }
 
         private readonly List<WorkOrderItem> _items = new List<WorkOrderItem>();
         public IReadOnlyList<WorkOrderItem> Items => _items.AsReadOnly();
@@ -36,28 +30,48 @@ namespace Domain.Entities.WorkOrderAggregate
         {
         }
 
-        public WorkOrder(string orderNo, DateTime orderDate, string title, string agreementNo, DateTime agreementDate, int projectId, int contractorId, string engineerInCharge)
+        public WorkOrder(
+            long orderNo, 
+            DateTime orderDate, 
+            string project, 
+            string contractor, 
+            string engineerInCharge
+        )
         {
             OrderNo = orderNo;
             OrderDate = orderDate;
-            Title = title;
-            AgreementNo = agreementNo;
-            AgreementDate = agreementDate;
-            ProjectId = projectId;
-            ContractorId = contractorId;
+            Project = project;
+            Contractor = contractor;
             Status = WorkOrderStatus.CREATED;
             EngineerInCharge = engineerInCharge;
         }
 
-        public void AddUpdateLineItem(string description, int uomId, decimal unitRate, float poQuantity, int id=0)
+        public void AddUpdateLineItem(
+            int itemNo,
+            string pacakageNo,
+            string itemDesc,
+            int subItemNo,
+            string subItemPacakageNo,
+            long serviceNo,
+            string shortServiceDesc,
+            string longServiceDesc,
+            int uomId, 
+            decimal unitRate, 
+            float poQuantity, 
+            int id=0)
         {
-            if(Status == WorkOrderStatus.COMPLETED) return;
-
             // for item update
             if (id != 0)
             {
                 var item = _items.FirstOrDefault(p => p.Id == id);
-                item.SetDescription(description);
+                item.SetItemNo(itemNo);
+                item.SetPackageNo(pacakageNo);
+                item.SetItemDescription(itemDesc);
+                item.SetSubItemNo(subItemNo);
+                item.SetSubItemPackageNo(subItemPacakageNo);
+                item.SetServiceNo(serviceNo);
+                item.SetShortServiceDesc(shortServiceDesc);
+                item.SetLongServiceDesc(longServiceDesc);
                 item.SetUomId(uomId);
                 item.SetUnitRate(unitRate);
                 item.SetPoQuantity(poQuantity);
@@ -65,24 +79,30 @@ namespace Domain.Entities.WorkOrderAggregate
             }
             else // new item
             {
-                _items.Add(new WorkOrderItem(description, uomId, unitRate, poQuantity));
+                _items.Add(new WorkOrderItem(
+                    itemNo: itemNo,
+                    packageNo: pacakageNo,
+                    itemDesc: itemDesc,
+                    subItemNo: subItemNo,
+                    subItemPackageNo: subItemPacakageNo,
+                    serviceNo: serviceNo,
+                    shortServiceDesc: shortServiceDesc,
+                    longServiceDesc: longServiceDesc,
+                    uomId: uomId,
+                    unitRate: unitRate,
+                    poQuantity: poQuantity
+                ));
             }
         }
 
         public void RemoveLineItem(int id)
         {
-            if (Status == WorkOrderStatus.COMPLETED) return;
-
             var item = _items.SingleOrDefault(p => p.Id == id);
 
             if(item != null) // if item exists in the list
             {                
                 _items.Remove(item);
             }
-        }
-        
-        public void MarkCompleted() {
-            Status = WorkOrderStatus.COMPLETED;
         }
 
         public void MarkPublished()
@@ -94,7 +114,7 @@ namespace Domain.Entities.WorkOrderAggregate
             }
         }
 
-        public void SetOrderNo(string orderNo)
+        public void SetOrderNo(long orderNo)
         {
             OrderNo = orderNo;
         }
@@ -108,30 +128,14 @@ namespace Domain.Entities.WorkOrderAggregate
         {
             OrderDate = orderDate;
         }
-
-        public void SetTitle(string title)
+        public void SetProject(string project)
         {
-            Title = title;
+            Project = project;
         }
 
-        public void SetAgreementNo(string agreementNo)
+        public void SetContractor(string contractor)
         {
-            AgreementNo = agreementNo;
-        }
-
-        public void SetAgreementDate(DateTime agreementDate)
-        {
-            AgreementDate = agreementDate;
-        }
-
-        public void SetProjectId(int projectId)
-        {
-            ProjectId = projectId;
-        }
-
-        public void SetContractorId(int contractorId)
-        {
-            ContractorId = contractorId;
+            Contractor = contractor;
         }
     }
 }

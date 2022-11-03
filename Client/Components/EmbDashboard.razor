@@ -1,5 +1,5 @@
-﻿<Row Gutter="16" Align="center">
-    <AntDesign.Col Span="9">
+﻿<Row Gutter="(16, 16)" Align="center">
+    <AntDesign.Col Xs="24" Sm="24" Md="24" Lg="9">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" /> Measurement Books
@@ -12,7 +12,7 @@
                 <p>Measurement Sheets Summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Validation Pending" Value="1" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Validation Pending" Value="@stats.MBSheetValidation" ValueStyle="color: #3f8600;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
@@ -23,7 +23,7 @@
                         </Button>
                     </AntDesign.Col>
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Approval Pending" Value="1">
+                        <Statistic Title="Approval Pending" Value="@stats.MBSheetApproval">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
@@ -37,7 +37,7 @@
             </Body>
         </Card>
     </AntDesign.Col>
-    <AntDesign.Col Span="6">
+    <AntDesign.Col Xs="24" Sm="24" Md="24" Lg="6">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" /> RA Bills
@@ -50,7 +50,7 @@
                 <p>RA Bill Summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col>
-                        <Statistic Title="Approval Pending" Value="1">
+                        <Statistic Title="Approval Pending" Value="@stats.RABillApproval">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
@@ -65,7 +65,7 @@
             </Body>
         </Card>
     </AntDesign.Col>
-    <AntDesign.Col Span="9">
+    <AntDesign.Col Xs="24" Sm="24" Md="24" Lg="9">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" />  Work Orders
@@ -78,7 +78,7 @@
                 <p>Work orders summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Completed" Value="1" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Pending Orders" Value="@stats.WorkOrderPending" ValueStyle="color: #3f8600;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
@@ -89,12 +89,12 @@
                         </Button>
                     </AntDesign.Col>
                     <AntDesign.Col Span="12">
-                        <Statistic Title="In Progress" Value="1">
+                        <Statistic Title="Published Orders" Value="@stats.WorkOrderPublished">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button OnClick="@LoadCompletedOrders"
+                        <Button OnClick="@LoadPublishedOrders"
                                 Style="margin-top: 16px;" 
                                 Type="@ButtonType.Primary">
                             View
@@ -113,14 +113,30 @@
 </style>
 
 @code {
-    void LoadPendingOrders()
+    DashboardStatsResponse stats = new();
+    bool loading;
+
+    protected override async Task OnParametersSetAsync()
     {
-        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.PUBLISHED}");
+        await LoadDashboardStatsAsync();
     }
 
-    void LoadCompletedOrders()
+    async Task LoadDashboardStatsAsync()
     {
-        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.COMPLETED}");
+        loading = true;
+        stats = await dashboardService.GetDasbordStats();
+        loading = false;
+        StateHasChanged();
+    }
+
+    void LoadPendingOrders()
+    {
+        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.CREATED}");
+    }
+
+    void LoadPublishedOrders()
+    {
+        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.PUBLISHED}");
     }
 
     void LoadPendingRABills()
@@ -130,11 +146,11 @@
 
     void LoadPendingMBValidations()
     {
-        navManager.NavigateTo($"/mbooks/");
+        navManager.NavigateTo($"/mbsheets/pending/validation");
     }
 
     void LoadPendingMBApprovals()
     {
-        navManager.NavigateTo($"/mbooks/");
+        navManager.NavigateTo($"/mbsheets/pending/approval");
     }
 }

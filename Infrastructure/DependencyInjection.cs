@@ -2,18 +2,17 @@
 using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure
+namespace Infrastructure;
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
-        {
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<IEmailSender, EmailSender>();
-            services.AddScoped<IExcelService, ExcelService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();        
+        services.AddScoped<IExcelService, ExcelService>();
 
-            return services;
-        }
+        return services;
     }
+
 }
+

@@ -4,17 +4,14 @@ using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Persistence;
-using System.Linq;
 
 namespace Api
 {
-   public class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -48,7 +45,7 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
-
+                app.UseHttpsRedirection();
                 app.UseSwaggerDocumention();
             }
              else
@@ -57,7 +54,7 @@ namespace Api
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
             app.UseRouting();

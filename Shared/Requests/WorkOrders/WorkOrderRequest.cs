@@ -1,32 +1,12 @@
-﻿using System;
+﻿using EmbPortal.Shared.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace EmbPortal.Shared.Requests
 {
     public class WorkOrderRequest
     {
-        [Required, MaxLength(250)]
-        public string Title { get; set; }
-
-        [Required, MaxLength(60)]
-        public string OrderNo { get; set; }
-
         [Required]
-        public DateTime? OrderDate { get; set; }
+        public long OrderNo { get; set; }
 
-        [Required, MaxLength(60)]
-        public string AgreementNo { get; set; }
-
-        [Required, MaxLength(6)]
-        public string EngineerInCharge { get; set; }
-
-        [Required]
-        public DateTime? AgreementDate { get; set; }
-
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a project"), Required]
-        public int ProjectId { get; set; }
-
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a contractor"), Required]
-        public int ContractorId { get; set; }
     }
 }

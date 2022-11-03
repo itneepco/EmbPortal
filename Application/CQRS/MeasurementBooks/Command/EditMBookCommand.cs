@@ -43,7 +43,7 @@ namespace Application.CQRS.MeasurementBooks.Command
             }
 
             mBook.SetWorkOrderId(req.data.WorkOrderId);
-            mBook.SetTitle(req.data.Title);
+            //mBook.SetTitle(req.data.Title);
             mBook.SetMeasurementOfficer(req.data.MeasurementOfficer);
             mBook.SetValidatingOfficer(req.data.ValidatingOfficer);
 

@@ -6,6 +6,8 @@ namespace EmbPortal.Shared.Responses
     public class MBSheetItemResponse
     {
         public int Id { get; set; }
+        public long ServiceNo { get; set; }
+        public string ShortServiceDesc { get; set; }
         public int Nos { get; set; }
         public float Value1 { get; set; }
         public float Value2 { get; set; }
@@ -16,7 +18,6 @@ namespace EmbPortal.Shared.Responses
         public decimal UnitRate { get; set; }
         public int MBSheetId { get; set; }
         public int MBookItemId { get; set; }
-        public string MBookItemDescription { get; set; }
         public List<ItemAttachmentResponse> Attachments { get; set; }
 
         public float Quantity

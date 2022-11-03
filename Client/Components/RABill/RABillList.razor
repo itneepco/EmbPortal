@@ -10,7 +10,8 @@
         </SpaceItem>
         @if (selectedRows != null && selectedRows.Count() > 0)
         {
-            @if (selectedRows.First()?.Status != RABillStatus.APPROVED)
+            @if (!(selectedRows.First()?.Status == RABillStatus.APPROVED ||
+                 selectedRows.First()?.Status == RABillStatus.POSTED))
             {
                 <SpaceItem>
                     <Button Icon="@(IconType.Outline.Edit)" OnClick="() => GoToEditPage(selectedRows.First().Id)">Edit</Button>
@@ -29,7 +30,8 @@
                 <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
             </SpaceItem>
 
-            @if (selectedRows.First()?.Status == RABillStatus.APPROVED && selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
+            @if (selectedRows.First()?.Status == RABillStatus.APPROVED &&
+                 selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
             {
                 <SpaceItem>
                     <Popconfirm Title="Sure to Revoke RA Bill Status?"
@@ -53,7 +55,11 @@
     <RowTemplate>
         <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
         <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
-        <Column Title="Accepting Officer" TData="string" DataIndex="@nameof(context.AcceptingOfficer)" Width="15%" />
+        <Column Title="Accepting Officer" TData="string" Width="15%" >
+            <Tooltip Title="@context.Acceptor.ToString()" Placement="@Placement.Left">
+                <span style="cursor: pointer">@context.Acceptor?.DisplayName</span>
+            </Tooltip>
+        </Column>
         <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="10%" />
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == RABillStatus.APPROVED)

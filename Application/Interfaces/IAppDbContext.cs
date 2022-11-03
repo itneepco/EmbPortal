@@ -11,9 +11,7 @@ namespace Application.Interfaces
 {
     public interface IAppDbContext
     {
-        DbSet<Project> Projects { get; set; }
         DbSet<Uom> Uoms { get; set; }
-        DbSet<Contractor> Contractors {get; set;}
         DbSet<WorkOrder> WorkOrders { get; set; }
         DbSet<MeasurementBook> MeasurementBooks { get; set; }
         DbSet<MBSheet> MBSheets { get; set; }

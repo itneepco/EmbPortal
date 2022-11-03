@@ -17,6 +17,11 @@ namespace Client.Services
             _httpClient = httpClient;
         }
 
+        public async Task<List<UserResponse>> GetAllUsers()
+        {
+            return await _httpClient.GetFromJsonAsync<List<UserResponse>>($"/api/Identity/all");
+        }
+
         public async Task<List<string>> GetRoles()
         {
             return await _httpClient.GetFromJsonAsync<List<string>>($"/api/Identity/Roles");

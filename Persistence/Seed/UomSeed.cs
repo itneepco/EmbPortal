@@ -15,9 +15,15 @@ namespace Persistence.Seed
             var Uoms = new List<Uom>()
             {
                 new Uom("Cum", "Cubic Meter", UomDimension.THREEDIMENSION),
-                new Uom("Sqm", "Square Meter", UomDimension.TWODIMENSION),
-                new Uom("Rum", "Running Meter", UomDimension.ONEDIMENSION),
-                new Uom("Kg",  "Kilogram", UomDimension.ONEDIMENSION)
+                new Uom("M", "Square Meter", UomDimension.ONEDIMENSION),
+                new Uom("M2", "Square Meter", UomDimension.TWODIMENSION),
+                new Uom("MN", "MN", UomDimension.ONEDIMENSION),
+                new Uom("QT", "QT", UomDimension.ONEDIMENSION),
+                new Uom("Kg",  "Kilogram", UomDimension.ONEDIMENSION),
+                new Uom("QTL",  "Quintal", UomDimension.ONEDIMENSION),
+                new Uom("NO",  "Number", UomDimension.ONEDIMENSION),
+                new Uom("EA",  "Each", UomDimension.ONEDIMENSION),
+                new Uom("MON",  "Month", UomDimension.ONEDIMENSION)
             };
 
             context.Uoms.AddRange(Uoms);

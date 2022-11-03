@@ -19,18 +19,18 @@ namespace Application.CQRS.MeasurementBooks.Query
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IMeasurementBookService _mBookService;
 
-        public GetMBooksByOrderIdQueryHandler(IAppDbContext context, IMapper mapper, IMeasurementBookService mBookService)
+        public GetMBooksByOrderIdQueryHandler(IAppDbContext context, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
-            _mBookService = mBookService;
         }
 
         public async Task<List<MBookResponse>> Handle(GetMBooksByOrderIdQuery request, CancellationToken cancellationToken)
         {
             var mBooks = await _context.MeasurementBooks
+                .Include(p => p.Measurer)
+                .Include(p => p.Validator)
                 .Include(p => p.Items)
                     .ThenInclude(i => i.WorkOrderItem)
                 .Where(p => p.WorkOrderId == request.workOrderId)
