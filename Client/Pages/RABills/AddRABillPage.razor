@@ -1,15 +1,10 @@
 ﻿@page "/mbook/{MBookId}/rabill"
 @attribute [Authorize(Roles = "Manager")]
 
-<h3>Add Recurring Account Bill</h3>
+<h3>Add New RA Bill</h3>
 
 <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
-    <Row Gutter="16">
-        <AntDesign.Col Span="16">
-            <FormItem Label="RA Bill Title">
-                <Input Placeholder="General Remarks" @bind-Value="@context.Title" TValue="string" />
-            </FormItem>
-        </AntDesign.Col>
+    <Row Gutter="16">        
         <AntDesign.Col Span="8">
             <FormItem Label="RA Bill Date">
                 <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
@@ -90,7 +85,7 @@
 
             foreach (var error in result.Errors)
             {
-                messageService.Error(error);
+                await messageService.Error(error);
             }
         }
     }
