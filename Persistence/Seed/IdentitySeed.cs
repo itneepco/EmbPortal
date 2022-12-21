@@ -24,7 +24,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "John Doe",
+                        DisplayName = "Engineer InCharge",
                         Designation = "Manager",
                         Email = "eng@neepco.com",
                         UserName = "001234",
@@ -32,7 +32,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "Foo Bar",
+                        DisplayName = "Validating Officer",
                         Designation = "Manager",
                         Email = "val@neepco.com",
                         UserName = "001235",
@@ -40,7 +40,7 @@ namespace Persistence.Seed
                     },
                     new AppUser
                     {
-                        DisplayName = "San Go",
+                        DisplayName = "Measurement Officer",
                         Designation = "Manager",
                         Email = "mea@neepco.com",
                         UserName = "001236",
@@ -76,6 +76,10 @@ namespace Persistence.Seed
                     }
 
                     if (user.Email == "val@neepco.com")
+                    {
+                        await userManager.AddToRoleAsync(user, "Manager");
+                    }
+                    if (user.Email == "mea@neepco.com")
                     {
                         await userManager.AddToRoleAsync(user, "Manager");
                     }

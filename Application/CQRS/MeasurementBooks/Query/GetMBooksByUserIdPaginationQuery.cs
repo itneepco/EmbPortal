@@ -60,8 +60,7 @@ namespace Application.CQRS.MeasurementBooks.Query
             }
 
             Criteria = (m =>
-                m.MeasurementOfficer == _userService.EmployeeCode ||
-                m.ValidatingOfficer == _userService.EmployeeCode ||
+                m.MeasurementOfficer == _userService.EmployeeCode ||               
                 m.WorkOrder.EngineerInCharge == _userService.EmployeeCode
             );
             query = query.Where(Criteria);
