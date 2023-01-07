@@ -76,7 +76,7 @@
     </RowTemplate>
 
     <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items" HidePagination Responsive="false">
+        <Table DataSource="rowData.Data.Items" Responsive="false">
             <Column TData="string" Title="Service No" Width="15%">@context.ServiceNo</Column>
             <Column TData="string" Title="Service Description" Width="40%">@context.ShortServiceDesc</Column>
             <Column TData="string" DataIndex="@nameof(context.Uom)" Width="10%" />

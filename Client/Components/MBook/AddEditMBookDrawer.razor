@@ -44,6 +44,7 @@
 
         <Table @ref="table"
                DataSource="@pendingItems.Where(p => p.ItemNo == selectedItemNo)"
+               PageSize="@pendingItems.Where(p => p.ItemNo == selectedItemNo).Count()"
                @bind-SelectedRows="selectedRows"
                Size="TableSize.Small"
                Bordered
