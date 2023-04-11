@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persistence.Migrations
+namespace Persistence.Persistence.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -321,7 +321,8 @@ namespace Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LongServiceDesc = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UomId = table.Column<int>(type: "int", nullable: false),
+                    Uom = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     PoQuantity = table.Column<float>(type: "float", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -336,12 +337,6 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WorkOrderItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WorkOrderItem_Uoms_UomId",
-                        column: x => x.UomId,
-                        principalTable: "Uoms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_WorkOrderItem_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
@@ -558,13 +553,10 @@ namespace Persistence.Migrations
                     Description = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Nos = table.Column<int>(type: "int", nullable: false),
-                    Value1 = table.Column<float>(type: "float", nullable: false),
-                    Value2 = table.Column<float>(type: "float", nullable: false),
-                    Value3 = table.Column<float>(type: "float", nullable: false),
+                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
                     Uom = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Dimension = table.Column<int>(type: "int", nullable: false),
                     MBookItemId = table.Column<int>(type: "int", nullable: false),
                     MBSheetId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -747,11 +739,6 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderItem_UomId",
-                table: "WorkOrderItem",
-                column: "UomId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
@@ -795,6 +782,9 @@ namespace Persistence.Migrations
                 name: "RADeduction");
 
             migrationBuilder.DropTable(
+                name: "Uoms");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -814,9 +804,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "MeasurementBooks");
-
-            migrationBuilder.DropTable(
-                name: "Uoms");
 
             migrationBuilder.DropTable(
                 name: "WorkOrders");

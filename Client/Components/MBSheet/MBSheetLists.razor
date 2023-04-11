@@ -101,14 +101,10 @@
             <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
             <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
             <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
-            <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
-            <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
-                <Column Title="Val3" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
-                <Column Title="Qty" TData="string" Width="6%">@context.Quantity.ToString("0.00")</Column>
-
-                <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
+            <Column Title="Qty" TData="string" Width="18%">@context.MeasuredQuantity.ToString("0.00")</Column>
+            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
                     @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
-                </Column>
+            </Column>
 
                 <ActionColumn Title="Action" Width="6%">
                     <Button Icon="@(IconType.Outline.Download)"
@@ -271,7 +267,7 @@
     private float GetMBookItemTotalQtyInMBSheet(int mBookItemId, List<MBSheetItemResponse> items)
     {
         return items.Where(i => i.MBookItemId == mBookItemId)
-            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
+            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.MeasuredQuantity);
     }
 }
 

@@ -19,193 +19,192 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using EmbPortal.Shared.Requests.MeasurementBooks;
 
-namespace Api.Controllers
+namespace Api.Controllers;
+
+[Authorize(Roles = "Admin, Manager")]
+public class WorkOrderController : ApiController
 {
-    [Authorize(Roles = "Admin, Manager")]
-    public class WorkOrderController : ApiController
+    private readonly IConfiguration _config;
+    private readonly ILogger<WorkOrderController> _logger;
+    public WorkOrderController(IConfiguration config, ILogger<WorkOrderController> logger)
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<WorkOrderController> _logger;
-        public WorkOrderController(IConfiguration config, ILogger<WorkOrderController> logger)
+        _config = config;
+        _logger = logger;
+    }
+
+    [HttpGet("self")]
+    public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByCreator([FromQuery] PagedRequest request)
+    {
+        var query = new GetOrdersByUserPaginationQuery(request);
+
+        return Ok(await Mediator.Send(query));
+    }
+
+    [HttpGet("Project/{projectId}")]
+    public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByProjects(string projectId, [FromQuery] PagedRequest request)
+    {
+        var query = new GetOrdersByProjectPaginationQuery(projectId, request);
+
+        return Ok(await Mediator.Send(query));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
+    {
+        var query = new GetWorkOrderByIdQuery(id);
+
+        return Ok(await Mediator.Send(query));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
+    {
+        var purchaseOrder = await FetchPODetailsFromSAP(data.OrderNo);
+
+        if (purchaseOrder == null)
         {
-            _config = config;
-            _logger = logger;
+            return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
         }
 
-        [HttpGet("self")]
-        public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByCreator([FromQuery] PagedRequest request)
-        {
-            var query = new GetOrdersByUserPaginationQuery(request);
+        var command = new CreateWorkOrderCommand(purchaseOrder);
 
-            return Ok(await Mediator.Send(query));
+        return Ok(await Mediator.Send(command));
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteWorkOrde(int id)
+    {
+        var command = new DeleteWorkOrderCommand(id);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPut("{workOrderId}/Publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> PublishWorkOrder(int workOrderId)
+    {
+        var command = new PublishWorkOrderCommand(workOrderId);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPut("{workOrderId}/Transfer")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> TransferWorkOrder(int workOrderId, ChangeOfficerRequest data)
+    {
+        var command = new ChangeEngineerInChargeCommand(workOrderId, data);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpPut("{workOrderId}/Items/{orderItemId}/Publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
+    {
+        var command = new PublishWorkOrderItemCommand(workOrderId, orderItemId);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpGet("{workOrderId}/Item/Pending")]
+    public async Task<ActionResult<IReadOnlyList<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int workOrderId)
+    {
+        var query = new GetPendingWorkOrderItemsQuery(workOrderId);
+
+        return Ok(await Mediator.Send(query));
+    }
+
+    [HttpPost("{workOrderId}/Item")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<int>> CreateWorkOrderItem(int workOrderId, WorkOrderItemRequest data)
+    {
+        var command = new CreateWorkOrderItemCommand(workOrderId, data);
+
+        return Ok(await Mediator.Send(command));
+    }
+
+    [HttpPut("{workOrderId}/Item/{itemId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdateWorkOrderItem(int workOrderId, int itemId, WorkOrderItemRequest data)
+    {
+        var command = new EditWorkOrderItemCommand(itemId, workOrderId, data);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{workOrderId}/Item/{itemId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteWorkOrderItem(int workOrderId, int itemId)
+    {
+        var command = new DeleteWorkOrderItemCommand(itemId, workOrderId);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+
+    [HttpGet("sap/{purchaseOrderId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(PurchaseOrder), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(long purchaseOrderId)
+    {
+        var purchaseOrder = await FetchPODetailsFromSAP(purchaseOrderId);
+
+        if (purchaseOrder == null)
+        {
+            return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
         }
 
-        [HttpGet("Project/{projectId}")]
-        public async Task<ActionResult<PaginatedList<WorkOrderResponse>>> GetWorkOrdersByProjects(string projectId, [FromQuery] PagedRequest request)
+        return Ok(purchaseOrder);
+    }
+
+    private async Task<PurchaseOrder> FetchPODetailsFromSAP(long purchaseOrderId)
+    {
+        try
         {
-            var query = new GetOrdersByProjectPaginationQuery(projectId, request);
+            var url = $"{_config["POUrl"]}/{purchaseOrderId}";
+            var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
+            
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+                Convert.ToBase64String(authToken));
 
-            return Ok(await Mediator.Send(query));
-        }
+            var response = await httpClient.GetAsync(url);
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
-        {
-            var query = new GetWorkOrderByIdQuery(id);
+            var responseAsString = await response.Content.ReadAsStringAsync();
 
-            return Ok(await Mediator.Send(query));
-        }
-
-        [HttpPost]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
-        {
-            var purchaseOrder = await FetchPODetailsFromSAP(data.OrderNo);
-
-            if (purchaseOrder == null)
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
-            }
-
-            var command = new CreateWorkOrderCommand(purchaseOrder);
-
-            return Ok(await Mediator.Send(command));
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteWorkOrde(int id)
-        {
-            var command = new DeleteWorkOrderCommand(id);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpPut("{workOrderId}/Publish")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> PublishWorkOrder(int workOrderId)
-        {
-            var command = new PublishWorkOrderCommand(workOrderId);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpPut("{workOrderId}/Transfer")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> TransferWorkOrder(int workOrderId, ChangeOfficerRequest data)
-        {
-            var command = new ChangeEngineerInChargeCommand(workOrderId, data);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpPut("{workOrderId}/Items/{orderItemId}/Publish")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
-        {
-            var command = new PublishWorkOrderItemCommand(workOrderId, orderItemId);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpGet("{workOrderId}/Item/Pending")]
-        public async Task<ActionResult<IReadOnlyList<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int workOrderId)
-        {
-            var query = new GetPendingWorkOrderItemsQuery(workOrderId);
-
-            return Ok(await Mediator.Send(query));
-        }
-
-        [HttpPost("{workOrderId}/Item")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateWorkOrderItem(int workOrderId, WorkOrderItemRequest data)
-        {
-            var command = new CreateWorkOrderItemCommand(workOrderId, data);
-
-            return Ok(await Mediator.Send(command));
-        }
-
-        [HttpPut("{workOrderId}/Item/{itemId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> UpdateWorkOrderItem(int workOrderId, int itemId, WorkOrderItemRequest data)
-        {
-            var command = new EditWorkOrderItemCommand(itemId, workOrderId, data);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{workOrderId}/Item/{itemId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> DeleteWorkOrderItem(int workOrderId, int itemId)
-        {
-            var command = new DeleteWorkOrderItemCommand(itemId, workOrderId);
-            await Mediator.Send(command);
-
-            return NoContent();
-        }
-
-
-        [HttpGet("sap/{purchaseOrderId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(PurchaseOrder), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PurchaseOrder>> GetPurchaseOrderFromSAP(long purchaseOrderId)
-        {
-            var purchaseOrder = await FetchPODetailsFromSAP(purchaseOrderId);
-
-            if (purchaseOrder == null)
-            {
-                return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
-            }
-
-            return Ok(purchaseOrder);
-        }
-
-        private async Task<PurchaseOrder> FetchPODetailsFromSAP(long purchaseOrderId)
-        {
-            try
-            {
-                var url = $"{_config["POUrl"]}/{purchaseOrderId}";
-                var authToken = Encoding.ASCII.GetBytes($"{_config["UserId"]}:{_config["Password"]}");
-                
-                using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                    Convert.ToBase64String(authToken));
-
-                var response = await httpClient.GetAsync(url);
-
-                var responseAsString = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
+                var purchaseOrder = JsonSerializer.Deserialize<PurchaseOrder>(responseAsString, new JsonSerializerOptions
                 {
-                    var purchaseOrder = JsonSerializer.Deserialize<PurchaseOrder>(responseAsString, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
+                    PropertyNameCaseInsensitive = true
+                });
 
-                    return purchaseOrder;
-                }
+                return purchaseOrder;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.StackTrace);
-            }
-
-            return null;
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.StackTrace);
+        }
+
+        return null;
     }
 }

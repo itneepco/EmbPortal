@@ -7,8 +7,7 @@ namespace EmbPortal.Shared.Requests
     public class MBookRequest
     {
         [Required]
-        public int WorkOrderId { get; set; }
-       
+        public int WorkOrderId { get; set; }       
 
         [Required, EmployeeCode]
         [Display(Name = "Measurer")]
@@ -17,7 +16,6 @@ namespace EmbPortal.Shared.Requests
         [Required, EmployeeCode]
         [Display(Name = "Validator")]
         public string ValidatingOfficer { get; set; }
-
         public List<MBookItemRequest> Items { get; set; } = new List<MBookItemRequest>();
     }
 }

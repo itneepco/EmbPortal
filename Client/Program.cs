@@ -32,8 +32,7 @@ namespace Client
 
             builder.Services
                 .AddScoped<IDashboardService, DashboardService>()
-                .AddScoped<IWorkOrderService, WorkOrderService>()
-                .AddScoped<IUomService, UomService>()
+                .AddScoped<IWorkOrderService, WorkOrderService>()              
                 .AddScoped<IMBookService, MBookService>()
                 .AddScoped<IMBSheetService, MBSheetService>()
                 .AddScoped<IRABillService, RABillService>()

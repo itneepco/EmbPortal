@@ -34,8 +34,7 @@ namespace Application.CQRS.WorkOrders.Query
             var currEmpCode = _currentUserService.EmployeeCode;
             var workOrder = await _context.WorkOrders
                 .Include(p => p.Engineer)
-                .Include(p => p.Items)
-                   .ThenInclude(s => s.Uom)
+                .Include(p => p.Items)                  
                 .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)
                 .ProjectTo<WorkOrderDetailResponse>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(p => p.Id == request.id);

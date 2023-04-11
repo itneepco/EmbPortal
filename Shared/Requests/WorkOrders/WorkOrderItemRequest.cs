@@ -12,10 +12,6 @@ namespace EmbPortal.Shared.Requests
         public long ServiceNo { get; set; }
         public string ShortServiceDesc { get; set; }
         public string LongServiceDesc { get; set; }
-
-        [Required, Range(1, int.MaxValue, ErrorMessage = "Please select a uom")]
-        public int UomId { get; set; }
-
         public string Uom { get; set; }
 
         [Required, Range(1, double.MaxValue, ErrorMessage = "Please enter a non zero value")]

@@ -2,17 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
 #nullable disable
 
-namespace Persistence.Migrations
+namespace Persistence.Persistence.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230405051320_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,9 +221,6 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
 
-                    b.Property<int>("Dimension")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime(6)");
 
@@ -234,6 +233,9 @@ namespace Persistence.Migrations
 
                     b.Property<int>("MBookItemId")
                         .HasColumnType("int");
+
+                    b.Property<float>("MeasuredQuantity")
+                        .HasColumnType("float");
 
                     b.Property<int>("Nos")
                         .HasColumnType("int");
@@ -254,15 +256,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("varchar(8)");
-
-                    b.Property<float>("Value1")
-                        .HasColumnType("float");
-
-                    b.Property<float>("Value2")
-                        .HasColumnType("float");
-
-                    b.Property<float>("Value3")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -668,15 +661,14 @@ namespace Persistence.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UomId")
-                        .HasColumnType("int");
+                    b.Property<string>("Uom")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int?>("WorkOrderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UomId");
 
                     b.HasIndex("WorkOrderId");
 
@@ -978,18 +970,10 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
-                    b.HasOne("Domain.Entities.Uom", "Uom")
-                        .WithMany()
-                        .HasForeignKey("UomId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("Items")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Uom");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

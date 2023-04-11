@@ -44,9 +44,7 @@ namespace Application.CQRS.MBSheets.Command
 
             mbSheetItem.SetDescription(request.Data.Description);
             mbSheetItem.SetNos(request.Data.Nos);
-            mbSheetItem.SetValue1(request.Data.Value1);
-            mbSheetItem.SetValue2(request.Data.Value2);
-            mbSheetItem.SetValue3(request.Data.Value3);
+            mbSheetItem.SetMeasuredQuantity(request.Data.MeasuredQuantity);           
 
             await _context.SaveChangesAsync(cancellationToken);
 

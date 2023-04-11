@@ -57,7 +57,7 @@ namespace Application.CQRS.WorkOrders.Command
                 serviceNo: request.Data.ServiceNo,
                 shortServiceDesc: request.Data.ShortServiceDesc,
                 longServiceDesc: request.Data.LongServiceDesc,
-                uomId: request.Data.UomId,
+                uom: request.Data.Uom,
                 unitRate: request.Data.UnitRate,
                 poQuantity: request.Data.PoQuantity
             );

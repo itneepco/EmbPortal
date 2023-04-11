@@ -13,8 +13,7 @@ namespace EmbPortal.Shared.Responses
         public string ShortServiceDesc { get; set; }
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
-        public float PoQuantity { get; set; }
-        public int Dimension { get; set; }
+        public float PoQuantity { get; set; }       
         public float AcceptedMeasuredQty { get; set; }
         public float CumulativeMeasuredQty { get; set; }
         public float TillLastRAQty { get; set; }

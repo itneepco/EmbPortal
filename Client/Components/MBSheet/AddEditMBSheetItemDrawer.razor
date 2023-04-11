@@ -44,11 +44,11 @@
 
         <Row Gutter="12">
             <AntDesign.Col Flex="1">
-                <FormItem Label="Value 1" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
-                    <Input Placeholder="Value 1" @bind-Value="@context.Value1" TValue="float" />
+                <FormItem Label="Measured Quantity" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
+                    <Input Placeholder="Measured Quantity" @bind-Value="@context.MeasuredQuantity" TValue="float" />
                 </FormItem>
             </AntDesign.Col>
-            @if (context.Dimension > 1)
+           @* @if (context.Dimension > 1)
             {
                 <AntDesign.Col Flex="1">
                     <FormItem Label="Value 2" Rules=@(valueGreaterThanZero) Style="margin-bottom:12px">
@@ -64,13 +64,13 @@
                         <Input Placeholder="Value 3" @bind-Value="@context.Value3" TValue="float" />
                     </FormItem>
                 </AntDesign.Col>
-            }
+            }*@
         </Row>
 
         @if (selectedItem != null)
         {
             <Tag Color="purple-inverse">Balance Quantity: @selectedItem.AvailableMeasurementQty.ToString("0.00")</Tag>
-            <Tag Color="orange-inverse">Entered Quantity: @context.Total.ToString("0.00")</Tag>
+            <Tag Color="orange-inverse">Entered Quantity: @context.MeasuredQuantity.ToString("0.00")</Tag>
         }
 
         <Row Style="margin-top: 2rem">
@@ -130,17 +130,17 @@
             mbItemId = CurrentMBSheetItem.MBookItemId;
 
             model.Description = CurrentMBSheetItem.Description;
-            model.Dimension = CurrentMBSheetItem.Dimension;
+           //model.Dimension = CurrentMBSheetItem.Dimension;
             model.Nos = CurrentMBSheetItem.Nos;
-            model.Value1 = CurrentMBSheetItem.Value1;
-            model.Value2 = CurrentMBSheetItem.Value2;
-            model.Value3 = CurrentMBSheetItem.Value3;
+            model.MeasuredQuantity = CurrentMBSheetItem.MeasuredQuantity;
+            //model.Value2 = CurrentMBSheetItem.Value2;
+            //model.Value3 = CurrentMBSheetItem.Value3;
 
             // Remove current line item quantity from the cumulative measure quantity
             var mbItemStatus = mbItemsStatuses.Find(p => p.MBookItemId == CurrentMBSheetItem.MBookItemId);
             if(mbItemStatus != null)
             {
-                mbItemStatus.CumulativeMeasuredQty -= CurrentMBSheetItem.Quantity;
+                mbItemStatus.CumulativeMeasuredQty -= CurrentMBSheetItem.MeasuredQuantity;
             }
         }
     }
@@ -155,14 +155,11 @@
     async Task OnSubmit()
     {
         if (selectedItem == null) return;
-
-        if(model.Total > selectedItem.AvailableMeasurementQty)
+        if(model.MeasuredQuantity > selectedItem.AvailableMeasurementQty)
         {
             await messageService.Error($"Entered quantity should be less or equal to {selectedItem.AvailableMeasurementQty}");
             return;
         }
-
-
         loading = true;
         dynamic result;
         if (CurrentMBSheetItem == null)
@@ -199,14 +196,13 @@
 
         if (item == null)
         {
-            model.Dimension = 0;
+           
             model.MBookItemDescription = null;
             model.MBookItemId = 0;
             model.Uom = null;
         }
         else
-        {
-            model.Dimension = item.Dimension;
+        {            
             model.MBookItemDescription = item.ItemDescription;
             model.MBookItemId = item.MBookItemId;
             model.Uom = item.Uom;

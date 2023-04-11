@@ -27,7 +27,7 @@ namespace Persistence
             _currentUserService = currentUserService;
         }
 
-        public DbSet<Uom> Uoms { get ; set ; }
+        
         public DbSet<WorkOrder> WorkOrders { get ; set ; }
         public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
         public DbSet<MBSheet> MBSheets { get; set; }

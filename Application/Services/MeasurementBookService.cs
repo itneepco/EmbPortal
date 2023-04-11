@@ -51,10 +51,10 @@ namespace Application.Services
             foreach (var mBookItemId in mBookItemIds)
             {
                 float cumulativeMeasuredQty = mbSheetItems.Where(i => i.MBookItemId == mBookItemId)
-                    .Aggregate((float)0, (acc, curr) => acc + curr.Quantity);
+                    .Aggregate((float)0, (acc, curr) => acc + curr.MeasuredQuantity);
 
                 float acceptedMeasuredQty = acceptedMBSheetItems.Where(i => i.MBookItemId == mBookItemId)
-                    .Aggregate((float)0, (acc, curr) => acc + curr.Quantity);
+                    .Aggregate((float)0, (acc, curr) => acc + curr.MeasuredQuantity);
 
                 var approvedQty = new MBookItemQtyStatus
                 {

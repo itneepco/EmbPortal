@@ -14,19 +14,14 @@ namespace Application.Mappings
         public MappingProfile()
         {
             CreateMap<AppUser, UserResponse>()
-                .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));
-
-            CreateMap<Uom, UomResponse>()
-                .ForMember(m => m.DimensionId, opt => opt.MapFrom(p => p.Dimension))
-                .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Dimension.ToString()));
+                .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));            
 
             CreateMap<WorkOrder, WorkOrderResponse>();
 
             CreateMap<WorkOrder, WorkOrderDetailResponse>();
-                
+
             CreateMap<WorkOrderItem, WorkOrderItemResponse>()
-                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom.Name))
-                .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.Uom.Dimension));
+                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom));             
 
             CreateMap<MeasurementBook, MBookResponse>();
 
@@ -36,8 +31,8 @@ namespace Application.Mappings
                 .ForMember(m => m.SubItemNo, opt => opt.MapFrom(p => p.WorkOrderItem.SubItemNo))
                 .ForMember(m => m.ServiceNo, opt => opt.MapFrom(p => p.WorkOrderItem.ServiceNo))
                 .ForMember(m => m.ShortServiceDesc, opt => opt.MapFrom(p => p.WorkOrderItem.ShortServiceDesc))
-                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Name))
-                .ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Dimension))
+                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.WorkOrderItem.Uom))
+                //.ForMember(m => m.Dimension, opt => opt.MapFrom(p => p.WorkOrderItem.Uom.Dimension))
                 .ForMember(m => m.PoQuantity, opt => opt.MapFrom(p => p.WorkOrderItem.PoQuantity))
                 .ForMember(m => m.UnitRate, opt => opt.MapFrom(p => p.WorkOrderItem.UnitRate));
 
