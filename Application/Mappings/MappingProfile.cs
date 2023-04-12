@@ -20,8 +20,8 @@ namespace Application.Mappings
 
             CreateMap<WorkOrder, WorkOrderDetailResponse>();
 
-            CreateMap<WorkOrderItem, WorkOrderItemResponse>()
-                .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom));             
+            CreateMap<WorkOrderItem, WorkOrderItemResponse>();
+            //    .ForMember(m => m.Uom, opt => opt.MapFrom(p => p.Uom));             
 
             CreateMap<MeasurementBook, MBookResponse>();
 

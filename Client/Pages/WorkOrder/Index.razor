@@ -1,5 +1,4 @@
 ﻿@page "/workorder"
-@page "/workorder/{StatusParam}"
 @attribute [Authorize(Roles = "Admin, Manager")]
 
 <Row Style="margin-bottom: 0.75rem">
@@ -10,11 +9,8 @@
             </SpaceItem>
             @if (selectedRows != null)
             {
-                @if (selectedRows.First().Status == WorkOrderStatus.CREATED.ToString())
-                {
-                    <SpaceItem>
-                        <Button Icon="@(IconType.Outline.Edit)" OnClick="() => OpenSideDrawer()">Edit</Button>
-                    </SpaceItem>
+                
+                   
                     <SpaceItem>
                         <Popconfirm Title="Are you sure delete this order?"
                                     Placement="@Placement.Bottom"
@@ -24,7 +20,7 @@
                             <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
                         </Popconfirm>
                     </SpaceItem>
-                }
+               
                 <SpaceItem>
                     <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
                 </SpaceItem>
@@ -34,19 +30,7 @@
     <AntDesign.Col Flex="2" />
     <AntDesign.Col Flex="1">
         <Row>
-            <AntDesign.Col>
-                <Select DataSource="@statuses"
-                        @bind-Value="@status"
-                        TItem="WorkStatusSL"
-                        TItemValue="int"
-                        ValueName="@nameof(WorkStatusSL.Val)"
-                        LabelName="@nameof(WorkStatusSL.Desc)"
-                        Placeholder="Filter by Status"
-                        OnSelectedItemChanged="async (context) => await OnSelectedItemChangedHandler(context)"
-                        Style="margin-right: 0.75rem"
-                        AllowClear>
-                </Select>
-            </AntDesign.Col>
+            
             <AntDesign.Col Flex="1">
                 <Input Placeholder="Search by order no, contractor or title" @bind-Value="@search" />
             </AntDesign.Col>
@@ -75,27 +59,14 @@
     <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" Width="15%" />
     <Column @bind-Field="@context.Contractor" Width="25%" />
     <Column @bind-Field="@context.Project" Width="25%" />
-    <Column @bind-Field="@context.Status" Width="15%">
-        @if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
-        {
-            <Tag Color="blue">@context.Status</Tag>
-        }
-        else
-        {
-            <Tag Color="green">@context.Status</Tag>
-        }
-    </Column>
+    
 </Table>
 
 @code {
     List<WorkOrderResponse> workOrders = new();
 
     IEnumerable<WorkOrderResponse> selectedRows;
-
-    List<WorkStatusSL> statuses = new();
-
-    [Parameter]
-    public string StatusParam { get; set; }
+    
 
     int pageIndex = 1;
     int pageSize = 10;
@@ -103,13 +74,13 @@
     bool loading = false;
     bool drawerVisible = false;
     string search;
-    int status;
+    
 
     async Task LoadWorkOrdersAsync()
     {
         loading = true;
         selectedRows = null;
-        var response = await workOrderService.GetUserWorkOrdersPagination(pageIndex, pageSize, search, status);
+        var response = await workOrderService.GetUserWorkOrdersPagination(pageIndex, pageSize, search);
         workOrders = response.Items;
         total = response.TotalCount;
         loading = false;
@@ -118,18 +89,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(!string.IsNullOrEmpty(StatusParam))
-        {
-            status = int.Parse(StatusParam);
-        }
-
+       
         await LoadWorkOrdersAsync();
-
-        var items = from WorkOrderStatus d
-                    in Enum.GetValues(typeof(WorkOrderStatus))
-                    select new WorkStatusSL { Val = (int)d, Desc = d.ToString() };
-
-        statuses = items.ToList();
+        
     }
 
     async Task ConfirmDelete(int id)
@@ -170,19 +132,9 @@
         drawerVisible = false;
     }
 
-    private async Task OnSelectedItemChangedHandler(WorkStatusSL value)
+    private async Task OnSelectedItemChangedHandler()
     {
-        if (value == null)
-        {
-            status = 0;
-        }
-
-        await LoadWorkOrdersAsync();
+       await LoadWorkOrdersAsync();
     }
-
-    private class WorkStatusSL
-    {
-        public string Desc { get; set; }
-        public int Val { get; set; }
-    }
+   
 }

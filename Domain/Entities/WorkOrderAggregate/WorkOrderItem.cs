@@ -17,8 +17,8 @@ namespace Domain.Entities.WorkOrderAggregate
         public string LongServiceDesc { get;  set; }       
         public string Uom { get;  set; }
         public decimal UnitRate { get;  set; }
-        public float PoQuantity { get;  set; }        
-        public WorkOrderItemStatus Status { get; set; }
+        public float PoQuantity { get;  set; }       
+        
         public MBookItem MBookItem { get;  set; }
 
         public WorkOrderItem()
@@ -50,13 +50,10 @@ namespace Domain.Entities.WorkOrderAggregate
             Uom = uom;
             UnitRate = unitRate;
             PoQuantity = poQuantity;
-            Status = WorkOrderItemStatus.CREATED;
+          
         }
                
-        public void MarkPublished()
-        {
-            Status = WorkOrderItemStatus.PUBLISHED;
-        }       
+              
 
     }
 }

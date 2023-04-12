@@ -1,7 +1,6 @@
 ﻿<Button Icon="@(IconType.Outline.Plus)" 
         Type="@(ButtonType.Primary)" 
-        OnClick="_=> OpenSideDrawer()" 
-        Disabled="@(WorkOrderStatus != "PUBLISHED")"
+        OnClick="_=> OpenSideDrawer()"       
         Style="margin-bottom: 1rem">Add Measurement Book</Button>
 
 <Table Loading="@loading" 

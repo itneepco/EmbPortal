@@ -48,12 +48,7 @@ namespace Application.WorkOrders.Query
                 query = query.Where(Criteria);
             }
 
-            if (request.data.Status > 0) // Query based on the status of the work order
-            {
-                Criteria = m => m.Status == (WorkOrderStatus)request.data.Status;
-
-                query = query.Where(Criteria);
-            }
+           
 
             return await query
                 .Where(p => p.Project == request.project)

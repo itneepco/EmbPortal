@@ -40,10 +40,7 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(WorkOrderItem), request.Id);
             }
 
-            if (orderItem.Status == WorkOrderItemStatus.PUBLISHED)
-            {
-                throw new BadRequestException("Published work order item cannot be deleted");
-            }
+            
 
             workOrder.RemoveLineItem(request.Id);
 

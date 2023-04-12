@@ -13,7 +13,6 @@ namespace EmbPortal.Shared.Responses
         public string LongServiceDesc { get; set; }
         public decimal UnitRate { get; set; }
         public string Uom { get; set; }        
-        public float PoQuantity { get; set; }
-        public WorkOrderItemStatus Status { get; set; }
+        public float PoQuantity { get; set; }       
     }
 }

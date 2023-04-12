@@ -49,12 +49,6 @@ namespace Application.CQRS.WorkOrders.Query
                 query = query.Where(Criteria);
             }
 
-            if(request.data.Status > 0) // Query based on the status of the work order
-            {
-                Criteria = m => m.Status == (WorkOrderStatus) request.data.Status;
-
-                query = query.Where(Criteria);
-            }
 
             var currEmpCode = _currentUserService.EmployeeCode;
             return await query

@@ -31,16 +31,16 @@ namespace Client.Services
             return await response.ToResult<WorkOrderDetailResponse>();
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search, int status = 0)
+        public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search)
         {
             return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
-                ($"/api/WorkOrder/Project/{projectId}?pageNumber={pageIndex}&pageSize={pageSize}&search={search}&status={status}");
+                ($"/api/WorkOrder/Project/{projectId}?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search, int status=0)
+        public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search)
         {
             return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
-                ($"/api/WorkOrder/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}&status={status}");
+                ($"/api/WorkOrder/self?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
         }
 
         public async Task<IResult> DeleteWorkOrder(int id)
@@ -83,18 +83,6 @@ namespace Client.Services
         {
             var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}/Item/Pending");
             return await response.ToResult<List<PendingOrderItemResponse>>();
-        }
-
-        public async Task<IResult> PublishWorkOrder(int id)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Publish", "");
-            return await response.ToResult();
-        }
-
-        public async Task<IResult> PublishWorkOrderItem(int workOrderId, int orderItemId)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/{orderItemId}/Publish", "");
-            return await response.ToResult();
         }
 
         public async Task<string> ExportToExcelAsync()

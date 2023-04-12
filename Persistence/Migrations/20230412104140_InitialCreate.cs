@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Persistence.Persistence.Data.Migrations
+namespace Persistence.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -69,30 +69,6 @@ namespace Persistence.Persistence.Data.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.UniqueConstraint("AK_AspNetUsers_UserName", x => x.UserName);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Uoms",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(5)", maxLength: 5, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Dimension = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Uoms", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -231,7 +207,6 @@ namespace Persistence.Persistence.Data.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     OrderNo = table.Column<long>(type: "bigint", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
                     Project = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Contractor = table.Column<string>(type: "longtext", nullable: true)
@@ -325,7 +300,6 @@ namespace Persistence.Persistence.Data.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     PoQuantity = table.Column<float>(type: "float", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
                     WorkOrderId = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
@@ -733,12 +707,6 @@ namespace Persistence.Persistence.Data.Migrations
                 column: "RABillId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Uoms_Name",
-                table: "Uoms",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
@@ -780,9 +748,6 @@ namespace Persistence.Persistence.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "RADeduction");
-
-            migrationBuilder.DropTable(
-                name: "Uoms");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

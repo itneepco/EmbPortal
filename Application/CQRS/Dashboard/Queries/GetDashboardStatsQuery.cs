@@ -44,23 +44,18 @@ namespace Application.CQRS.Dashboard.Queries
                                                   && p.AcceptingOfficer == empCode)
                                     .CountAsync();
 
-            var orderPending = await _context.WorkOrders
-                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode)
-                                                  && p.Status == WorkOrderStatus.CREATED)
+            var orders = await _context.WorkOrders
+                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
                                      .CountAsync();
 
-            var orderPublished = await _context.WorkOrders
-                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode)
-                                                  && p.Status == WorkOrderStatus.PUBLISHED)
-                                     .CountAsync();
+            
 
             return new DashboardStatsResponse
             {
                 MBSheetValidation = mbValidation,
                 MBSheetApproval = mbApproval,
                 RABillApproval = raApproval,
-                WorkOrderPending = orderPending,
-                WorkOrderPublished = orderPublished
+                
             };
         }
     }

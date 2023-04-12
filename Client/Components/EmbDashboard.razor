@@ -78,28 +78,17 @@
                 <p>Work orders summary</p>
                 <Row Gutter="16">
                     <AntDesign.Col Span="12">
-                        <Statistic Title="Pending Orders" Value="@stats.WorkOrderPending" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Work Orders" Value="@stats.WorkOrderPending" ValueStyle="color: #3f8600;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button OnClick="@LoadPendingOrders"
+                        <Button OnClick="@LoadOrders"
                                 Style="margin-top: 16px;">
                             View
                         </Button>
                     </AntDesign.Col>
-                    <AntDesign.Col Span="12">
-                        <Statistic Title="Published Orders" Value="@stats.WorkOrderPublished">
-                            <PrefixTemplate>
-                                <span><Icon Type="arrow-up" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadPublishedOrders"
-                                Style="margin-top: 16px;" 
-                                Type="@ButtonType.Primary">
-                            View
-                        </Button>
-                    </AntDesign.Col>
+                   
                 </Row>
             </Body>
         </Card>
@@ -129,15 +118,12 @@
         StateHasChanged();
     }
 
-    void LoadPendingOrders()
+    void LoadOrders()
     {
-        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.CREATED}");
+        navManager.NavigateTo($"/workorder/");
     }
 
-    void LoadPublishedOrders()
-    {
-        navManager.NavigateTo($"/workorder/{(int)WorkOrderStatus.PUBLISHED}");
-    }
+   
 
     void LoadPendingRABills()
     {

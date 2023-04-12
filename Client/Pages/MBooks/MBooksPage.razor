@@ -53,16 +53,7 @@
     <Column @bind-Field="@context.Contractor" />
     <Column @bind-Field="@context.OrderNo" />
     <Column @bind-Field="@context.OrderDate" Format="dd-MM-yyyy" />
-    <Column @bind-Field="@context.Status">
-        @if (context.Status == WorkOrderStatus.PUBLISHED.ToString())
-        {
-            <Tag Color="blue">@context.Status</Tag>
-        }
-        else
-        {
-            <Tag Color="green">@context.Status</Tag>
-        }
-    </Column>
+   
 </Table>
 
 @code {

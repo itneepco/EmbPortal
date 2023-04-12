@@ -14,10 +14,10 @@
 @if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
-        <CascadingValue Value="@data.Status" TValue="string">
+        
             <Tabs Animated>
                 <TabPane Tab="Work Order Details" Key="1">
-                    <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@ReloadPage" />
+                    <WorkOrderHeader WorkOrder="@data" />
 
                     <Divider Plain>Order Items</Divider>
                     
@@ -28,7 +28,7 @@
                     <MeasurementBooks/>
                 </TabPane>
             </Tabs>
-        </CascadingValue>
+        
     </CascadingValue>
 }
 else

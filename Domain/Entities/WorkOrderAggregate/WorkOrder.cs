@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Domain.Common;
 using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
-using EmbPortal.Shared.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Entities.WorkOrderAggregate;
 
@@ -12,8 +11,8 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
 {
     public int Id { get; private set; }
     public long OrderNo { get;  set; }
-    public DateTime OrderDate { get;  set; }        
-    public WorkOrderStatus Status { get;  set; }
+    public DateTime OrderDate { get;  set; }      
+    
     public string Project { get;  set; }
     public string Contractor { get;  set; }
     public string EngineerInCharge { get;  set; }
@@ -55,7 +54,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
             item.Uom = uom; 
             item.UnitRate = unitRate;
             item.PoQuantity = poQuantity;
-            item.MarkPublished();
+            
         }
         else // new item
         {
@@ -85,15 +84,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
         }
     }
 
-    public void MarkPublished()
-    {
-        Status = WorkOrderStatus.PUBLISHED;
-        foreach (var item in _items)
-        {
-            item.MarkPublished();
-        }
-    }
-
+   
     public void SetOrderNo(long orderNo)
     {
         OrderNo = orderNo;

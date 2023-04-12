@@ -10,7 +10,6 @@ namespace EmbPortal.Shared.Responses
         public string Project { get; set; }
         public string Contractor { get; set; }
         public string EngineerInCharge { get; set; }
-        public UserResponse Engineer { get; set; }
-        public string Status { get; set; }
+        public UserResponse Engineer { get; set; }        
     }
 }

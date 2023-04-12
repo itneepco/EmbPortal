@@ -42,10 +42,7 @@ namespace Application.CQRS.WorkOrders.Command
                 throw new NotFoundException(nameof(WorkOrderItem), request.Id);
             }
 
-            if (orderItem.Status != WorkOrderItemStatus.PUBLISHED)
-            {
-                throw new BadRequestException("Published Work Order Item cannot be updated");
-            }
+            
             
             workOrder.AddUpdateLineItem(
                 id: request.Id,
