@@ -16,7 +16,8 @@ namespace Application.Mappings
             CreateMap<AppUser, UserResponse>()
                 .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));            
 
-            CreateMap<WorkOrder, WorkOrderResponse>();
+            CreateMap<WorkOrder, WorkOrderResponse>()
+                .ForMember(m => m.EicEmployeeCode, opt => opt.MapFrom(p => p.EngineerInCharge));
 
             CreateMap<WorkOrder, WorkOrderDetailResponse>();
 

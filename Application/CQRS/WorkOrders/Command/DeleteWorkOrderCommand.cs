@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using EmbPortal.Shared.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,15 +23,22 @@ public class DeleteWorkOrderCommandHandler : IRequestHandler<DeleteWorkOrderComm
     public async Task<Unit> Handle(DeleteWorkOrderCommand request, CancellationToken cancellationToken)
     {
         var workOrder = await _context.WorkOrders.FindAsync(request.id);
-
+        
         if (workOrder == null)
         {
             throw new NotFoundException(nameof(workOrder), request.id);
         }
-         _context.WorkOrders.Remove(workOrder);
-         await _context.SaveChangesAsync(cancellationToken);
+       
+        var mBook = await _context.MeasurementBooks.FirstOrDefaultAsync(p => p.WorkOrderId == workOrder.Id);         
 
-          return Unit.Value;
+        if (mBook != null)
+        {
+            throw new BadRequestException("Cannot delete as MeasurementBooks exists for the order");
+        }
+        _context.WorkOrders.Remove(workOrder);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
         
     }
 }

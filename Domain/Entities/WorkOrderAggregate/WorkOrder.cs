@@ -16,7 +16,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
     public string Project { get;  set; }
     public string Contractor { get;  set; }
     public string EngineerInCharge { get;  set; }
-    public AppUser Engineer { get;  set; }
+   // public AppUser Engineer { get;  set; }
 
     private readonly List<WorkOrderItem> _items = new List<WorkOrderItem>();
     public IReadOnlyList<WorkOrderItem> Items => _items.AsReadOnly();

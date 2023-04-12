@@ -42,8 +42,7 @@ public class CreateWorkOrderCommandHandler : IRequestHandler<CreateWorkOrderComm
             OrderDate = request.PurchaseOrder.OrderDate,
             Project = request.PurchaseOrder.ProjectName,
             Contractor = request.PurchaseOrder.ContractorName,
-            EngineerInCharge = _currentUserService.EmployeeCode,
-           
+            EngineerInCharge = _currentUserService.EmployeeCode           
         }; 
 
         foreach (var item in request.PurchaseOrder.Items.Where(p => !bool.Parse(p.IsDeleted)))

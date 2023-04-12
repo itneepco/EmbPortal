@@ -34,11 +34,7 @@ namespace Application.CQRS.MeasurementBooks.Command
             }
 
             var workOrder = await _orderService.GetWorkOrderWithItems(req.data.WorkOrderId);
-
-            //if(workOrder.Status == WorkOrderStatus.CREATED)
-            //{
-            //    throw new BadRequestException("Please publish Work Order before creating any Measurement Books");
-            //}
+           
             
             var mbCount = _context.MeasurementBooks.Where( i => i.WorkOrderId == req.data.WorkOrderId ).Count()+1;            
             var title = workOrder.OrderNo +"-MB-"+mbCount;

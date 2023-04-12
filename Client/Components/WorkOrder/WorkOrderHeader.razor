@@ -13,18 +13,13 @@
         @WorkOrder.Project
     </DescriptionsItem>
     <DescriptionsItem Title="Engineer In Charge" Span="2">
-        <Tooltip Title="@WorkOrder.Engineer.ToString()" Placement="@Placement.Bottom">
-            <span style="cursor: pointer">@WorkOrder.Engineer?.DisplayName</span>
-        </Tooltip>
+        @WorkOrder.EicFullName
     </DescriptionsItem>
 </Descriptions>
 
 @code {
     [Parameter]
     public WorkOrderDetailResponse WorkOrder { get; set; }
-
-    
-
     bool loading = false;
 
     private Dictionary<string, int> column = new Dictionary<string, int> {
@@ -35,6 +30,4 @@
         { "sm", 1},
         { "xs", 1}
     };
-
-    
 }

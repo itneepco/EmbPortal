@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Entities.Identity;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
@@ -32,11 +33,10 @@ namespace Application.CQRS.WorkOrders.Query
         public async Task<WorkOrderResponse> Handle(GetWorkOrderByIdQuery request, CancellationToken cancellationToken)
         {
             var currEmpCode = _currentUserService.EmployeeCode;
-            var workOrder = await _context.WorkOrders
-                .Include(p => p.Engineer)
+            
+            var workOrder = await _context.WorkOrders              
                 .Include(p => p.Items)                  
                 .Where(p => p.CreatedBy == currEmpCode || p.EngineerInCharge == currEmpCode)
-                .ProjectTo<WorkOrderDetailResponse>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(p => p.Id == request.id);
 
             if (workOrder == null)
@@ -44,7 +44,16 @@ namespace Application.CQRS.WorkOrders.Query
                 throw new NotFoundException(nameof(workOrder), request.id);
             }
 
-            return workOrder;
+            var eng = await _context.AppUsers.FirstOrDefaultAsync(p => p.UserName == workOrder.EngineerInCharge);
+            if (eng == null)
+            {
+                throw new NotFoundException(nameof(AppUser), workOrder.EngineerInCharge);
+            }
+
+            var workOrderDto = _mapper.Map<WorkOrderDetailResponse>(workOrder);
+            workOrderDto.EicFullName = eng.DisplayName;
+
+            return workOrderDto;
         }
     }
 }

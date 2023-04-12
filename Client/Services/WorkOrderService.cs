@@ -31,12 +31,6 @@ namespace Client.Services
             return await response.ToResult<WorkOrderDetailResponse>();
         }
 
-        public async Task<PaginatedList<WorkOrderResponse>> GetWorkOrdersByProjectPagination(int projectId, int pageIndex, int pageSize, string search)
-        {
-            return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
-                ($"/api/WorkOrder/Project/{projectId}?pageNumber={pageIndex}&pageSize={pageSize}&search={search}");
-        }
-
         public async Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search)
         {
             return await _httpClient.GetFromJsonAsync<PaginatedList<WorkOrderResponse>>
@@ -55,30 +49,6 @@ namespace Client.Services
             return await response.ToResult<int>();
         }
 
-        public async Task<IResult> UpdateWorkOrder(int id, WorkOrderRequest request)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}", request);
-            return await response.ToResult();
-        }
-
-        public async Task<IResult<int>> CreateWorkOrderItem(int id, WorkOrderItemRequest request)
-        {
-            var response = await _httpClient.PostAsJsonAsync($"/api/WorkOrder/{id}/Item", request);
-            return await response.ToResult<int>();
-        }
-
-        public async Task<IResult> UpdateWorkOrderItem(int id, int itemId, WorkOrderItemRequest request)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"/api/WorkOrder/{id}/Item/{itemId}", request);
-            return await response.ToResult();
-        }
-
-        public async Task<IResult> DeleteWorkOrderItem(int id, int itemId)
-        {
-            var response = await _httpClient.DeleteAsync($"/api/WorkOrder/{id}/Item/{itemId}");
-            return await response.ToResult();
-        }
-
         public async Task<IResult<List<PendingOrderItemResponse>>> GetPendingWorkOrderItems(int id)
         {
             var response = await _httpClient.GetAsync($"/api/WorkOrder/{id}/Item/Pending");
@@ -90,12 +60,6 @@ namespace Client.Services
             var response = await _httpClient.GetAsync($"/api/WorkOrder/Item/Download");
             var data = await response.Content.ReadAsStringAsync();
             return data;
-        }
-
-        public async Task<IResult> UploadWorkOrderItemsAsync(int workOrderId, FileUploadRequest content)
-        {
-            var response = await _httpClient.PostAsJsonAsync($"/api/WorkOrder/{workOrderId}/Items/Upload", content);
-            return await response.ToResult();
         }
 
         public async Task<IResult> ChangeEngineerIncharge(int id, ChangeOfficerRequest request)
