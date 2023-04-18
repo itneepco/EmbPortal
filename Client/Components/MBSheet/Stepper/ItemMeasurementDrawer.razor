@@ -1,0 +1,92 @@
+﻿<Drawer Closable="true"
+        Width="450"
+        Title="title"
+        Visible="@Visible"
+        OnClose="@CloseSidebar">
+
+    <Form Model="@model"
+          OnFinish="@OnSubmit"
+          Layout="@FormLayout.Vertical"
+          ValidateMode="@FormValidateMode.Complex">
+
+        <FormItem Label="Work Description" Style="margin-bottom:12px">
+            <TextArea Rows="3" Placeholder="General Remarks" @bind-Value="@context.Description" TValue="string" />
+        </FormItem>
+
+        <FormItem Label="Nos" Style="margin-bottom:12px">
+            <Input Placeholder="Nos" @bind-Value="@context.No" TValue="int" />
+        </FormItem>
+
+        <FormItem Label="Value 1" Style="margin-bottom:12px">
+            <Input Placeholder="Value 1" @bind-Value="@context.Val1" TValue="string" />
+        </FormItem>
+
+        <FormItem Label="Value 2" Style="margin-bottom:12px">
+            <Input Placeholder="Value 2" @bind-Value="@context.Val2" TValue="string" />
+        </FormItem>
+
+        <FormItem Label="Value 3" Style="margin-bottom:12px">
+            <Input Placeholder="Value 3" @bind-Value="@context.Val3" TValue="string" />
+        </FormItem>
+
+        <Tag Color="purple-inverse">Balance Quantity: @StepperModel.AvailableMeasurementQty</Tag>
+        <Tag Color="orange-inverse">Entered Quantity: @context.Total</Tag>
+
+        <Row Style="margin-top: 2rem">
+            <AntDesign.Col Flex="1"></AntDesign.Col>
+            <AntDesign.Col>
+                <Button Type="@ButtonType.Default" OnClick="@CloseSidebar">Cancel</Button>
+                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+            </AntDesign.Col>
+        </Row>
+    </Form>
+</Drawer>
+
+@code {
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnItemSubmit { get; set; }
+
+    public MBItemMeasurementRequest model { get; set; } = new();
+
+    private List<MBItemStatusResponse> mbItemsStatuses = new();
+    private MBItemStatusResponse selectedItem;
+    private string title = "Add measurement details";
+
+
+    //private FormValidationRule[] valueGreaterThanZero = new FormValidationRule[]{
+    //    new FormValidationRule { Type=FormFieldType.Float, Min=(decimal)0.0001, Message="Value should be atleast 0.0001" }
+    //};
+
+    protected override void OnParametersSet()
+    {
+        model = new();
+    }
+
+    async Task OnSubmit()
+    {
+        //if (result.Succeeded)
+        //{
+        //    CloseSidebar();
+        //    await OnItemSubmit.InvokeAsync();
+        //    await messageService.Success(result.Message);
+        //}
+        //else
+        //{
+        //    await messageService.Error(result.Message);
+        //}
+    }
+
+    void CloseSidebar()
+    {
+        OnClose.InvokeAsync();
+    }
+}

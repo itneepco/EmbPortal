@@ -1,0 +1,26 @@
+﻿<h3>MeasurementSummaryStep</h3>
+
+<div style="margin-top: 1.5rem">
+    <Button Type="primary" OnClick="PrevStep">
+        Previous
+    </Button>
+    <Button Type="primary" OnClick="OnSubmit" Loading="loading" Danger>
+        Submit
+    </Button>
+</div>
+
+@code {
+    [CascadingParameter] public MeasurementStepper Stepper { get; set; }
+
+    bool loading;
+
+    public void PrevStep()
+    {
+        Stepper.Prev();
+    }
+
+    public async Task OnSubmit()
+    {
+
+    }
+}

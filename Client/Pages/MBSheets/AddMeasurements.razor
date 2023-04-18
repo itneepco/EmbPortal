@@ -1,0 +1,30 @@
+﻿@page "/mbook/{MBookId:int}/mbsheet/measurements"
+@attribute [Authorize]
+
+<h3>Add Measurements</h3>
+
+<Spin Spinning="loading">
+    <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses"/>
+</Spin>
+
+@code {
+    [Parameter]
+    public int MBookId { get; set; }
+
+    private bool loading;
+    private List<MBItemStatusResponse> mbItemsStatuses = new();
+
+    public MBSheetItemRequest model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCurrentMBookItemsStatusAsync();
+    }
+
+    async Task LoadCurrentMBookItemsStatusAsync()
+    {
+        loading = true;
+        mbItemsStatuses = await mBookService.GetCurrentMBItemsStatus(MBookId);
+        loading = false;
+    }
+}

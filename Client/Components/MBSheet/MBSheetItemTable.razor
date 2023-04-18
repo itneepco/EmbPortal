@@ -1,4 +1,4 @@
-﻿<Button OnClick="() => OpenSideDrawer(null)" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
+﻿<Button OnClick="GoToMeasurementPage" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
     Add Measurement
 </Button>
 
@@ -51,17 +51,17 @@
     </ActionColumn>
 </Table>
 
-<AddEditMBSheetItemDrawer Visible="@drawerVisible"
+@*<AddEditMBSheetItemDrawer Visible="@drawerVisible"
                        OnClose="@CloseSideBar"
                        CurrentMBSheetItem="@currentMBSheetItem"
-                       OnItemSubmit="@OnItemSubmit" />
+                       OnItemSubmit="@OnItemSubmit" />*@
 
 <FileUploadComponent @bind-Visible="modalVisible" 
                      @bind-CurrentMBSheetItem="@currentMBSheetItem"
                      IsUpload="true"
                      OnItemSubmit="@OnItemSubmit"/>
 
-@code {
+                    @code {
     [CascadingParameter(Name = "MBookId")]
     public int MBookId { get; set; }
 
@@ -146,5 +146,9 @@
     {
         currentMBSheetItem = item;
         modalVisible = true;
+    }
+    void GoToMeasurementPage()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/measurements");
     }
 }

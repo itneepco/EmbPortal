@@ -1,0 +1,93 @@
+﻿<h3>Measurement Details</h3>
+
+<Card Style="margin-bottom: 0.75rem">
+    <Row Gutter="12">
+        <Col Sm="24" Md="18">
+            <strong>Item: </strong>@StepperModel.ShortServiceDesc
+        </Col>
+        <Col Sm="24" Md="6">
+            <strong>Uom: </strong>@StepperModel.Uom
+        </Col>
+    </Row>
+</Card>
+
+<Button OnClick="OpenSideDrawer" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
+    Add Details
+</Button>
+
+<Table DataSource="@Model.Measurements" 
+       Size="TableSize.Small" 
+       Bordered>
+
+    <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="15%" />
+    <Column Title="Value 1" TData="string" Width="15%">@context.Val1</Column>
+    <Column Title="Value 2" TData="string" Width="15%">@context.Val2</Column>
+    <Column Title="Value 3" TData="string" Width="15%">@context.Val3</Column>
+    <Column Title="Total" TData="string" Width="15%">@context.Total</Column>
+    <ActionColumn Title="Action" Width="25%">
+        <Row Justify="center" Gutter="6">
+            <AntDesign.Col>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> OnDeleteItem(context)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)"
+                            Shape="@ButtonShape.CircleOutline"
+                            Danger
+                            Size="@ButtonSize.Small">
+                    </Button>
+                </Popconfirm>
+            </AntDesign.Col>
+        </Row>
+    </ActionColumn>
+</Table>
+
+<ItemMeasurementDrawer Visible="@drawerVisible" OnClose="@CloseSideBar" />
+
+<div style="margin-top: 1.5rem">
+    <Button Type="primary" OnClick="PrevStep">
+        Previous
+    </Button>
+
+    <Button Type="primary" OnClick="NextStep">
+        Next
+    </Button>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public MeasurementStepper Stepper { get; set; }
+
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    bool drawerVisible;
+
+    public void NextStep()
+    {
+        Stepper.Next();
+    }
+
+    public void PrevStep()
+    {
+        Stepper.Prev();
+    }
+
+    void OpenSideDrawer()
+    {
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
+    }
+
+    async Task OnDeleteItem(MBItemMeasurementRequest item)
+    {
+
+    }
+}

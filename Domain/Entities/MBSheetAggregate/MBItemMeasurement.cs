@@ -18,9 +18,10 @@ public class MBItemMeasurement : AuditableEntity
         get
         {
             float total = No;
-            if (Val1 >0) { total *= Val1; }
-            if (Val2 >0) { total *= Val2; }
-            if (Val3 >0) { total *= Val3; }
+            if (Val1 > 0) { total *= Val1; }
+            if (Val2 > 0) { total *= Val2; }
+            if (Val3 > 0) { total *= Val3; }
+
             return total;
         }
     }

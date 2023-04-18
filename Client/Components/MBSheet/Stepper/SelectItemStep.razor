@@ -1,0 +1,62 @@
+﻿<h3>Select Service Item</h3>
+
+<Row>
+    <Col Sm="24" Md="18" Lg="14">
+        <Select DataSource="@MBItemStatus"
+            @bind-Value="@Model.MBookItemId"
+            TItem="MBItemStatusResponse"
+            TItemValue="int"
+            ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
+            LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
+            Placeholder="Select Service Item"
+            OnSelectedItemChanged="@(item => SelectLineItem(item))"
+            EnableSearch
+            AllowClear
+            Disabled="Model.Measurements.Count > 0">
+        </Select>
+    </Col>
+</Row>
+
+<div style="margin-top: 1.5rem">
+    <Button Type="primary" OnClick="NextStep" Disabled="Model.MBookItemId == 0">
+        Next
+    </Button>
+</div>
+
+        @code {
+    [CascadingParameter]
+    public MeasurementStepper Stepper { get; set; }
+
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public List<MBItemStatusResponse> MBItemStatus { get; set; }
+
+    public void NextStep()
+    {
+        if (Model.MBookItemId == 0) return;
+
+        Stepper.Next();
+    }
+
+    void SelectLineItem(MBItemStatusResponse item)
+    {
+        if (item == null)
+        {
+            Model.MBookItemId = 0;
+
+        }
+        else
+        {
+            Model.MBookItemId = item.MBookItemId;
+            StepperModel.ShortServiceDesc = item.ItemDescription;
+            StepperModel.Uom = item.Uom;
+            StepperModel.CumulativeMeasuredQty = item.CumulativeMeasuredQty;
+            StepperModel.AvailableMeasurementQty = item.AvailableMeasurementQty;
+        }
+    }
+}
