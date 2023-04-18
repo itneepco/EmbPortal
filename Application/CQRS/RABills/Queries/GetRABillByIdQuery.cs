@@ -28,7 +28,7 @@ namespace Application.CQRS.RABills.Queries
         public async Task<RABillDetailResponse> Handle(GetRABillByIdQuery request, CancellationToken cancellationToken)
         {
             var raBill = await _context.RABills
-                .Include(p => p.Acceptor)
+                .Include(p => p.EicEmpCode)
                 .Include(p => p.Items)
                 .Include(p => p.Deductions)
                 .ProjectTo<RABillDetailResponse>(_mapper.ConfigurationProvider)

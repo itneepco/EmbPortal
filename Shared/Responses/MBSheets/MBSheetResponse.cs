@@ -9,16 +9,16 @@ namespace EmbPortal.Shared.Responses
         public int MeasurementBookId { get; set; }
         public string Title { get; set; }
         public DateTime MeasurementDate { get; set; }
-        public string MeasurementOfficer { get; set; }
-        public UserResponse Measurer { get; set; }
+        public string MeasurerEmpCode { get; set; }
+        public string MeasurerName { get; set; }
 
         public DateTime ValidationDate { get; set; }
-        public string ValidationOfficer { get; set; }
-        public UserResponse Validator { get; set; }
+        public string ValidatorEmpCode { get; set; }
+        public string ValidatorName { get; set; }
 
         public DateTime AcceptingDate { get; set; }
-        public string AcceptingOfficer { get; set; }
-        public UserResponse Acceptor { get; set; }
+        public string EicEmpcode { get; set; }
+        public string EicName { get; set; }
 
         public string Status { get; set; }
 

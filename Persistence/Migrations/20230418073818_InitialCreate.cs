@@ -42,7 +42,7 @@ namespace Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Designation = table.Column<string>(type: "varchar(60)", maxLength: 60, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
+                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -68,7 +68,94 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.UniqueConstraint("AK_AspNetUsers_UserName", x => x.UserName);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "MBSheets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MeasurementDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    MeasurerEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ValidationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ValidatorEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AcceptingDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
+                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MBSheets", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RABills",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    BillDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ApprovalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
+                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RABills", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "WorkOrders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    OrderNo = table.Column<long>(type: "bigint", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Project = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Contractor = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EngineerInCharge = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkOrders", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -200,19 +287,14 @@ namespace Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "WorkOrders",
+                name: "MBSheetItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    OrderNo = table.Column<long>(type: "bigint", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Project = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Contractor = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EngineerInCharge = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
+                    MBSheetId = table.Column<int>(type: "int", nullable: false),
+                    WorkOrderItemId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -222,13 +304,68 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkOrders", x => x.Id);
+                    table.PrimaryKey("PK_MBSheetItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WorkOrders_AspNetUsers_EngineerInCharge",
-                        column: x => x.EngineerInCharge,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_MBSheetItem_MBSheets_MBSheetId",
+                        column: x => x.MBSheetId,
+                        principalTable: "MBSheets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RABillItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AcceptedMeasuredQty = table.Column<float>(type: "float", nullable: false),
+                    TillLastRAQty = table.Column<float>(type: "float", nullable: false),
+                    CurrentRAQty = table.Column<float>(type: "float", nullable: false),
+                    Remarks = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    WorkOrderItemId = table.Column<int>(type: "int", nullable: false),
+                    RABillId = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RABillItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RABillItem_RABills_RABillId",
+                        column: x => x.RABillId,
+                        principalTable: "RABills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RADeduction",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    RABillId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RADeduction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RADeduction_RABills_RABillId",
+                        column: x => x.RABillId,
+                        principalTable: "RABills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -241,9 +378,11 @@ namespace Persistence.Migrations
                     WorkOrderId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MeasurementOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                    MeasurerEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ValidatingOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                    ValidatorEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -256,18 +395,6 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MeasurementBooks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MeasurementBooks_AspNetUsers_MeasurementOfficer",
-                        column: x => x.MeasurementOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MeasurementBooks_AspNetUsers_ValidatingOfficer",
-                        column: x => x.ValidatingOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_MeasurementBooks_WorkOrders_WorkOrderId",
                         column: x => x.WorkOrderId,
@@ -321,24 +448,16 @@ namespace Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "MBSheets",
+                name: "ItemAttachment",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    FileName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MeasurementDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    MeasurementOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
+                    FileNormalizedName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ValidationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ValidationOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    AcceptingDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AcceptingOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
+                    MBSheetItemId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -348,68 +467,11 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MBSheets", x => x.Id);
+                    table.PrimaryKey("PK_ItemAttachment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MBSheets_AspNetUsers_AcceptingOfficer",
-                        column: x => x.AcceptingOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MBSheets_AspNetUsers_MeasurementOfficer",
-                        column: x => x.MeasurementOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MBSheets_AspNetUsers_ValidationOfficer",
-                        column: x => x.ValidationOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MBSheets_MeasurementBooks_MeasurementBookId",
-                        column: x => x.MeasurementBookId,
-                        principalTable: "MeasurementBooks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "RABills",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    BillDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ApprovalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AcceptingOfficer = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RABills", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RABills_AspNetUsers_AcceptingOfficer",
-                        column: x => x.AcceptingOfficer,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "UserName",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RABills_MeasurementBooks_MeasurementBookId",
-                        column: x => x.MeasurementBookId,
-                        principalTable: "MeasurementBooks",
+                        name: "FK_ItemAttachment_MBSheetItem_MBSheetItemId",
+                        column: x => x.MBSheetItemId,
+                        principalTable: "MBSheetItem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -437,152 +499,6 @@ namespace Persistence.Migrations
                         name: "FK_MBookItem_MeasurementBooks_MeasurementBookId",
                         column: x => x.MeasurementBookId,
                         principalTable: "MeasurementBooks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MBookItem_WorkOrderItem_WorkOrderItemId",
-                        column: x => x.WorkOrderItemId,
-                        principalTable: "WorkOrderItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "RABillItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ItemNo = table.Column<int>(type: "int", nullable: false),
-                    PackageNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ItemDescription = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SubItemNo = table.Column<int>(type: "int", nullable: false),
-                    SubItemPackageNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ServiceNo = table.Column<long>(type: "bigint", nullable: false),
-                    ShortServiceDesc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    AcceptedMeasuredQty = table.Column<float>(type: "float", nullable: false),
-                    TillLastRAQty = table.Column<float>(type: "float", nullable: false),
-                    CurrentRAQty = table.Column<float>(type: "float", nullable: false),
-                    Remarks = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MBookItemId = table.Column<int>(type: "int", nullable: false),
-                    RABillId = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RABillItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RABillItem_RABills_RABillId",
-                        column: x => x.RABillId,
-                        principalTable: "RABills",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "RADeduction",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    RABillId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RADeduction", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RADeduction_RABills_RABillId",
-                        column: x => x.RABillId,
-                        principalTable: "RABills",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "MBSheetItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ServiceNo = table.Column<long>(type: "bigint", nullable: false),
-                    ShortServiceDesc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Nos = table.Column<int>(type: "int", nullable: false),
-                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
-                    Uom = table.Column<string>(type: "varchar(8)", maxLength: 8, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    MBookItemId = table.Column<int>(type: "int", nullable: false),
-                    MBSheetId = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MBSheetItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MBSheetItem_MBookItem_MBookItemId",
-                        column: x => x.MBookItemId,
-                        principalTable: "MBookItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MBSheetItem_MBSheets_MBSheetId",
-                        column: x => x.MBSheetId,
-                        principalTable: "MBSheets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ItemAttachment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FileName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FileNormalizedName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MBSheetItemId = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ItemAttachment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ItemAttachment_MBSheetItem_MBSheetItemId",
-                        column: x => x.MBSheetItemId,
-                        principalTable: "MBSheetItem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -636,50 +552,9 @@ namespace Persistence.Migrations
                 column: "MeasurementBookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MBookItem_WorkOrderItemId",
-                table: "MBookItem",
-                column: "WorkOrderItemId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MBSheetItem_MBookItemId",
-                table: "MBSheetItem",
-                column: "MBookItemId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MBSheetItem_MBSheetId",
                 table: "MBSheetItem",
                 column: "MBSheetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MBSheets_AcceptingOfficer",
-                table: "MBSheets",
-                column: "AcceptingOfficer");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MBSheets_MeasurementBookId",
-                table: "MBSheets",
-                column: "MeasurementBookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MBSheets_MeasurementOfficer",
-                table: "MBSheets",
-                column: "MeasurementOfficer");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MBSheets_ValidationOfficer",
-                table: "MBSheets",
-                column: "ValidationOfficer");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MeasurementBooks_MeasurementOfficer",
-                table: "MeasurementBooks",
-                column: "MeasurementOfficer");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MeasurementBooks_ValidatingOfficer",
-                table: "MeasurementBooks",
-                column: "ValidatingOfficer");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MeasurementBooks_WorkOrderId",
@@ -692,16 +567,6 @@ namespace Persistence.Migrations
                 column: "RABillId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RABills_AcceptingOfficer",
-                table: "RABills",
-                column: "AcceptingOfficer");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RABills_MeasurementBookId",
-                table: "RABills",
-                column: "MeasurementBookId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RADeduction_RABillId",
                 table: "RADeduction",
                 column: "RABillId");
@@ -710,11 +575,6 @@ namespace Persistence.Migrations
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkOrders_EngineerInCharge",
-                table: "WorkOrders",
-                column: "EngineerInCharge");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkOrders_OrderNo",
@@ -744,37 +604,37 @@ namespace Persistence.Migrations
                 name: "ItemAttachment");
 
             migrationBuilder.DropTable(
+                name: "MBookItem");
+
+            migrationBuilder.DropTable(
                 name: "RABillItem");
 
             migrationBuilder.DropTable(
                 name: "RADeduction");
 
             migrationBuilder.DropTable(
+                name: "WorkOrderItem");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "MBSheetItem");
 
             migrationBuilder.DropTable(
-                name: "RABills");
+                name: "MeasurementBooks");
 
             migrationBuilder.DropTable(
-                name: "MBookItem");
+                name: "RABills");
 
             migrationBuilder.DropTable(
                 name: "MBSheets");
 
             migrationBuilder.DropTable(
-                name: "WorkOrderItem");
-
-            migrationBuilder.DropTable(
-                name: "MeasurementBooks");
-
-            migrationBuilder.DropTable(
                 name: "WorkOrders");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

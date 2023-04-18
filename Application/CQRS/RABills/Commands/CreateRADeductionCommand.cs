@@ -5,7 +5,6 @@ using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

@@ -31,24 +31,22 @@ namespace Application.CQRS.Dashboard.Queries
 
             var mbApproval = await _context.MBSheets
                                      .Where(p => p.Status == MBSheetStatus.VALIDATED
-                                                 && p.AcceptingOfficer == empCode)
+                                                 && p.EicEmpCode == empCode)
                                      .CountAsync();
 
             var mbValidation = await _context.MBSheets
-                                    .Where(p => (p.ValidationOfficer == empCode || p.AcceptingOfficer == empCode)
+                                    .Where(p => (p.ValidatorEmpCode == empCode || p.EicEmpCode == empCode)
                                                  && p.Status == MBSheetStatus.PUBLISHED)
                                     .CountAsync();
 
             var raApproval = await _context.RABills
                                     .Where(p => (p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)
-                                                  && p.AcceptingOfficer == empCode)
+                                                  && p.EicEmpCode == empCode)
                                     .CountAsync();
 
             var orders = await _context.WorkOrders
                                      .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
                                      .CountAsync();
-
-            
 
             return new DashboardStatsResponse
             {

@@ -29,7 +29,7 @@ namespace Application.CQRS.RABills.Queries
         public async Task<List<RABillResponse>> Handle(GetRABillByMBookIdQuery request, CancellationToken cancellationToken)
         {
             return await _context.RABills
-                .Include(p => p.Acceptor)
+                .Include(p => p.EicEmpCode)
                 .Include(p => p.Items)
                 .Include(p => p.Deductions)
                 .Where(p => p.MeasurementBookId == request.MBookId)

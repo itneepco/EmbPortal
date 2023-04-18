@@ -37,7 +37,7 @@ namespace Application.CQRS.MBSheets.Command
                 throw new BadRequestException("MB Sheet has already been validated");
             }
 
-            if (mbSheet.ValidationOfficer != _currentUserService.EmployeeCode)
+            if (mbSheet.ValidatorEmpCode != _currentUserService.EmployeeCode)
             {
                 throw new BadRequestException("Only Validation Officer can validate MB Sheet");
             }

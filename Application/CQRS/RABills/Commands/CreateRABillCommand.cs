@@ -1,5 +1,6 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
+using Application.Services;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
 using EmbPortal.Shared.Enums;
@@ -42,10 +43,8 @@ public class CreateRABillCommandQueryHandler : IRequestHandler<CreateRABillComma
             throw new BadRequestException("Cannot create new RA Bill when there are existing unapproved RA Bill");
         }
 
-        MeasurementBook mBook = await _context.MeasurementBooks
-            .Include(p => p.WorkOrder)
-            .Include(p => p.Items)
-                .ThenInclude(i => i.WorkOrderItem)
+        MeasurementBook mBook = await _context.MeasurementBooks            
+            .Include(p => p.Items)               
             .Where(p => p.Id == request.Data.MeasurementBookId)
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -53,11 +52,6 @@ public class CreateRABillCommandQueryHandler : IRequestHandler<CreateRABillComma
         if (mBook == null)
         {
             throw new NotFoundException($"MeasurementBook does not exist with Id: {request.Data.MeasurementBookId}");
-        }
-
-        if (mBook.Status == MBookStatus.CREATED)
-        {
-            throw new BadRequestException("Please publish Measurement Book before creating any RA Bills");
         }
 
         List<MBookItemQtyStatus> mBItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(mBook.Id);
@@ -69,40 +63,28 @@ public class CreateRABillCommandQueryHandler : IRequestHandler<CreateRABillComma
         var raBill = new RABill(
             title: title,//request.Data.Title,
             billDate: (DateTime)request.Data.BillDate,
+            eicEmpCode: mBook.EicEmpCode,
             mBookId: mBook.Id,
-            acceptingOfficer: mBook.WorkOrder.EngineerInCharge
+            workOrderId: mBook.WorkOrderId
         );
 
         foreach (var item in request.Data.Items)
         {
-            var mBookItem = mBook.Items.FirstOrDefault(p => p.Id == item.MBookItemId);
-            var mbItemQtyStatus = mBItemQtyStatuses.FirstOrDefault(p => p.MBookItemId == item.MBookItemId);
-            var raItemQtyStatus = raItemQtyStatuses.FirstOrDefault(p => p.MBookItemId == item.MBookItemId);
-
-            if (mBookItem == null)
-            {
-                throw new NotFoundException($"MeasurementBook does not have line item with Id: {item.MBookItemId}");
-            }
+            var mbItemQtyStatus = mBItemQtyStatuses.FirstOrDefault(p => p.WorkOrderItemId == item.WorkOrderItemId);
+            var raItemQtyStatus = raItemQtyStatuses.FirstOrDefault(p => p.WorkOrderItemId == item.WorkOrderItemId);
 
             raBill.AddLineItem(new RABillItem(
-                itemNo: mBookItem.WorkOrderItem.ItemNo,
-                packageNo: mBookItem.WorkOrderItem.PackageNo,
-                itemDescription: mBookItem.WorkOrderItem.ItemDescription,
-                subItemNo: mBookItem.WorkOrderItem.SubItemNo,
-                subItemPackageNo: mBookItem.WorkOrderItem.SubItemPackageNo,
-                serviceNo: mBookItem.WorkOrderItem.ServiceNo,
-                serviceDescription: mBookItem.WorkOrderItem.ShortServiceDesc,
-                rate: mBookItem.WorkOrderItem.UnitRate,
                 acceptedMeasuredQty: mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
                 tillLastRAQty: raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0,
                 currentRAQty: item.CurrentRAQty,
                 remarks: item.Remarks,
-                mbItemId: mBookItem.Id
+                workOrderItemId: item.WorkOrderItemId
             ));
         }
 
         _context.RABills.Add(raBill);
         await _context.SaveChangesAsync(cancellationToken);
+
         return raBill.Id;
     }
 }

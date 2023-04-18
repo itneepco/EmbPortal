@@ -37,7 +37,7 @@ namespace Application.CQRS.MBSheets.Command
                 throw new BadRequestException("Please validate the MB Sheet first");
             }
 
-            if (mbSheet.AcceptingOfficer != _currentUserService.EmployeeCode)
+            if (mbSheet.EicEmpCode != _currentUserService.EmployeeCode)
             {
                 throw new BadRequestException("Only Engineer-in-charge can accept the MB Sheet");
             }

@@ -7,7 +7,7 @@
        Responsive="false"
        Bordered HidePagination>
 
-    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="32%"></Column>
+    <Column Title="Description" @bind-Field="@context.WorkOrderItemDescription" Width="32%"></Column>
     <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="7%" />
     <Column Title="Measured Qty (A)" TData="float" Width="7%">
         @context.AcceptedMeasuredQty.ToString("0.00")

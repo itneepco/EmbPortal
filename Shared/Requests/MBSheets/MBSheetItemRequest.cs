@@ -16,8 +16,8 @@ namespace EmbPortal.Shared.Requests
         [Required, MaxLength(100)] 
         public string Description { get; set; }
 
-        public string MBookItemDescription { get; set; }
         public float MeasuredQuantity { get; set; }
+
         public int MBookItemId { get; set; }       
     }
 }

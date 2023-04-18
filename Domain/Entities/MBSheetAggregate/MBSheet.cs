@@ -12,21 +12,19 @@ namespace Domain.Entities.MBSheetAggregate
         public int Id { get; private set; }
         public string Title { get; set; }
         public DateTime MeasurementDate { get; private set; }
-        public string MeasurementOfficer { get; private set; }
-        public AppUser Measurer { get; private set; }
+        public string MeasurerEmpCode { get; private set; }        
 
         public DateTime ValidationDate { get; private set; }
-        public string ValidationOfficer { get; private set; }
-        public AppUser Validator { get; private set; }
-
+        public string ValidatorEmpCode { get; private set; }
+        
         public DateTime AcceptingDate { get; private set; }
-        public string AcceptingOfficer { get; private set; }
-        public AppUser Acceptor { get; set; }
-
+        public string EicEmpCode { get; private set; }     
+        
         public MBSheetStatus Status { get; private set; }
 
         public int MeasurementBookId { get; private set; }
-        public MeasurementBook MeasurementBook { get; private set; }
+        public int WorkOrderId { get; private set; }
+
 
         private readonly List<MBSheetItem> _items = new List<MBSheetItem>();
         public IReadOnlyList<MBSheetItem> Items => _items.AsReadOnly();
@@ -35,14 +33,14 @@ namespace Domain.Entities.MBSheetAggregate
         {
         }
 
-        public MBSheet(string title, int measurementBookId, string measurementOfficer, DateTime measurementDate, string validationOfficer, string acceptingOfficer)
+        public MBSheet(string title, int measurementBookId, string measurerEmpCode, DateTime measurementDate, string validatorEmpCode, string eicEmpCode)
         {
             Title = title;
             MeasurementBookId = measurementBookId;
-            MeasurementOfficer = measurementOfficer;
+            MeasurerEmpCode = measurerEmpCode;
             MeasurementDate = measurementDate;
-            ValidationOfficer = validationOfficer;
-            AcceptingOfficer = acceptingOfficer;
+            ValidatorEmpCode = validatorEmpCode;
+            EicEmpCode = eicEmpCode;
             Status = MBSheetStatus.CREATED;
         }
 

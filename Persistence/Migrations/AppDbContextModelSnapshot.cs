@@ -77,7 +77,6 @@ namespace Persistence.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
@@ -142,15 +141,15 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("AcceptingDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("AcceptingOfficer")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<string>("EicEmpCode")
+                        .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
@@ -167,7 +166,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("MeasurementDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("MeasurementOfficer")
+                    b.Property<string>("MeasurerEmpCode")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
@@ -183,20 +182,15 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("ValidationDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("ValidationOfficer")
+                    b.Property<string>("ValidatorEmpCode")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
+                    b.Property<int>("WorkOrderId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("AcceptingOfficer");
-
-                    b.HasIndex("MeasurementBookId");
-
-                    b.HasIndex("MeasurementOfficer");
-
-                    b.HasIndex("ValidationOfficer");
 
                     b.ToTable("MBSheets");
                 });
@@ -214,11 +208,6 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime(6)");
 
@@ -229,37 +218,15 @@ namespace Persistence.Migrations
                     b.Property<int>("MBSheetId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MBookItemId")
-                        .HasColumnType("int");
-
                     b.Property<float>("MeasuredQuantity")
                         .HasColumnType("float");
 
-                    b.Property<int>("Nos")
+                    b.Property<int>("WorkOrderItemId")
                         .HasColumnType("int");
-
-                    b.Property<long>("ServiceNo")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ShortServiceDesc")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<decimal>("UnitRate")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Uom")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("varchar(8)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MBSheetId");
-
-                    b.HasIndex("MBookItemId");
 
                     b.ToTable("MBSheetItem");
                 });
@@ -294,9 +261,6 @@ namespace Persistence.Migrations
 
                     b.HasIndex("MeasurementBookId");
 
-                    b.HasIndex("WorkOrderItemId")
-                        .IsUnique();
-
                     b.ToTable("MBookItem");
                 });
 
@@ -313,6 +277,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
+                    b.Property<string>("EicEmpCode")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime(6)");
 
@@ -320,7 +289,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
-                    b.Property<string>("MeasurementOfficer")
+                    b.Property<string>("MeasurerEmpCode")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
@@ -333,7 +302,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("ValidatingOfficer")
+                    b.Property<string>("ValidatorEmpCode")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
@@ -342,10 +311,6 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MeasurementOfficer");
-
-                    b.HasIndex("ValidatingOfficer");
 
                     b.HasIndex("WorkOrderId");
 
@@ -358,11 +323,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("AcceptingOfficer")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
                     b.Property<DateTime>("ApprovalDate")
                         .HasColumnType("datetime(6)");
 
@@ -373,6 +333,11 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<string>("EicEmpCode")
+                        .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
 
@@ -394,11 +359,10 @@ namespace Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<int>("WorkOrderId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("AcceptingOfficer");
-
-                    b.HasIndex("MeasurementBookId");
 
                     b.ToTable("RABills");
                 });
@@ -422,28 +386,12 @@ namespace Persistence.Migrations
                     b.Property<float>("CurrentRAQty")
                         .HasColumnType("float");
 
-                    b.Property<string>("ItemDescription")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int>("ItemNo")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastModifiedBy")
                         .HasMaxLength(6)
                         .HasColumnType("varchar(6)");
-
-                    b.Property<int>("MBookItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PackageNo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("RABillId")
                         .HasColumnType("int");
@@ -452,28 +400,11 @@ namespace Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<long>("ServiceNo")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ShortServiceDesc")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int>("SubItemNo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SubItemPackageNo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
                     b.Property<float>("TillLastRAQty")
                         .HasColumnType("float");
 
-                    b.Property<decimal>("UnitRate")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("WorkOrderItemId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -543,8 +474,6 @@ namespace Persistence.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EngineerInCharge");
 
                     b.HasIndex("OrderNo")
                         .IsUnique();
@@ -765,59 +694,13 @@ namespace Persistence.Migrations
                     b.Navigation("MBSheetItem");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Acceptor")
-                        .WithMany()
-                        .HasForeignKey("AcceptingOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
-                        .WithMany()
-                        .HasForeignKey("MeasurementBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Measurer")
-                        .WithMany()
-                        .HasForeignKey("MeasurementOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Validator")
-                        .WithMany()
-                        .HasForeignKey("ValidationOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Acceptor");
-
-                    b.Navigation("MeasurementBook");
-
-                    b.Navigation("Measurer");
-
-                    b.Navigation("Validator");
-                });
-
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
                 {
-                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", "MBSheet")
+                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", null)
                         .WithMany("Items")
                         .HasForeignKey("MBSheetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MBookItem", null)
-                        .WithMany("MBSheetItems")
-                        .HasForeignKey("MBookItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MBSheet");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
@@ -826,97 +709,33 @@ namespace Persistence.Migrations
                         .WithMany("Items")
                         .HasForeignKey("MeasurementBookId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrderItem", "WorkOrderItem")
-                        .WithOne("MBookItem")
-                        .HasForeignKey("Domain.Entities.MeasurementBookAggregate.MBookItem", "WorkOrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WorkOrderItem");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Measurer")
-                        .WithMany()
-                        .HasForeignKey("MeasurementOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Validator")
-                        .WithMany()
-                        .HasForeignKey("ValidatingOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", "WorkOrder")
+                    b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
                         .WithMany("MeasurementBooks")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Measurer");
-
-                    b.Navigation("Validator");
-
-                    b.Navigation("WorkOrder");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Acceptor")
-                        .WithMany()
-                        .HasForeignKey("AcceptingOfficer")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.MeasurementBookAggregate.MeasurementBook", "MeasurementBook")
-                        .WithMany()
-                        .HasForeignKey("MeasurementBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Acceptor");
-
-                    b.Navigation("MeasurementBook");
                 });
 
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABillItem", b =>
                 {
-                    b.HasOne("Domain.Entities.RABillAggregate.RABill", "RABill")
+                    b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
                         .WithMany("Items")
                         .HasForeignKey("RABillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("RABill");
                 });
 
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RADeduction", b =>
                 {
-                    b.HasOne("Domain.Entities.RABillAggregate.RABill", "RABill")
+                    b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
                         .WithMany("Deductions")
                         .HasForeignKey("RABillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("RABill");
-                });
-
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
-                {
-                    b.HasOne("Domain.Entities.Identity.AppUser", "Engineer")
-                        .WithMany()
-                        .HasForeignKey("EngineerInCharge")
-                        .HasPrincipalKey("UserName")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Engineer");
                 });
 
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
@@ -988,11 +807,6 @@ namespace Persistence.Migrations
                     b.Navigation("Attachments");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MBookItem", b =>
-                {
-                    b.Navigation("MBSheetItems");
-                });
-
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
                     b.Navigation("Items");
@@ -1010,11 +824,6 @@ namespace Persistence.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("MeasurementBooks");
-                });
-
-            modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
-                {
-                    b.Navigation("MBookItem");
                 });
 #pragma warning restore 612, 618
         }

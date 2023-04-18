@@ -13,14 +13,10 @@
     <RowTemplate>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurer" Width="16%" TData="string">
-            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
-            </Tooltip>
+            @context.MeasurerName
         </Column>
         <Column Title="Validator" Width="16%" TData="string">
-            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
-            </Tooltip>
+            @context.ValidatorName
         </Column>
         <ActionColumn Title="Action" Width="25%">
             <Row Justify="ceter">

@@ -42,9 +42,7 @@ namespace Application.CQRS.MBSheets.Command
                 throw new NotFoundException($"Current MB Sheet does not have line item with Id: {request.Id}");
             }
 
-            mbSheetItem.SetDescription(request.Data.Description);
-            mbSheetItem.SetNos(request.Data.Nos);
-            mbSheetItem.SetMeasuredQuantity(request.Data.MeasuredQuantity);           
+            
 
             await _context.SaveChangesAsync(cancellationToken);
 

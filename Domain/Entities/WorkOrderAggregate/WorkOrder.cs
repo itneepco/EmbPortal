@@ -1,5 +1,4 @@
 using Domain.Common;
-using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using System;
 using System.Collections.Generic;

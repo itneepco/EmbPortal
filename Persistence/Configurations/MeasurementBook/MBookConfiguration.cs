@@ -11,27 +11,21 @@ class MBookConfiguration : IEntityTypeConfiguration<MeasurementBook>
             .HasMaxLength(PersistenceConsts.TitleLegth)
             .IsRequired();
 
-        builder.Property(p => p.MeasurementOfficer)
+        builder.Property(p => p.MeasurerEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength)
             .IsRequired();
 
-        builder.Property(p => p.ValidatingOfficer)
+        builder.Property(p => p.ValidatorEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength)
             .IsRequired();
+
+        builder.Property(p => p.EicEmpCode)
+           .HasMaxLength(PersistenceConsts.EmpCodeLength)
+           .IsRequired();
 
         builder.HasMany(p => p.Items)
             .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(p => p.Measurer).WithMany()
-            .HasPrincipalKey(p => p.UserName)
-            .HasForeignKey(p => p.MeasurementOfficer)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(p => p.Validator).WithMany()
-            .HasPrincipalKey(p => p.UserName)
-            .HasForeignKey(p => p.ValidatingOfficer)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);       
 
         // Backing fields
         builder.Navigation(p => p.Items).HasField("_items");

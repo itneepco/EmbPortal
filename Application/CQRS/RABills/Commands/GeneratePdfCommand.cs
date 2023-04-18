@@ -14,98 +14,99 @@ using Application.Exceptions;
 using System.Linq;
 using System;
 
-namespace Application.CQRS.RABills.Commands
+namespace Application.CQRS.RABills.Commands;
+
+public record GeneratePdfCommand(int RABillId) : IRequest<byte[]>
 {
-    public record GeneratePdfCommand(int RABillId) : IRequest<byte[]>
+}
+
+public class GeneratePdfCommandHandler : IRequestHandler<GeneratePdfCommand, byte[]>
+{
+    private readonly IAppDbContext _context;
+
+    public GeneratePdfCommandHandler(IAppDbContext context)
     {
+        _context = context;
     }
 
-    public class GeneratePdfCommandHandler : IRequestHandler<GeneratePdfCommand, byte[]>
+    public async Task<byte[]> Handle(GeneratePdfCommand request, CancellationToken cancellationToken)
     {
-        private readonly IAppDbContext _context;
+        //RABill raBill = await _context.RABills
+        //    .Include(p => p.Items)
+        //    .FirstOrDefaultAsync(p => p.Id == request.RABillId);
 
-        public GeneratePdfCommandHandler(IAppDbContext context)
-        {
-            _context = context;
-        }
+        //if (raBill == null)
+        //{
+        //    throw new NotFoundException(nameof(RABill), request.RABillId);
+        //}
 
-        public async Task<byte[]> Handle(GeneratePdfCommand request, CancellationToken cancellationToken)
-        {
-            RABill raBill = await _context.RABills
-                .Include(p => p.Items)
-                .FirstOrDefaultAsync(p => p.Id == request.RABillId);
+        //byte[] pdfBytes;
+        //using (var stream = new MemoryStream())
+        //using (var writer = new PdfWriter(stream))
+        //using (var pdf = new PdfDocument(writer))
+        //using (var doc = new Document(pdf, PageSize.A4.Rotate()))
+        //{
+        //    doc.SetMargins(20, 20, 20, 20);
 
-            if (raBill == null)
-            {
-                throw new NotFoundException(nameof(RABill), request.RABillId);
-            }
+        //    doc.Add(new Paragraph("RA Bill Details"));
 
-            byte[] pdfBytes;
-            using (var stream = new MemoryStream())
-            using (var writer = new PdfWriter(stream))
-            using (var pdf = new PdfDocument(writer))
-            using (var doc = new Document(pdf, PageSize.A4.Rotate()))
-            {
-                doc.SetMargins(20, 20, 20, 20);
+        //    Table table = new Table(UnitValue.CreatePercentArray(100)).UseAllAvailableWidth().SetFixedLayout();
 
-                doc.Add(new Paragraph("RA Bill Details"));
+        //    Cell desc = new Cell(1, 35).Add(new Paragraph("Item Description"));
+        //    table.AddCell(desc);
 
-                Table table = new Table(UnitValue.CreatePercentArray(100)).UseAllAvailableWidth().SetFixedLayout();
+        //    Cell rate = new Cell(1, 10).Add(new Paragraph("Rate"));
+        //    table.AddCell(rate);
 
-                Cell desc = new Cell(1, 35).Add(new Paragraph("Item Description"));
-                table.AddCell(desc);
+        //    Cell measuredQty = new Cell(1, 10).Add(new Paragraph("Measured Qty"));
+        //    table.AddCell(measuredQty);
 
-                Cell rate = new Cell(1, 10).Add(new Paragraph("Rate"));
-                table.AddCell(rate);
+        //    Cell lastRaQty = new Cell(1, 10).Add(new Paragraph("Till Last RA Qty"));
+        //    table.AddCell(lastRaQty);
 
-                Cell measuredQty = new Cell(1, 10).Add(new Paragraph("Measured Qty"));
-                table.AddCell(measuredQty);
+        //    Cell currRaQty = new Cell(1, 10).Add(new Paragraph("Current RA Qty"));
+        //    table.AddCell(currRaQty);
 
-                Cell lastRaQty = new Cell(1, 10).Add(new Paragraph("Till Last RA Qty"));
-                table.AddCell(lastRaQty);
+        //    Cell currRaAmt = new Cell(1, 12).Add(new Paragraph("Current Amount"));
+        //    table.AddCell(currRaAmt);
 
-                Cell currRaQty = new Cell(1, 10).Add(new Paragraph("Current RA Qty"));
-                table.AddCell(currRaQty);
+        //    Cell remarks = new Cell(1, 13).Add(new Paragraph("Remarks"));
+        //    table.AddCell(remarks);
 
-                Cell currRaAmt = new Cell(1, 12).Add(new Paragraph("Current Amount"));
-                table.AddCell(currRaAmt);
+        //    foreach (var item in raBill.Items.Where(p => p.CurrentRAQty > 0))
+        //    {
+        //        desc = new Cell(1, 35).Add(new Paragraph(item.ItemDescription));
+        //        table.AddCell(desc);
 
-                Cell remarks = new Cell(1, 13).Add(new Paragraph("Remarks"));
-                table.AddCell(remarks);
+        //        rate = new Cell(1, 10).Add(new Paragraph(item.UnitRate.ToString("0.00")));
+        //        table.AddCell(rate);
 
-                foreach (var item in raBill.Items.Where(p => p.CurrentRAQty > 0))
-                {
-                    desc = new Cell(1, 35).Add(new Paragraph(item.ItemDescription));
-                    table.AddCell(desc);
+        //        measuredQty = new Cell(1, 10).Add(new Paragraph(item.AcceptedMeasuredQty.ToString("0.00")));
+        //        table.AddCell(measuredQty);
 
-                    rate = new Cell(1, 10).Add(new Paragraph(item.UnitRate.ToString("0.00")));
-                    table.AddCell(rate);
+        //        lastRaQty = new Cell(1, 10).Add(new Paragraph(item.TillLastRAQty.ToString("0.00")));
+        //        table.AddCell(lastRaQty);
 
-                    measuredQty = new Cell(1, 10).Add(new Paragraph(item.AcceptedMeasuredQty.ToString("0.00")));
-                    table.AddCell(measuredQty);
+        //        currRaQty = new Cell(1, 10).Add(new Paragraph(item.CurrentRAQty.ToString("0.00")));
+        //        table.AddCell(currRaQty);
 
-                    lastRaQty = new Cell(1, 10).Add(new Paragraph(item.TillLastRAQty.ToString("0.00")));
-                    table.AddCell(lastRaQty);
+        //        decimal amount = (decimal)item.CurrentRAQty * item.UnitRate;
+        //        currRaAmt = new Cell(1, 12).Add(new Paragraph(amount.ToString("0.00")));
+        //        table.AddCell(currRaAmt);
 
-                    currRaQty = new Cell(1, 10).Add(new Paragraph(item.CurrentRAQty.ToString("0.00")));
-                    table.AddCell(currRaQty);
+        //        var remarkStr = string.IsNullOrEmpty(item.Remarks) ? " " : item.Remarks;
+        //        remarks = new Cell(1, 13).Add(new Paragraph(remarkStr));
+        //        table.AddCell(remarks);
+        //    }
 
-                    decimal amount = (decimal)item.CurrentRAQty * item.UnitRate;
-                    currRaAmt = new Cell(1, 12).Add(new Paragraph(amount.ToString("0.00")));
-                    table.AddCell(currRaAmt);
+        //    doc.Add(table);
 
-                    var remarkStr = string.IsNullOrEmpty(item.Remarks) ? " " : item.Remarks;
-                    remarks = new Cell(1, 13).Add(new Paragraph(remarkStr));
-                    table.AddCell(remarks);
-                }
+        //    doc.Close();
+        //    pdfBytes = stream.ToArray();
+        //}
 
-                doc.Add(table);
+        //return pdfBytes;
 
-                doc.Close();
-                pdfBytes = stream.ToArray();
-            }
-
-            return pdfBytes;
-        }
+        return new byte[0];
     }
 }

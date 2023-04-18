@@ -111,8 +111,8 @@
 
         if (MBook != null)
         {
-            model.ValidatingOfficer = MBook.ValidatingOfficer;
-            model.MeasurementOfficer = MBook.MeasurementOfficer;
+            model.ValidatingOfficer = MBook.ValidatorEmpCode;
+            model.MeasurementOfficer = MBook.MeasurerEmpCode;
 
             // Add existing MBook items to pending OrderItem list
             var existingItems = new List<PendingOrderItemResponse>();

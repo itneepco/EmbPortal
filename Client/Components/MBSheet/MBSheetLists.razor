@@ -16,14 +16,10 @@
         <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
         <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
         <Column Title="Measurer" TData="string" Width="10%">
-            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
-            </Tooltip>
+            @context.MeasurerName
         </Column>
         <Column Title="Validator" TData="string" Width="10%">
-            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
-            </Tooltip>
+            @context.ValidatorName
         </Column>
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
@@ -52,7 +48,7 @@
                         <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem" />
                     </Popconfirm>
 
-                    @if (employeeCode == context.MeasurementOfficer && context.Items.Count() > 0)
+                    @if (employeeCode == context.MeasurerEmpCode && context.Items.Count() > 0)
                     {    
                         <Popconfirm Title="Sure to publish?"
                             OnConfirm="()=> PublishMBSheet(context.Id)"
@@ -62,7 +58,7 @@
                         </Popconfirm>
                     }
                 }
-                @if (context.Status == MBSheetStatus.PUBLISHED.ToString() && employeeCode == context.ValidationOfficer && context.Items.Count() > 0)
+                @if (context.Status == MBSheetStatus.PUBLISHED.ToString() && employeeCode == context.ValidatorEmpCode && context.Items.Count() > 0)
                 {
                     <Popconfirm Title="Sure to Validate MB Sheet?"
                             OnConfirm="()=> ValidateMBSheet(context.Id)"
@@ -71,7 +67,7 @@
                         <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
                     </Popconfirm>
                 }
-                @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.AcceptingOfficer)
+                @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.EicEmpcode)
                 {
                     <Popconfirm Title="Sure to Accept MB Sheet?"
                             OnConfirm="()=> AcceptMBSheet(context.Id)"

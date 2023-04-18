@@ -31,10 +31,9 @@ public class CreateMBSheetItemCommandHandler : IRequestHandler<CreateMBSheetItem
         {
             throw new NotFoundException(nameof(MBSheet), request.MBSheetId);
         }
+
         MeasurementBook mBook = await _context.MeasurementBooks
             .Include(p => p.Items)
-                .ThenInclude(i => i.WorkOrderItem)
-                  .ThenInclude(i => i.Uom)
             .Where(p => p.Id == mbSheet.MeasurementBookId)
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -52,16 +51,10 @@ public class CreateMBSheetItemCommandHandler : IRequestHandler<CreateMBSheetItem
         }
 
         mbSheet.AddLineItem(new MBSheetItem(
-            serviceNo : mBookItem.WorkOrderItem.ServiceNo,
-            serviceDesc : mBookItem.WorkOrderItem.ShortServiceDesc,
-            description : request.Data.Description,
-            uom : mBookItem.WorkOrderItem.Uom,
-            rate : mBookItem.WorkOrderItem.UnitRate,
-            mBookItemId : mBookItem.Id,
-            nos : request.Data.Nos,
-            measuredQuantity : request.Data.MeasuredQuantity
-            ));
-       await _context.SaveChangesAsync(cancellationToken);
+            workOrderItemId : mBookItem.WorkOrderItemId         
+        ));
+
+        await _context.SaveChangesAsync(cancellationToken);
 
         var item = mbSheet.Items.Last();
 

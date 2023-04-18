@@ -12,35 +12,20 @@ public class MBSheetConfiguration : IEntityTypeConfiguration<MBSheet>
             .HasMaxLength(PersistenceConsts.TitleLegth)
             .IsRequired();
 
-        builder.Property(p => p.MeasurementOfficer)
+        builder.Property(p => p.MeasurerEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength)
             .IsRequired();
 
-        builder.Property(p => p.ValidationOfficer)
+        builder.Property(p => p.ValidatorEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength)
             .IsRequired();
 
-        builder.Property(p => p.AcceptingOfficer)
+        builder.Property(p => p.EicEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength)
             .IsRequired();
 
         // Backing fields
         builder.Navigation(p => p.Items).HasField("_items");
-
-        builder.HasOne(p => p.Measurer).WithMany()
-            .HasPrincipalKey(p => p.UserName)
-            .HasForeignKey(p => p.MeasurementOfficer)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(p => p.Validator).WithMany()
-            .HasPrincipalKey(p => p.UserName)
-            .HasForeignKey(p => p.ValidationOfficer)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(p => p.Acceptor).WithMany()
-            .HasPrincipalKey(p => p.UserName)
-            .HasForeignKey(p => p.AcceptingOfficer)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(p => p.CreatedBy)
             .HasMaxLength(PersistenceConsts.EmpCodeLength);

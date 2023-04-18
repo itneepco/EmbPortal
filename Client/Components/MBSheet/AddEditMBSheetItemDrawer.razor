@@ -196,14 +196,11 @@
 
         if (item == null)
         {
-           
-            model.MBookItemDescription = null;
             model.MBookItemId = 0;
             model.Uom = null;
         }
         else
-        {            
-            model.MBookItemDescription = item.ItemDescription;
+        {
             model.MBookItemId = item.MBookItemId;
             model.Uom = item.Uom;
         }

@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Mappings;
 using AutoMapper;
 using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses;
@@ -33,12 +32,29 @@ namespace Application.CQRS.MBSheets.Query
         {
             var empCode = _currentUserService.EmployeeCode;
 
-            return await _context.MBSheets
-              .Include(p => p.MeasurementBook)
-              .Where(p => p.Status == MBSheetStatus.PUBLISHED && 
-                          (p.ValidationOfficer == empCode || p.AcceptingOfficer == empCode))
-              .AsNoTracking()
-              .ProjectToListAsync<MBSheetInfoResponse>(_mapper.ConfigurationProvider);
+            var mBookQuery = _context.MBSheets.AsQueryable();
+            var mSheetQuery = _context.MBSheets.AsQueryable();
+
+            var query = from mbook in mBookQuery
+                        join msheet in mSheetQuery
+                        on mbook.Id equals msheet.MeasurementBookId
+                        select new { mbook, msheet };
+
+            var results = await query
+                            .Where(p => p.msheet.Status == MBSheetStatus.PUBLISHED &&
+                                        (p.msheet.ValidatorEmpCode == empCode || p.msheet.EicEmpCode == empCode))
+                            .ToListAsync();
+
+            List<MBSheetInfoResponse> response = new();
+            foreach (var result in results)
+            {
+                var item = _mapper.Map<MBSheetInfoResponse>(result.msheet);
+                item.MBookTitle = result.mbook.Title;
+
+                response.Add(item);
+            }
+
+            return response;
         }
     }
 }

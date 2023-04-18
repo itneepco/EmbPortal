@@ -1,15 +1,12 @@
 ﻿using Application.Interfaces;
-using Application.Mappings;
 using AutoMapper;
 using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,11 +33,29 @@ namespace Application.CQRS.MBSheets.Query
         {
             var empCode = _currentUserService.EmployeeCode;
 
-            return await _context.MBSheets
-              .Include(p => p.MeasurementBook)
-              .Where(p => p.Status == MBSheetStatus.VALIDATED && p.AcceptingOfficer == empCode)
-              .AsNoTracking()
-              .ProjectToListAsync<MBSheetInfoResponse>(_mapper.ConfigurationProvider);
+            var mBookQuery = _context.MBSheets.AsQueryable();
+            var mSheetQuery = _context.MBSheets.AsQueryable();
+
+            var query = from mbook in mBookQuery
+                        join msheet in mSheetQuery
+                        on mbook.Id equals msheet.MeasurementBookId
+                        select new { mbook, msheet };
+
+            var results = await query
+                            .Where(p => p.msheet.Status == MBSheetStatus.VALIDATED && p.msheet.EicEmpCode == empCode)
+                            .AsNoTracking()
+                            .ToListAsync();
+
+            List<MBSheetInfoResponse> response = new();
+            foreach (var result in results)
+            {
+                var item = _mapper.Map<MBSheetInfoResponse>(result.msheet);
+                item.MBookTitle = result.mbook.Title;
+
+                response.Add(item);
+            }
+
+            return response;
         }
     }
 }

@@ -6,40 +6,39 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.CQRS.RABills.Commands
+namespace Application.CQRS.RABills.Commands;
+
+public record DeleteRABillCommand(int Id) : IRequest
 {
-    public record DeleteRABillCommand(int Id) : IRequest
+}
+
+public class DeleteRABillCommandHandler : IRequestHandler<DeleteRABillCommand>
+{
+    private readonly IAppDbContext _context;
+
+    public DeleteRABillCommandHandler(IAppDbContext context)
     {
+        _context = context;
     }
 
-    public class DeleteRABillCommandHandler : IRequestHandler<DeleteRABillCommand>
+    public async Task<Unit> Handle(DeleteRABillCommand request, CancellationToken cancellationToken)
     {
-        private readonly IAppDbContext _context;
+        var raBill = await _context.RABills
+            .FirstOrDefaultAsync(p => p.Id == request.Id);
 
-        public DeleteRABillCommandHandler(IAppDbContext context)
+        if (raBill == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(raBill), request.Id);
         }
 
-        public async Task<Unit> Handle(DeleteRABillCommand request, CancellationToken cancellationToken)
+        if (raBill.Status == RABillStatus.APPROVED)
         {
-            var raBill = await _context.RABills
-                .FirstOrDefaultAsync(p => p.Id == request.Id);
-
-            if (raBill == null)
-            {
-                throw new NotFoundException(nameof(raBill), request.Id);
-            }
-
-            if (raBill.Status == RABillStatus.APPROVED)
-            {
-                throw new BadRequestException("Approved RA Bill cannot be deleted");
-            }
-
-            _context.RABills.Remove(raBill);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
+            throw new BadRequestException("Approved RA Bill cannot be deleted");
         }
+
+        _context.RABills.Remove(raBill);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
     }
 }

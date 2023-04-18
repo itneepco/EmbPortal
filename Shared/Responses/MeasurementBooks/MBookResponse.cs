@@ -7,10 +7,12 @@ namespace EmbPortal.Shared.Responses
         public int Id { get; set; }
         public int WorkOrderId { get; set; }
         public string Title { get; set; }
-        public string MeasurementOfficer { get; set; }
-        public UserResponse Measurer { get; set; }
-        public string ValidatingOfficer { get; set; }
-        public UserResponse Validator { get; set; }
+        public string MeasurerEmpCode { get; set; }
+        public string MeasurerName { get; set; }
+        public string ValidatorEmpCode { get; set; }
+        public string ValidatorName { get; set; }
+        public string EicEmpCode { get; set; }
+        public string EicName { get; set; }
         public string Status { get; set; }
         public List<MBookItemResponse> Items { get; set; }
     }
