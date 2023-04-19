@@ -10,33 +10,35 @@
           ValidateMode="@FormValidateMode.Complex">
 
         <FormItem Label="Work Description" Style="margin-bottom:12px">
-            <TextArea Rows="3" Placeholder="General Remarks" @bind-Value="@context.Description" TValue="string" />
+            <TextArea Rows="3"  @bind-Value="@context.Description" TValue="string" />
         </FormItem>
 
         <FormItem Label="Nos" Style="margin-bottom:12px">
-            <Input Placeholder="Nos" @bind-Value="@context.No" TValue="int" />
+            <Input  @bind-Value="@context.No" TValue="int" />
         </FormItem>
 
         <FormItem Label="Value 1" Style="margin-bottom:12px">
-            <Input Placeholder="Value 1" @bind-Value="@context.Val1" TValue="string" />
+            <Input @bind-Value="@context.Val1" TValue="string" />
         </FormItem>
 
         <FormItem Label="Value 2" Style="margin-bottom:12px">
-            <Input Placeholder="Value 2" @bind-Value="@context.Val2" TValue="string" />
+            <Input  @bind-Value="@context.Val2" TValue="string" />
         </FormItem>
 
         <FormItem Label="Value 3" Style="margin-bottom:12px">
-            <Input Placeholder="Value 3" @bind-Value="@context.Val3" TValue="string" />
+            <Input  @bind-Value="@context.Val3" TValue="string" />
         </FormItem>
 
-        <Tag Color="purple-inverse">Balance Quantity: @StepperModel.AvailableMeasurementQty</Tag>
+        <Tag Color="purple-inverse">Balance PO Quantity: @GetAvaliableQty()</Tag>
         <Tag Color="orange-inverse">Entered Quantity: @context.Total</Tag>
 
         <Row Style="margin-top: 2rem">
             <AntDesign.Col Flex="1"></AntDesign.Col>
             <AntDesign.Col>
                 <Button Type="@ButtonType.Default" OnClick="@CloseSidebar">Cancel</Button>
-                <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+                <Button HtmlType="submit" 
+                        Type="@ButtonType.Primary" 
+                        Disabled="@(context.Total == 0 || context.Total > (StepperModel.AvailableMeasurementQty - AccumulatedQty))">Save</Button>
             </AntDesign.Col>
         </Row>
     </Form>
@@ -50,21 +52,19 @@
     public bool Visible { get; set; }
 
     [Parameter]
+    public float AccumulatedQty { get; set; }
+
+    [Parameter]
     public EventCallback<bool> OnClose { get; set; }
 
     [Parameter]
-    public EventCallback<bool> OnItemSubmit { get; set; }
+    public EventCallback<MBItemMeasurementRequest> OnItemSubmit { get; set; }
 
     public MBItemMeasurementRequest model { get; set; } = new();
 
     private List<MBItemStatusResponse> mbItemsStatuses = new();
     private MBItemStatusResponse selectedItem;
-    private string title = "Add measurement details";
-
-
-    //private FormValidationRule[] valueGreaterThanZero = new FormValidationRule[]{
-    //    new FormValidationRule { Type=FormFieldType.Float, Min=(decimal)0.0001, Message="Value should be atleast 0.0001" }
-    //};
+    private string title = "Add detail measurements";
 
     protected override void OnParametersSet()
     {
@@ -73,20 +73,20 @@
 
     async Task OnSubmit()
     {
-        //if (result.Succeeded)
-        //{
-        //    CloseSidebar();
-        //    await OnItemSubmit.InvokeAsync();
-        //    await messageService.Success(result.Message);
-        //}
-        //else
-        //{
-        //    await messageService.Error(result.Message);
-        //}
+        CloseSidebar();
+        await OnItemSubmit.InvokeAsync(model);
     }
 
     void CloseSidebar()
     {
         OnClose.InvokeAsync();
+    }
+
+    float GetAvaliableQty()
+    {
+        if (AccumulatedQty > 0)
+            return StepperModel.AvailableMeasurementQty - AccumulatedQty;
+        else
+            return StepperModel.AvailableMeasurementQty;
     }
 }

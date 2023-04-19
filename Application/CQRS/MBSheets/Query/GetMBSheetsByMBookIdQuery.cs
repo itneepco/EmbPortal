@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.MBSheets.Query
 {
-    public record GetMBSheetsByMBookIdQuery(int MBookId) : IRequest<List<MBSheetResponse>>
+    public record GetMBSheetsByMBookIdQuery(int MBookId) : IRequest<List<MBSheetInfoResponse>>
     {
     }
 
-    public class GetMBSheetsByMBookIdQueryHandler : IRequestHandler<GetMBSheetsByMBookIdQuery, List<MBSheetResponse>>
+    public class GetMBSheetsByMBookIdQueryHandler : IRequestHandler<GetMBSheetsByMBookIdQuery, List<MBSheetInfoResponse>>
     {
         private readonly IAppDbContext _context;
         private readonly IMapper _mapper;
@@ -25,12 +25,10 @@ namespace Application.CQRS.MBSheets.Query
             _mapper = mapper;
         }
 
-        public async Task<List<MBSheetResponse>> Handle(GetMBSheetsByMBookIdQuery request, CancellationToken cancellationToken)
+        public async Task<List<MBSheetInfoResponse>> Handle(GetMBSheetsByMBookIdQuery request, CancellationToken cancellationToken)
         {
             var userQuery = _context.AppUsers.AsQueryable();
-            var msheetQuery = _context.MBSheets
-                                 .Include(p => p.Items)
-                                 .AsQueryable();
+            var msheetQuery = _context.MBSheets.AsQueryable();
 
             var query = from msheet in msheetQuery
                         join measurer in userQuery on msheet.MeasurerEmpCode equals measurer.UserName
@@ -44,14 +42,13 @@ namespace Application.CQRS.MBSheets.Query
                 .AsNoTracking()
                 .ToListAsync();
 
-            List<MBSheetResponse> response = new();
+            List<MBSheetInfoResponse> response = new();
             foreach (var result in results)
             {
-                var item = _mapper.Map<MBSheetResponse>(result.msheet);
+                var item = _mapper.Map<MBSheetInfoResponse>(result.msheet);
                 item.MeasurerName = result.measurer.DisplayName;
                 item.ValidatorName = result.validator.DisplayName;
                 item.EicName = result.eic.DisplayName;
-
                 response.Add(item);
             }
 

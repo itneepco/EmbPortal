@@ -10,8 +10,10 @@ public class RABillConfiguration : IEntityTypeConfiguration<RABill>
     {
         builder.Property(p => p.Title).HasMaxLength(PersistenceConsts.TitleLegth)
             .IsRequired();
+        
         builder.Property(p => p.EicEmpCode)
             .HasMaxLength(PersistenceConsts.EmpCodeLength).IsRequired();
+
         // Backing fields
         builder.Navigation(p => p.Items).HasField("_items");            
 

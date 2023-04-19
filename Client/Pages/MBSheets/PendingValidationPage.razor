@@ -17,10 +17,9 @@
        Size="@TableSize.Small"
        DataSource="@mbSheets">
 
-    <Column @bind-Field="@context.Title" Width="25%" />
-    <Column @bind-Field="@context.Status" Width="10%" />
+    <Column @bind-Field="@context.Title" Width="50%" />
+    <Column @bind-Field="@context.Status" Width="15%" />
     <Column @bind-Field="@context.MeasurementDate" Format="dd-MM-yyyy" Width="15%" />
-    <Column @bind-Field="@context.MBookTitle" Width="30%" />
     <ActionColumn Title="Action" Width="20%">
         <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId)"
                 Type="@ButtonType.Primary"

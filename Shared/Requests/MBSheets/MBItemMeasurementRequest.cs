@@ -5,7 +5,7 @@ namespace EmbPortal.Shared.Requests;
 
 public class MBItemMeasurementRequest
 {
-    [Required, Range(1, int.MaxValue, ErrorMessage = "Nos should be atleast 1")]
+    [Required]
     public int No { get; set; } = 1;
 
     [Required, MaxLength(100)]
@@ -34,7 +34,7 @@ public class MBItemMeasurementRequest
 
             if (total > 0)
             {
-                var result = total.ToString("#.##");
+                var result = total.ToString("0.00");
                 return float.Parse(result);
             }
             else return total;

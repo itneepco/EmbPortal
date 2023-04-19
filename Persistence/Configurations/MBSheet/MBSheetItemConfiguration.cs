@@ -9,6 +9,7 @@ public class MBSheetItemConfiguration : IEntityTypeConfiguration<MBSheetItem>
     public void Configure(EntityTypeBuilder<MBSheetItem> builder)
     {
         // Backing fields
+        builder.Navigation(p => p.Measurements).HasField("_measurements");
         builder.Navigation(p => p.Attachments).HasField("_attachments");
 
         builder.Property(p => p.CreatedBy)

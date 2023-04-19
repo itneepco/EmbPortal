@@ -1,30 +1,24 @@
 ﻿<h3>Measurement Details</h3>
 
-<Card Style="margin-bottom: 0.75rem">
-    <Row Gutter="12">
-        <Col Sm="24" Md="18">
-            <strong>Item: </strong>@StepperModel.ShortServiceDesc
-        </Col>
-        <Col Sm="24" Md="6">
-            <strong>Uom: </strong>@StepperModel.Uom
-        </Col>
-    </Row>
-</Card>
+<ServiceInfoCard />
 
 <Button OnClick="OpenSideDrawer" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
     Add Details
 </Button>
 
-<Table DataSource="@Model.Measurements" 
-       Size="TableSize.Small" 
+<Table DataSource="@Model.Measurements"
+       PageSize="@Model.Measurements.Count"
+       Size="TableSize.Small"
+       HidePagination
        Bordered>
 
-    <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="15%" />
-    <Column Title="Value 1" TData="string" Width="15%">@context.Val1</Column>
-    <Column Title="Value 2" TData="string" Width="15%">@context.Val2</Column>
-    <Column Title="Value 3" TData="string" Width="15%">@context.Val3</Column>
-    <Column Title="Total" TData="string" Width="15%">@context.Total</Column>
-    <ActionColumn Title="Action" Width="25%">
+    <Column Title="Description" TData="string" Width="30%"> @context.Description</Column>
+    <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="12%" />
+    <Column Title="Value 1" TData="string" Width="12%">@context.Val1</Column>
+    <Column Title="Value 2" TData="string" Width="12%">@context.Val2</Column>
+    <Column Title="Value 3" TData="string" Width="12%">@context.Val3</Column>
+    <Column Title="Total" TData="string" Width="12%">@context.Total</Column>
+    <ActionColumn Title="Action" Width="10%">
         <Row Justify="center" Gutter="6">
             <AntDesign.Col>
                 <Popconfirm Title="Sure to delete?"
@@ -42,20 +36,21 @@
     </ActionColumn>
 </Table>
 
-<ItemMeasurementDrawer Visible="@drawerVisible" OnClose="@CloseSideBar" />
+<Tag Color="purple-inverse" Style="margin-top: 0.5rem">Balance PO Quantity: @StepperModel.AvailableMeasurementQty</Tag>
+<Tag Color="orange-inverse" Style="margin-top: 0.5rem">Entered Quantity: @TotalQty</Tag>
+
+<ItemMeasurementDrawer Visible="@drawerVisible" 
+                       OnClose="@CloseSideBar" 
+                       OnItemSubmit="@OnItemSubmit" 
+                       AccumulatedQty="Model.Measurements.Sum(p => p.Total)" />
 
 <div style="margin-top: 1.5rem">
-    <Button Type="primary" OnClick="PrevStep">
-        Previous
-    </Button>
-
-    <Button Type="primary" OnClick="NextStep">
-        Next
-    </Button>
+     <Button Type="primary" OnClick="PrevStep">Previous</Button>
+     <Button Type="primary" OnClick="NextStep" Disabled="Model.Measurements.Count == 0">Next</Button>
 </div>
 
 @code {
-    [CascadingParameter] 
+    [CascadingParameter]
     public MeasurementStepper Stepper { get; set; }
 
     [CascadingParameter]
@@ -63,6 +58,8 @@
 
     [Parameter, EditorRequired]
     public MBSheetItemRequest Model { get; set; }
+
+    public float TotalQty { get; set; }
 
     bool drawerVisible;
 
@@ -86,8 +83,17 @@
         drawerVisible = false;
     }
 
-    async Task OnDeleteItem(MBItemMeasurementRequest item)
+    void OnItemSubmit(MBItemMeasurementRequest item)
     {
+        Model.Measurements.Add(item);
+        TotalQty = Model.Measurements.Sum(item => item.Total);
+        StateHasChanged();
+    }
 
+    void OnDeleteItem(MBItemMeasurementRequest item)
+    {
+        Model.Measurements.Remove(item);
+        TotalQty = Model.Measurements.Sum(item => item.Total);
+        StateHasChanged();
     }
 }

@@ -1,14 +1,12 @@
 ﻿@page "/mbook/{MBookId}/mbsheet/{MBSheetId}"
 @attribute [Authorize]
 
-
 @if (mbSheet != null)
 {
-    <h3>Add MB Sheet</h3>
+    <h3>Edit MB Sheet</h3>
 
     <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
-        <Row Gutter="16">
-           
+        <Row Gutter="16">           
             <AntDesign.Col Span="6">
                 <FormItem Label="Measurement Date">
                     <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />

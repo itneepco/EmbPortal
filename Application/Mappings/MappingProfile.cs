@@ -6,6 +6,7 @@ using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
+using EmbPortal.Shared.Responses.MBSheets;
 
 namespace Application.Mappings
 {
@@ -30,13 +31,13 @@ namespace Application.Mappings
 
             CreateMap<MeasurementBook, MBookHeaderResponse>();
 
-            CreateMap<MeasurementBook, MBookDetailResponse>();
-
             CreateMap<MBSheet, MBSheetResponse>();
 
             CreateMap<MBSheet, MBSheetInfoResponse>();
 
             CreateMap<MBSheetItem, MBSheetItemResponse>();
+
+            CreateMap<MBItemMeasurement, MBSheetItemMeasurementResponse>();
 
             CreateMap<ItemAttachment, ItemAttachmentResponse>();
 

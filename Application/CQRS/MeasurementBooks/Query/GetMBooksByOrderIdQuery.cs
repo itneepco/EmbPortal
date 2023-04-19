@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using AutoMapper;
 using EmbPortal.Shared.Responses;
 using MediatR;
@@ -34,38 +35,50 @@ namespace Application.CQRS.MeasurementBooks.Query
                 .Where(p => p.WorkOrderId == request.workOrderId).AsQueryable();
 
             var query = from mBook in mBooksQuery
-                        join order in orderQuery on mBook.WorkOrderId equals order.Id
+                        join wOrder in orderQuery on mBook.WorkOrderId equals wOrder.Id
                         join measurer in userQuery on mBook.MeasurerEmpCode equals measurer.UserName
                         join validator in userQuery on mBook.ValidatorEmpCode equals validator.UserName
-                        select new MBookResponse
-                        {
-                            Id = mBook.Id,
-                            Title = mBook.Title,
-                            ValidatorEmpCode = mBook.ValidatorEmpCode,
-                            ValidatorName = validator.DisplayName,
-                            MeasurerEmpCode = mBook.MeasurerEmpCode,
-                            MeasurerName = measurer.DisplayName,
-                            Status = mBook.Status.ToString(),
-                            Items = order.Items.Select(p => new MBookItemResponse
-                            { 
-                                WorkOrderItemId = p.Id,
-                                ServiceNo = p.ServiceNo,
-                                ItemNo = p.ItemNo,
-                                ItemDescription = p.ItemDescription,
-                                PackageNo = p.PackageNo,
-                                PoQuantity = p.PoQuantity,
-                                SubItemNo = p.SubItemNo,
-                                SubItemPackageNo = p.SubItemPackageNo,
-                                ShortServiceDesc = p.ShortServiceDesc,
-                                UnitRate = p.UnitRate,
-                                Uom = p.Uom
-                            }).ToList()
-                        };
+                        join eic in userQuery on mBook.EicEmpCode equals eic.UserName
+                        select new { mBook, wOrder, measurer, validator, eic };
             
-            var result = await query.ToListAsync();
+            var results = await query.ToListAsync();
+            List<MBookResponse> mBookResponses = new();
 
+            foreach (var result in results)
+            {
+                var mBookResponse = _mapper.Map<MBookResponse>(result.mBook);
 
-            return result;
+                mBookResponse.OrderNo = result.wOrder.OrderNo.ToString();
+                mBookResponse.OrderDate = result.wOrder.OrderDate;
+                mBookResponse.Contractor = result.wOrder.Contractor;
+                mBookResponse.MeasurerName = result.measurer.DisplayName;
+                mBookResponse.ValidatorName = result.validator.DisplayName;
+                mBookResponse.EicEmpCode = result.eic.DisplayName;
+
+                foreach (var item in mBookResponse.Items)
+                {
+                    var wOrderItem = result.wOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
+                    if (wOrderItem == null)
+                    {
+                        throw new NotFoundException($"Item does not exists with Id: {item.WorkOrderItemId}");
+                    }
+
+                    item.ItemNo = wOrderItem.ItemNo;
+                    item.ItemDescription = wOrderItem.ItemDescription;
+                    item.ServiceNo = wOrderItem.ServiceNo;
+                    item.SubItemNo = wOrderItem.SubItemNo;
+                    item.SubItemPackageNo = wOrderItem.SubItemPackageNo;
+                    item.PackageNo = wOrderItem.PackageNo;
+                    item.PoQuantity = wOrderItem.PoQuantity;
+                    item.Uom = wOrderItem.Uom;
+                    item.UnitRate = wOrderItem.UnitRate;
+                    item.ShortServiceDesc = wOrderItem.ShortServiceDesc;
+                }
+
+                mBookResponses.Add(mBookResponse);
+            }
+
+            return mBookResponses;
         }
     }
 }

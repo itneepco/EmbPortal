@@ -48,13 +48,15 @@
         if (item == null)
         {
             Model.MBookItemId = 0;
-
+            StepperModel = new();
         }
         else
         {
             Model.MBookItemId = item.MBookItemId;
-            StepperModel.ShortServiceDesc = item.ItemDescription;
+
             StepperModel.Uom = item.Uom;
+            StepperModel.ServiceNo = item.ServiceNo;
+            StepperModel.ShortServiceDesc = item.ItemDescription;
             StepperModel.CumulativeMeasuredQty = item.CumulativeMeasuredQty;
             StepperModel.AvailableMeasurementQty = item.AvailableMeasurementQty;
         }

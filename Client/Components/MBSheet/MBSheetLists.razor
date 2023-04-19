@@ -6,118 +6,83 @@
 </Button>
 
 <Table Loading="@loading"
-       TItem="MBSheetResponse"
+       TItem="MBSheetInfoResponse"
        Size="@TableSize.Small"
        DataSource="@mbSheets"
        ScrollX="1000"
        Bordered>
 
-    <RowTemplate>
-        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
-        <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
-        <Column Title="Measurer" TData="string" Width="10%">
-            @context.MeasurerName
-        </Column>
-        <Column Title="Validator" TData="string" Width="10%">
-            @context.ValidatorName
-        </Column>
-        <Column @bind-Field="@context.Status" Width="10%">
-            @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
+    <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
+    <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
+    <Column Title="Measurer" TData="string" Width="15%">
+        @context.MeasurerName
+    </Column>
+    <Column Title="Validator" TData="string" Width="15%">
+        @context.ValidatorName
+    </Column>
+    <Column @bind-Field="@context.Status" Width="10%">
+        @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
+        {
+            <Tag Color="gold">@context.Status</Tag>
+        }
+        else if (context.Status == MBSheetStatus.VALIDATED.ToString())
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="green">@context.Status</Tag>
+        }
+    </Column>
+    <ActionColumn Title="Action" Width="10%">
+        <Row Justify="ceter">
+            @if (context.Status == MBSheetStatus.CREATED.ToString())
             {
-                <Tag Color="gold">@context.Status</Tag>
-            }
-            else if (context.Status == MBSheetStatus.VALIDATED.ToString())
-            {
-                <Tag Color="blue">@context.Status</Tag>
-            }
-            else
-            {
-                <Tag Color="green">@context.Status</Tag>
-            }
-        </Column>
-        <ActionColumn Title="Action" Width="20%">
-            <Row Justify="ceter">
-                @if (context.Status == MBSheetStatus.CREATED.ToString())
-                {
-                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
+                <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
 
-                    <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> DeleteMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem" />
+                <Popconfirm Title="Sure to delete?"
+                        OnConfirm="()=> DeleteMBSheet(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem" />
                     </Popconfirm>
 
-                    @if (employeeCode == context.MeasurerEmpCode && context.Items.Count() > 0)
-                    {    
-                        <Popconfirm Title="Sure to publish?"
-                            OnConfirm="()=> PublishMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                                <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
-                        </Popconfirm>
-                    }
-                }
-                @if (context.Status == MBSheetStatus.PUBLISHED.ToString() && employeeCode == context.ValidatorEmpCode && context.Items.Count() > 0)
+                @*@if (employeeCode == context.MeasurerEmpCode && context.Items.Count() > 0)
                 {
-                    <Popconfirm Title="Sure to Validate MB Sheet?"
-                            OnConfirm="()=> ValidateMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                    <Popconfirm Title="Sure to publish?"
+                        OnConfirm="()=> PublishMBSheet(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
                     </Popconfirm>
-                }
-                @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.EicEmpcode)
-                {
-                    <Popconfirm Title="Sure to Accept MB Sheet?"
-                            OnConfirm="()=> AcceptMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
-                    </Popconfirm>
-                }
-            </Row>
-        </ActionColumn>
-    </RowTemplate>
+                }*@
+            }
+            @*@if (context.Status == MBSheetStatus.PUBLISHED.ToString() && employeeCode == context.ValidatorEmpCode && context.Items.Count() > 0)
+            {
+                <Popconfirm Title="Sure to Validate MB Sheet?"
+                        OnConfirm="()=> ValidateMBSheet(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                </Popconfirm>
+            }*@
+            @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.EicEmpcode)
+            {
+                <Popconfirm Title="Sure to Accept MB Sheet?"
+                        OnConfirm="()=> AcceptMBSheet(context.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                </Popconfirm>
+            }
+        </Row>
+    </ActionColumn>
+</Table>
 
-    <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items"
-               PageSize="rowData.Data.Items.Count"
-               Size="@TableSize.Small"
-               HidePagination Bordered>
-
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="long" Title="Service No" Width="8%">
-                @context.ServiceNo
-            </Column>
-
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="string" Title="Service Description" Width="26%">
-                @context.ShortServiceDesc
-            </Column>
-
-            <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
-            <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
-            <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
-            <Column Title="Qty" TData="string" Width="18%">@context.MeasuredQuantity.ToString("0.00")</Column>
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
-                    @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
-            </Column>
-
-                <ActionColumn Title="Action" Width="6%">
-                    <Button Icon="@(IconType.Outline.Download)"
-                        Size="@ButtonSize.Small"
-                        Type="@ButtonType.Primary"
-                        Shape="@ButtonShape.CircleOutline"
-                        OnClick="_=> OpenFileUploadModal(context)">
-                    </Button>
-                </ActionColumn>
-            </Table>
-        </ExpandTemplate>
-    </Table>
-
-    <FileUploadComponent @bind-Visible="modalVisible"
+<FileUploadComponent @bind-Visible="modalVisible"
                      CurrentMBSheetItem="@currentMBSheetItem" />
 
-    @code {
+@code {
     [Parameter]
     public int MBookId { get; set; }
 
@@ -125,7 +90,7 @@
     public List<MBookItemResponse> MBItems { get; set; }
 
     string employeeCode;
-    List<MBSheetResponse> mbSheets = new();
+    List<MBSheetInfoResponse> mbSheets = new();
     bool loading = false;
 
     MBSheetItemResponse currentMBSheetItem;
@@ -144,14 +109,6 @@
         loading = true;
         mbSheets = await mbSheetService.GetMBSheetsByMBookId(MBookId);
         mbSheets = mbSheets.OrderByDescending(p => p.MeasurementDate).ToList();
-
-        foreach (var mbSheet in mbSheets)
-        {
-            mbSheet.Items = mbSheet.Items
-                .OrderBy(p => p.MBookItemId)
-                .ThenBy(i => i.Id)
-                .ToList();
-        }
         loading = false;
     }
 

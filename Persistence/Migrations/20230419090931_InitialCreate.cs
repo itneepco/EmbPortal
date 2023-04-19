@@ -292,7 +292,6 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
                     MBSheetId = table.Column<int>(type: "int", nullable: false),
                     WorkOrderItemId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -478,6 +477,41 @@ namespace Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "MBItemMeasurement",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    MBSheetItemId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    No = table.Column<int>(type: "int", nullable: false),
+                    Val1 = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Val2 = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Val3 = table.Column<string>(type: "varchar(25)", maxLength: 25, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MBItemMeasurement", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MBItemMeasurement_MBSheetItem_MBSheetItemId",
+                        column: x => x.MBSheetItemId,
+                        principalTable: "MBSheetItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "MBookItem",
                 columns: table => new
                 {
@@ -547,6 +581,11 @@ namespace Persistence.Migrations
                 column: "MBSheetItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MBItemMeasurement_MBSheetItemId",
+                table: "MBItemMeasurement",
+                column: "MBSheetItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MBookItem_MeasurementBookId",
                 table: "MBookItem",
                 column: "MeasurementBookId");
@@ -602,6 +641,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ItemAttachment");
+
+            migrationBuilder.DropTable(
+                name: "MBItemMeasurement");
 
             migrationBuilder.DropTable(
                 name: "MBookItem");

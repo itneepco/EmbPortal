@@ -32,9 +32,9 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(MBookDetailResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MBookResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MBookDetailResponse>> GetMBookById(int id)
+        public async Task<ActionResult<MBookResponse>> GetMBookById(int id)
         {
             return Ok(await Mediator.Send(new GetMBookByIdQuery(id)));
         }

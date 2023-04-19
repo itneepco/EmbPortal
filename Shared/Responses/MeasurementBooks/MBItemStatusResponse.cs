@@ -4,6 +4,7 @@
     {
         public int WorkOrderItemId { get; set; }
         public int MBookItemId { get; set; }
+        public string ServiceNo { get; set; } 
         public string ItemDescription { get; set; }       
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }

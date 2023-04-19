@@ -132,6 +132,55 @@ namespace Persistence.Migrations
                     b.ToTable("ItemAttachment");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBItemMeasurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
+
+                    b.Property<int>("MBSheetItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("No")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Val1")
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
+
+                    b.Property<string>("Val2")
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
+
+                    b.Property<string>("Val3")
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MBSheetItemId");
+
+                    b.ToTable("MBItemMeasurement");
+                });
+
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheet", b =>
                 {
                     b.Property<int>("Id")
@@ -217,9 +266,6 @@ namespace Persistence.Migrations
 
                     b.Property<int>("MBSheetId")
                         .HasColumnType("int");
-
-                    b.Property<float>("MeasuredQuantity")
-                        .HasColumnType("float");
 
                     b.Property<int>("WorkOrderItemId")
                         .HasColumnType("int");
@@ -694,6 +740,15 @@ namespace Persistence.Migrations
                     b.Navigation("MBSheetItem");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBItemMeasurement", b =>
+                {
+                    b.HasOne("Domain.Entities.MBSheetAggregate.MBSheetItem", null)
+                        .WithMany("Measurements")
+                        .HasForeignKey("MBSheetItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
                 {
                     b.HasOne("Domain.Entities.MBSheetAggregate.MBSheet", null)
@@ -805,6 +860,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.MBSheetAggregate.MBSheetItem", b =>
                 {
                     b.Navigation("Attachments");
+
+                    b.Navigation("Measurements");
                 });
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>

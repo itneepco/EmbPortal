@@ -34,10 +34,10 @@ namespace Client.Services
             return await _httpClient.GetFromJsonAsync<List<MBItemStatusResponse>>($"/api/MBook/{id}/ItemStatus");
         }
 
-        public async Task<IResult<MBookDetailResponse>> GetMBooksById(int id)
+        public async Task<IResult<MBookResponse>> GetMBooksById(int id)
         {
             var response = await _httpClient.GetAsync($"/api/MBook/{id}");
-            return await response.ToResult<MBookDetailResponse>();
+            return await response.ToResult<MBookResponse>();
         }
 
         public async Task<IResult> DeleteMeasurementBook(int id)

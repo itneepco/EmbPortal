@@ -49,8 +49,6 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
             throw new NotFoundException(nameof(MeasurementBook), request.MBookId);
         }
 
-
-
         // Fetch the MB items status
         List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(result.mBook.Id);
 
@@ -63,6 +61,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
             var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
             var raItemQtyStatus = raItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
             var workOrderItem = result.wOrder.Items.FirstOrDefault(i => i.Id == item.WorkOrderItemId);
+
             if(workOrderItem == null) {
                 throw new NotFoundException(nameof(WorkOrderItem), item.WorkOrderItemId);
             }
@@ -71,6 +70,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
             {
                 MBookItemId = item.Id,
                 WorkOrderItemId = workOrderItem.Id,
+                ServiceNo = workOrderItem.ServiceNo.ToString(),
                 ItemDescription = workOrderItem.ShortServiceDesc,
                 UnitRate = workOrderItem.UnitRate,                    
                 Uom = workOrderItem.Uom,

@@ -1,0 +1,20 @@
+﻿<Card Style="margin-bottom: 0.75rem; border-color:darkred">
+    <Row Gutter="12">
+        <Col Sm="24" Md="18">
+        <strong>Service No: </strong>@StepperModel.ServiceNo
+        </Col>
+        <Col Sm="24" Md="6">
+        <strong>Uom: </strong>@StepperModel.Uom
+        </Col>
+    </Row>
+    <Row Gutter="12">
+        <Col Sm="24">
+        <strong>Description: </strong>@StepperModel.ShortServiceDesc
+        </Col>
+    </Row>
+</Card>
+
+@code {
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+}

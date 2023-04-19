@@ -1,15 +1,18 @@
-﻿@page "/mbook/{MBookId:int}/mbsheet/measurements"
+﻿@page "/mbook/{MBookId:int}/mbsheet/{MBSheetId:int}/measurements"
 @attribute [Authorize]
 
 <h3>Add Measurements</h3>
 
 <Spin Spinning="loading">
-    <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses"/>
+    <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses" MBSheetId="MBSheetId"/>
 </Spin>
 
 @code {
     [Parameter]
     public int MBookId { get; set; }
+
+    [Parameter]
+    public int MBSheetId { get; set; }
 
     private bool loading;
     private List<MBItemStatusResponse> mbItemsStatuses = new();

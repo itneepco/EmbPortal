@@ -60,7 +60,8 @@ public class CreateMBSheetCommandHandler : IRequestHandler<CreateMBSheetCommand,
         var mbSheet = new MBSheet
         (
            title: title,
-           measurementBookId: request.Data.MeasurementBookId,
+           workOrderId: result.mbook.WorkOrderId,
+           measurementBookId: result.mbook.Id,
            measurerEmpCode: result.mbook.MeasurerEmpCode,
            measurementDate: (DateTime)request.Data.MeasurementDate,
            validatorEmpCode: result.mbook.ValidatorEmpCode,

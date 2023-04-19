@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
-using Domain.Entities.Identity;
 using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
@@ -17,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.MeasurementBooks.Query;
 
-public record GetMBookByIdQuery(int Id) : IRequest<MBookDetailResponse>
+public record GetMBookByIdQuery(int Id) : IRequest<MBookResponse>
 {
 }
 
-public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBookDetailResponse>
+public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBookResponse>
 {
     private readonly IAppDbContext _context;
     private readonly IMapper _mapper;
@@ -40,7 +39,7 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
         _raBillService = raBillService;
     }
 
-    public async Task<MBookDetailResponse> Handle(GetMBookByIdQuery request, CancellationToken cancellationToken)
+    public async Task<MBookResponse> Handle(GetMBookByIdQuery request, CancellationToken cancellationToken)
     {
         var wOrderQuery = _context.WorkOrders.Include(p => p.Items).AsQueryable();
         var userQuery = _context.AppUsers.AsQueryable();        
@@ -70,14 +69,14 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
             throw new NotFoundException(nameof(MeasurementBook), request.Id);
         }
 
-        var mBookDetailResponse = _mapper.Map<MBookDetailResponse>(result.mBook);
+        var mBookResponse = _mapper.Map<MBookResponse>(result.mBook);
 
-        mBookDetailResponse.OrderNo = result.wOrder.OrderNo.ToString();
-        mBookDetailResponse.OrderDate = result.wOrder.OrderDate;
-        mBookDetailResponse.Contractor = result.wOrder.Contractor;
-        mBookDetailResponse.MeasurerName = result.measurer.DisplayName;
-        mBookDetailResponse.ValidatorName = result.validator.DisplayName;
-        mBookDetailResponse.EicEmpCode = result.eic.DisplayName;
+        mBookResponse.OrderNo = result.wOrder.OrderNo.ToString();
+        mBookResponse.OrderDate = result.wOrder.OrderDate;
+        mBookResponse.Contractor = result.wOrder.Contractor;
+        mBookResponse.MeasurerName = result.measurer.DisplayName;
+        mBookResponse.ValidatorName = result.validator.DisplayName;
+        mBookResponse.EicEmpCode = result.eic.DisplayName;
 
         // Fetch the MB items status
         List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(result.mBook.Id);
@@ -85,7 +84,7 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
         // Fetch the cumulative RA items quantity
         List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(result.mBook.Id);
 
-        foreach (var item in mBookDetailResponse.Items)
+        foreach (var item in mBookResponse.Items)
         {
             var wOrderItem = result.wOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
             if(wOrderItem == null)
@@ -114,6 +113,6 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
         }
         // --- END ---
 
-        return mBookDetailResponse;
+        return mBookResponse;
     }
 }

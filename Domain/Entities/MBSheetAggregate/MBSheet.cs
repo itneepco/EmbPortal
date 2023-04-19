@@ -1,6 +1,4 @@
 ﻿using Domain.Common;
-using Domain.Entities.Identity;
-using Domain.Entities.MeasurementBookAggregate;
 using EmbPortal.Shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,9 @@ namespace Domain.Entities.MBSheetAggregate
     public class MBSheet : AuditableEntity, IAggregateRoot
     {
         public int Id { get; private set; }
+        public int WorkOrderId { get; private set; }
+        public int MeasurementBookId { get; private set; }
+
         public string Title { get; set; }
         public DateTime MeasurementDate { get; private set; }
         public string MeasurerEmpCode { get; private set; }        
@@ -22,10 +23,6 @@ namespace Domain.Entities.MBSheetAggregate
         
         public MBSheetStatus Status { get; private set; }
 
-        public int MeasurementBookId { get; private set; }
-        public int WorkOrderId { get; private set; }
-
-
         private readonly List<MBSheetItem> _items = new List<MBSheetItem>();
         public IReadOnlyList<MBSheetItem> Items => _items.AsReadOnly();
 
@@ -33,9 +30,10 @@ namespace Domain.Entities.MBSheetAggregate
         {
         }
 
-        public MBSheet(string title, int measurementBookId, string measurerEmpCode, DateTime measurementDate, string validatorEmpCode, string eicEmpCode)
+        public MBSheet(string title, int measurementBookId, int workOrderId, string measurerEmpCode, DateTime measurementDate, string validatorEmpCode, string eicEmpCode)
         {
             Title = title;
+            WorkOrderId = workOrderId;
             MeasurementBookId = measurementBookId;
             MeasurerEmpCode = measurerEmpCode;
             MeasurementDate = measurementDate;

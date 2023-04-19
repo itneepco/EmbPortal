@@ -5,7 +5,6 @@
 
 <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
     <Row Gutter="16">
-       
         <AntDesign.Col Span="6">
             <FormItem Label="Measurement Date">
                 <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
@@ -52,7 +51,7 @@
             var result = await mbSheetService.CreateMBSheet(model);
             if (result.Succeeded)
             {
-                await LoadMBookDetailsAsync(result.Data);
+                await LoadMBSheetDetailsAsync(result.Data);
                 await messageService.Success("Successfully Created MB Sheet Header");
             }
             else
@@ -65,7 +64,7 @@
             var result = await mbSheetService.EditMBSheet(mbSheet.Id, model);
             if (result.Succeeded)
             {
-                await LoadMBookDetailsAsync(mbSheet.Id);
+                await LoadMBSheetDetailsAsync(mbSheet.Id);
                 await messageService.Success("Successfully Updated MB Sheet Header");
             }
             else
@@ -78,7 +77,7 @@
         StateHasChanged();
     }
 
-    async Task LoadMBookDetailsAsync(int mbSheetId)
+    async Task LoadMBSheetDetailsAsync(int mbSheetId)
     {
         loading = true;
         var result = await mbSheetService.GetMBSheetById(mbSheetId);
@@ -93,7 +92,7 @@
     {
         if (mbSheet != null)
         {
-            await LoadMBookDetailsAsync(mbSheet.Id);
+            await LoadMBSheetDetailsAsync(mbSheet.Id);
         }
     }
 

@@ -8,7 +8,7 @@ namespace Client.Services.Interfaces
 {
     public interface IMBSheetService
     {
-        Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId);
+        Task<List<MBSheetInfoResponse>> GetMBSheetsByMBookId(int mBookId);
         Task<IResult<MBSheetResponse>> GetMBSheetById(int mbSheetId);
         Task<List<MBSheetInfoResponse>> GetPendingValidationMBSheets();
         Task<List<MBSheetInfoResponse>> GetPendingApprovalMBSheets();

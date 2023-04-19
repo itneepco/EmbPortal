@@ -24,6 +24,7 @@ public class CreateMBSheetItemCommandHandler : IRequestHandler<CreateMBSheetItem
     {
         var mbSheet = await _context.MBSheets
             .Include(p => p.Items)
+                .ThenInclude(p => p.Measurements)
             .Where(p => p.Id == request.MBSheetId)
             .FirstOrDefaultAsync();
 
@@ -50,9 +51,21 @@ public class CreateMBSheetItemCommandHandler : IRequestHandler<CreateMBSheetItem
             throw new NotFoundException($"Measurement Book does not have line item with Id: {request.Data.MBookItemId}");
         }
 
-        mbSheet.AddLineItem(new MBSheetItem(
-            workOrderItemId : mBookItem.WorkOrderItemId         
-        ));
+        var mbSheetItem = new MBSheetItem(mBookItem.WorkOrderItemId);
+
+        foreach (var measurement in request.Data.Measurements)
+        {
+            mbSheetItem.AddMeasurement(new MBItemMeasurement
+            {
+                No = measurement.No,
+                Val1 = measurement.Val1,
+                Val2 = measurement.Val2,
+                Val3 = measurement.Val3,
+                Description = measurement.Description,
+            });
+        }
+
+        mbSheet.AddLineItem(mbSheetItem);
 
         await _context.SaveChangesAsync(cancellationToken);
 

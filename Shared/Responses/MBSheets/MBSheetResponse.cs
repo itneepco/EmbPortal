@@ -7,8 +7,10 @@ namespace EmbPortal.Shared.Responses
     {
         public int Id { get; set; }
         public int MeasurementBookId { get; set; }
+
         public string Title { get; set; }
         public DateTime MeasurementDate { get; set; }
+        
         public string MeasurerEmpCode { get; set; }
         public string MeasurerName { get; set; }
 
