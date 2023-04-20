@@ -8,26 +8,23 @@
        Bordered HidePagination>
 
     <Column Title="Description" @bind-Field="@context.WorkOrderItemDescription" Width="32%"></Column>
-    <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="7%" />
-    <Column Title="Measured Qty (A)" TData="float" Width="7%">
+    <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="9%" />
+    <Column Title="Measured Qty (A)" TData="float" Width="8%">
         @context.AcceptedMeasuredQty.ToString("0.00")
     </Column>
-    <Column Title="Till Last RA Qty" TData="float" Width="7%">
+    <Column Title="Till Last RA Qty" TData="float" Width="8%">
         @context.TillLastRAQty.ToString("0.00")
     </Column>
-    <Column Title="Available Qty" TData="float" Width="7%">
+    <Column Title="Available Qty" TData="float" Width="8%">
         @context.AvailableQty.ToString("0.00")
-    </Column>
-    <Column Title="Available Amt (Rs)" TData="decimal" Width="8%">
-        @context.AvailableAmount.ToString("0.00")
     </Column>
     <Column Title="Current Qty" TData="float" Width="10%">
         <Input Type="text" @bind-Value="context.CurrentRAQty" />
     </Column>
-    <Column Title="Current Amt (Rs)" TData="decimal" Width="8%">
+    <Column Title="Current Amt (Rs)" TData="decimal" Width="10%">
         @context.CurrentRAAmount.ToString("0.00")
     </Column>
-    <Column Title="Remarks" TData="float" Width="14%">
+    <Column Title="Remarks" TData="float" Width="15%">
         <Input Type="text" @bind-Value="context.Remarks" />
     </Column>
 

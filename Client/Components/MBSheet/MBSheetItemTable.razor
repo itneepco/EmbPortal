@@ -119,19 +119,6 @@
         await ReloadPage.InvokeAsync();
     }
 
-    void SortModelItems()
-    {
-        MBSheetItems = MBSheetItems.OrderBy(i => i.MBookItemId)
-            .ThenBy(i => i.GetHashCode())
-            .ToList();
-    }
-
-    float GetMBookItemTotalQtyInMBSheet(int mBookItemId)
-    {
-        return MBSheetItems.Where(i => i.MBookItemId == mBookItemId)
-            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.MeasuredQuantity);
-    }
-
     void OpenFileUploadModal(MBSheetItemResponse item)
     {
         currentMBSheetItem = item;

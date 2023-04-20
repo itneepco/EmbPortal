@@ -1,0 +1,223 @@
+﻿@page "/mbook/{MBookId}/mbsheet/{MBSheetId:int}"
+@attribute [Authorize]
+
+@if (mbSheet != null)
+{
+    <h3>MB Sheet Details</h3>
+
+    <Row Align="middle">
+        <AntDesign.Col Sm="24" Md="16">
+            <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
+                <Row Gutter="8">
+                    <AntDesign.Col Sm="16">
+                        <FormItem Label="Measurement Date" Style="width: 100%">
+                            <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.MeasurementDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                        </FormItem>
+                    </AntDesign.Col Sm="8">
+                    <AntDesign.Col>
+                        <FormItem Label="Action">
+                            <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+                        </FormItem>
+                    </AntDesign.Col>
+                </Row>
+            </Form>
+        </AntDesign.Col>
+
+        <AntDesign.Col Sm="24" Md="8">
+            @if (mbSheet.Status == MBSheetStatus.CREATED && employeeCode == mbSheet.MeasurerEmpCode && mbSheet.Items.Count() > 0)
+            {
+                <Popconfirm Title="Sure to delete?"
+                    OnConfirm="DeleteMBSheet"
+                    OkText="Yes"
+                    CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem">Delete</Button>
+                </Popconfirm>
+
+                <Popconfirm Title="Sure to publish?"
+                    OnConfirm="()=> PublishMBSheet(mbSheet.Id)"
+                    OkText="Yes"
+                    CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
+                </Popconfirm>
+            }
+
+            @if (mbSheet.Status == MBSheetStatus.PUBLISHED && employeeCode == mbSheet.ValidatorEmpCode && mbSheet.Items.Count() > 0)
+            {
+                <Popconfirm Title="Sure to Validate MB Sheet?"
+                        OnConfirm="()=> ValidateMBSheet(mbSheet.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                </Popconfirm>
+            }
+
+            @if (mbSheet.Status == MBSheetStatus.VALIDATED && employeeCode == mbSheet.EicEmpcode)
+            {
+                <Popconfirm Title="Sure to Accept MB Sheet?"
+                    OnConfirm="()=> AcceptMBSheet(mbSheet.Id)"
+                        OkText="Yes"
+                        CancelText="No">
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                </Popconfirm>
+            }
+        </AntDesign.Col>
+    </Row>
+
+    <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
+        <CascadingValue Value="MBSheetId" Name="MBSheetId">
+            <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
+        </CascadingValue>
+    </CascadingValue>
+
+    <Row Justify="start" Style="margin-top: 2rem;">
+        <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
+    </Row>
+}
+else
+{
+    <Spin>
+        <Empty />
+    </Spin>
+}
+
+@code {
+    [Parameter]
+    public string MBookId { get; set; }
+
+    [Parameter]
+    public int MBSheetId { get; set; }
+
+    bool loading = false;
+    string employeeCode;
+
+    MBSheetRequest model = new();
+    MBSheetResponse mbSheet;
+
+    async Task OnFormSubmit()
+    {
+        loading = true;
+        dynamic result = await mbSheetService.EditMBSheet(MBSheetId, model);
+        loading = false;
+        StateHasChanged();
+
+        if (result.Succeeded)
+        {
+            await messageService.Success("Successfully Updated MB Sheet Header");
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
+
+        await LoadMBookDetailsAsync();
+
+        if (mbSheet != null) // initialize the model with data from db
+        {
+            model.MeasurementDate = mbSheet.MeasurementDate;
+            model.MeasurementBookId = mbSheet.MeasurementBookId;
+        }
+    }
+
+    async Task LoadMBookDetailsAsync()
+    {
+        loading = true;
+        var result = await mbSheetService.GetMBSheetById(MBSheetId);
+
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbooks/{MBookId}");
+            await messageService.Warning(result.Message);
+            return;
+        }
+
+        mbSheet = result.Data;
+        mbSheet.Items = mbSheet.Items.OrderBy(p => p.MBookItemId).ThenBy(p => p.Id).ToList();
+
+        loading = false;
+        StateHasChanged();
+    }
+
+    async Task ValidateMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.ValidateMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            GoToMBookDetailPage();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task PublishMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.PublishMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            GoToMBookDetailPage();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task AcceptMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.AcceptMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            GoToMBookDetailPage();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+    
+    async Task DeleteMBSheet()
+    {
+        loading = true;
+        var result = await mbSheetService.DeleteMBSheet(MBSheetId);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            GoToMBookDetailPage();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
+    async Task ReloadPage()
+    {
+        await LoadMBookDetailsAsync();
+    }
+
+    void GoToMBookDetailPage()
+    {
+        navManager.NavigateTo($"/mbooks/{MBookId}/tab2");
+    }
+}

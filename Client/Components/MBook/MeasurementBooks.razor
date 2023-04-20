@@ -20,6 +20,12 @@
         </Column>
         <ActionColumn Title="Action" Width="25%">
             <Row Justify="ceter">
+                <Button Icon="@(IconType.Outline.Search)" 
+                        Type="@(ButtonType.Primary)" 
+                        Size="@ButtonSize.Small" 
+                        OnClick="_=> ViewDetail(context.Id)" 
+                        Style="margin-right: 0.5rem" />
+
                 @if (context.Status == MBookStatus.CREATED.ToString())
                 {
                     <Button Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" OnClick="_=> OpenSideDrawer(context.Id)"  Style="margin-right: 0.2rem"/>
@@ -185,5 +191,9 @@
         }
     }
 
+    void ViewDetail(int MBookId)
+    {
+        navManager.NavigateTo($"/mbooks/{MBookId}");
+    }
 
 }

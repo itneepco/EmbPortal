@@ -22,7 +22,7 @@
 {
     <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
         <CascadingValue Value="@mbSheet.Id" Name="MBSheetId">
-            <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
+            <MBSheetItemTable MBSheetItems="mbSheet.Items" />
         </CascadingValue>
     </CascadingValue>
 }
@@ -46,58 +46,28 @@
         loading = true;
         model.MeasurementBookId = int.Parse(MBookId); // set measurement book id
 
-        if (mbSheet == null)
+        var result = await mbSheetService.CreateMBSheet(model);
+        if (result.Succeeded)
         {
-            var result = await mbSheetService.CreateMBSheet(model);
-            if (result.Succeeded)
-            {
-                await LoadMBSheetDetailsAsync(result.Data);
-                await messageService.Success("Successfully Created MB Sheet Header");
-            }
-            else
-            {
-                await messageService.Error(result.Message);
-            }
+            GoToDetailPage(result.Data);
+            await messageService.Success("Successfully Created MB Sheet Header");
         }
         else
         {
-            var result = await mbSheetService.EditMBSheet(mbSheet.Id, model);
-            if (result.Succeeded)
-            {
-                await LoadMBSheetDetailsAsync(mbSheet.Id);
-                await messageService.Success("Successfully Updated MB Sheet Header");
-            }
-            else
-            {
-                await messageService.Error(result.Message);
-            }
+            await messageService.Error(result.Message);
         }
 
         loading = false;
         StateHasChanged();
-    }
-
-    async Task LoadMBSheetDetailsAsync(int mbSheetId)
-    {
-        loading = true;
-        var result = await mbSheetService.GetMBSheetById(mbSheetId);
-        mbSheet = result.Data;
-        mbSheet.Items = mbSheet.Items.OrderBy(p => p.MBookItemId).ThenBy(p => p.Id).ToList();
-        loading = false;
-
-        StateHasChanged();
-    }
-
-    async Task ReloadPage()
-    {
-        if (mbSheet != null)
-        {
-            await LoadMBSheetDetailsAsync(mbSheet.Id);
-        }
     }
 
     void GoToMBookDetailPage()
     {
         navManager.NavigateTo($"/mbooks/{MBookId}/tab2");
+    }
+
+    void GoToDetailPage(int mbSheetId)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
     }
 }

@@ -15,8 +15,8 @@
     public int MBSheetId { get; set; }
 
     private bool loading;
-    private List<MBItemStatusResponse> mbItemsStatuses = new();
 
+    private List<MBItemStatusResponse> mbItemsStatuses = new();
     public MBSheetItemRequest model { get; set; } = new();
 
     protected override async Task OnInitializedAsync()

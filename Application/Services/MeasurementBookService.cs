@@ -24,6 +24,7 @@ public class MeasurementBookService : IMeasurementBookService
     {
         List<MBSheet> mbSheets = await _context.MBSheets
              .Include(p => p.Items)
+                .ThenInclude(p => p.Measurements)
              .Where(p => p.MeasurementBookId == mBookId)
              .AsNoTracking()
              .ToListAsync();

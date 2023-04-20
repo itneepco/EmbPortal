@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmbPortal.Shared.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace EmbPortal.Shared.Responses
@@ -22,7 +23,7 @@ namespace EmbPortal.Shared.Responses
         public string EicEmpcode { get; set; }
         public string EicName { get; set; }
 
-        public string Status { get; set; }
+        public MBSheetStatus Status { get; set; }
 
         public List<MBSheetItemResponse> Items { get; set; }
     }
