@@ -37,8 +37,14 @@
     [Parameter, EditorRequired]
     public MBSheetItemRequest Model { get; set; }
 
-    [Parameter, EditorRequired]
+    [CascadingParameter(Name = "MBookId")]
+    public int MBookId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetId")]
     public int MBSheetId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetItemId")]
+    public int MBSheetItemId { get; set; }
 
     bool loading;
 
@@ -50,11 +56,20 @@
     public async Task OnSubmit()
     {
         loading = true;
-        var result = await mbSheetService.CreateMBSheetItem(MBSheetId, Model);
+        dynamic result;
+
+        if(Model.Id == 0) //create
+        {
+            result = await mbSheetService.CreateMBSheetItem(MBSheetId, Model);
+        }
+        else //edit
+        {
+            result = await mbSheetService.UpdateMBSheetItem(MBSheetId, MBSheetItemId, Model);
+        }
 
         if (result.Succeeded)
         {
-            navManager.NavigateTo($"mbook/{Model.MBookItemId}/mbsheet/{MBSheetId}");
+            navManager.NavigateTo($"mbook/{MBookId}/mbsheet/{MBSheetId}");
             await messageService.Success(result.Message);
         }
         else
@@ -63,4 +78,5 @@
         }
         loading = false;
     }
+
 }

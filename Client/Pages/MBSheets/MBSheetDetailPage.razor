@@ -137,9 +137,8 @@ else
         }
 
         mbSheet = result.Data;
-        mbSheet.Items = mbSheet.Items.OrderBy(p => p.MBookItemId).ThenBy(p => p.Id).ToList();
-
         loading = false;
+
         StateHasChanged();
     }
 

@@ -9,7 +9,6 @@ namespace EmbPortal.Shared.Responses
         public int Id { get; set; }
         public int MBSheetId { get; set; }
         public int WorkOrderItemId { get; set; }
-        public int MBookItemId { get; set; }
 
         public long ServiceNo { get; set; }
         public string ShortServiceDesc { get; set; }

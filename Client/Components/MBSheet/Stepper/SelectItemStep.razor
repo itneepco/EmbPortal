@@ -36,6 +36,16 @@
     [Parameter, EditorRequired]
     public List<MBItemStatusResponse> MBItemStatus { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        // For edit, initalize the stepper model
+        var item = MBItemStatus.Find(p => p.MBookItemId == Model.MBookItemId);
+        if(item != null)
+        {
+            InitializeStepperModel(item);
+        }
+    }
+
     public void NextStep()
     {
         if (Model.MBookItemId == 0) return;
@@ -53,12 +63,16 @@
         else
         {
             Model.MBookItemId = item.MBookItemId;
-
-            StepperModel.Uom = item.Uom;
-            StepperModel.ServiceNo = item.ServiceNo;
-            StepperModel.ShortServiceDesc = item.ItemDescription;
-            StepperModel.CumulativeMeasuredQty = item.CumulativeMeasuredQty;
-            StepperModel.AvailableMeasurementQty = item.AvailableMeasurementQty;
+            InitializeStepperModel(item);
         }
+    }
+
+    void InitializeStepperModel(MBItemStatusResponse item)
+    {
+        StepperModel.Uom = item.Uom;
+        StepperModel.ServiceNo = item.ServiceNo;
+        StepperModel.ShortServiceDesc = item.ItemDescription;
+        StepperModel.CumulativeMeasuredQty = item.CumulativeMeasuredQty;
+        StepperModel.AvailableMeasurementQty = item.AvailableMeasurementQty;
     }
 }

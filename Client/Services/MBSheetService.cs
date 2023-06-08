@@ -111,5 +111,11 @@ namespace Client.Services
         {
             return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Approval");
         }
+
+        public async Task<IResult<MBSheetItemResponse>> GetMBSheetItemById(int mbSheetId, int mbSheetItemId)
+        {
+            var response = await _httpClient.GetAsync($"/api/MBSheet/{mbSheetId}/Items/{mbSheetItemId}");
+            return await response.ToResult<MBSheetItemResponse>();
+        }
     }
 }

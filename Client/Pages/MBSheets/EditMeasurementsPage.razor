@@ -1,10 +1,16 @@
-﻿@page "/mbook/{MBookId:int}/mbsheet/{MBSheetId:int}/measurements/{MeasurementId:int}"
+﻿@page "/mbook/{MBookId:int}/mbsheet/{MBSheetId:int}/items/{MBSheetItemId:int}"
 @attribute [Authorize]
 
 <h3>Edit Measurements</h3>
 
 <Spin Spinning="loading">
-    <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses" MBSheetId="MBSheetId"/>
+    <CascadingValue Value="MBookId" Name="MBookId">
+        <CascadingValue Value="MBSheetId" Name="MBSheetId">
+            <CascadingValue Value="MBSheetItemId" Name="MBSheetItemId">
+                <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses"/>
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
 </Spin>
 
 @code {
@@ -12,10 +18,45 @@
 
     [Parameter] public int MBSheetId { get; set; }
 
-    [Parameter] public int MeasurementId { get; set; }
+    [Parameter] public int MBSheetItemId { get; set; }
 
     private bool loading;
+    private MBSheetItemResponse mbSheetItem;
 
     private List<MBItemStatusResponse> mbItemsStatuses = new();
-    public MBSheetItemRequest model { get; set; } = new();
+    private MBSheetItemRequest model { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadServerData();
+
+        model.Id = mbSheetItem.Id;
+        model.MBookItemId = mbSheetItem.Id;
+        model.Measurements = mbSheetItem.Measurements.Select(x => new MBItemMeasurementRequest
+        {
+           No = x.No,
+           Description = x.Description,
+           Val1 = x.Val1,
+           Val2 = x.Val2,
+           Val3 = x.Val3
+        }).ToList();
+    }
+
+    async Task LoadServerData()
+    {
+        loading = true;
+
+        var result = await mbSheetService.GetMBSheetItemById(MBSheetId, MBSheetItemId);
+        if (!result.Succeeded)
+        {
+            navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}");
+            await messageService.Warning(result.Message);
+            return;
+        }
+        mbSheetItem = result.Data;
+
+        mbItemsStatuses = await mBookService.GetCurrentMBItemsStatus(MBookId);
+
+        loading = false;
+    }
 }

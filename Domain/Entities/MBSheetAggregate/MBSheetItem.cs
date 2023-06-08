@@ -38,9 +38,9 @@ public class MBSheetItem :AuditableEntity
         _measurements.Add(measurement);
     }
 
-    public void RemoveMeasurement(MBItemMeasurement measurement)
+    public void ClearMeasurements()
     {
-        _measurements.Remove(measurement);
+        _measurements.Clear();
     }
 
     public void AddAttachment(ItemAttachment attachment)

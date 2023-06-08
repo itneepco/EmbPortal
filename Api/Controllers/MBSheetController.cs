@@ -190,5 +190,15 @@ namespace Api.Controllers
 
             return Ok(await Mediator.Send(query));
         }
+
+        [HttpGet("{mBSheetId}/items/{mbSheetItemId}")]
+        [ProducesResponseType(typeof(MBSheetResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MBSheetItemResponse>> GetMBSheetItemById(int mBSheetId, int mbSheetItemId)
+        {
+            var query = new GetMBSheetItemByIdQuery(mBSheetId, mbSheetItemId);
+
+            return Ok(await Mediator.Send(query));
+        }
     }
 }

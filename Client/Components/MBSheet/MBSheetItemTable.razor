@@ -1,4 +1,4 @@
-﻿<Button OnClick="GoToMeasurementPage" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
+﻿<Button OnClick="GoToAddMeasurementPage" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
     Add Measurement
 </Button>
 
@@ -27,7 +27,7 @@
                     <Button Icon="@(IconType.Outline.Edit)"
                             Size="@ButtonSize.Small"
                             Shape="@ButtonShape.CircleOutline"
-                            OnClick="_=> OpenSideDrawer(context)">
+                            OnClick="_=> GoToEditMeasurementPage(context)">
                     </Button>
                 </AntDesign.Col>
                 <AntDesign.Col>
@@ -124,8 +124,13 @@
         currentMBSheetItem = item;
         modalVisible = true;
     }
-    void GoToMeasurementPage()
+    void GoToAddMeasurementPage()
     {
-        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/measurements");
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items");
+    }
+
+    void GoToEditMeasurementPage(MBSheetItemResponse item)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items/{item.Id}");
     }
 }

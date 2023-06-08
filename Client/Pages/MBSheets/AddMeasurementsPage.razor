@@ -1,10 +1,14 @@
-﻿@page "/mbook/{MBookId:int}/mbsheet/{MBSheetId:int}/measurements"
+﻿@page "/mbook/{MBookId:int}/mbsheet/{MBSheetId:int}/items"
 @attribute [Authorize]
 
 <h3>Add Measurements</h3>
 
 <Spin Spinning="loading">
-    <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses" MBSheetId="MBSheetId"/>
+    <CascadingValue Value="MBookId" Name="MBookId">
+        <CascadingValue Value="MBSheetId" Name="MBSheetId">
+            <MeasurementStepper Model="@model" MBItemStatus="@mbItemsStatuses"/>
+        </CascadingValue>
+    </CascadingValue>
 </Spin>
 
 @code {

@@ -15,7 +15,7 @@
                 <MeasurementDetailsStep Model="Model" />
                 break;
             case 2:
-                <MeasurementSummaryStep Model="Model" MBSheetId="MBSheetId" />
+                <MeasurementSummaryStep Model="Model" />
                 break;
         }
     </CascadingValue>
@@ -27,9 +27,6 @@
 
     [Parameter, EditorRequired]
     public List<MBItemStatusResponse> MBItemStatus { get; set; }
-
-    [Parameter, EditorRequired]
-    public int MBSheetId { get; set; }
 
     MBSheetStepperModel stepperModel = new();
 
