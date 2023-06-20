@@ -44,11 +44,11 @@ public class CreateMBSheetItemCommandHandler : IRequestHandler<CreateMBSheetItem
             throw new NotFoundException(nameof(MeasurementBook), mbSheet.MeasurementBookId);
         }
 
-        MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.Id == request.Data.MBookItemId);
+        MBookItem mBookItem = mBook.Items.FirstOrDefault(p => p.WorkOrderItemId == request.Data.WorkOrderItemId);
 
         if (mBookItem == null)
         {
-            throw new NotFoundException($"Measurement Book does not have line item with Id: {request.Data.MBookItemId}");
+            throw new NotFoundException($"Measurement Book does not have line item with Id: {request.Data.WorkOrderItemId}");
         }
 
         var mbSheetItem = new MBSheetItem(mBookItem.WorkOrderItemId);

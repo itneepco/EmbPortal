@@ -37,7 +37,7 @@
 </Table>
 
 <Tag Color="purple-inverse" Style="margin-top: 0.5rem">Balance PO Quantity: @StepperModel.AvailableMeasurementQty</Tag>
-<Tag Color="orange-inverse" Style="margin-top: 0.5rem">Entered Quantity: @TotalQty</Tag>
+<Tag Color="orange-inverse" Style="margin-top: 0.5rem">Entered Quantity: @TotalQty.ToString("0.00")</Tag>
 
 <ItemMeasurementDrawer Visible="@drawerVisible" 
                        OnClose="@CloseSideBar" 
@@ -49,7 +49,7 @@
      <Button Type="primary" OnClick="NextStep" Disabled="Model.Measurements.Count == 0">Next</Button>
 </div>
 
-@code {
+                    @code {
     [CascadingParameter]
     public MeasurementStepper Stepper { get; set; }
 
@@ -95,5 +95,10 @@
         Model.Measurements.Remove(item);
         TotalQty = Model.Measurements.Sum(item => item.Total);
         StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        TotalQty = Model.Measurements.Sum(item => item.Total);
     }
 }

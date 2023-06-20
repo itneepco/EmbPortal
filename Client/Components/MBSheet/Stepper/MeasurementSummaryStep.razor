@@ -18,7 +18,7 @@
 
 <Row Style="margin-top: 0.75rem">
     <Col Flex="1"></Col>
-    <Col><Tag Color="purple-inverse">Total Quantity: @Model.Measurements.Sum(p => p.Total)</Tag></Col>
+    <Col><Tag Color="purple-inverse">Total Quantity: @Model.Measurements.Sum(p => p.Total).ToString("0.00")</Tag></Col>
 </Row>
 
 <div style="margin-top: 1.5rem">

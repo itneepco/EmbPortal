@@ -55,6 +55,11 @@ public class CreateMBSheetCommandHandler : IRequestHandler<CreateMBSheetCommand,
             throw new BadRequestException("Measurement date cannot be earlier then PO Date");
         }
 
+        if(request.Data.MeasurementDate > (DateTime.Now))
+        {
+            throw new BadRequestException("Measurement date cannot be in future");
+        }
+
         var mbSheetCount = _context.MBSheets.Where(i => i.MeasurementBookId == result.mbook.Id).Count() + 1;
         var title = result.mbook.Title+"-Sheet-"+(mbSheetCount);
         var mbSheet = new MBSheet

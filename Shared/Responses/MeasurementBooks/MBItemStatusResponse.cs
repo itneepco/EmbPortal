@@ -17,15 +17,17 @@
         {
             get
             {
-                return AcceptedMeasuredQty - TillLastRAQty;
+                var available = (AcceptedMeasuredQty - TillLastRAQty).ToString("0.00");
+                return float.Parse(available);
             }
         }
 
         public float AvailableMeasurementQty
         {
             get
-            {
-                return PoQuantity - CumulativeMeasuredQty;
+            { 
+                var availableMeasurementQty = (PoQuantity - CumulativeMeasuredQty).ToString("0.00");
+                return float.Parse(availableMeasurementQty);
             }
         }
     }

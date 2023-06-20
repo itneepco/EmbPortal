@@ -31,7 +31,7 @@
         await LoadServerData();
 
         model.Id = mbSheetItem.Id;
-        model.MBookItemId = mbSheetItem.Id;
+        model.WorkOrderItemId = mbSheetItem.WorkOrderItemId;
         model.Measurements = mbSheetItem.Measurements.Select(x => new MBItemMeasurementRequest
         {
            No = x.No,

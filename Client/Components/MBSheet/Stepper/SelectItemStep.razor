@@ -3,10 +3,10 @@
 <Row>
     <Col Sm="24" Md="18" Lg="14">
         <Select DataSource="@MBItemStatus"
-            @bind-Value="@Model.MBookItemId"
+            @bind-Value="@Model.WorkOrderItemId"
             TItem="MBItemStatusResponse"
             TItemValue="int"
-            ValueName="@nameof(MBItemStatusResponse.MBookItemId)"
+            ValueName="@nameof(MBItemStatusResponse.WorkOrderItemId)"
             LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
             Placeholder="Select Service Item"
             OnSelectedItemChanged="@(item => SelectLineItem(item))"
@@ -18,12 +18,12 @@
 </Row>
 
 <div style="margin-top: 1.5rem">
-    <Button Type="primary" OnClick="NextStep" Disabled="Model.MBookItemId == 0">
+            <Button Type="primary" OnClick="NextStep" Disabled="Model.WorkOrderItemId == 0">
         Next
     </Button>
 </div>
 
-        @code {
+@code {
     [CascadingParameter]
     public MeasurementStepper Stepper { get; set; }
 
@@ -39,7 +39,7 @@
     protected override void OnParametersSet()
     {
         // For edit, initalize the stepper model
-        var item = MBItemStatus.Find(p => p.MBookItemId == Model.MBookItemId);
+        var item = MBItemStatus.Find(p => p.WorkOrderItemId == Model.WorkOrderItemId);
         if(item != null)
         {
             InitializeStepperModel(item);
@@ -48,7 +48,7 @@
 
     public void NextStep()
     {
-        if (Model.MBookItemId == 0) return;
+        if (Model.WorkOrderItemId == 0) return;
 
         Stepper.Next();
     }
@@ -57,12 +57,12 @@
     {
         if (item == null)
         {
-            Model.MBookItemId = 0;
+            Model.WorkOrderItemId = 0;
             StepperModel = new();
         }
         else
         {
-            Model.MBookItemId = item.MBookItemId;
+            Model.WorkOrderItemId = item.WorkOrderItemId;
             InitializeStepperModel(item);
         }
     }
