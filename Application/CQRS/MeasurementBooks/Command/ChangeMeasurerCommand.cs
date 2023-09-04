@@ -25,8 +25,7 @@ public class ChangeMeasurerCommandHnadler : IRequestHandler<ChangeMeasurerComman
 
     public async Task<Unit> Handle(ChangeMeasurerCommand request, CancellationToken cancellationToken)
     {
-        var mBook = await _context.MeasurementBooks.Include(m => m.WorkOrder)
-                                                   .FirstOrDefaultAsync(p => p.Id == request.id);
+        var mBook = await _context.MeasurementBooks.FirstOrDefaultAsync(p => p.Id == request.id);
 
         if (mBook == null)
         {
@@ -35,7 +34,7 @@ public class ChangeMeasurerCommandHnadler : IRequestHandler<ChangeMeasurerComman
 
         var currentUser = _currentUserService.EmployeeCode;
 
-        if (!currentUser.Equals(mBook.WorkOrder.EngineerInCharge))
+        if (!currentUser.Equals(mBook.EicEmpCode))
         {
             throw new UnauthorizedUserException("Only Engineer In Charge can change Measurement Officer");
         }

@@ -10,39 +10,38 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using AntDesign.ProLayout;
 
-namespace Client
+
+namespace Client;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddAntDesign();
-            builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
+        builder.Services.AddAntDesign();
+        builder.Services.Configure<ProSettings>(builder.Configuration.GetSection("ProSettings"));
 
-            builder.Services.AddAuthorizationCore()
-                .AddBlazoredLocalStorage()
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        builder.Services.AddAuthorizationCore()
+            .AddBlazoredLocalStorage()
+            .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddScoped<IAuthService, AuthService>()
-                .AddScoped<EMBStateProvider>()
-                .AddScoped<AuthenticationStateProvider, EMBStateProvider>();
+        builder.Services.AddScoped<IAuthService, AuthService>()
+            .AddScoped<EMBStateProvider>()
+            .AddScoped<AuthenticationStateProvider, EMBStateProvider>();
 
-            builder.Services
-                .AddScoped<IDashboardService, DashboardService>()
-                .AddScoped<IWorkOrderService, WorkOrderService>()
-                .AddScoped<IUomService, UomService>()
-                .AddScoped<IMBookService, MBookService>()
-                .AddScoped<IMBSheetService, MBSheetService>()
-                .AddScoped<IRABillService, RABillService>()
-                .AddScoped<IUserService, UserService>();
+        builder.Services
+            .AddScoped<IDashboardService, DashboardService>()
+            .AddScoped<IWorkOrderService, WorkOrderService>()              
+            .AddScoped<IMBookService, MBookService>()
+            .AddScoped<IMBSheetService, MBSheetService>()
+            .AddScoped<IRABillService, RABillService>()
+            .AddScoped<IUserService, UserService>();
 
-            builder.Services.AddHttpClientInterceptor();
-            builder.Services.AddScoped<IHttpInterceptorService, HttpInterceptorService>();
+        builder.Services.AddHttpClientInterceptor();
+        builder.Services.AddScoped<IHttpInterceptorService, HttpInterceptorService>();
 
-            await builder.Build().RunAsync();
-        }
+        await builder.Build().RunAsync();
     }
 }

@@ -10,7 +10,7 @@ namespace Client.Services.Interfaces
     {
         Task<List<MBookResponse>> GetMBooksByWorkOrderId(int orderId);
         Task<PaginatedList<MBookHeaderResponse>> GetMBooksByUserIdPagination(int pageIndex, int pageSize, string search, int status);
-        Task<IResult<MBookDetailResponse>> GetMBooksById(int id);
+        Task<IResult<MBookResponse>> GetMBooksById(int id);
         Task<List<MBItemStatusResponse>> GetCurrentMBItemsStatus(int id);
         Task<IResult> DeleteMeasurementBook(int id);
         Task<IResult<int>> CreateMeasurementBook(MBookRequest request);

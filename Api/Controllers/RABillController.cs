@@ -1,12 +1,16 @@
 ﻿using Api.Models;
+using Api.Reports;
 using Application.CQRS.RABills.Commands;
 using Application.CQRS.RABills.Queries;
+using Domain.Entities.RABillAggregate;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,10 +22,12 @@ namespace Api.Controllers
     public class RABillController : ApiController
     {
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
 
-        public RABillController(IConfiguration config)
+        public RABillController(IConfiguration config, IWebHostEnvironment env)
         {
             _config = config;
+            _env = env;
         }
 
         [HttpGet("MBook/{mBookId}")]
@@ -125,11 +131,20 @@ namespace Api.Controllers
         [HttpGet("{id}/Download")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> DownloadOrderItemTemplate(int id)
+        public async Task<ActionResult<string>> GenerateRABill(int id)
         {
-            var result = await Mediator.Send(new GeneratePdfCommand(id));
+            try
+            {
+                var result = await Mediator.Send(new RABillReportQuery(id));
+                var report = new RABillReport(_env, result).GeneratePdf();
 
-            return Ok(Convert.ToBase64String(result));
+                return Ok(Convert.ToBase64String(report));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception();
+            }
         }
 
         [HttpPost("{id}/Deduction")]

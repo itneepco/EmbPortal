@@ -32,23 +32,23 @@ namespace Application.Services
 
             List<RAItemQtyStatus> raItemQtyStatuses = new();
 
-            List<RABillItemResponse> raItems = new();
+            List<RABillItem> raItems = new();
             foreach (var raBill in raBills)
             {
-                raItems.AddRange(_mapper.Map<List<RABillItemResponse>>(raBill.Items));
+                raItems.AddRange(raBill.Items);
             }
 
-            // select all possible measurement book item ids
-            List<int> mBookItemIds = raItems.Select(i => i.MBookItemId).Distinct().ToList();
+            // select all possible work order item ids
+            List<int> workOrderItemIds = raItems.Select(i => i.WorkOrderItemId).Distinct().ToList();
 
-            foreach (var mBookItemId in mBookItemIds)
+            foreach (var workOrderItemId in workOrderItemIds)
             {
-                float approvedRAQty = raItems.Where(i => i.MBookItemId == mBookItemId)
+                float approvedRAQty = raItems.Where(i => i.WorkOrderItemId == workOrderItemId)
                     .Aggregate((float)0, (acc, curr) => acc + curr.CurrentRAQty);
 
                 var approvedQty = new RAItemQtyStatus
                 {
-                    MBookItemId = mBookItemId,
+                    WorkOrderItemId = workOrderItemId,
                     ApprovedRAQty = approvedRAQty
                 };
 
@@ -62,6 +62,6 @@ namespace Application.Services
 
 public class RAItemQtyStatus
 {
-    public int MBookItemId { get; set; }
+    public int WorkOrderItemId { get; set; }
     public float ApprovedRAQty { get; set; }
 }

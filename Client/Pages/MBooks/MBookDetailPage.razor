@@ -3,7 +3,7 @@
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
     <BreadcrumbItem Href="/">
-        <Icon Type="dashboard" />
+        <Icon Type="home" />
         <span>Dashboard</span>
     </BreadcrumbItem>
     <BreadcrumbItem Href="/mbooks">
@@ -19,26 +19,17 @@
 {
 <Tabs @bind-ActiveKey="@activeKey" Animated>
     <TabPane Tab="Measurement Book Detail" Key="tab1">
-        <Descriptions Bordered Size="@DescriptionsSize.Small" Column="@column">
-            <DescriptionsItem Title="Measurement Book">@data.Title</DescriptionsItem>
-            <DescriptionsItem Title="Measurer">
-                <Tooltip Title="@data.Measurer.ToString()" Placement="@Placement.Left">
-                    <span style="cursor: pointer">@data.Measurer?.DisplayName</span>
-                </Tooltip>
-            </DescriptionsItem>
-            <DescriptionsItem Title="Validator">
-                <Tooltip Title="@data.Validator.ToString()" Placement="@Placement.Left">
-                    <span style="cursor: pointer">@data.Validator?.DisplayName</span>
-                </Tooltip>
-            </DescriptionsItem>
-            <DescriptionsItem Title="Order No">@data.WorkOrder.OrderNo</DescriptionsItem>
-            <DescriptionsItem Title="Order Date">@data.WorkOrder.OrderDate.ToString("dd/MM/yyyy")</DescriptionsItem>
-            <DescriptionsItem Title="Contractor">@data.WorkOrder.Contractor</DescriptionsItem>
-            <DescriptionsItem Title="Project">@data.WorkOrder.Project</DescriptionsItem>
-            <DescriptionsItem Title="Item Description">@data.Items.First()?.ItemDescription</DescriptionsItem>
+        <Descriptions Bordered Size="@DescriptionsSize.Middle" Column="@column">
+            <DescriptionsItem Title="Measurement Book" Span="2">@data.Title</DescriptionsItem>
+            <DescriptionsItem Title="Measurement Officer">@data.MeasurerName </DescriptionsItem>
+            <DescriptionsItem Title="Item Description" Span="2">@data.Items.First()?.ItemDescription</DescriptionsItem>
+            <DescriptionsItem Title="Vaidating Officer">@data.ValidatorName </DescriptionsItem>
+            <DescriptionsItem Title="Order No">@data.OrderNo</DescriptionsItem>
+            <DescriptionsItem Title="Order Date">@data.OrderDate.ToString("dd/MM/yyyy")</DescriptionsItem>
+            <DescriptionsItem Title="Contractor">@data.Contractor</DescriptionsItem>           
         </Descriptions>
 
-        <Divider Plain>Measurement Book Items</Divider>
+        <Divider Plain Style="border-color:#888">Measurement Book Items</Divider>
 
         <Table TItem="MBookItemResponse" 
                DataSource="@data.Items" 
@@ -47,19 +38,19 @@
                Responsive="false"
                Bordered>
 
-            <Column Title="SubItem No" TData="long" Width="8%">@context.SubItemNo</Column>
-            <Column Title="Service No" TData="long" Width="9%">@context.ServiceNo</Column>
-            <Column Title="Service Description" TData="string" Width="25%">@context.ShortServiceDesc</Column>
+            <Column Title="Item No" TData="long" Width="8%">@context.SubItemNo</Column>
+            @*<Column Title="Service No" TData="long" Width="9%">@context.ServiceNo</Column>*@
+            <Column Title="Service Description" TData="string" Width="28%">@context.ShortServiceDesc</Column>
             <Column Title="Uom" TData="string" Width="8%">@context.Uom</Column>
-            <Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>
-            <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="10%"></Column>
-            <Column Title="Measured Qty (Cum)" TData="float" Width="10%">
+            @*<Column Title="Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="10%"></Column>*@
+            <Column Title="PO. Qty" TData="float" DataIndex="@nameof(context.PoQuantity)" Width="13%"></Column>
+            <Column Title="Measured Qty (Cumulative)" TData="float" Width="15%">
                 @context.CumulativeMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Measured Qty (App)" TData="float" Width="10%">
+            <Column Title="Measured Qty (Approved)" TData="float" Width="15%">
                 @context.AcceptedMeasuredQty.ToString("0.00")
             </Column>
-            <Column Title="Till Last RA" TData="float" Width="10%">
+            <Column Title="Till Last RA" TData="float" Width="13%">
                 @context.TillLastRAQty.ToString("0.00")
             </Column>
         </Table>
@@ -88,7 +79,7 @@ else
     [Parameter]
     public string Tab { get; set; }
 
-    public MBookDetailResponse data { get; set; }
+    public MBookResponse data { get; set; }
 
     string activeKey = "tab1";
 

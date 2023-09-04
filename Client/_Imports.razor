@@ -15,11 +15,12 @@
 @using Client
 @using Client.Shared
 @using Client.Components
-@using Client.Components.Uom
+
 @using Client.Components.WorkOrder
 @using Client.Components.MBook
 @using Client.Components.User
 @using Client.Components.MBSheet
+@using Client.Components.MBSheet.Stepper
 @using Client.Components.RABill
 @using Client.Pages
 @using Client.Pages.Auth
@@ -43,7 +44,7 @@
 @*emb services*@
 @inject IDashboardService dashboardService
 @inject IWorkOrderService workOrderService
-@inject IUomService uomService
+
 @inject IUserService userService
 @inject IMBookService mBookService
 @inject IMBSheetService mbSheetService

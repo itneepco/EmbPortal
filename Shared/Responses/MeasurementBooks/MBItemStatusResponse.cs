@@ -2,9 +2,10 @@
 {
     public class MBItemStatusResponse
     {
+        public int WorkOrderItemId { get; set; }
         public int MBookItemId { get; set; }
-        public string ItemDescription { get; set; }
-        public int Dimension { get; set; }
+        public string ServiceNo { get; set; } 
+        public string ItemDescription { get; set; }       
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
         public float PoQuantity { get; set; }
@@ -16,15 +17,17 @@
         {
             get
             {
-                return AcceptedMeasuredQty - TillLastRAQty;
+                var available = (AcceptedMeasuredQty - TillLastRAQty).ToString("0.00");
+                return float.Parse(available);
             }
         }
 
         public float AvailableMeasurementQty
         {
             get
-            {
-                return PoQuantity - CumulativeMeasuredQty;
+            { 
+                var availableMeasurementQty = (PoQuantity - CumulativeMeasuredQty).ToString("0.00");
+                return float.Parse(availableMeasurementQty);
             }
         }
     }

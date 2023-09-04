@@ -1,32 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Domain.Entities.RABillAggregate;
+﻿using Domain.Entities.RABillAggregate;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Domain.Entities.Identity;
 
-namespace Persistence.Configurations.RecurringAccountBill
+namespace Persistence.Configurations.RecurringAccountBill;
+
+public class RABillConfiguration : IEntityTypeConfiguration<RABill>
 {
-    public class RABillConfiguration : IEntityTypeConfiguration<RABill>
+    public void Configure(EntityTypeBuilder<RABill> builder)
     {
-        public void Configure(EntityTypeBuilder<RABill> builder)
-        {
-            builder.Property(p => p.Title).HasMaxLength(PersistenceConsts.TitleLegth)
-                .IsRequired();
-            builder.Property(p => p.AcceptingOfficer)
-                .HasMaxLength(PersistenceConsts.EmpCodeLength).IsRequired();
+        builder.Property(p => p.Title).HasMaxLength(PersistenceConsts.TitleLegth)
+            .IsRequired();
+        
+        builder.Property(p => p.EicEmpCode)
+            .HasMaxLength(PersistenceConsts.EmpCodeLength).IsRequired();
 
-            // Backing fields
-            builder.Navigation(p => p.Items).HasField("_items");
+        // Backing fields
+        builder.Navigation(p => p.Items).HasField("_items");            
 
-            builder.HasOne(p => p.Acceptor).WithMany()
-                .HasPrincipalKey(p => p.UserName)
-                .HasForeignKey(p => p.AcceptingOfficer)
-                .OnDelete(DeleteBehavior.Restrict);
+        builder.Property(p => p.CreatedBy)
+            .HasMaxLength(PersistenceConsts.EmpCodeLength);
 
-            builder.Property(p => p.CreatedBy)
-                .HasMaxLength(PersistenceConsts.EmpCodeLength);
-
-            builder.Property(p => p.LastModifiedBy)
-                .HasMaxLength(PersistenceConsts.EmpCodeLength);
-        }
+        builder.Property(p => p.LastModifiedBy)
+            .HasMaxLength(PersistenceConsts.EmpCodeLength);
     }
 }

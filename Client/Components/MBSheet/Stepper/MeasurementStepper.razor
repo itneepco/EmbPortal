@@ -1,0 +1,47 @@
+﻿<Steps Current="Current" Size="small" Style="margin-bottom: 2rem">
+    <Step Title="Select Service Item" />
+    <Step Title="Measurement Details" />
+    <Step Title="Summary" />
+</Steps>
+
+<CascadingValue Value="stepperModel">
+    <CascadingValue Value="this">
+        @switch (Current)
+        {
+            case 0:
+                <SelectItemStep Model="Model" MBItemStatus="MBItemStatus" />
+                break;
+            case 1:
+                <MeasurementDetailsStep Model="Model" />
+                break;
+            case 2:
+                <MeasurementSummaryStep Model="Model" />
+                break;
+        }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public List<MBItemStatusResponse> MBItemStatus { get; set; }
+
+    MBSheetStepperModel stepperModel = new();
+
+    private int Current;
+
+    public void Next()
+    {
+        Current += 1;
+        StateHasChanged();
+    }
+
+    public void Prev()
+    {
+        if (Current <= 0) return;
+        Current -= 1;
+        StateHasChanged();
+    }
+}

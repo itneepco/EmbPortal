@@ -1,12 +1,10 @@
-﻿using EmbPortal.Shared.Validations;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmbPortal.Shared.Requests
+namespace EmbPortal.Shared.Requests;
+
+public class WorkOrderRequest
 {
-    public class WorkOrderRequest
-    {
-        [Required]
-        public long OrderNo { get; set; }
+    [Required]
+    public long OrderNo { get; set; }
 
-    }
 }

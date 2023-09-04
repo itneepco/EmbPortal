@@ -26,7 +26,7 @@ namespace Application.CQRS.MBSheets.Command
         public async Task<Unit> Handle(EditMBSheetItemCommand request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets
-                .Include(p => p.Items)
+                .Include(p => p.Items).ThenInclude(p => p.Measurements)
                 .Where(p => p.Id == request.MBSheetId)
                 .FirstOrDefaultAsync();
 
@@ -37,16 +37,23 @@ namespace Application.CQRS.MBSheets.Command
 
             var mbSheetItem = mbSheet.Items.FirstOrDefault(p => p.Id == request.Id);
 
-            if (mbSheet == null)
+            if (mbSheetItem == null)
             {
                 throw new NotFoundException($"Current MB Sheet does not have line item with Id: {request.Id}");
             }
 
-            mbSheetItem.SetDescription(request.Data.Description);
-            mbSheetItem.SetNos(request.Data.Nos);
-            mbSheetItem.SetValue1(request.Data.Value1);
-            mbSheetItem.SetValue2(request.Data.Value2);
-            mbSheetItem.SetValue3(request.Data.Value3);
+            mbSheetItem.ClearMeasurements();
+            foreach (var measurement in request.Data.Measurements)
+            {
+                mbSheetItem.AddMeasurement(new MBItemMeasurement
+                {
+                    No = measurement.No,
+                    Val1 = measurement.Val1,
+                    Val2 = measurement.Val2,
+                    Val3 = measurement.Val3,
+                    Description = measurement.Description
+                });
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

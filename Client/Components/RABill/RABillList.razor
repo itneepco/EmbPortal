@@ -31,7 +31,7 @@
             </SpaceItem>
 
             @if (selectedRows.First()?.Status == RABillStatus.APPROVED &&
-                 selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().AcceptingOfficer)
+                 selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().EicEmpCode)
             {
                 <SpaceItem>
                     <Popconfirm Title="Sure to Revoke RA Bill Status?"
@@ -54,13 +54,8 @@
 
     <RowTemplate>
         <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
-        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
-        <Column Title="Accepting Officer" TData="string" Width="15%" >
-            <Tooltip Title="@context.Acceptor.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Acceptor?.DisplayName</span>
-            </Tooltip>
-        </Column>
-        <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="10%" />
+        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />        
+        <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />        
         <Column @bind-Field="@context.Status" Width="10%">
             @if (context.Status == RABillStatus.APPROVED)
             {

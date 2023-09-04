@@ -1,15 +1,12 @@
 ﻿using Application.Interfaces;
-using Application.Mappings;
 using AutoMapper;
 using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,11 +33,32 @@ namespace Application.CQRS.MBSheets.Query
         {
             var empCode = _currentUserService.EmployeeCode;
 
-            return await _context.MBSheets
-              .Include(p => p.MeasurementBook)
-              .Where(p => p.Status == MBSheetStatus.VALIDATED && p.AcceptingOfficer == empCode)
-              .AsNoTracking()
-              .ProjectToListAsync<MBSheetInfoResponse>(_mapper.ConfigurationProvider);
+            var userQuery = _context.AppUsers.AsQueryable();
+            var msheetQuery = _context.MBSheets.AsQueryable();
+
+            var query = from msheet in msheetQuery
+                        join measurer in userQuery on msheet.MeasurerEmpCode equals measurer.UserName
+                        join validator in userQuery on msheet.ValidatorEmpCode equals validator.UserName
+                        join eic in userQuery on msheet.EicEmpCode equals eic.UserName
+                        select new { msheet, measurer, validator, eic };
+
+            var results = await query
+                .Where(p => p.msheet.Status == MBSheetStatus.VALIDATED && p.msheet.EicEmpCode == empCode)
+                .OrderBy(p => p.msheet.MeasurementDate)
+                .AsNoTracking()
+                .ToListAsync();
+
+            List<MBSheetInfoResponse> response = new();
+            foreach (var result in results)
+            {
+                var item = _mapper.Map<MBSheetInfoResponse>(result.msheet);
+                item.MeasurerName = result.measurer.DisplayName;
+                item.ValidatorName = result.validator.DisplayName;
+                item.EicName = result.eic.DisplayName;
+                response.Add(item);
+            }
+
+            return response;
         }
     }
 }

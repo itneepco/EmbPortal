@@ -50,8 +50,8 @@
         {
             model.Items.Add(new RABillItemRequest
             {
-                MBookItemId = item.MBookItemId,
-                MBookItemDescription = item.ItemDescription,
+                WorkOrderItemId = item.WorkOrderItemId,
+                WorkOrderItemDescription = item.ItemDescription,
                 UnitRate = item.UnitRate,
                 AcceptedMeasuredQty = item.AcceptedMeasuredQty,
                 TillLastRAQty = item.TillLastRAQty
@@ -80,7 +80,7 @@
 
         foreach (var item in model.Items)
         {
-            var oldRaItem = result.Data.Items.Find(p => p.MBookItemId == item.MBookItemId);
+            var oldRaItem = result.Data.Items.Find(p => p.WorkOrderItemId == item.WorkOrderItemId);
             item.CurrentRAQty = oldRaItem != null ? oldRaItem.CurrentRAQty : 0;
             item.Remarks = oldRaItem != null ? oldRaItem.Remarks : "";
         }

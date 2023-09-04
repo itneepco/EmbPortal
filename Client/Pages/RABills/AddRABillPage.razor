@@ -49,8 +49,9 @@
         {
             model.Items.Add(new RABillItemRequest
             {
-                MBookItemId = item.MBookItemId,
-                MBookItemDescription = item.ItemDescription,
+                WorkOrderItemId = item.MBookItemId,
+                WorkOrderItemDescription = item.ItemDescription,
+                PoQuantity = item.PoQuantity,
                 UnitRate = item.UnitRate,
                 AcceptedMeasuredQty = item.AcceptedMeasuredQty,
                 TillLastRAQty = item.TillLastRAQty

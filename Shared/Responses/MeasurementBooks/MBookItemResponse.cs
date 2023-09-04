@@ -7,14 +7,15 @@ namespace EmbPortal.Shared.Responses
         public int Id { get; set; }
         public int WorkOrderItemId { get; set; }
         public int ItemNo { get; set; }
+        public string PackageNo { get; set; }
         public string ItemDescription { get; set; }
         public int SubItemNo { get; set; }
+        public string SubItemPackageNo { get; set; }
         public long ServiceNo { get; set; }
         public string ShortServiceDesc { get; set; }
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
-        public float PoQuantity { get; set; }
-        public int Dimension { get; set; }
+        public float PoQuantity { get; set; }       
         public float AcceptedMeasuredQty { get; set; }
         public float CumulativeMeasuredQty { get; set; }
         public float TillLastRAQty { get; set; }

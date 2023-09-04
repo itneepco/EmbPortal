@@ -42,9 +42,9 @@ namespace Client.Services
             return await response.ToResult();
         }
 
-        public async Task<List<MBSheetResponse>> GetMBSheetsByMBookId(int mBookId)
+        public async Task<List<MBSheetInfoResponse>> GetMBSheetsByMBookId(int mBookId)
         {
-            return await _httpClient.GetFromJsonAsync<List<MBSheetResponse>>($"/api/MBSheet/MBook/{mBookId}");
+            return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/MBook/{mBookId}");
         }
 
         public async Task<IResult<MBSheetResponse>> GetMBSheetById(int mbSheetId)
@@ -110,6 +110,12 @@ namespace Client.Services
         public async Task<List<MBSheetInfoResponse>> GetPendingApprovalMBSheets()
         {
             return await _httpClient.GetFromJsonAsync<List<MBSheetInfoResponse>>($"/api/MBSheet/Pending/Approval");
+        }
+
+        public async Task<IResult<MBSheetItemResponse>> GetMBSheetItemById(int mbSheetId, int mbSheetItemId)
+        {
+            var response = await _httpClient.GetAsync($"/api/MBSheet/{mbSheetId}/Items/{mbSheetItemId}");
+            return await response.ToResult<MBSheetItemResponse>();
         }
     }
 }

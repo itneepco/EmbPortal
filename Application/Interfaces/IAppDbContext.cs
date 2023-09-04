@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities;
+using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RABillAggregate;
@@ -11,7 +12,7 @@ namespace Application.Interfaces
 {
     public interface IAppDbContext
     {
-        DbSet<Uom> Uoms { get; set; }
+        DbSet<AppUser> AppUsers { get; set; }
         DbSet<WorkOrder> WorkOrders { get; set; }
         DbSet<MeasurementBook> MeasurementBooks { get; set; }
         DbSet<MBSheet> MBSheets { get; set; }

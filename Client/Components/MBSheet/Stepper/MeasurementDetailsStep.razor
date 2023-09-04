@@ -1,0 +1,104 @@
+﻿<h3>Measurement Details</h3>
+
+<ServiceInfoCard />
+
+<Button OnClick="OpenSideDrawer" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
+    Add Details
+</Button>
+
+<Table DataSource="@Model.Measurements"
+       PageSize="@Model.Measurements.Count"
+       Size="TableSize.Small"
+       HidePagination
+       Bordered>
+
+    <Column Title="Description" TData="string" Width="30%"> @context.Description</Column>
+    <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="12%" />
+    <Column Title="Value 1" TData="string" Width="12%">@context.Val1</Column>
+    <Column Title="Value 2" TData="string" Width="12%">@context.Val2</Column>
+    <Column Title="Value 3" TData="string" Width="12%">@context.Val3</Column>
+    <Column Title="Total" TData="string" Width="12%">@context.Total</Column>
+    <ActionColumn Title="Action" Width="10%">
+        <Row Justify="center" Gutter="6">
+            <AntDesign.Col>
+                <Popconfirm Title="Sure to delete?"
+                            OnConfirm="()=> OnDeleteItem(context)"
+                            OkText="Yes"
+                            CancelText="No">
+                    <Button Icon="@(IconType.Outline.Delete)"
+                            Shape="@ButtonShape.CircleOutline"
+                            Danger
+                            Size="@ButtonSize.Small">
+                    </Button>
+                </Popconfirm>
+            </AntDesign.Col>
+        </Row>
+    </ActionColumn>
+</Table>
+
+<Tag Color="purple-inverse" Style="margin-top: 0.5rem">Balance PO Quantity: @StepperModel.AvailableMeasurementQty</Tag>
+<Tag Color="orange-inverse" Style="margin-top: 0.5rem">Entered Quantity: @TotalQty.ToString("0.00")</Tag>
+
+<ItemMeasurementDrawer Visible="@drawerVisible" 
+                       OnClose="@CloseSideBar" 
+                       OnItemSubmit="@OnItemSubmit" 
+                       AccumulatedQty="Model.Measurements.Sum(p => p.Total)" />
+
+<div style="margin-top: 1.5rem">
+     <Button Type="primary" OnClick="PrevStep">Previous</Button>
+     <Button Type="primary" OnClick="NextStep" Disabled="Model.Measurements.Count == 0">Next</Button>
+</div>
+
+                    @code {
+    [CascadingParameter]
+    public MeasurementStepper Stepper { get; set; }
+
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    public float TotalQty { get; set; }
+
+    bool drawerVisible;
+
+    public void NextStep()
+    {
+        Stepper.Next();
+    }
+
+    public void PrevStep()
+    {
+        Stepper.Prev();
+    }
+
+    void OpenSideDrawer()
+    {
+        drawerVisible = true;
+    }
+
+    void CloseSideBar()
+    {
+        drawerVisible = false;
+    }
+
+    void OnItemSubmit(MBItemMeasurementRequest item)
+    {
+        Model.Measurements.Add(item);
+        TotalQty = Model.Measurements.Sum(item => item.Total);
+        StateHasChanged();
+    }
+
+    void OnDeleteItem(MBItemMeasurementRequest item)
+    {
+        Model.Measurements.Remove(item);
+        TotalQty = Model.Measurements.Sum(item => item.Total);
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        TotalQty = Model.Measurements.Sum(item => item.Total);
+    }
+}

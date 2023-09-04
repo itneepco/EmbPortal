@@ -3,32 +3,35 @@
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
     <BreadcrumbItem Href="/">
-        <Icon Type="dashboard" />
-        <span>Dashboard</span>
+        <Icon Type="home" />
+        <span>DASHBOARD</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="/workorder">
+        WORK ORDERS
     </BreadcrumbItem>
     <BreadcrumbItem>
-        Details
+        DETAIL
     </BreadcrumbItem>
 </Breadcrumb>
 
 @if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
-        <CascadingValue Value="@data.Status" TValue="string">
+        
             <Tabs Animated>
                 <TabPane Tab="Work Order Details" Key="1">
-                    <WorkOrderHeader WorkOrder="@data" WorkOrderPublished="@ReloadPage" />
+                    <WorkOrderHeader WorkOrder="@data" />
 
-                    <Divider Plain>Order Items</Divider>
+                    <Divider Plain Style="border-color:#888">Order Items</Divider>
                     
-                    <WorkOrderItems Items="@data.Items"/>
+                    <WorkOrderItems Items="@data.Items"/>`
                 </TabPane>
 
                 <TabPane Tab="Measurement Books" Key="2">
                     <MeasurementBooks/>
                 </TabPane>
             </Tabs>
-        </CascadingValue>
+        
     </CascadingValue>
 }
 else

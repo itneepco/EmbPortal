@@ -115,7 +115,6 @@
         loading = true;
         StateHasChanged();
 
-
         var result = await workOrderService.FetchPOFromSAP(poNumber);
         loading = false;
         if (!result.Succeeded)

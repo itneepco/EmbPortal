@@ -5,7 +5,7 @@
         public int MBSheetValidation { get; set; }
         public int MBSheetApproval { get; set; }
         public int RABillApproval { get; set; }
-        public int WorkOrderPending { get; set; }
-        public int WorkOrderPublished { get; set; }
+        public int WorkOrderCount { get; set; }
+        public int MBookCount { get; set; }
     }
 }

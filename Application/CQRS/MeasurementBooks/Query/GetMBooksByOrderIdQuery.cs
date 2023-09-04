@@ -1,13 +1,13 @@
-﻿using Application.Interfaces;
+﻿using Application.Exceptions;
+using Application.Interfaces;
 using AutoMapper;
-using MediatR;
 using EmbPortal.Shared.Responses;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Application.Mappings;
 
 namespace Application.CQRS.MeasurementBooks.Query
 {
@@ -28,16 +28,57 @@ namespace Application.CQRS.MeasurementBooks.Query
 
         public async Task<List<MBookResponse>> Handle(GetMBooksByOrderIdQuery request, CancellationToken cancellationToken)
         {
-            var mBooks = await _context.MeasurementBooks
-                .Include(p => p.Measurer)
-                .Include(p => p.Validator)
+            var userQuery = _context.AppUsers.AsQueryable();
+            var orderQuery = _context.WorkOrders.Include(p => p.Items).AsQueryable();
+            var mBooksQuery = _context.MeasurementBooks
                 .Include(p => p.Items)
-                    .ThenInclude(i => i.WorkOrderItem)
-                .Where(p => p.WorkOrderId == request.workOrderId)
-                .AsNoTracking()
-                .ProjectToListAsync<MBookResponse>(_mapper.ConfigurationProvider);
+                .Where(p => p.WorkOrderId == request.workOrderId).AsQueryable();
 
-            return mBooks;
+            var query = from mBook in mBooksQuery
+                        join wOrder in orderQuery on mBook.WorkOrderId equals wOrder.Id
+                        join measurer in userQuery on mBook.MeasurerEmpCode equals measurer.UserName
+                        join validator in userQuery on mBook.ValidatorEmpCode equals validator.UserName
+                        join eic in userQuery on mBook.EicEmpCode equals eic.UserName
+                        select new { mBook, wOrder, measurer, validator, eic };
+            
+            var results = await query.ToListAsync();
+            List<MBookResponse> mBookResponses = new();
+
+            foreach (var result in results)
+            {
+                var mBookResponse = _mapper.Map<MBookResponse>(result.mBook);
+
+                mBookResponse.OrderNo = result.wOrder.OrderNo.ToString();
+                mBookResponse.OrderDate = result.wOrder.OrderDate;
+                mBookResponse.Contractor = result.wOrder.Contractor;
+                mBookResponse.MeasurerName = result.measurer.DisplayName;
+                mBookResponse.ValidatorName = result.validator.DisplayName;
+                mBookResponse.EicEmpCode = result.eic.DisplayName;
+
+                foreach (var item in mBookResponse.Items)
+                {
+                    var wOrderItem = result.wOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
+                    if (wOrderItem == null)
+                    {
+                        throw new NotFoundException($"Item does not exists with Id: {item.WorkOrderItemId}");
+                    }
+
+                    item.ItemNo = wOrderItem.ItemNo;
+                    item.ItemDescription = wOrderItem.ItemDescription;
+                    item.ServiceNo = wOrderItem.ServiceNo;
+                    item.SubItemNo = wOrderItem.SubItemNo;
+                    item.SubItemPackageNo = wOrderItem.SubItemPackageNo;
+                    item.PackageNo = wOrderItem.PackageNo;
+                    item.PoQuantity = wOrderItem.PoQuantity;
+                    item.Uom = wOrderItem.Uom;
+                    item.UnitRate = wOrderItem.UnitRate;
+                    item.ShortServiceDesc = wOrderItem.ShortServiceDesc;
+                }
+
+                mBookResponses.Add(mBookResponse);
+            }
+
+            return mBookResponses;
         }
     }
 }

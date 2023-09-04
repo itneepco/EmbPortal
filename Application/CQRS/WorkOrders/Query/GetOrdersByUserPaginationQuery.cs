@@ -3,7 +3,6 @@ using Application.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities.WorkOrderAggregate;
-using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
@@ -37,7 +36,10 @@ namespace Application.CQRS.WorkOrders.Query
 
         public async Task<PaginatedList<WorkOrderResponse>> Handle(GetOrdersByUserPaginationQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.WorkOrders.AsQueryable();
+            var currEmpCode = _currentUserService.EmployeeCode;
+
+            var woQuery = _context.WorkOrders.AsQueryable();
+            var userQuery = _context.AppUsers.AsQueryable();
 
             if (!string.IsNullOrEmpty(request.data.Search))
             {
@@ -46,22 +48,26 @@ namespace Application.CQRS.WorkOrders.Query
                     m.Contractor.ToLower().Contains(request.data.Search.ToLower())
                 );
 
-                query = query.Where(Criteria);
+                woQuery = woQuery.Where(Criteria);
             }
 
-            if(request.data.Status > 0) // Query based on the status of the work order
-            {
-                Criteria = m => m.Status == (WorkOrderStatus) request.data.Status;
-
-                query = query.Where(Criteria);
-            }
-
-            var currEmpCode = _currentUserService.EmployeeCode;
+            var query =  from order in woQuery 
+                         join user in userQuery 
+                         on order.EngineerInCharge equals user.UserName
+                         where order.EngineerInCharge == currEmpCode
+                         orderby order.Created
+                         select new WorkOrderResponse
+                         {
+                             Id = order.Id,
+                             OrderNo = order.OrderNo,
+                             Contractor = order.Contractor,
+                             OrderDate = order.Created,
+                             Project = order.Project,
+                             EicEmployeeCode = order.EngineerInCharge,
+                             EicFullName = user.DisplayName
+                         };
+            
             return await query
-                .Include(p => p.Engineer)
-                .Where(p => p.EngineerInCharge == currEmpCode)
-                .OrderByDescending(p => p.Created)
-                .ProjectTo<WorkOrderResponse>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .PaginatedListAsync(request.data.PageNumber, request.data.PageSize);
         }

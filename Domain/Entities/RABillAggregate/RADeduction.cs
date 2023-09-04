@@ -5,8 +5,7 @@
         public int Id { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }
-        public int RABillId { get; set; }
-        public RABill RABill { get; set; }
+        public int RABillId { get; set; }       
 
         public RADeduction()
         {

@@ -1,70 +1,71 @@
-﻿<Button OnClick="() => OpenSideDrawer(null)" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
+﻿<Button OnClick="GoToAddMeasurementPage" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
     Add Measurement
 </Button>
 
-<Table DataSource="@MBSheetItems" 
+<Table DataSource="@MBSheetItems"
        PageSize="@MBSheetItems.Count"
-       Size="TableSize.Small" 
+       Size="TableSize.Small"
        Loading="@loading"
        HidePagination Bordered>
 
-    <Column RowSpan="GetRowSpan(context)" TData="long" Title="Service No" Width="8%">
-        @context.ServiceNo
-    </Column>
-    <Column RowSpan="GetRowSpan(context)" TData="string" Title="Service Description" Width="25%">
-        @context.ShortServiceDesc
-    </Column>
-    <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="15%" />
-    <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
-    <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
-    <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
-    <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
-    <Column Title="Val3" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
-    <Column RowSpan="GetRowSpan(context)" Title="Total Qty" TData="decimal" Width="8%">
-        @GetMBookItemTotalQtyInMBSheet(context.MBookItemId).ToString("0.00")
-    </Column>
-    <ActionColumn Title="Action" Width="14%">
-        <Row Justify="center" Gutter="6">
-            <AntDesign.Col>
-                <Button Icon="@(IconType.Outline.Upload)"
-                        Size="@ButtonSize.Small"
-                        Type="@ButtonType.Primary"
-                        Shape="@ButtonShape.CircleOutline"
-                        OnClick="_=> OpenFileUploadModal(context)">
-                </Button>
-            </AntDesign.Col>
-            <AntDesign.Col>
-                <Button Icon="@(IconType.Outline.Edit)"
-                        Size="@ButtonSize.Small"
-                        Shape="@ButtonShape.CircleOutline"
-                        OnClick="_=> OpenSideDrawer(context)">
-                </Button>
-            </AntDesign.Col>
-            <AntDesign.Col>
-                <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> OnDeleteItem(context)"
-                            OkText="Yes"
-                            CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)"
+    <RowTemplate>
+        <Column Title="Item" TData="string" DataIndex="@nameof(context.ShortServiceDesc)" Width="35%" />
+        <Column Title="Service No" TData="int" DataIndex="@nameof(context.ServiceNo)" Width="15%" />
+        <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="15%" />
+        <Column Title="Measured Quantity" TData="string" Width="15%">@context.MeasuredQuantity.ToString("0.00")</Column>
+        <ActionColumn Title="Action" Width="20%">
+            <Row Justify="center" Gutter="6">
+                <AntDesign.Col>
+                    <Button Icon="@(IconType.Outline.Upload)"
+                            Size="@ButtonSize.Small"
+                            Type="@ButtonType.Primary"
                             Shape="@ButtonShape.CircleOutline"
-                            Danger
-                            Size="@ButtonSize.Small">
+                            OnClick="_=> OpenFileUploadModal(context)">
                     </Button>
-                </Popconfirm>
-            </AntDesign.Col>
-        </Row>
-    </ActionColumn>
+                </AntDesign.Col>
+                <AntDesign.Col>
+                    <Button Icon="@(IconType.Outline.Edit)"
+                            Size="@ButtonSize.Small"
+                            Shape="@ButtonShape.CircleOutline"
+                            OnClick="_=> GoToEditMeasurementPage(context)">
+                    </Button>
+                </AntDesign.Col>
+                <AntDesign.Col>
+                    <Popconfirm Title="Sure to delete?"
+                                OnConfirm="()=> OnDeleteItem(context)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Icon="@(IconType.Outline.Delete)"
+                                Shape="@ButtonShape.CircleOutline"
+                                Danger
+                                Size="@ButtonSize.Small">
+                        </Button>
+                    </Popconfirm>
+                </AntDesign.Col>
+            </Row>
+        </ActionColumn>
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table DataSource="rowData.Data.Measurements"
+               PageSize="rowData.Data.Measurements.Count"
+               Size="@TableSize.Small"
+               HidePagination Bordered>
+
+            <Column Title="Description" TData="string" DataIndex="@nameof(context.Description)" Width="40%" />
+            <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="12%" />
+            <Column Title="Val1" TData="string" DataIndex="@nameof(context.Val1)" Width="12%" />
+            <Column Title="Val2" TData="string" DataIndex="@nameof(context.Val2)" Width="12%" />
+            <Column Title="Val3" TData="string" DataIndex="@nameof(context.Val3)" Width="12%" />
+            <Column Title="Total" TData="float" DataIndex="@nameof(context.Total)" Width="12%" />
+        </Table>
+    </ExpandTemplate>
 </Table>
 
-<AddEditMBSheetItemDrawer Visible="@drawerVisible"
-                       OnClose="@CloseSideBar"
-                       CurrentMBSheetItem="@currentMBSheetItem"
-                       OnItemSubmit="@OnItemSubmit" />
-
-<FileUploadComponent @bind-Visible="modalVisible" 
+<FileUploadComponent @bind-Visible="modalVisible"
                      @bind-CurrentMBSheetItem="@currentMBSheetItem"
                      IsUpload="true"
-                     OnItemSubmit="@OnItemSubmit"/>
+                     OnItemSubmit="@OnItemSubmit" />
 
 @code {
     [CascadingParameter(Name = "MBookId")]
@@ -83,22 +84,6 @@
     bool drawerVisible = false;
     bool loading = false;
     bool modalVisible = false;
-
-    int GetRowSpan(MBSheetItemResponse currItem)
-    {
-        int count = MBSheetItems.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
-
-        if (count > 1)
-        {
-            int minId = MBSheetItems.Where(i => i.MBookItemId == currItem.MBookItemId)
-                                  .Select(i => i.Id)
-                                  .Min();
-
-            return currItem.Id == minId ? count : 0;
-        }
-
-        return 1;
-    }
 
     async Task OnDeleteItem(MBSheetItemResponse item)
     {
@@ -134,22 +119,18 @@
         await ReloadPage.InvokeAsync();
     }
 
-    void SortModelItems()
-    {
-        MBSheetItems = MBSheetItems.OrderBy(i => i.MBookItemId)
-            .ThenBy(i => i.GetHashCode())
-            .ToList();
-    }
-
-    float GetMBookItemTotalQtyInMBSheet(int mBookItemId)
-    {
-        return MBSheetItems.Where(i => i.MBookItemId == mBookItemId)
-            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
-    }
-
     void OpenFileUploadModal(MBSheetItemResponse item)
     {
         currentMBSheetItem = item;
         modalVisible = true;
+    }
+    void GoToAddMeasurementPage()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items");
+    }
+
+    void GoToEditMeasurementPage(MBSheetItemResponse item)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items/{item.Id}");
     }
 }

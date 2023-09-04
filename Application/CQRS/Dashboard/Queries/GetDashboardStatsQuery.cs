@@ -31,27 +31,24 @@ namespace Application.CQRS.Dashboard.Queries
 
             var mbApproval = await _context.MBSheets
                                      .Where(p => p.Status == MBSheetStatus.VALIDATED
-                                                 && p.AcceptingOfficer == empCode)
+                                                 && p.EicEmpCode == empCode)
                                      .CountAsync();
 
             var mbValidation = await _context.MBSheets
-                                    .Where(p => (p.ValidationOfficer == empCode || p.AcceptingOfficer == empCode)
+                                    .Where(p => (p.ValidatorEmpCode == empCode || p.EicEmpCode == empCode)
                                                  && p.Status == MBSheetStatus.PUBLISHED)
                                     .CountAsync();
 
             var raApproval = await _context.RABills
                                     .Where(p => (p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)
-                                                  && p.AcceptingOfficer == empCode)
+                                                  && p.EicEmpCode == empCode)
                                     .CountAsync();
 
-            var orderPending = await _context.WorkOrders
-                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode)
-                                                  && p.Status == WorkOrderStatus.CREATED)
+            var workOrderCount = await _context.WorkOrders
+                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
                                      .CountAsync();
-
-            var orderPublished = await _context.WorkOrders
-                                     .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode)
-                                                  && p.Status == WorkOrderStatus.PUBLISHED)
+            var mBookCount = await _context.MeasurementBooks
+                                     .Where(p => (p.MeasurerEmpCode == empCode))
                                      .CountAsync();
 
             return new DashboardStatsResponse
@@ -59,8 +56,8 @@ namespace Application.CQRS.Dashboard.Queries
                 MBSheetValidation = mbValidation,
                 MBSheetApproval = mbApproval,
                 RABillApproval = raApproval,
-                WorkOrderPending = orderPending,
-                WorkOrderPublished = orderPublished
+                WorkOrderCount = workOrderCount,
+                MBookCount = mBookCount
             };
         }
     }

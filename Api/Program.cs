@@ -8,48 +8,51 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence;
+using QuestPDF.Infrastructure;
 
-namespace Api
+namespace Api;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
+        QuestPDF.Settings.DocumentLayoutExceptionThreshold = 10000;
+        QuestPDF.Settings.License = LicenseType.Community;
+
+        var host = CreateHostBuilder(args).Build();
+
+        using (var scope = host.Services.CreateScope())
         {
-             var host = CreateHostBuilder(args).Build();
+            var services = scope.ServiceProvider;
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
-            using (var scope = host.Services.CreateScope())
+            try
             {
-                var services = scope.ServiceProvider;
-                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var context = services.GetRequiredService<AppDbContext>();
+                await context.Database.MigrateAsync();
 
-                try
-                {
-                    var context = services.GetRequiredService<AppDbContext>();
-                    await context.Database.MigrateAsync();
+                // seeding users
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
 
-                    // seeding users
-                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
-
-                    // seeding entities
-                    await AppDbContextSeed.SeedAsync(context, loggerFactory);
-                }   
-                catch (Exception ex)
-                {
-                    var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError("An error occured during migration", ex.Message);
-                }
+                // seeding entities
+                await AppDbContextSeed.SeedAsync(context, loggerFactory);
+            }   
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+                logger.LogError("An error occured during migration", ex.Message);
             }
-
-            host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        host.Run();
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }

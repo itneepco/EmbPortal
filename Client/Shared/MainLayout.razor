@@ -1,3 +1,4 @@
+@using Client.Breadcrumbs;
 @inherits LayoutComponentBase
 
 <AuthorizeView>
@@ -10,21 +11,40 @@
     </Authorizing>
 
     <Authorized>
-        <AntDesign.ProLayout.BasicLayout MenuData="_menuData.ToArray()"
-                                         Title="EMB Portal"
-                                         Logo="@("https://upload.wikimedia.org/wikipedia/en/7/74/North_Eastern_Electric_Power_Corporation_Logo.svg")">
-            <RightContentRender>
-                <AppNavBar />
-            </RightContentRender>
-            <ChildContent>
-                <div id="main">
+       
+        <Layout>
+            <Header Style="position: fixed; z-index: 999; width: 100%">
+                <div class="logo">
+                    <img alt="Logo" src="images/logo90.gif" width="44" />
+                    <span style="margin-left: 10px; font-size: 18px">EMB Portal</span>
+                </div>
+
+                <div class="profile">
+                    <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
+                        <Overlay>
+                            <Menu>
+                                <MenuItem>Profile</MenuItem>
+                                <MenuItem OnClick="@LogoutUser">Logout</MenuItem>
+                            </Menu>
+                        </Overlay>
+                        <ChildContent>
+                            <a @onclick:preventDefault class="username">
+                                <span>@displayName</span>
+                            </a>
+                            <Avatar Icon="user" Style="color:#000000;background-color:#fafafa" />                           
+                        </ChildContent>
+                    </Dropdown>
+                </div>
+            </Header>
+
+            <Content Class="site-layout" Style="padding:10px 10px 0 10px; margin-top: 64px; ">         
+                <div class="site-layout-background" style="padding: 24px; min-height: 70vh ">
                     @Body
                 </div>
-            </ChildContent>
-            <FooterRender>
-                <FooterView Copyright="2021 IT NEEPCO" Links="@_links" />
-            </FooterRender>
-        </AntDesign.ProLayout.BasicLayout>
+            </Content>
+            
+            <Footer Style="text-align: center;">Designed & Maintained by IT Department, NEEPCO. </Footer>
+        </Layout>
     </Authorized>
 </AuthorizeView>
 
@@ -35,9 +55,46 @@
         background: white;
         min-height: 72vh;
     }
+
+   
+    #components-layout-demo-fixed .logo {
+        width: 120px;
+        height: 31px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 16px 24px 16px 0;
+        float: left;
+    }
+
+    .site-layout .site-layout-background {
+        background: #fff;
+    }
+
+    .username {
+        margin-right: 0.25rem;
+        font-size: 14px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .profile {
+        float: right;
+        margin-right: 2rem;
+        color: white !important;
+    }
+
+    .logo {
+        float: left;
+    }
 </style>
 
 @code {
+    private List<SiteBreadcrumbItem> breadcumbList = new();
+    private string displayName;
+    private ClaimsPrincipal currentUser;
     List<MenuDataItem> _menuData = new()
     {
         new MenuDataItem
@@ -64,4 +121,28 @@
     };
 
     private LinkItem[] _links = { };
+    protected override async Task OnParametersSetAsync() =>  await LoadDataAsync();
+
+    async Task LogoutUser() => await authService.Logout();
+
+    private async Task LoadDataAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        currentUser = state.User;
+
+        if (currentUser == null) return;
+
+        if (currentUser.Identity.IsAuthenticated)
+        {
+            displayName = currentUser.GetUserNameFromClaimsPrincipal();
+        }
+    }
+
+    private void setBreadCrumbList(List<SiteBreadcrumbItem> arg)
+    {
+        breadcumbList.Clear();
+        breadcumbList.AddRange(arg);
+        StateHasChanged();
+    }
+
 }

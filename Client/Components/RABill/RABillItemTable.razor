@@ -7,27 +7,25 @@
        Responsive="false"
        Bordered HidePagination>
 
-    <Column Title="Description" @bind-Field="@context.MBookItemDescription" Width="32%"></Column>
-    <Column Title="Unit Rate" TData="decimal" DataIndex="@(nameof(context.UnitRate))" Width="7%" />
-    <Column Title="Measured Qty (A)" TData="float" Width="7%">
+    <Column Title="Description" @bind-Field="@context.WorkOrderItemDescription" ></Column>
+    <Column Title="PO Qty" TData="float" > @context.PoQuantity.ToString("0.00")</Column>
+    <Column Title="Rate" TData="decimal">@context.UnitRate</Column>
+    <Column Title="Approved Measured Qty" TData="float" >
         @context.AcceptedMeasuredQty.ToString("0.00")
     </Column>
-    <Column Title="Till Last RA Qty" TData="float" Width="7%">
+    <Column Title="Till Last RA Qty" TData="float" >
         @context.TillLastRAQty.ToString("0.00")
     </Column>
-    <Column Title="Available Qty" TData="float" Width="7%">
+    <Column Title="Available Qty" TData="float" >
         @context.AvailableQty.ToString("0.00")
     </Column>
-    <Column Title="Available Amt (Rs)" TData="decimal" Width="8%">
-        @context.AvailableAmount.ToString("0.00")
-    </Column>
-    <Column Title="Current Qty" TData="float" Width="10%">
+    <Column Title="Current Qty" TData="float" >
         <Input Type="text" @bind-Value="context.CurrentRAQty" />
     </Column>
-    <Column Title="Current Amt (Rs)" TData="decimal" Width="8%">
+    <Column Title="Current Amt (Rs)" TData="decimal" >
         @context.CurrentRAAmount.ToString("0.00")
     </Column>
-    <Column Title="Remarks" TData="float" Width="14%">
+    <Column Title="Remarks" TData="float" Width="16%" >
         <Input Type="text" @bind-Value="context.Remarks" />
     </Column>
 

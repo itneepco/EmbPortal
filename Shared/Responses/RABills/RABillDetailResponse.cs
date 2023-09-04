@@ -9,11 +9,11 @@ namespace EmbPortal.Shared.Responses
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string WorkOrderNo { get; set; }
         public RABillStatus Status { get; set; }
         public DateTime BillDate { get; set; }
         public DateTime ApprovalDate { get; set; }
-        public string AcceptingOfficer { get; set; }
-        public UserResponse Acceptor { get; set; }
+        public string EicEmpCode { get; set; }
         public int MeasurementBookId { get; set; }
         public List<RABillItemResponse> Items { get; set; }
         public List<RADeductionResponse> Deductions { get; set; }

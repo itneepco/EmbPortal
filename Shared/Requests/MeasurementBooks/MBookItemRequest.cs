@@ -1,7 +1,5 @@
-﻿namespace EmbPortal.Shared.Requests
+﻿namespace EmbPortal.Shared.Requests;
+public class MBookItemRequest
 {
-    public class MBookItemRequest
-    {
-        public int WorkOrderItemId { get; set; }
-    }
+    public int WorkOrderItemId { get; set; }
 }

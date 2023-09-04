@@ -1,0 +1,78 @@
+﻿<h3>Select Service Item</h3>
+
+<Row>
+    <Col Sm="24" Md="18" Lg="14">
+        <Select DataSource="@MBItemStatus"
+            @bind-Value="@Model.WorkOrderItemId"
+            TItem="MBItemStatusResponse"
+            TItemValue="int"
+            ValueName="@nameof(MBItemStatusResponse.WorkOrderItemId)"
+            LabelName="@nameof(MBItemStatusResponse.ItemDescription)"
+            Placeholder="Select Service Item"
+            OnSelectedItemChanged="@(item => SelectLineItem(item))"
+            EnableSearch
+            AllowClear
+            Disabled="Model.Measurements.Count > 0">
+        </Select>
+    </Col>
+</Row>
+
+<div style="margin-top: 1.5rem">
+            <Button Type="primary" OnClick="NextStep" Disabled="Model.WorkOrderItemId == 0">
+        Next
+    </Button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public MeasurementStepper Stepper { get; set; }
+
+    [CascadingParameter]
+    public MBSheetStepperModel StepperModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    [Parameter, EditorRequired]
+    public List<MBItemStatusResponse> MBItemStatus { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        // For edit, initalize the stepper model
+        var item = MBItemStatus.Find(p => p.WorkOrderItemId == Model.WorkOrderItemId);
+        if(item != null)
+        {
+            InitializeStepperModel(item);
+        }
+    }
+
+    public void NextStep()
+    {
+        if (Model.WorkOrderItemId == 0) return;
+
+        Stepper.Next();
+    }
+
+    void SelectLineItem(MBItemStatusResponse item)
+    {
+        if (item == null)
+        {
+            Model.WorkOrderItemId = 0;
+            StepperModel = new();
+        }
+        else
+        {
+            Model.WorkOrderItemId = item.WorkOrderItemId;
+            InitializeStepperModel(item);
+        }
+    }
+
+    void InitializeStepperModel(MBItemStatusResponse item)
+    {
+        StepperModel.Uom = item.Uom;
+        StepperModel.ServiceNo = item.ServiceNo;
+        StepperModel.ShortServiceDesc = item.ItemDescription;
+        StepperModel.CumulativeMeasuredQty = item.CumulativeMeasuredQty;
+        StepperModel.AvailableMeasurementQty = item.AvailableMeasurementQty;
+    }
+}

@@ -6,134 +6,56 @@
 </Button>
 
 <Table Loading="@loading"
-       TItem="MBSheetResponse"
+       TItem="MBSheetInfoResponse"
        Size="@TableSize.Small"
        DataSource="@mbSheets"
        ScrollX="1000"
        Bordered>
 
-    <RowTemplate>
-        <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
-        <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
-        <Column Title="Measurer" TData="string" Width="10%">
-            <Tooltip Title="@context.Measurer.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Measurer?.DisplayName</span>
-            </Tooltip>
-        </Column>
-        <Column Title="Validator" TData="string" Width="10%">
-            <Tooltip Title="@context.Validator.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@context.Validator?.DisplayName</span>
-            </Tooltip>
-        </Column>
-        <Column @bind-Field="@context.Status" Width="10%">
-            @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
-            {
-                <Tag Color="gold">@context.Status</Tag>
-            }
-            else if (context.Status == MBSheetStatus.VALIDATED.ToString())
-            {
-                <Tag Color="blue">@context.Status</Tag>
-            }
-            else
-            {
-                <Tag Color="green">@context.Status</Tag>
-            }
-        </Column>
-        <ActionColumn Title="Action" Width="20%">
-            <Row Justify="ceter">
-                @if (context.Status == MBSheetStatus.CREATED.ToString())
-                {
-                    <Button OnClick="() => GoToEditPage(context.Id)" Icon="@(IconType.Outline.Edit)" Size="@ButtonSize.Small" Style="margin-right: 0.2rem" />
+    <Column Title="MB Sheet Title" @bind-Field="@context.Title" Width="38%" />
+    <Column Title="Measured On" Format="dd-MM-yyyy" @bind-Field="@context.MeasurementDate" Width="12%" />
+    <Column Title="Measurer" TData="string" Width="15%">
+        @context.MeasurerName
+    </Column>
+    <Column Title="Validator" TData="string" Width="15%">
+        @context.ValidatorName
+    </Column>
+    <Column @bind-Field="@context.Status" Width="10%">
+        @if (context.Status == MBSheetStatus.ACCEPTED.ToString())
+        {
+            <Tag Color="gold">@context.Status</Tag>
+        }
+        else if (context.Status == MBSheetStatus.VALIDATED.ToString())
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="green">@context.Status</Tag>
+        }
+    </Column>
+    <ActionColumn Title="Action" Width="10%">
+        <Row Justify="ceter">
+            <Button OnClick="() => GoToDetailPage(context.Id)"
+                    Icon="@(IconType.Outline.Search)"
+                    Type="@ButtonType.Primary"
+                    Size="@ButtonSize.Small"
+                    Style="margin-right: 0.2rem" />
+        </Row>
+    </ActionColumn>
+</Table>
 
-                    <Popconfirm Title="Sure to delete?"
-                            OnConfirm="()=> DeleteMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem" />
-                    </Popconfirm>
-
-                    @if (employeeCode == context.MeasurementOfficer && context.Items.Count() > 0)
-                    {    
-                        <Popconfirm Title="Sure to publish?"
-                            OnConfirm="()=> PublishMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                                <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
-                        </Popconfirm>
-                    }
-                }
-                @if (context.Status == MBSheetStatus.PUBLISHED.ToString() && employeeCode == context.ValidationOfficer && context.Items.Count() > 0)
-                {
-                    <Popconfirm Title="Sure to Validate MB Sheet?"
-                            OnConfirm="()=> ValidateMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
-                    </Popconfirm>
-                }
-                @if (context.Status == MBSheetStatus.VALIDATED.ToString() && employeeCode == context.AcceptingOfficer)
-                {
-                    <Popconfirm Title="Sure to Accept MB Sheet?"
-                            OnConfirm="()=> AcceptMBSheet(context.Id)"
-                            OkText="Yes"
-                            CancelText="No">
-                        <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
-                    </Popconfirm>
-                }
-            </Row>
-        </ActionColumn>
-    </RowTemplate>
-
-    <ExpandTemplate Context="rowData">
-        <Table DataSource="rowData.Data.Items"
-               PageSize="rowData.Data.Items.Count"
-               Size="@TableSize.Small"
-               HidePagination Bordered>
-
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="long" Title="Service No" Width="8%">
-                @context.ServiceNo
-            </Column>
-
-            <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" TData="string" Title="Service Description" Width="26%">
-                @context.ShortServiceDesc
-            </Column>
-
-            <Column Title="Work Description" TData="string" DataIndex="@nameof(context.Description)" Width="16%" />
-            <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="6%" />
-            <Column Title="No" TData="int" DataIndex="@nameof(context.Nos)" Width="6%" />
-            <Column Title="Val1" TData="string" Width="6%">@context.Value1.ToString("0.00")</Column>
-            <Column Title="Val2" TData="string" Width="6%">@(context.Value2 > 0 ? context.Value2.ToString("0.00") : "")</Column>
-                <Column Title="Val3" TData="string" Width="6%">@(context.Value3 > 0 ? context.Value3.ToString("0.00") : "")</Column>
-                <Column Title="Qty" TData="string" Width="6%">@context.Quantity.ToString("0.00")</Column>
-
-                <Column RowSpan="GetRowSpan(context, rowData.Data.Items)" Title="Total Qty" TData="decimal" Width="8%">
-                    @GetMBookItemTotalQtyInMBSheet(context.MBookItemId, rowData.Data.Items).ToString("0.00")
-                </Column>
-
-                <ActionColumn Title="Action" Width="6%">
-                    <Button Icon="@(IconType.Outline.Download)"
-                        Size="@ButtonSize.Small"
-                        Type="@ButtonType.Primary"
-                        Shape="@ButtonShape.CircleOutline"
-                        OnClick="_=> OpenFileUploadModal(context)">
-                    </Button>
-                </ActionColumn>
-            </Table>
-        </ExpandTemplate>
-    </Table>
-
-    <FileUploadComponent @bind-Visible="modalVisible"
+<FileUploadComponent @bind-Visible="modalVisible"
                      CurrentMBSheetItem="@currentMBSheetItem" />
 
-    @code {
+@code {
     [Parameter]
     public int MBookId { get; set; }
 
     [Parameter]
     public List<MBookItemResponse> MBItems { get; set; }
 
-    string employeeCode;
-    List<MBSheetResponse> mbSheets = new();
+    List<MBSheetInfoResponse> mbSheets = new();
     bool loading = false;
 
     MBSheetItemResponse currentMBSheetItem;
@@ -141,9 +63,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var state = await stateProvider.GetAuthenticationStateAsync();
-        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
-
         await LoadMBSheets();
     }
 
@@ -152,94 +71,7 @@
         loading = true;
         mbSheets = await mbSheetService.GetMBSheetsByMBookId(MBookId);
         mbSheets = mbSheets.OrderByDescending(p => p.MeasurementDate).ToList();
-
-        foreach (var mbSheet in mbSheets)
-        {
-            mbSheet.Items = mbSheet.Items
-                .OrderBy(p => p.MBookItemId)
-                .ThenBy(i => i.Id)
-                .ToList();
-        }
         loading = false;
-    }
-
-    async Task DeleteMBSheet(int id)
-    {
-        loading = true;
-        var result = await mbSheetService.DeleteMBSheet(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            mbSheets = mbSheets.Where(item => item.Id != id).ToList();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task PublishMBSheet(int id)
-    {
-
-        loading = true;
-        var result = await mbSheetService.PublishMBSheet(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await LoadMBSheets();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task ValidateMBSheet(int id)
-    {
-        loading = true;
-        var result = await mbSheetService.ValidateMBSheet(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await LoadMBSheets();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    async Task AcceptMBSheet(int id)
-    {
-        loading = true;
-        var result = await mbSheetService.AcceptMBSheet(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await LoadMBSheets();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
-    void OpenFileUploadModal(MBSheetItemResponse item)
-    {
-        currentMBSheetItem = item;
-        modalVisible = true;
     }
 
     void GoToAddPage()
@@ -247,31 +79,9 @@
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet");
     }
 
-    void GoToEditPage(int mbSheetId)
+    void GoToDetailPage(int mbSheetId)
     {
         navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{mbSheetId}");
-    }
-
-    private int GetRowSpan(MBSheetItemResponse currItem, List<MBSheetItemResponse> items)
-    {
-        int count = items.Where(i => i.MBookItemId == currItem.MBookItemId).Count();
-
-        if (count > 1)
-        {
-            int minMBSheeItemId = items.Where(i => i.MBookItemId == currItem.MBookItemId)
-                                  .Select(i => i.Id)
-                                  .Min();
-
-            return currItem.Id == minMBSheeItemId ? count : 0;
-        }
-
-        return 1;
-    }
-
-    private float GetMBookItemTotalQtyInMBSheet(int mBookItemId, List<MBSheetItemResponse> items)
-    {
-        return items.Where(i => i.MBookItemId == mBookItemId)
-            .Aggregate(0, (float acc, MBSheetItemResponse curr) => acc + curr.Quantity);
     }
 }
 

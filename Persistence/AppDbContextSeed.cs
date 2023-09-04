@@ -11,16 +11,7 @@ namespace Persistence
     {
         public static async Task SeedAsync(AppDbContext context, ILoggerFactory loggerFactory)
         {
-            try
-            {             
-                await UomSeed.SeedAsync(context);
-            }
-            catch (Exception exception)
-            {
-                var log = loggerFactory.CreateLogger<AppDbContextSeed>();
-                log.LogError(exception.Message);
-                throw;
-            }
+            
         }
         public static async Task SeedUsersAsync(UserManager<AppUser> userManager,
            RoleManager<IdentityRole> roleManager)

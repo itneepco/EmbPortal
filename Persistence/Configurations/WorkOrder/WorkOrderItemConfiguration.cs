@@ -30,13 +30,8 @@ namespace Persistence.Configurations
                    .IsRequired()
                    .HasPrecision(18, 2);
 
-            builder.Property(p => p.UomId).IsRequired();
-            builder.Property(p => p.PoQuantity).IsRequired();
-
-            builder.HasOne(p => p.Uom)
-                .WithMany()
-                .HasForeignKey(p => p.UomId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.Property(p => p.Uom).IsRequired();
+            builder.Property(p => p.PoQuantity).IsRequired();         
 
             builder.Property(p => p.CreatedBy)
                 .HasMaxLength(PersistenceConsts.EmpCodeLength);

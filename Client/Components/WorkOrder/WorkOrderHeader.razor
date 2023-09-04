@@ -8,35 +8,18 @@
     <DescriptionsItem Title="Contractor" Span="2">
         @WorkOrder.Contractor
     </DescriptionsItem>
-    <DescriptionsItem Title="Status" Span="2">
-        <Tag Color="green">@WorkOrder.Status</Tag>
-        @if (WorkOrder.Status == WorkOrderStatus.CREATED.ToString())
-        {
-            <Popconfirm Title="Sure to publish work order?"
-                        OnConfirm="PublishOrder"
-                        OkText="Yes"
-                        CancelText="No">
-                <Button Size="@ButtonSize.Small" Loading="@loading" Danger>Publish</Button>
-            </Popconfirm>
-        }
-    </DescriptionsItem>
+    
     <DescriptionsItem Title="Project" Span="2">
         @WorkOrder.Project
     </DescriptionsItem>
     <DescriptionsItem Title="Engineer In Charge" Span="2">
-        <Tooltip Title="@WorkOrder.Engineer.ToString()" Placement="@Placement.Bottom">
-            <span style="cursor: pointer">@WorkOrder.Engineer?.DisplayName</span>
-        </Tooltip>
+        @WorkOrder.EicFullName
     </DescriptionsItem>
 </Descriptions>
 
 @code {
     [Parameter]
     public WorkOrderDetailResponse WorkOrder { get; set; }
-
-    [Parameter]
-    public EventCallback WorkOrderPublished { get; set; }
-
     bool loading = false;
 
     private Dictionary<string, int> column = new Dictionary<string, int> {
@@ -47,22 +30,4 @@
         { "sm", 1},
         { "xs", 1}
     };
-
-    async Task PublishOrder()
-    {
-        loading = true;
-        var result = await workOrderService.PublishWorkOrder(WorkOrder.Id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            await WorkOrderPublished.InvokeAsync();
-            StateHasChanged();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
 }

@@ -1,0 +1,82 @@
+﻿<h3>Measurements Summary</h3>
+
+<ServiceInfoCard />
+
+<Table DataSource="@Model.Measurements"
+       PageSize="@Model.Measurements.Count"
+       Size="TableSize.Small"
+       HidePagination
+       Bordered>
+
+    <Column Title="Description" TData="string" Width="35%"> @context.Description</Column>
+    <Column Title="No" TData="int" DataIndex="@nameof(context.No)" Width="13%" />
+    <Column Title="Value 1" TData="string" Width="13%">@context.Val1</Column>
+    <Column Title="Value 2" TData="string" Width="13%">@context.Val2</Column>
+    <Column Title="Value 3" TData="string" Width="13%">@context.Val3</Column>
+    <Column Title="Total" TData="string" Width="13%">@context.Total</Column>
+</Table>
+
+<Row Style="margin-top: 0.75rem">
+    <Col Flex="1"></Col>
+    <Col><Tag Color="purple-inverse">Total Quantity: @Model.Measurements.Sum(p => p.Total).ToString("0.00")</Tag></Col>
+</Row>
+
+<div style="margin-top: 1.5rem">
+    <Button Type="primary" OnClick="PrevStep">
+        Previous
+    </Button>
+    <Button Type="primary" OnClick="OnSubmit" Loading="loading" Danger>
+        Submit
+    </Button>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public MeasurementStepper Stepper { get; set; }
+
+    [Parameter, EditorRequired]
+    public MBSheetItemRequest Model { get; set; }
+
+    [CascadingParameter(Name = "MBookId")]
+    public int MBookId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetId")]
+    public int MBSheetId { get; set; }
+
+    [CascadingParameter(Name = "MBSheetItemId")]
+    public int MBSheetItemId { get; set; }
+
+    bool loading;
+
+    public void PrevStep()
+    {
+        Stepper.Prev();
+    }
+
+    public async Task OnSubmit()
+    {
+        loading = true;
+        dynamic result;
+
+        if(Model.Id == 0) //create
+        {
+            result = await mbSheetService.CreateMBSheetItem(MBSheetId, Model);
+        }
+        else //edit
+        {
+            result = await mbSheetService.UpdateMBSheetItem(MBSheetId, MBSheetItemId, Model);
+        }
+
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"mbook/{MBookId}/mbsheet/{MBSheetId}");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+        loading = false;
+    }
+
+}
