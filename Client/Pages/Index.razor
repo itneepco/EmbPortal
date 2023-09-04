@@ -1,6 +1,6 @@
 ﻿@page "/"
+@using Client.Breadcrumbs;
 @attribute [Authorize]
-
 <div class="text-center">    
     @if (currentUser != null){
         @if (currentUser.IsInRole("Admin"))
@@ -9,25 +9,24 @@
         }
         else
         {
-            <EmbDashboard />
+            <EmbDashboard/>
         }
     }
     else {
         <p>Authorizing...</p>
-    }
-    
+    }    
 </div>
 
 @code{
     private ClaimsPrincipal currentUser;
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
+   
+    protected override async Task OnInitializedAsync() => await LoadDataAsync();
+
     private async Task LoadDataAsync()
     {
         var state = await stateProvider.GetAuthenticationStateAsync();
         currentUser = state.User;
     }
 
+    
 }

@@ -1,15 +1,13 @@
-using System.Threading;
-using System.Threading.Tasks;
+using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Entities.WorkOrderAggregate;
+using EmbPortal.Shared.Responses;
 using Infrastructure.Interfaces;
 using MediatR;
-using System;
-using EmbPortal.Shared.Responses;
-using System.Linq;
-using Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using EmbPortal.Shared.Enums;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.WorkOrders.Command;
 
@@ -71,7 +69,5 @@ public class CreateWorkOrderCommandHandler : IRequestHandler<CreateWorkOrderComm
 
         return workOrder.Id;
 
-
-        throw new NotImplementedException();
     }
 }

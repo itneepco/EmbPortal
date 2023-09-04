@@ -4,6 +4,8 @@
     {
         public int Id { get; set; }
         public int WorkOrderItemId { get; set; }
+        public string UoM { get; set; }
+        public float PoQuantity { get; set; }
         public int ItemNo { get; set; }
         public string ItemDescription { get; set; }
         public int SubItemNo { get; set; }

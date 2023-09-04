@@ -2,43 +2,43 @@
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
     <BreadcrumbItem Href="/">
-        <Icon Type="dashboard" />
-        <span>Dashboard</span>
+        <Icon Type="home" />
+        <span>DASHBOARD</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="@($"/mbooks")">
-        <Icon Type="snippets" />
-        <span>Measurement Books</span>
+    <BreadcrumbItem Href="@($"/mbooks")">        
+        <span>MEASUREMENT BOOKS</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">
-        <Icon Type="snippets" />
-        <span>RA Bills</span>
+    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">        
+        <span>RA BILLS</span>
     </BreadcrumbItem>
     <BreadcrumbItem>
-        RA Bill Details
+        RA BILL DETAILS
     </BreadcrumbItem>
 </Breadcrumb>
 
 @if (raBill != null)
 {
     <Row Style="margin-bottom: 0.75rem">
+        
+      <AntDesign.Col Flex="1"></AntDesign.Col>
         <AntDesign.Col>
-            <h3>RA Bill Details</h3>
-        </AntDesign.Col>
-        <AntDesign.Col Flex="1"></AntDesign.Col>
-        <AntDesign.Col>
-            @*<Popconfirm Title="Sure to download?"
+            <Popconfirm Title="Sure to download?"
                         OnConfirm="@GeneratePdf"
                         OkText="Yes"
                         CancelText="No">
                 <Button Icon="@(IconType.Outline.Download)"
                         Shape="@ButtonShape.CircleOutline"
                         Loading="@downloading">
-                    Download
+                    Generate Report
                 </Button>
-            </Popconfirm>*@
+            </Popconfirm>
+            <Button Shape="@ButtonShape.CircleOutline" OnClick="@ShowModal">
+                Generate Report
+            </Button>
+
 
             @if ((raBill.Status == RABillStatus.CREATED || raBill.Status == RABillStatus.REVOKED) 
-                  && employeeCode == raBill.AcceptingOfficer)
+                  && (employeeCode == raBill.EicEmpCode))
             {
                 <Popconfirm Title="Approve RA Bill?"
                             OnConfirm="@ApproveRABill"
@@ -53,7 +53,7 @@
                 </Popconfirm>
             }
 
-            @if (raBill.Status == RABillStatus.APPROVED && employeeCode == raBill.AcceptingOfficer)
+            @if (raBill.Status == RABillStatus.APPROVED && employeeCode == raBill.EicEmpCode)
             {
                 <Popconfirm Title="Post to SAP"
                     OnConfirm="@PostRABill"
@@ -71,58 +71,47 @@
     </Row>
 
 
-    <Descriptions 
-            Layout="@DescriptionsLayout.Vertical"
-            Bordered Size="@DescriptionsSize.Small" 
-            Column="column">
-
-        <DescriptionsItem Title="Title">@raBill.Title</DescriptionsItem>
-        <DescriptionsItem Title="Status">@raBill.Status</DescriptionsItem>
-        <DescriptionsItem Title="Accepting Officer">
-            <Tooltip Title="@raBill.Acceptor.ToString()" Placement="@Placement.Left">
-                <span style="cursor: pointer">@raBill.Acceptor?.DisplayName</span>
-            </Tooltip>
-        </DescriptionsItem>
-        <DescriptionsItem Title="Total Amount (Rs)">@raBill.TotalAmount</DescriptionsItem>
-        <DescriptionsItem Title="Total Deduction (Rs)">@raBill.TotalDeduction</DescriptionsItem>
-        <DescriptionsItem Title="Net Amount (Rs)">@raBill.NetAmount</DescriptionsItem>
-    </Descriptions>
-
     <Divider Plain>RA Bill Items</Divider>
 
     <Table DataSource="raBill.Items.Where(p => p.CurrentRAQty > 0)"
            PageSize="raBill.Items.Count"
            Size="@TableSize.Small"
+           ScrollX="1400" 
+           ScrollY="800"
            Loading="@loading"
-           HidePagination Bordered>
+            Bordered>
         
-        <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="10%" />
-        <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="33%" />
-        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" Width="8%" />
-        <Column Title="Measured Qty" TData="float" Width="8%">
+        <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="100" Fixed="left" />
+        <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="350" Fixed="left"/>
+        <Column Title="PO Qty" TData="decimal" DataIndex="@nameof(context.CurrentRAQty)"  />
+        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
+        <Column Title="Measured Qty" TData="float" >
             @context.AcceptedMeasuredQty.ToString("0.00")
         </Column>
-        <Column Title="Till Last RA" TData="float" Width="8%">
+        <Column Title="Till Last RA" TData="float">
             @context.TillLastRAQty.ToString("0.00")
         </Column>
-        <Column Title="Current RA Qty" TData="float" Width="8%">
+        <Column Title="Current RA Qty" TData="float" >
             @context.CurrentRAQty.ToString("0.00")
         </Column>
-        <Column Title="Current RA (Rs)" TData="decimal" Width="10%">
+        <Column Title="Current RA (Rs)" TData="decimal" >
             @context.CurrentRAAmount.ToString("0.00")
         </Column>
-        <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="15%" />
+        <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="250"/>
     </Table>
 
     <Divider Plain>RA Deductions</Divider>
 
-    <Button Icon="@(IconType.Outline.Plus)"
-            Type="@(ButtonType.Primary)"
-            Style="margin-bottom: 0.5rem;"
-            Disabled="raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED"
-            OnClick="@OpenSideDrawer">
-        Add Deductions
-    </Button>
+    @if (!(raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED))
+    {
+        <Button Icon="@(IconType.Outline.Plus)"
+                Type="@(ButtonType.Primary)"
+                Style="margin: 0.5rem 0"
+                OnClick="@OpenSideDrawer">
+            Add Deductions
+        </Button>
+    }
+    
 
     <Table DataSource="raBill.Deductions"
            PageSize="raBill.Deductions.Count"
@@ -133,7 +122,7 @@
         <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
         <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
         <ActionColumn Title="Action" Width="20%">
-            @if (raBill.Status != RABillStatus.APPROVED)
+         @if (!(raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED))
             {
                 <Popconfirm Title="Sure to delete?"
                             OnConfirm="()=> DeleteRADeduction(context.Id)"
@@ -146,14 +135,15 @@
                     </Button>
                 </Popconfirm>
             }
-        </ActionColumn>
+        </ActionColumn>        
     </Table>
-
-    //RABill Add Drawer
-    <AddRADeductionDrawer RABillId="@(int.Parse(RABillId))"
-                          Visible="@drawerVisible"
-                          OnClose="@CloseSideBar"
-                          OnItemUpdate="@LoadRABillDetailsAsync" />
+    <Descriptions Title="Summary" Style="margin-top: 1rem;">
+        <DescriptionsItem Title="Total RA Amount (Rs.):">@raBill.TotalAmount.ToString("0.00")</DescriptionsItem>
+        <DescriptionsItem Title="Total Deduction (Rs.): "> @raBill.TotalDeduction.ToString("0.00")</DescriptionsItem>
+        <DescriptionsItem Title=" Net Amount (Rs.):">
+            @raBill.NetAmount.ToString("0.00")</DescriptionsItem>
+        
+    </Descriptions>   
 }
 else
 {
@@ -161,6 +151,14 @@ else
         <Empty />
     </Spin>
 }
+@* <RABillReportDrawer Visible="@reportModalVisible" Title="Create RA Bill"/> *@
+<Modal Title="Create Report" Visible="@reportModalVisible" OnOk="@HandleOk" OnCancel="@HandleCancel">
+    This is a modal to generate report
+</Modal>
+<AddRADeductionDrawer RABillId="@(int.Parse(RABillId))"
+                      Visible="@drawerVisible"
+                      OnClose="@CloseSideBar"
+                      OnItemUpdate="@LoadRABillDetailsAsync" />
 
 @code {
     [Parameter]
@@ -173,6 +171,7 @@ else
     bool loading;
     bool downloading;
     bool drawerVisible;
+    bool reportModalVisible;
     string employeeCode;
 
     private Dictionary<string, int> column = new Dictionary<string, int> {
@@ -183,6 +182,12 @@ else
         { "sm", 1},
         { "xs", 1}
     };
+
+    private void ShowModal()
+    {
+        reportModalVisible = true;
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -290,5 +295,14 @@ else
     void CloseSideBar()
     {
         drawerVisible = false;
+    }
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        reportModalVisible = false;
+    }
+    private void HandleCancel(MouseEventArgs e)
+    {
+        reportModalVisible = false;
     }
 }

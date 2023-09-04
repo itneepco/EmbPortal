@@ -44,8 +44,11 @@ namespace Application.CQRS.Dashboard.Queries
                                                   && p.EicEmpCode == empCode)
                                     .CountAsync();
 
-            var orders = await _context.WorkOrders
+            var workOrderCount = await _context.WorkOrders
                                      .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
+                                     .CountAsync();
+            var mBookCount = await _context.MeasurementBooks
+                                     .Where(p => (p.MeasurerEmpCode == empCode))
                                      .CountAsync();
 
             return new DashboardStatsResponse
@@ -53,7 +56,8 @@ namespace Application.CQRS.Dashboard.Queries
                 MBSheetValidation = mbValidation,
                 MBSheetApproval = mbApproval,
                 RABillApproval = raApproval,
-                
+                WorkOrderCount = workOrderCount,
+                MBookCount = mBookCount
             };
         }
     }

@@ -42,7 +42,12 @@ public class WorkOrderService : IWorkOrderService
 
         if (mBooks.Count == 0) return new List<MBookItem>();
 
-        return (List<MBookItem>)mBooks.Select(p => p.Items)
-            .Aggregate((acc, val) => Enumerable.Concat(acc, val).ToList());
+        var result = new List<MBookItem>();
+        foreach (var mBook in mBooks) 
+        {
+            result = result.Concat(mBook.Items).ToList();
+        }
+
+        return result;
     }
 }

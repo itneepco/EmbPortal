@@ -9,6 +9,7 @@ namespace Client.Services.Interfaces
     public interface IWorkOrderService
     {
         Task<IResult<PurchaseOrder>> FetchPOFromSAP(string purchaseOrderNo);
+        Task<IResult<int>> ReFetchPOFromSAP(long purchaseOrderNo);
         Task<PaginatedList<WorkOrderResponse>> GetUserWorkOrdersPagination(int pageIndex, int pageSize, string search);
         Task<IResult<WorkOrderDetailResponse>> GetWorkOrderById(int id);
         Task<string> ExportToExcelAsync();

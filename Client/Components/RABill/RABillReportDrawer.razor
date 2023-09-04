@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Components.Web;
+<Modal Title="@Title"
+       Visible="@Visible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel">
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+</Modal>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public bool Visible { get; set; } 
+    bool loading = false;
+    void toggle(bool value) => loading = value;  
+        
+    private void HandleCancel(MouseEventArgs e)
+    {
+        Console.WriteLine("e");
+        Visible = false;
+    }
+    private void HandleOk(MouseEventArgs e)
+    {
+        Visible = false;
+    }
+
+}

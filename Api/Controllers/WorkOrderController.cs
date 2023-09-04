@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using EmbPortal.Shared.Requests.MeasurementBooks;
+using Domain.Entities.WorkOrderAggregate;
 
 namespace Api.Controllers;
 
@@ -112,6 +113,22 @@ public class WorkOrderController : ApiController
         }
 
         return Ok(purchaseOrder);
+    }
+
+    [HttpGet("sap/refetch/{poNo}")]    
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> RefetchPOFromSAP(long poNo)
+    {
+        var purchaseOrder = await FetchPODetailsFromSAP(poNo);
+
+        if (purchaseOrder == null)
+        {
+            return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
+        }
+
+        var command = new UpdateWorkOrderCommand(purchaseOrder);        
+        return Ok(await Mediator.Send(command));
     }
 
     private async Task<PurchaseOrder> FetchPODetailsFromSAP(long purchaseOrderId)

@@ -48,7 +48,7 @@ public class PostRABillToSapCommandHandler : IRequestHandler<PostRABillToSapComm
                     on order.Id equals rabill.WorkOrderId
                     select new { order, rabill };
 
-        var result = await query.FirstOrDefaultAsync(p => p.order.Id == request.RABillId && 
+        var result = await query.FirstOrDefaultAsync(p => p.rabill.Id == request.RABillId && 
                                                           p.rabill.Status == RABillStatus.APPROVED);
 
         if (result == null)

@@ -1,0 +1,25 @@
+﻿@using Client.Breadcrumbs;
+
+<Breadcrumb Style=" margin: 16px 0;">
+    @foreach (var item in breadcumbList)
+    {
+        <BreadcrumbItem Href="@item.Href">@item.ItemName</BreadcrumbItem>
+    }   
+            
+ </Breadcrumb>
+
+
+@code {
+    [CascadingParameter]
+    protected List<SiteBreadcrumbItem> breadcumbList { get; set; } 
+    //{
+    //    new SiteBreadcrumbItem
+    //    {
+    //        ItemName ="Dashboard",
+    //        Href ="/"
+    //    }
+    //};
+
+   
+
+}

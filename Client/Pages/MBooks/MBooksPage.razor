@@ -1,6 +1,14 @@
 ﻿@page "/mbooks"
 @attribute [Authorize]
-
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        Measurement Books
+    </BreadcrumbItem>
+</Breadcrumb>
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
         <Button Icon="@IconType.Outline.Read"

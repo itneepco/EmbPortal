@@ -1,9 +1,18 @@
 ﻿@page "/mbook/{MBookId}/mbsheet/{MBSheetId:int}"
 @attribute [Authorize]
-
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    
+    <BreadcrumbItem>
+        MB Sheets
+    </BreadcrumbItem>
+</Breadcrumb>
 @if (mbSheet != null)
 {
-    <h3>MB Sheet Details</h3>
+    
 
     <Row Align="middle">
         <AntDesign.Col Sm="24" Md="16">

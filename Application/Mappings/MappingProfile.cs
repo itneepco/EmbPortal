@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
@@ -8,51 +7,46 @@ using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
 using EmbPortal.Shared.Responses.MBSheets;
 
-namespace Application.Mappings
+namespace Application.Mappings;
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<AppUser, UserResponse>()
-                .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));            
+        CreateMap<AppUser, UserResponse>()
+            .ForMember(m => m.EmployeeCode, opt => opt.MapFrom(p => p.UserName));            
 
-            CreateMap<WorkOrder, WorkOrderResponse>()
-                .ForMember(m => m.EicEmployeeCode, opt => opt.MapFrom(p => p.EngineerInCharge));
+        CreateMap<WorkOrder, WorkOrderResponse>()
+            .ForMember(m => m.EicEmployeeCode, opt => opt.MapFrom(p => p.EngineerInCharge));
 
-            CreateMap<WorkOrder, WorkOrderDetailResponse>();
+        CreateMap<WorkOrder, WorkOrderDetailResponse>();
 
-            CreateMap<WorkOrderItem, WorkOrderItemResponse>();    
+        CreateMap<WorkOrderItem, WorkOrderItemResponse>();    
 
-            CreateMap<MeasurementBook, MBookResponse>();
+        CreateMap<MeasurementBook, MBookResponse>();
 
-            CreateMap<MBookItem, MBookItemResponse>();
+        CreateMap<MBookItem, MBookItemResponse>();
 
-            CreateMap<MeasurementBook, MBookHeaderResponse>();
+        CreateMap<MeasurementBook, MBookHeaderResponse>();
 
-            CreateMap<MBSheet, MBSheetResponse>();
+        CreateMap<MBSheet, MBSheetResponse>();
 
-            CreateMap<MBSheet, MBSheetInfoResponse>();
+        CreateMap<MBSheet, MBSheetInfoResponse>();
 
-            CreateMap<MBSheetItem, MBSheetItemResponse>();
+        CreateMap<MBSheetItem, MBSheetItemResponse>();
 
-            CreateMap<MBItemMeasurement, MBSheetItemMeasurementResponse>();
+        CreateMap<MBItemMeasurement, MBSheetItemMeasurementResponse>();
 
-            CreateMap<ItemAttachment, ItemAttachmentResponse>();
+        CreateMap<ItemAttachment, ItemAttachmentResponse>();
 
-            CreateMap<RABill, RABillResponse>();
+        CreateMap<RABill, RABillResponse>();
 
-            CreateMap<RABill, RABillDetailResponse>();
+        CreateMap<RABill, RABillDetailResponse>();
 
-            CreateMap<RABill, RABillInfoResponse>()
-                //.ForMember(m => m.OrderNo, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.OrderNo))
-                //.ForMember(m => m.OrderDate, opt => opt.MapFrom(p => p.MeasurementBook.WorkOrder.OrderDate))
-                //.ForMember(m => m.MBookTitle, opt => opt.MapFrom(p => p.MeasurementBook.Title))
-                .ForMember(m => m.RABillTitle, opt => opt.MapFrom(p => p.Title));
+        CreateMap<RABill, RABillInfoResponse>()               
+            .ForMember(m => m.RABillTitle, opt => opt.MapFrom(p => p.Title));
 
-            CreateMap<RABillItem, RABillItemResponse>();
-
-            CreateMap<RADeduction, RADeductionResponse>();
-        }
+        CreateMap<RABillItem, RABillItemResponse>();
+       
+        CreateMap<RADeduction, RADeductionResponse>();
     }
 }

@@ -5,18 +5,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\RABill\RABillReportDrawer.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AntDesign.ProLayout" Version="0.10.6" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />   
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
     <PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\EmbPortal.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\RABill\RABillReportDrawer.razor" />
   </ItemGroup>
 
 </Project>

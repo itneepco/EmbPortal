@@ -1,29 +1,44 @@
 ﻿@page "/workorder"
 @attribute [Authorize(Roles = "Admin, Manager")]
-
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>DASHBOARD</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        WORK ORDERS
+    </BreadcrumbItem>
+</Breadcrumb>
 <Row Style="margin-bottom: 0.75rem">
     <AntDesign.Col>
         <Space>
             <SpaceItem>
-                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">Add Purchase Order</Button>
+                <Button Icon="@(IconType.Outline.Plus)" Type="@(ButtonType.Primary)" OnClick="() => OpenSideDrawer(true)">ADD PURCHASE ORDER </Button>
             </SpaceItem>
             @if (selectedRows != null)
             {
-                
-                   
-                    <SpaceItem>
-                        <Popconfirm Title="Are you sure delete this order?"
-                                    Placement="@Placement.Bottom"
-                                    OnConfirm="@(() => ConfirmDelete(selectedRows.First().Id))"
-                                    OkText="Yes"
-                                    CancelText="No">
-                            <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">Delete</Button>
-                        </Popconfirm>
-                    </SpaceItem>
                
                 <SpaceItem>
-                    <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
+                    <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">DETAILS</Button>
                 </SpaceItem>
+                <SpaceItem>
+                     <Popconfirm Title="Are you sure to refetch this order?"
+                                Placement="@Placement.Bottom"
+                                OnConfirm="@(() => ConfirmRefetch(selectedRows.First().OrderNo))"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Type="@ButtonType.Default" Icon="@IconType.Outline.VerticalAlignBottom" Loading="@_loadingRefetch">RE-FETCH</Button>
+                     </Popconfirm>
+                </SpaceItem>
+                <SpaceItem>
+                    <Popconfirm Title="Are you sure delete this order?"
+                                Placement="@Placement.Bottom"
+                                OnConfirm="@(() => ConfirmDelete(selectedRows.First().Id))"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@loading">DELETE</Button>
+                     </Popconfirm>
+                 </SpaceItem>
             }
         </Space>
     </AntDesign.Col>
@@ -50,6 +65,8 @@
        TItem="WorkOrderResponse"
        DataSource="@workOrders"
        Total="total"
+       Bordered=@true
+       Size=@TableSize.Small
        @bind-PageIndex="pageIndex"
        @bind-PageSize="pageSize"
        @bind-SelectedRows="selectedRows">
@@ -72,6 +89,7 @@
     int pageSize = 10;
     int total = 0;
     bool loading = false;
+    bool _loadingRefetch = false;
     bool drawerVisible = false;
     string search;
     
@@ -87,11 +105,23 @@
         StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync()
+    async Task ConfirmRefetch(long poNo)
     {
-       
-        await LoadWorkOrdersAsync();
-        
+        _loadingRefetch = true;
+        var result = await workOrderService.ReFetchPOFromSAP(poNo);
+        _loadingRefetch = false;
+        selectedRows = null;
+
+        if (result.Succeeded)
+        {           
+            var orderId =  result.Data;
+            navManager.NavigateTo($"/orderdetail/{orderId}");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
     }
 
     async Task ConfirmDelete(int id)
