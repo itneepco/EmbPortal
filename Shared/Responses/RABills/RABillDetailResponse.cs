@@ -12,6 +12,11 @@ namespace EmbPortal.Shared.Responses
         public string WorkOrderNo { get; set; }
         public RABillStatus Status { get; set; }
         public DateTime BillDate { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public DateTime? CompletionDate { get; set; }
+        public string Remarks { get; set; } = string.Empty;
+        public string LastBillDetail { get; set; } = string.Empty;
         public DateTime ApprovalDate { get; set; }
         public string EicEmpCode { get; set; }
         public int MeasurementBookId { get; set; }

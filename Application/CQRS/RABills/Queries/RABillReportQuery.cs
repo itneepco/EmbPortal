@@ -91,6 +91,11 @@ public class RABIllReportQueryHandler : IRequestHandler<RABillReportQuery, RABil
             MeaurementOfficer = result.mBook.MeasurerEmpCode,
             ValidationOfficer = result.mBook.ValidatorEmpCode,
             Contractor = result.wOrder.Contractor,
+            FromDate = result.raBill.FromDate,
+            ToDate = result.raBill.ToDate,
+            ActualCompletionDate = result.raBill.CompletionDate,
+            LastBill = result.raBill.LastBillDetail,
+            Remarks = result.raBill.Remarks,
             RABillItems = raBillItems,
             Deductions = deductions
         };

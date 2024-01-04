@@ -2,6 +2,7 @@
 using EmbPortal.Shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities.RABillAggregate;
 public class RABill : AuditableEntity, IAggregateRoot
@@ -10,9 +11,13 @@ public class RABill : AuditableEntity, IAggregateRoot
     public string Title { get; private set; }
     public RABillStatus Status { get; private set; }
     public DateTime BillDate { get; private set; }
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
+    public DateTime? CompletionDate { get; set; }
+    public string Remarks { get; set; } = string.Empty;  
+    public string LastBillDetail { get; set; } = string.Empty;
     public DateTime ApprovalDate { get; private set; }
-    public string EicEmpCode { get; private set; }       
-
+    public string EicEmpCode { get; private set; }   
     public int MeasurementBookId { get; private set; }
     public int WorkOrderId { get; set; }
 
@@ -26,11 +31,25 @@ public class RABill : AuditableEntity, IAggregateRoot
     {
     }
 
-    public RABill(string title, DateTime billDate, int mBookId, string eicEmpCode, int workOrderId)
+    public RABill(string title,
+                  DateTime billDate,
+                  DateTime fromDate,
+                  DateTime toDate,
+                  DateTime? completionDate,
+                  string lastRADetail,
+                  string remarks,
+                  int mBookId,
+                  string eicEmpCode,
+                  int workOrderId)
     {
         Title = title;
         BillDate = billDate;
         MeasurementBookId = mBookId;
+        FromDate = fromDate;
+        ToDate = toDate;
+        CompletionDate = completionDate;
+        LastBillDetail = lastRADetail;
+        Remarks = remarks;
         Status = RABillStatus.CREATED;
         EicEmpCode = eicEmpCode;
         WorkOrderId = workOrderId;

@@ -10,7 +10,6 @@
     </BreadcrumbItem>
 </Breadcrumb>
 
-<h3>Pending Validation MB Sheets</h3>
 
 <Table Loading="@loading"
        TItem="MBSheetInfoResponse"
@@ -21,13 +20,12 @@
     <Column @bind-Field="@context.Status" Width="15%" />
     <Column @bind-Field="@context.MeasurementDate" Format="dd-MM-yyyy" Width="15%" />
     <ActionColumn Title="Action" Width="20%">
-        <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId)"
+        <Button OnClick="() => GoToMBookDetailPage(context.MeasurementBookId,context.Id)"
+                Icon="@IconType.Outline.Search"
                 Type="@ButtonType.Primary"
-                Size="@ButtonSize.Small">
-            View
-        </Button>
+                Size="@ButtonSize.Small"/>           
     </ActionColumn>
-
+     
 </Table>
 
 @code {
@@ -47,8 +45,8 @@
         await LoadPendingValidationMBSheetsAsync();
     }
 
-    void GoToMBookDetailPage(int mBookId)
+    void GoToMBookDetailPage(int mBookId, int mbSheetId)
     {
-        navManager.NavigateTo($"/mbooks/{mBookId}/tab2");
+        navManager.NavigateTo($"/mbook/{mBookId}/mbsheet/{mbSheetId}");
     }
 }

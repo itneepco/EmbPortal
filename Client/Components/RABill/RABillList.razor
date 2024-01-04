@@ -3,7 +3,7 @@
         <SpaceItem>
             <Button OnClick="() => GoToAddPage()"
                     Icon="@IconType.Outline.Plus"
-                    Type="@ButtonType.Primary"
+                    Type="@ButtonType.Default"
                     Disabled="@raBills.Any(p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)">
                 Add RA Bill
             </Button>

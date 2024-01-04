@@ -61,7 +61,12 @@ public class CreateRABillCommandQueryHandler : IRequestHandler<CreateRABillComma
         var title = mBook.Title+"-RA-"+raBillCount;
 
         var raBill = new RABill(
-            title: title,//request.Data.Title,
+            title: title,
+            fromDate : (DateTime)request.Data.FromDate,
+            toDate : (DateTime)request.Data.ToDate,
+            completionDate : request.Data.CompletionDate,
+            lastRADetail : request.Data.LastBillDetail,
+            remarks : request.Data.Remarks,
             billDate: (DateTime)request.Data.BillDate,
             eicEmpCode: mBook.EicEmpCode,
             mBookId: mBook.Id,

@@ -20,11 +20,11 @@
         </Column>
         <ActionColumn Title="Action" Width="25%">
             <Row Justify="ceter">
-                <Button Icon="@(IconType.Outline.Search)" 
-                        Type="@(ButtonType.Primary)" 
+                <Button Icon="@(IconType.Outline.Login)" 
+                        Type="@(ButtonType.Default)" 
                         Size="@ButtonSize.Small" 
                         OnClick="_=> ViewDetail(context.Id)" 
-                        Style="margin-right: 0.5rem" />
+                        Style="margin-right: 0.5rem" /> 
 
                 @if (context.Status == MBookStatus.CREATED.ToString())
                 {

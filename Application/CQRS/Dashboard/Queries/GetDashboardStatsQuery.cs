@@ -48,7 +48,7 @@ namespace Application.CQRS.Dashboard.Queries
                                      .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
                                      .CountAsync();
             var mBookCount = await _context.MeasurementBooks
-                                     .Where(p => (p.MeasurerEmpCode == empCode))
+                                     .Where(p => (p.MeasurerEmpCode == empCode || p.ValidatorEmpCode == empCode || p.EicEmpCode == empCode))
                                      .CountAsync();
 
             return new DashboardStatsResponse
