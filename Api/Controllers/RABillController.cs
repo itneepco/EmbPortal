@@ -147,6 +147,16 @@ namespace Api.Controllers
             }
         }
 
+        //[HttpPost("{id}/Report")]
+        //[ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<string>> CreateRADeduction(RADeductionRequest data, int id)
+        //{
+        //    var command = new CreateRADeductionCommand(data, id);
+
+        //    return Ok(await Mediator.Send(command));
+        //}
+
         [HttpPost("{id}/Deduction")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

@@ -1,4 +1,5 @@
 ﻿using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.RABill;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Client.Services.Interfaces
         Task<IResult> PostRABillToSAP(int raBillId);
         Task<IResult> DeleteRABill(int id);
         Task<string> GeneratePdf(int id);
+        Task<string> CreateReport(int id, RABillHeaderRequest request);
         Task<IResult<int>> CreateRADeduction(int raBillId, RADeductionRequest request);
         Task<IResult> DeleteRADeduction(int raBillId, int deductionId);
     }

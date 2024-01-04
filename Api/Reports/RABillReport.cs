@@ -3,6 +3,7 @@ using EmbPortal.Shared.Constants;
 using EmbPortal.Shared.Responses.RABills;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.VisualBasic;
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -21,18 +22,19 @@ public class RABillReport : IDocument
     {
         this.env = env;
         this.raBill = raBill;
+        FontManager.RegisterFont(File.OpenRead("Metropolis-Regular.ttf"));
     }
 
     public void Compose(IDocumentContainer container)
     {
+       
         container.Page(page =>
         {
-            page.Size(PageSizes.A4.Landscape());
-
-            page.MarginLeft(10, Unit.Millimetre);
-            page.MarginTop(10, Unit.Millimetre);
-            page.MarginRight(10, Unit.Millimetre);
-            page.MarginBottom(10, Unit.Millimetre);
+            page.Size(PageSizes.A4.Landscape());            
+            page.MarginLeft(8, Unit.Millimetre);
+            page.MarginTop(8, Unit.Millimetre);
+            page.MarginRight(8, Unit.Millimetre);
+            page.MarginBottom(8, Unit.Millimetre);
 
             page.Header().Element(Header);
             page.Content().Element(Content);
@@ -42,52 +44,59 @@ public class RABillReport : IDocument
 
     public void Header(IContainer container)
     {
-    }
-
-    public void Content(IContainer container)
-    {
+        
         container.Column(column =>
         {
-            column.Item().PaddingTop(4, Unit.Millimetre).Row(row =>
+            column.Item().BorderBottom(1).PaddingTop(4, Unit.Millimetre).Row(row =>
             {
-                row.ConstantItem(16, Unit.Millimetre).Height(16, Unit.Millimetre).Border(1, Unit.Point).Column(column =>
+                row.ConstantItem(16, Unit.Millimetre).Height(16, Unit.Millimetre).Column(column =>
                 {
                     var image = Path.Combine(env.ContentRootPath, FileConstant.FolderName, "neepcologo.png");
                     column.Item().Padding(0, Unit.Millimetre).Image(image);
                 });
 
-                row.RelativeItem().Border(1, Unit.Point).Column(column =>
+                row.RelativeItem().Column(column =>
                 {
                     column.Item().AlignCenter().PaddingTop(4, Unit.Millimetre).Text(text =>
                     {
-                        text.Span("NEEPCO RA BILL FORMAT").FontSize(18).Bold();
+                        text.Span("North Eastern Electric Power Corpporation Ltd.").FontFamily("Metropolis").FontSize(16);
+                    });
+                    column.Item().AlignCenter().PaddingTop(2, Unit.Millimetre).Text(text =>
+                    {
+                        text.Span("Running Account Bill").FontFamily("Metropolis").FontSize(16).Bold();
                     });
                 });
             }
             );
+        });
+        }
 
-            // Header first row
+    public void Content(IContainer container)
+    {
+        container.Column(column =>
+        {
+          
             column.Item().PaddingTop(2, Unit.Millimetre).Row(row =>
             {
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(15, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Bill No.:").FontSize(9).Bold();
+                        text.Span("Bill No.:").FontSize(8).FontFamily("Metropolis");
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span($"{raBill.RABillTitle}").FontSize(9);
+                        text.Span($"{raBill.RABillTitle}").FontFamily("Metropolis").FontSize(8);
                     });
                 });
 
                 row.RelativeItem(1).Row(row => {
-                    row.ConstantItem(10, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
+                    row.ConstantItem(8, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Date:").FontSize(9).Bold();
+                        text.Span("Date:").FontFamily("Metropolis").FontSize(8).Bold();
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.BillDate.ToString("dd-MMM-yyyy")).FontSize(9);
+                        text.Span(raBill.BillDate.ToString("dd-MMM-yyyy")).FontFamily("Metropolis").FontSize(8);
                     });
                 });
             });
@@ -98,22 +107,22 @@ public class RABillReport : IDocument
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(15, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("PO No.:").FontSize(9).Bold();
+                        text.Span("PO No.:").FontSize(8).FontFamily("Metropolis");
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.PoNo).FontSize(9);
+                        text.Span(raBill.PoNo).FontFamily("Metropolis").FontSize(8);
                     });
                 });
 
                 row.RelativeItem(1).Row(row => {
-                    row.ConstantItem(10, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
+                    row.ConstantItem(8, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("EIC:").FontSize(9).Bold();
+                        text.Span("EIC:").FontFamily("Metropolis").FontSize(8).FontFamily("Metropolis");
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.EIC).FontSize(9);
+                        text.Span(raBill.EIC).FontFamily("Metropolis").FontSize(8);
                     });
                 });
             });
@@ -124,22 +133,22 @@ public class RABillReport : IDocument
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(15, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("MB No.:").FontSize(9).Bold();
+                        text.Span("MB No.:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.MBTitle).FontSize(9);
+                        text.Span(raBill.MBTitle).FontFamily("Metropolis").FontSize(8);
                     });
                 });
 
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(35, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Measurement Officer:").FontSize(9).Bold();
+                        text.Span("Measurement Officer:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.MeaurementOfficer).FontSize(9);
+                        text.Span(raBill.MeaurementOfficer).FontFamily("Metropolis").FontSize(8);
                     });
                 });
             });
@@ -150,22 +159,24 @@ public class RABillReport : IDocument
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(30, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Period of the Bill:").FontSize(9).Bold();
+                        text.Span("Period of the Bill:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("[Period of the Bill manual entry]").FontSize(9);
+                        text.Span(raBill.FromDate.ToString("dd-MMM-yyyy")).FontFamily("Metropolis").FontSize(8);
+                        text.Span(" TO ").FontFamily("Metropolis").FontSize(8);
+                        text.Span(raBill.ToDate.ToString("dd-MMM-yyyy")).FontFamily("Metropolis").FontSize(8);
                     });
                 });
 
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(30, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Contractor Name:").FontSize(9).Bold();
+                        text.Span("Contractor Name:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span(raBill.Contractor).FontSize(9);
+                        text.Span(raBill.Contractor).FontFamily("Metropolis").FontSize(8);
                     });
                 });
             });
@@ -176,22 +187,22 @@ public class RABillReport : IDocument
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(55, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Date of Actual Completion of Work:").FontSize(9).Bold();
+                        text.Span("Date of Actual Completion of Work:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Manul Entry....").FontSize(9);
+                        text.Span(raBill.ActualCompletionDate?.ToString("dd-MMM-yyyy")).FontFamily("Metropolis").FontSize(8);
                     });
                 });
 
                 row.RelativeItem(1).Row(row => {
                     row.ConstantItem(60, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("No.and date of the last Bill for this work:").FontSize(9).Bold();
+                        text.Span("No.and date of the last Bill for this work:").FontFamily("Metropolis").FontSize(8);
                     });
                     row.RelativeItem().AlignLeft().AlignTop().Text(text =>
                     {
-                        text.Span("Manual entry............").FontSize(9);
+                        text.Span(raBill.LastBill).FontFamily("Metropolis").FontSize(8);
                     });
                 });
             });
@@ -201,12 +212,12 @@ public class RABillReport : IDocument
             {
                 row.ConstantItem(15, Unit.Millimetre).AlignLeft().AlignTop().Text(text =>
                 {
-                    text.Span("Remarks:").FontSize(9).Bold();
+                    text.Span("Remarks:").FontFamily("Metropolis").FontSize(8);
                 });
 
                 row.RelativeItem(1).AlignLeft().AlignTop().Text(text =>
                 {
-                    text.Span(raBill.Remarks).FontSize(9);
+                    text.Span(raBill.Remarks).FontFamily("Metropolis").FontSize(8);
                 });
             });
 
@@ -214,7 +225,7 @@ public class RABillReport : IDocument
             {
                 row.RelativeItem(1).AlignLeft().AlignMiddle().Text(text =>
                 {
-                    text.Span("Bill details").FontSize(12).Bold();
+                    text.Span("BILL DETAILS").FontFamily("Metropolis").FontSize(8);
                 });
             });
 
@@ -225,7 +236,7 @@ public class RABillReport : IDocument
                     columns.ConstantColumn(25, Unit.Millimetre);
                     columns.ConstantColumn(65, Unit.Millimetre);
                     columns.ConstantColumn(15, Unit.Millimetre);
-                    columns.ConstantColumn(18, Unit.Millimetre);
+                    columns.ConstantColumn(22, Unit.Millimetre);
                     columns.ConstantColumn(25, Unit.Millimetre);
                     columns.ConstantColumn(30, Unit.Millimetre);
                     columns.ConstantColumn(30, Unit.Millimetre);
@@ -238,107 +249,106 @@ public class RABillReport : IDocument
                 {
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("PO Item no.").FontSize(8).Bold();
+                        text.Span("PO ITEM NO.").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Work Description").FontSize(8).Bold();
+                        text.Span("WORK DESCRIPTION").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Unit").FontSize(8).Bold();
+                        text.Span("UNIT").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("PO Quantity").FontSize(8).Bold();
+                        text.Span("PO QUANTITY").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Rate (INR)").FontSize(8).Bold();
+                        text.Span("RATE (INR)").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Total Measured Quantity(approved)").FontSize(8).Bold();
+                        text.Span("TOTAL MEASURED QTY.(Approved)").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Total Released Quantity till Last RA").FontSize(8).Bold();
+                        text.Span("Total RELEASED QTY Till Last RA").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Balance Quantity").FontSize(8).Bold();
+                        text.Span("BLALANCE QUANTITY").FontFamily("Metropolis").FontSize(8);
                     });
                     header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Current RA Quantity").FontSize(8).Bold();
+                        text.Span("CURRENT RA QUANTITY").FontFamily("Metropolis").FontSize(8);
                     });
 
                     header.Cell().Border(1).AlignCenter().AlignMiddle().Text(text =>
                     {
-                        text.Span("Current RA Amount (INR)").FontSize(8).Bold();
+                        text.Span("CURRENT RA AMT. (INR)").FontFamily("Metropolis").FontSize(8);
                     });
                 });
-
-                //List<List<string>> bill_details = this.o.get_bill_details_data();
+               
                 foreach (var raBillItem in raBill.RABillItems)
-                //foreach (List<string> line_item in bill_details)
+             
                 {
                    
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.ServiceNo.ToString()).FontSize(8);
+                            text.Span(raBillItem.ServiceNo.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.ShortServiceDesc.ToString()).FontSize(8);
+                            text.Span(raBillItem.ShortServiceDesc.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.UoM).FontSize(8);
+                            text.Span(raBillItem.UoM).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.PoQuantity.ToString()).FontSize(8);
+                            text.Span(raBillItem.PoQuantity.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.UnitRate.ToString()).FontSize(8);
+                            text.Span(raBillItem.UnitRate.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.AcceptedMeasuredQty.ToString()).FontSize(8);
+                            text.Span(raBillItem.AcceptedMeasuredQty.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.TillLastRAQty.ToString()).FontSize(8);
+                            text.Span(raBillItem.TillLastRAQty.ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span((raBillItem.AcceptedMeasuredQty - raBillItem.TillLastRAQty).ToString("0.00")).FontSize(8);
+                            text.Span((raBillItem.AcceptedMeasuredQty - raBillItem.TillLastRAQty).ToString("0.00")).FontFamily("Metropolis").FontSize(8);
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span((raBillItem.CurrentRAQty).ToString()).FontSize(8);
+                            text.Span((raBillItem.CurrentRAQty).ToString()).FontFamily("Metropolis").FontSize(8);
                         });
                          table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBillItem.CurrentRAAmount.ToString("0.00")).FontSize(8);
+                            text.Span(raBillItem.CurrentRAAmount.ToString("0.00")).FontFamily("Metropolis").FontSize(8);
                         });
                 }
                 table.Cell().ColumnSpan(9).Border(1).Padding(2, Unit.Millimetre).AlignRight().AlignMiddle().Text(text =>
                 {
-                    text.Span(("Total : ").ToString()).FontSize(10).Bold();
+                    text.Span(("Total : ").ToString()).FontFamily("Metropolis").FontSize(8); 
                 });
                 table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                 {
-                    text.Span(raBill.TotalAmount.ToString("0.00")).FontSize(10).Bold();
+                    text.Span(raBill.TotalAmount.ToString("0.00")).FontFamily("Metropolis").FontSize(8); 
                 });
             });
 
@@ -349,7 +359,7 @@ public class RABillReport : IDocument
                 {
                     row.RelativeItem(1).AlignLeft().AlignMiddle().Text(text =>
                     {
-                        text.Span("Deductions in this Bill:").FontSize(12).Bold();
+                        text.Span("DEDUCTIONS").FontFamily("Metropolis").FontSize(8); 
                     });
                 });
 
@@ -368,15 +378,15 @@ public class RABillReport : IDocument
                         {
                             header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span("Sl. No.").FontSize(8).Bold();
+                                text.Span("Sl. No.").FontFamily("Metropolis").FontSize(8);
                             });
                             header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span("Description").FontSize(8).Bold();
+                                text.Span("DESCRIPTION").FontFamily("Metropolis").FontSize(8);
                             });
                             header.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span("Amount (INR)").FontSize(8).Bold();
+                                text.Span("AMOUNT(INR)").FontFamily("Metropolis").FontSize(8);
                             });
                            
                         });
@@ -385,50 +395,50 @@ public class RABillReport : IDocument
                         {
                             table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span(deduction.Id.ToString()).FontSize(8).Bold();
+                                text.Span(deduction.Id.ToString()).FontFamily("Metropolis").FontSize(8);
                             });
 
                             table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span(deduction.Description).FontSize(8).Bold();
+                                text.Span(deduction.Description).FontFamily("Metropolis").FontSize(8);
                             });
 
                             table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                             {
-                                text.Span(deduction.Amount.ToString("0.00")).FontSize(8).Bold();
+                                text.Span(deduction.Amount.ToString("0.00")).FontFamily("Metropolis").FontSize(8);
                             });
                            
                         }
                         table.Cell().ColumnSpan(2).Border(1).Padding(2, Unit.Millimetre).AlignRight().AlignMiddle().Text(text =>
                         {
-                            text.Span("Total ").FontSize(10).Bold();
+                            text.Span("TOTAL ").FontFamily("Metropolis").FontSize(8); ;
                         });
                         table.Cell().Border(1).Padding(2, Unit.Millimetre).AlignCenter().AlignMiddle().Text(text =>
                         {
-                            text.Span(raBill.TotalDeduction.ToString("0.00")).FontSize(10).Bold();
+                            text.Span(raBill.TotalDeduction.ToString("0.00")).FontFamily("Metropolis").FontSize(8);
                         });
                     });
                 });
             }
 
-            column.Item().PaddingTop(12, Unit.Millimetre).Row(row =>
+            column.Item().PaddingTop(8, Unit.Millimetre).Row(row =>
             {
                 row.RelativeItem(1).AlignLeft().AlignMiddle().Text(text =>
                 {
-                    text.Span($"Net Bill Amount = {raBill.NetAmount.ToString("0.00")}").FontSize(10).Bold();
+                    text.Span($"Net Bill Amount = {raBill.NetAmount.ToString("0.00")}").FontFamily("Metropolis").FontSize(8); 
                 });
             });
 
-            column.Item().PaddingTop(10, Unit.Millimetre).Row(row =>
+            column.Item().PaddingTop(8, Unit.Millimetre).Row(row =>
             {
                 row.RelativeItem(1).PaddingTop(2, Unit.Millimetre).AlignLeft().AlignMiddle().Text(text =>
                 {
-                    text.Span("Signature with Seal NEEPCO:………………………").FontSize(10).Bold();
+                    text.Span("Signature with Seal NEEPCO:………………………").FontFamily("Metropolis").FontSize(8); 
                 });
 
                 row.RelativeItem(1).PaddingTop(2, Unit.Millimetre).AlignLeft().AlignMiddle().Text(text =>
                 {
-                    text.Span("Signature with Seal Contractor:……………………").FontSize(10).Bold();
+                    text.Span("Signature with Seal Contractor:……………………").FontFamily("Metropolis").FontSize(8);
                 });
             });
         });
@@ -440,16 +450,16 @@ public class RABillReport : IDocument
         {
             row.RelativeItem(4).AlignLeft().AlignMiddle().Text(text =>
             {
-                //text.Span("Bill generated on ").FontSize(9);
-                //text.Span(this.o.GetReportGenerationDate()).FontSize(9);
+                //text.Span("Bill generated on ").FontSize(8);
+                //text.Span(this.o.GetReportGenerationDate()).FontSize(8);
             });
             row.RelativeItem(6);
             row.RelativeItem(2).AlignRight().AlignMiddle().Text(text =>
             {
-                text.Span("Page").FontSize(9);
-                text.CurrentPageNumber().FontSize(9);
-                text.Span("/").FontSize(9);
-                text.TotalPages().FontSize(9);
+                text.Span("Page").FontSize(8);
+                text.CurrentPageNumber().FontSize(8);
+                text.Span("/").FontSize(8);
+                text.TotalPages().FontSize(8);
             });
         });
     }
@@ -464,15 +474,15 @@ class Bill01_data_source
         for (int i = 1; i <= 20; i++)
         {
             List<string> temp = new();
-            temp.Add((i * 100).ToString());
+            temp.Add((i * 80).ToString());
             temp.Add(Placeholders.Paragraph());
             temp.Add(Placeholders.Label());
-            temp.Add((i + 100).ToString());
-            temp.Add((i * 1000000).ToString());
+            temp.Add((i + 80).ToString());
+            temp.Add((i * 800000).ToString());
             temp.Add(Placeholders.Label());
             temp.Add(Placeholders.Label());
             temp.Add(Placeholders.Label());
-            temp.Add((i * 1000000).ToString());
+            temp.Add((i * 800000).ToString());
             bill_details.Add(temp);
         }
 
@@ -483,10 +493,10 @@ class Bill01_data_source
     {
         List<List<string>> deduction_details = new();
 
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 8; i++)
         {
             List<string> temp = new();
-            temp.Add((i * 100).ToString());
+            temp.Add((i * 80).ToString());
             temp.Add(Placeholders.Paragraph());
             temp.Add(Placeholders.Label());
             temp.Add(Placeholders.Paragraph());

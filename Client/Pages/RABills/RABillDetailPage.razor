@@ -5,10 +5,10 @@
         <Icon Type="home" />
         <span>DASHBOARD</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="@($"/mbooks")">        
+    <BreadcrumbItem Href="@($"/mbooks")">
         <span>MEASUREMENT BOOKS</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">        
+    <BreadcrumbItem Href="@($"/mbooks/{MBookId}/tab3")">
         <span>RA BILLS</span>
     </BreadcrumbItem>
     <BreadcrumbItem>
@@ -19,9 +19,9 @@
 @if (raBill != null)
 {
     <Row Style="margin-bottom: 0.75rem">
-        
-      <AntDesign.Col Flex="1"></AntDesign.Col>
-        <AntDesign.Col>
+
+        <GridCol Flex="1"></GridCol>
+        <GridCol>
             <Popconfirm Title="Sure to download?"
                         OnConfirm="@GeneratePdf"
                         OkText="Yes"
@@ -32,13 +32,10 @@
                     Generate Report
                 </Button>
             </Popconfirm>
-            <Button Shape="@ButtonShape.CircleOutline" OnClick="@ShowModal">
-                Generate Report
-            </Button>
 
 
-            @if ((raBill.Status == RABillStatus.CREATED || raBill.Status == RABillStatus.REVOKED) 
-                  && (employeeCode == raBill.EicEmpCode))
+            @if ((raBill.Status == RABillStatus.CREATED || raBill.Status == RABillStatus.REVOKED)
+           && (employeeCode == raBill.EicEmpCode))
             {
                 <Popconfirm Title="Approve RA Bill?"
                             OnConfirm="@ApproveRABill"
@@ -56,18 +53,63 @@
             @if (raBill.Status == RABillStatus.APPROVED && employeeCode == raBill.EicEmpCode)
             {
                 <Popconfirm Title="Post to SAP"
-                    OnConfirm="@PostRABill"
-                    OkText="Yes"
-                    CancelText="No">
+                            OnConfirm="@PostRABill"
+                            OkText="Yes"
+                            CancelText="No">
                     <Button Icon="@(IconType.Outline.CarryOut)"
-                    Type="@ButtonType.Primary"
-                    Loading="@loading"
-                    style="margin-right: 0.15rem">
+                            Type="@ButtonType.Primary"
+                            Loading="@loading"
+                            style="margin-right: 0.15rem">
                         Post to SAP
                     </Button>
                 </Popconfirm>
             }
-        </AntDesign.Col>
+        </GridCol>
+    </Row>
+
+    <Row Style="margin-top: 12px;">
+        <GridCol Span="4">
+            <Text Strong="true" >RA Bill No:</Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.Title</Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Bill Date: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.BillDate.ToString("dd-MMM-yyyy") </Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Period From Date: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.FromDate.ToString("dd-MMM-yyyy") </Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Period To Date: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.ToDate.ToString("dd-MMM-yyyy") </Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Last Bill Detail: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.LastBillDetail </Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Actual Completion Date: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.CompletionDate?.ToString("dd-MMM-yyyy") </Text>
+        </GridCol>
+        <GridCol Span="4">
+            <Text Strong="true">Remarks: </Text>
+        </GridCol>
+        <GridCol Span="8">
+            <Text Strong="false">@raBill.Remarks </Text>
+        </GridCol>
     </Row>
 
 
@@ -76,29 +118,29 @@
     <Table DataSource="raBill.Items.Where(p => p.CurrentRAQty > 0)"
            PageSize="raBill.Items.Count"
            Size="@TableSize.Small"
-           ScrollX="1400" 
+           ScrollX="1400"
            ScrollY="800"
            Loading="@loading"
-            Bordered>
-        
-        <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="100" Fixed="left" />
-        <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="350" Fixed="left"/>
-        <Column Title="PO Qty" TData="decimal" DataIndex="@nameof(context.CurrentRAQty)"  />
-        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
-        <Column Title="Measured Qty" TData="float" >
-            @context.AcceptedMeasuredQty.ToString("0.00")
-        </Column>
-        <Column Title="Till Last RA" TData="float">
-            @context.TillLastRAQty.ToString("0.00")
-        </Column>
-        <Column Title="Current RA Qty" TData="float" >
-            @context.CurrentRAQty.ToString("0.00")
-        </Column>
-        <Column Title="Current RA (Rs)" TData="decimal" >
-            @context.CurrentRAAmount.ToString("0.00")
-        </Column>
-        <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="250"/>
-    </Table>
+       Bordered>
+
+     <Column Title="Service No" @bind-Field="@context.ServiceNo" Width="100" Fixed="left" />
+     <Column Title="Service Description" @bind-Field="@context.ShortServiceDesc" Width="350" Fixed="left" />
+     <Column Title="PO Qty" TData="decimal" DataIndex="@nameof(context.CurrentRAQty)" />
+     <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.UnitRate)" />
+     <Column Title="Measured Qty" TData="float">
+         @context.AcceptedMeasuredQty.ToString("0.00")
+     </Column>
+     <Column Title="Till Last RA" TData="float">
+         @context.TillLastRAQty.ToString("0.00")
+     </Column>
+     <Column Title="Current RA Qty" TData="float">
+         @context.CurrentRAQty.ToString("0.00")
+     </Column>
+     <Column Title="Current RA (Rs)" TData="decimal">
+         @context.CurrentRAAmount.ToString("0.00")
+     </Column>
+     <Column Title="Remarks" TData="string" DataIndex="@nameof(context.Remarks)" Width="250" />
+ </Table>
 
     <Divider Plain>RA Deductions</Divider>
 
@@ -111,17 +153,17 @@
             Add Deductions
         </Button>
     }
-    
+
 
     <Table DataSource="raBill.Deductions"
            PageSize="raBill.Deductions.Count"
            Size="@TableSize.Small"
            Loading="@loading"
-           HidePagination Bordered>
+       HidePagination Bordered>
 
-        <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
-        <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
-        <ActionColumn Title="Action" Width="20%">
+     <Column Title="Line Item Description" @bind-Field="@context.Description" Width="60%" />
+     <Column Title="Unit Rate" TData="decimal" DataIndex="@nameof(context.Amount)" Width="20%" />
+     <ActionColumn Title="Action" Width="20%">
          @if (!(raBill.Status == RABillStatus.APPROVED || raBill.Status == RABillStatus.POSTED))
             {
                 <Popconfirm Title="Sure to delete?"
@@ -131,19 +173,20 @@
                     <Button Icon="@(IconType.Outline.Delete)"
                             Size="@ButtonSize.Small"
                             Loading="@loading" Danger>
-                        Delete
-                    </Button>
-                </Popconfirm>
+                 Delete
+             </Button>
+         </Popconfirm>
             }
-        </ActionColumn>        
+        </ActionColumn>
     </Table>
     <Descriptions Title="Summary" Style="margin-top: 1rem;">
         <DescriptionsItem Title="Total RA Amount (Rs.):">@raBill.TotalAmount.ToString("0.00")</DescriptionsItem>
         <DescriptionsItem Title="Total Deduction (Rs.): "> @raBill.TotalDeduction.ToString("0.00")</DescriptionsItem>
         <DescriptionsItem Title=" Net Amount (Rs.):">
-            @raBill.NetAmount.ToString("0.00")</DescriptionsItem>
-        
-    </Descriptions>   
+            @raBill.NetAmount.ToString("0.00")
+        </DescriptionsItem>
+
+    </Descriptions>
 }
 else
 {
@@ -159,7 +202,11 @@ else
                       Visible="@drawerVisible"
                       OnClose="@CloseSideBar"
                       OnItemUpdate="@LoadRABillDetailsAsync" />
-
+<style>
+    .ant-typography{
+        font-size: 14px !important;
+    }
+</style>
 @code {
     [Parameter]
     public string MBookId { get; set; }
@@ -182,11 +229,6 @@ else
         { "sm", 1},
         { "xs", 1}
     };
-
-    private void ShowModal()
-    {
-        reportModalVisible = true;
-    }
 
 
     protected override async Task OnInitializedAsync()

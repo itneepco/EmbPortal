@@ -1,0 +1,59 @@
+﻿<Row>
+    <GridCol Xs="24" Md="12">
+        <Form Model="@Stepper.Model" OnFinish="@Submit" Layout="@FormLayout.Vertical" Loading="@_loading" Style=" margin-top: 1rem">
+
+            <FormItem Label="RA Bill Date">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+
+            <FormItem Label="Bill Period From:">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.FromDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+
+            <FormItem Label="Bill Period To:">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.ToDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+
+
+            <FormItem Label="Actual Completion Date:">
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.CompletionDate" Format="dd-MM-yyyy" Style="width: 100%" />
+            </FormItem>
+
+            <FormItem Label="Last Bill Details:">
+                <TextArea @bind-Value="@context.LastBillDetail" Rows="2" />
+            </FormItem>
+
+            <FormItem Label="Remarks:">
+                <TextArea @bind-Value="@context.Remarks" Rows="2" />
+            </FormItem>
+            <Row Style="margin-top: 2rem">
+                <AntDesign.Col Flex="1"></AntDesign.Col>
+                <AntDesign.Col>
+
+                    <Button HtmlType="submit" Type="@ButtonType.Primary">NEXT</Button>
+                </AntDesign.Col>
+            </Row>
+        </Form>
+    </GridCol>
+</Row>
+
+
+@code {
+    [CascadingParameter]
+    public AddRABillPage Stepper { get; set; }
+
+
+    void GoToRABillDPage()
+    {        
+        navManager.NavigateTo($"/mbook/{Stepper.MBookId}/rabill");
+    }
+    private void Submit()
+    {
+        Stepper.Next();
+    }
+
+  
+
+    private bool _loading;
+
+}

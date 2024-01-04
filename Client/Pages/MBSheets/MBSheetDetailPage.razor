@@ -46,7 +46,7 @@
                     OnConfirm="()=> PublishMBSheet(mbSheet.Id)"
                     OkText="Yes"
                     CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small">Publish</Button>
+                    <Button Icon="@(IconType.Outline.CarryOut)" Size="@ButtonSize.Small"  Type="@ButtonType.Primary">Publish</Button>
                 </Popconfirm>
             }
 
@@ -56,7 +56,7 @@
                         OnConfirm="()=> ValidateMBSheet(mbSheet.Id)"
                         OkText="Yes"
                         CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Validate</Button>
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Default"   style="margin-left: 0.15rem">Validate</Button>
                 </Popconfirm>
             }
 
@@ -66,7 +66,7 @@
                     OnConfirm="()=> AcceptMBSheet(mbSheet.Id)"
                         OkText="Yes"
                         CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary" Size="@ButtonSize.Small" style="margin-left: 0.15rem">Accept</Button>
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Default"  style="margin-left: 0.15rem">Accept</Button>
                 </Popconfirm>
             }
         </AntDesign.Col>

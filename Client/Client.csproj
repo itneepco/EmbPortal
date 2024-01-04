@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Components\RABill\RABillReportDrawer.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AntDesign.ProLayout" Version="0.10.6" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.7" />
@@ -25,10 +21,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\fonts\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Components\RABill\RABillReportDrawer.razor" />
   </ItemGroup>
 
 </Project>

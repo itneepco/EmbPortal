@@ -14,8 +14,9 @@ public class RABillReportResponse
     public string EIC { get; set; }
     public string ValidationOfficer { get; set; }
     public string MeaurementOfficer { get; set; }
-    public string BillPeriod { get; set; }
-    public DateTime ActualCompletionDate { get; set;}
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
+    public DateTime? ActualCompletionDate { get; set;}
     public string LastBill { get; set; }
     public string Remarks { get; set;}
     public List<RABillItemResponse> RABillItems { get; set; } 

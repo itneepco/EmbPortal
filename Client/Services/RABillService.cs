@@ -1,6 +1,7 @@
 ﻿using Client.Extensions;
 using Client.Services.Interfaces;
 using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.RABill;
 using EmbPortal.Shared.Responses;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -73,6 +74,13 @@ namespace Client.Services
         public async Task<string> GeneratePdf(int id)
         {
             var response = await _httpClient.GetAsync($"/api/RABill/{id}/Download");
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
+        }
+
+        public async Task<string> CreateReport(int id, RABillHeaderRequest request)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/RABill/{id}/Report", request);
             var data = await response.Content.ReadAsStringAsync();
             return data;
         }
