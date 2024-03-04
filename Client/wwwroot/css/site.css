@@ -142,6 +142,7 @@ app {
 
 .ant-btn-primary1 {
     border-color: #0072A3 !important;
+    color: #FFFFFF !important;
     background: #0072A3 !important;
     font-family: 'Inter', sans-serif !important;
     font-weight: 600 !important;
@@ -150,13 +151,7 @@ app {
     letter-spacing: .12em !important;
 }
 
-.ant-input {
-    border: 1px solid #0072A3 !important;
-}
 
-    .ant-input.ant-input-status-error {
-        border: 1px solid #FF4D4F !important;
-    }
 
 canvas {
     display: block;
