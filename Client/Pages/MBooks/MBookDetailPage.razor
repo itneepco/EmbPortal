@@ -1,5 +1,4 @@
 ﻿@page "/mbooks/{Id}/{Tab?}"
-@using Client.Components.SESheet
 @attribute [Authorize]
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
@@ -61,10 +60,6 @@
         <MBSheetLists MBookId="int.Parse(Id)" MBItems="@data.Items" />
     </TabPane>
 
-    <TabPane Tab="Service Entry Sheet" Key="tab3">
-        @* <RABillList MBookId="int.Parse(Id)" /> *@
-        <SESheetList MBookId="int.Parse(Id)"/>
-    </TabPane>
 </Tabs>
 }
 else

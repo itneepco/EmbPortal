@@ -2,7 +2,7 @@
 using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
-using Domain.Entities.RABillAggregate;
+
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Responses;
 using EmbPortal.Shared.Responses.MBSheets;
@@ -38,15 +38,5 @@ public class MappingProfile : Profile
 
         CreateMap<ItemAttachment, ItemAttachmentResponse>();
 
-        CreateMap<RABill, RABillResponse>();
-
-        CreateMap<RABill, RABillDetailResponse>();
-
-        CreateMap<RABill, RABillInfoResponse>()               
-            .ForMember(m => m.RABillTitle, opt => opt.MapFrom(p => p.Title));
-
-        CreateMap<RABillItem, RABillItemResponse>();
-       
-        CreateMap<RADeduction, RADeductionResponse>();
     }
 }

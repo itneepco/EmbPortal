@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240417123606_Initial")]
-    partial class Initial
+    [Migration("20240418064226_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -516,140 +516,6 @@ namespace Persistence.Migrations
                     b.ToTable("RAItem");
                 });
 
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ApprovalDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("BillDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("CompletionDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<string>("EicEmpCode")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastBillDetail")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<int>("MeasurementBookId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime>("ToDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("WorkOrderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RABills");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RABillItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<float>("AcceptedMeasuredQty")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<float>("CurrentRAQty")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)");
-
-                    b.Property<int>("RABillId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Remarks")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<float>("TillLastRAQty")
-                        .HasColumnType("float");
-
-                    b.Property<int>("WorkOrderItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RABillId");
-
-                    b.ToTable("RABillItem");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RADeduction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("RABillId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RABillId");
-
-                    b.ToTable("RADeduction");
-                });
-
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrder", b =>
                 {
                     b.Property<int>("Id")
@@ -966,24 +832,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("RAHeaderId");
                 });
 
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RABillItem", b =>
-                {
-                    b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
-                        .WithMany("Items")
-                        .HasForeignKey("RABillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RADeduction", b =>
-                {
-                    b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
-                        .WithMany("Deductions")
-                        .HasForeignKey("RABillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.WorkOrderAggregate.WorkOrderItem", b =>
                 {
                     b.HasOne("Domain.Entities.WorkOrderAggregate.WorkOrder", null)
@@ -1061,13 +909,6 @@ namespace Persistence.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entities.RAAggregate.RAHeader", b =>
-                {
-                    b.Navigation("Deductions");
-
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
                     b.Navigation("Deductions");
 

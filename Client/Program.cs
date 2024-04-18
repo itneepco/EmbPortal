@@ -36,7 +36,6 @@ public class Program
             .AddScoped<IWorkOrderService, WorkOrderService>()              
             .AddScoped<IMBookService, MBookService>()
             .AddScoped<IMBSheetService, MBSheetService>()
-            .AddScoped<IRABillService, RABillService>()
             .AddScoped<IRAService, RAService>()
             .AddScoped<IUserService, UserService>();
 

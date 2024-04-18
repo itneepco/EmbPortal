@@ -21,13 +21,11 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
 {
     private readonly IAppDbContext _context;
     private readonly IMeasurementBookService _mBookService;
-    private readonly IRABillService _raBillService;
 
-    public GetCurrentMBookItemsStatusQueryHandler(IAppDbContext context, IMeasurementBookService mBookService, IRABillService raBillService)
+    public GetCurrentMBookItemsStatusQueryHandler(IAppDbContext context, IMeasurementBookService mBookService)
     {
         _context = context;
         _mBookService = mBookService;
-        _raBillService = raBillService;
     }
 
     public async Task<List<WorkOrderItemStatusResponse>> Handle(GetCurrentMBookItemsStatusQuery request, CancellationToken cancellationToken)
@@ -52,14 +50,10 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
         // Fetch the MB items status
         List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(result.mBook.Id);
 
-        // Fetch the cumulative RA items quantity
-        List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(result.mBook.Id);
-
         List<WorkOrderItemStatusResponse> itemStatusResponses = new();
         foreach (var item in result.mBook.Items)
         {
             var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
-            var raItemQtyStatus = raItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
             var workOrderItem = result.wOrder.Items.FirstOrDefault(i => i.Id == item.WorkOrderItemId);
 
             if(workOrderItem == null) {
@@ -76,8 +70,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
                 Uom = workOrderItem.Uom,
                 PoQuantity = workOrderItem.PoQuantity,
                 CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.TotalMeasuredQty : 0,
-                AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0,
-                TillLastRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0
+                AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0
             });
         }
 

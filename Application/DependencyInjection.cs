@@ -16,7 +16,6 @@ namespace Application
 
             services.AddScoped<IMeasurementBookService, MeasurementBookService>();
             services.AddScoped<IWorkOrderService, WorkOrderService>();
-            services.AddScoped<IRABillService, RABillService>();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));

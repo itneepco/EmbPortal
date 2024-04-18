@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Mappings;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Domain.Entities.WorkOrderAggregate;
 using EmbPortal.Shared.Requests;
 using EmbPortal.Shared.Responses;

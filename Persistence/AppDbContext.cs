@@ -5,12 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Common;
-using Domain.Entities;
 using Domain.Entities.Identity;
 using Domain.Entities.MBSheetAggregate;
 using Domain.Entities.MeasurementBookAggregate;
 using Domain.Entities.RAAggregate;
-using Domain.Entities.RABillAggregate;
 using Domain.Entities.WorkOrderAggregate;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -33,7 +31,6 @@ public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
     public DbSet<MeasurementBook> MeasurementBooks { get ; set ; }
     public DbSet<MBSheet> MBSheets { get; set; }
     public DbSet<RAHeader> RAHeaders { get; set; }
-    public DbSet<RABill> RABills { get; set; }
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())

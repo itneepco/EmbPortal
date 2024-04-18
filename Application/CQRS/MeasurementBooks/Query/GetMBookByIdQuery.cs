@@ -26,17 +26,15 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMeasurementBookService _mBookService;
-    private readonly IRABillService _raBillService;
 
     private Expression<Func<MeasurementBook, bool>> Criteria { set; get; }
 
-    public GetMBookByIdQueryHandler(IMapper mapper, IAppDbContext context, ICurrentUserService currentUserService, IMeasurementBookService mBookService, IRABillService raBillService)
+    public GetMBookByIdQueryHandler(IMapper mapper, IAppDbContext context, ICurrentUserService currentUserService, IMeasurementBookService mBookService)
     {
         _mapper = mapper;
         _context = context;
         _currentUserService = currentUserService;
         _mBookService = mBookService;
-        _raBillService = raBillService;
     }
 
     public async Task<MBookResponse> Handle(GetMBookByIdQuery request, CancellationToken cancellationToken)
@@ -81,9 +79,6 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
         // Fetch the MB items status
         List<MBookItemQtyStatus> mbItemQtyStatuses = await _mBookService.GetMBItemsQtyStatus(result.mBook.Id);
 
-        // Fetch the cumulative RA items quantity
-        List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(result.mBook.Id);
-
         foreach (var item in mBookResponse.Items)
         {
             var wOrderItem = result.wOrder.Items.FirstOrDefault(p => p.Id == item.WorkOrderItemId);
@@ -105,11 +100,9 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
     
 
             var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
-            var raItemQtyStatus = raItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
-
+            
             item.AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0;
             item.CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.TotalMeasuredQty : 0;
-            item.TillLastRAQty = raItemQtyStatus != null ? raItemQtyStatus.ApprovedRAQty : 0;
         }
         // --- END ---
 
