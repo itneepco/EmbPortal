@@ -1,4 +1,4 @@
-﻿@page "/orderdetail/{Id}"
+﻿@page "/orderdetail/{Id}/{Tab?}"
 @attribute [Authorize]
 
 <Breadcrumb Style="margin-bottom: 0.5rem">
@@ -17,21 +17,24 @@
 @if (data != null)
 {
     <CascadingValue Value="@data.Id" TValue="int">
-        
-            <Tabs Animated>
-                <TabPane Tab="Work Order Details" Key="1">
-                    <WorkOrderHeader WorkOrder="@data" />
 
-                    <Divider Plain Style="border-color:#888">Order Items</Divider>
-                    
-                    <WorkOrderItems Items="@data.Items"/>`
-                </TabPane>
+        <Tabs Animated @bind-ActiveKey="@activeKey">
+            <TabPane Tab="Work Order Details" Key="tab1">
+                <WorkOrderHeader WorkOrder="@data" />
 
-                <TabPane Tab="Measurement Books" Key="2">
-                    <MeasurementBooks/>
-                </TabPane>
-            </Tabs>
-        
+                <Divider Plain Style="border-color:#888">Order Items</Divider>
+
+                <WorkOrderItems Items="@data.Items" />`
+            </TabPane>
+
+            <TabPane Tab="Measurement Books" Key="tab2">
+                <MeasurementBooks />
+            </TabPane>
+            <TabPane Tab="RA Bills" Key="tab3">
+                <RABill/>
+            </TabPane>
+        </Tabs>
+
     </CascadingValue>
 }
 else
@@ -43,13 +46,25 @@ else
 
 @code {
     [Parameter]
+    public string Tab { get; set; }
+    [Parameter]
     public string Id { get; set; }
-
+    string activeKey = "tab1";
     public WorkOrderDetailResponse data { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadWorkOrderDetailsAsync();
+        if (string.IsNullOrWhiteSpace(Tab)) return;
+
+        if (Tab == "tab2")
+        {
+            activeKey = "tab2";
+        }
+        if (Tab == "tab3")
+        {
+            activeKey = "tab3";
+        }
     }
 
     async Task LoadWorkOrderDetailsAsync()

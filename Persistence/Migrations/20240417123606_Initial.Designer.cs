@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231003072559_RaBillInfo")]
-    partial class RaBillInfo
+    [Migration("20240417123606_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -365,6 +365,157 @@ namespace Persistence.Migrations
                     b.ToTable("MeasurementBooks");
                 });
 
+            modelBuilder.Entity("Domain.Entities.RAAggregate.Deduction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("RAHeaderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RAHeaderId");
+
+                    b.ToTable("Deduction");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RAAggregate.RAHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BillDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("CompletionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EicEmpCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastBillDetail")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("WorkOrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RAHeaders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RAAggregate.RAItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("CurrentRAQty")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ItemDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ItemNo")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("MeasuredQty")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PackageNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("PoQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RABillId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RAHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("ServiceNo")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ShortServiceDesc")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SubItemNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubItemPackageNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<float>("TillLastRAQty")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("UnitRate")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Uom")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WorkOrderItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RAHeaderId");
+
+                    b.ToTable("RAItem");
+                });
+
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABill", b =>
                 {
                     b.Property<int>("Id")
@@ -576,12 +727,21 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
 
+                    b.Property<float>("MeasuredQuantity")
+                        .HasColumnType("float");
+
                     b.Property<string>("PackageNo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
                     b.Property<float>("PoQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<float>("RAQuantityty")
+                        .HasColumnType("float");
+
+                    b.Property<float>("RelasedQuantityty")
                         .HasColumnType("float");
 
                     b.Property<long>("ServiceNo")
@@ -792,6 +952,20 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.RAAggregate.Deduction", b =>
+                {
+                    b.HasOne("Domain.Entities.RAAggregate.RAHeader", null)
+                        .WithMany("Deductions")
+                        .HasForeignKey("RAHeaderId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RAAggregate.RAItem", b =>
+                {
+                    b.HasOne("Domain.Entities.RAAggregate.RAHeader", null)
+                        .WithMany("Items")
+                        .HasForeignKey("RAHeaderId");
+                });
+
             modelBuilder.Entity("Domain.Entities.RABillAggregate.RABillItem", b =>
                 {
                     b.HasOne("Domain.Entities.RABillAggregate.RABill", null)
@@ -883,6 +1057,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.MeasurementBookAggregate.MeasurementBook", b =>
                 {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Entities.RAAggregate.RAHeader", b =>
+                {
+                    b.Navigation("Deductions");
+
                     b.Navigation("Items");
                 });
 

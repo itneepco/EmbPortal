@@ -2,22 +2,22 @@
 using Application.CQRS.WorkOrders.Command;
 using Application.CQRS.WorkOrders.Query;
 using Application.WorkOrders.Command;
+using EmbPortal.Shared.Requests;
+using EmbPortal.Shared.Requests.MeasurementBooks;
+using EmbPortal.Shared.Responses;
+using EmbPortal.Shared.Responses.WorkOrders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using EmbPortal.Shared.Requests;
-using EmbPortal.Shared.Responses;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using System.Net.Http;
-using System;
-using System.Text;
-using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using EmbPortal.Shared.Requests.MeasurementBooks;
-using Domain.Entities.WorkOrderAggregate;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Api.Controllers;
 
@@ -44,24 +44,25 @@ public class WorkOrderController : ApiController
     public async Task<ActionResult<WorkOrderDetailResponse>> GetWorkOrderById(int id)
     {
         var query = new GetWorkOrderByIdQuery(id);
-
         return Ok(await Mediator.Send(query));
     }
-
+    [HttpGet("{id}/ItemStatus")]
+    public async Task<ActionResult<List<WOItemStatusResponse>>> GetWorkOrdereItemStatus(int id)
+    {
+        var query = new WorkOrderItemStatusQuery(id);
+        return Ok(await Mediator.Send(query));
+    }
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> CreateWorkOrder(WorkOrderRequest data)
     {
         var purchaseOrder = await FetchPODetailsFromSAP(data.OrderNo);
-
         if (purchaseOrder == null)
         {
             return NotFound(new ApiResponse(404, "Unable to fetch data from SAP"));
         }
-
         var command = new CreateWorkOrderCommand(purchaseOrder);
-
         return Ok(await Mediator.Send(command));
     }
 

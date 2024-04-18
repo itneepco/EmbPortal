@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.MeasurementBooks.Query;
 
-public record GetCurrentMBookItemsStatusQuery(int MBookId) : IRequest<List<MBItemStatusResponse>>
+public record GetCurrentMBookItemsStatusQuery(int MBookId) : IRequest<List<WorkOrderItemStatusResponse>>
 {
 }
 
-public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrentMBookItemsStatusQuery, List<MBItemStatusResponse>>
+public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrentMBookItemsStatusQuery, List<WorkOrderItemStatusResponse>>
 {
     private readonly IAppDbContext _context;
     private readonly IMeasurementBookService _mBookService;
@@ -30,7 +30,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
         _raBillService = raBillService;
     }
 
-    public async Task<List<MBItemStatusResponse>> Handle(GetCurrentMBookItemsStatusQuery request, CancellationToken cancellationToken)
+    public async Task<List<WorkOrderItemStatusResponse>> Handle(GetCurrentMBookItemsStatusQuery request, CancellationToken cancellationToken)
     {
         var wOrderQuery =  _context.WorkOrders.Include(p => p.Items).AsQueryable();
 
@@ -55,7 +55,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
         // Fetch the cumulative RA items quantity
         List<RAItemQtyStatus> raItemQtyStatuses = await _raBillService.GetRAItemQtyStatus(result.mBook.Id);
 
-        List<MBItemStatusResponse> itemStatusResponses = new();
+        List<WorkOrderItemStatusResponse> itemStatusResponses = new();
         foreach (var item in result.mBook.Items)
         {
             var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
@@ -66,7 +66,7 @@ public class GetCurrentMBookItemsStatusQueryHandler : IRequestHandler<GetCurrent
                 throw new NotFoundException(nameof(WorkOrderItem), item.WorkOrderItemId);
             }
 
-            itemStatusResponses.Add(new MBItemStatusResponse
+            itemStatusResponses.Add(new WorkOrderItemStatusResponse
             {
                 MBookItemId = item.Id,
                 WorkOrderItemId = workOrderItem.Id,

@@ -34,7 +34,6 @@ namespace Api.Controllers
         public async Task<ActionResult<List<RABillResponse>>> GetRABillsByMBookId(int mBookId)
         {
             var query = new GetRABillByMBookIdQuery(mBookId);
-
             return Ok(await Mediator.Send(query));
         }
 
@@ -160,7 +159,7 @@ namespace Api.Controllers
         [HttpPost("{id}/Deduction")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> CreateRADeduction(RADeductionRequest data, int id)
+        public async Task<ActionResult<int>> CreateRADeduction(DeductionRequest data, int id)
         {
             var command = new CreateRADeductionCommand(data, id);
 

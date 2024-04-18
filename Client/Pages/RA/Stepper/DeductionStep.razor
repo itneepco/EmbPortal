@@ -1,0 +1,72 @@
+﻿<h3>Deduction</h3>
+<Form OnFinish="OnDeductionAdd" Model="@_deduction">
+    <Row Gutter="24">
+        <GridCol Span="10">
+            <FormItem Label="Description">
+                <Input @bind-Value="@context.Description" Placeholder="Description" />
+            </FormItem>
+        </GridCol>
+        <GridCol Span="4">
+            <FormItem Label="Amount">
+                <Input @bind-Value="@context.Amount" Placeholder="Amount" />
+            </FormItem>
+        </GridCol>
+        <GridCol Span="4">
+            <Button HtmlType="submit" Type="@ButtonType.Primary">Add</Button>
+        </GridCol>
+    </Row>
+
+</Form>
+<Table DataSource="@Stepper.Model.Deductions"
+       PageSize="@Stepper.Model.Deductions.Count"
+       Size="@TableSize.Small"
+       HidePagination Bordered>
+
+    <Column TData="string" Title="Description" DataIndex="@nameof(context.Description)" Width="60%" />
+    <Column Title="Amount" TData="decimal" Width="20%">@context.Amount.ToString("0.00")</Column>
+    <ActionColumn Title="Action" Width="20%">
+        <Popconfirm Title="Sure to delete?"
+                    OnConfirm="()=> DeleteRADeduction(context)"
+                    OkText="Yes"
+                    CancelText="No">
+            <Button Icon="@(IconType.Outline.Delete)"
+                    Size="@ButtonSize.Small"
+                    Danger>
+                Delete
+            </Button>
+        </Popconfirm>
+    </ActionColumn>
+</Table>
+<Descriptions Title="Summary" Style="margin-top: 1rem;">
+    <DescriptionsItem Title="Total RA Amount (Rs.):">@Stepper.Model.GetTotalRAAmount().ToString("0.00")</DescriptionsItem>
+    <DescriptionsItem Title="Total Deduction (Rs.): ">@Stepper.Model.GetTotalDeduction().ToString("0.00")</DescriptionsItem>
+    <DescriptionsItem Title=" Net Amount (Rs.):">@Stepper.Model.GetNetRAAmount().ToString("0.00")</DescriptionsItem>
+</Descriptions>
+<Row Style="margin-top: 2rem">
+    <GridCol>
+        <Button Type="@ButtonType.Default" OnClick="Previous">Previous</Button>
+        <Button HtmlType="submit" Type="@ButtonType.Primary" OnClick="()=>OnSubmit.InvokeAsync()">Save</Button>
+    </GridCol>
+</Row>
+@code {
+    [CascadingParameter]
+    public RaPage Stepper { get; set; }
+    [Parameter]
+    public EventCallback OnSubmit{ get; set; }
+    private DeductionRequest _deduction { get; set; } = new();
+    void Previous()
+    {
+        Stepper.Prev();
+    }
+
+    void OnDeductionAdd()
+    {
+        Stepper.Model.Deductions.Add(_deduction);
+        _deduction = new();
+    }
+    void DeleteRADeduction(DeductionRequest deduction)
+    {
+        Stepper.Model.Deductions.Remove(deduction);
+    }
+
+}

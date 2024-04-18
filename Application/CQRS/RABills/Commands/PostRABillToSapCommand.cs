@@ -152,6 +152,11 @@ class SapSEItem
     public long ItemNo { get; set; }
     public string PackageNo { get; set; }
     public string Remarks { get; set; }
+
+
+
+
+
     public List<SapSESubItem> Details { get; set; }
 }
 
@@ -164,7 +169,7 @@ class SapSESubItem
 }
 
 class SapResponse
-{
+{                                                                                                                                                                                                                                                  
     public List<SapResponseItem> Response { get; set; }
 }
 

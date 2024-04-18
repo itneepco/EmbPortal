@@ -40,7 +40,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}/ItemStatus")]
-        public async Task<ActionResult<List<MBItemStatusResponse>>> GetCurrentMBItemsStatus(int id)
+        public async Task<ActionResult<List<WorkOrderItemStatusResponse>>> GetCurrentMBItemsStatus(int id)
         {
             var query = new GetCurrentMBookItemsStatusQuery(id);
 

@@ -36,7 +36,7 @@
     [Parameter]
     public EventCallback<bool> OnItemUpdate { get; set; }
 
-    RADeductionRequest model = new();
+    DeductionRequest model = new();
     bool loading = false;
 
     async Task OnSubmit()

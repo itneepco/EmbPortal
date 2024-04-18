@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.RABills.Queries
 {
+   
     public record GetRABillByMBookIdQuery(int MBookId) : IRequest<List<RABillResponse>>
     {
     }

@@ -62,8 +62,8 @@
 
     public MBItemMeasurementRequest model { get; set; } = new();
 
-    private List<MBItemStatusResponse> mbItemsStatuses = new();
-    private MBItemStatusResponse selectedItem;
+    private List<WorkOrderItemStatusResponse> mbItemsStatuses = new();
+    private WorkOrderItemStatusResponse selectedItem;
     private string title = "Add detail measurements";
 
     protected override void OnParametersSet()

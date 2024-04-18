@@ -85,7 +85,7 @@ namespace Client.Services
             return data;
         }
 
-        public async Task<IResult<int>> CreateRADeduction(int raBillId, RADeductionRequest request)
+        public async Task<IResult<int>> CreateRADeduction(int raBillId, DeductionRequest request)
         {
             var response = await _httpClient.PostAsJsonAsync($"/api/RABill/{raBillId}/Deduction", request);
             return await response.ToResult<int>();

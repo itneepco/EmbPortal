@@ -1,6 +1,6 @@
 ﻿namespace EmbPortal.Shared.Responses
 {
-    public class MBItemStatusResponse
+    public class WorkOrderItemStatusResponse
     {
         public int WorkOrderItemId { get; set; }
         public int MBookItemId { get; set; }

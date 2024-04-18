@@ -1,0 +1,36 @@
+
+<Table TItem="RaItemView"
+       PageSize="@Items.Count"
+       Size="@TableSize.Small"
+       DataSource="@Items"
+       Responsive="false"
+       ScrollX="450"
+       HidePagination>
+
+    <RowTemplate>
+        <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+        <Column Title="Description" @bind-Field="@context.ItemDescription" Width="80%" />
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table TItem="RaItemView"
+               DataSource="@Items.Where(p => p.ItemNo == rowData.Data.ItemNo)"
+               Bordered>
+            <Column TData="int" Title="SubItem No" Width="15%">@context.SubItemNo</Column>
+            <Column TData="int" Title="Service No" Width="15%">@context.ServiceNo</Column>
+            <Column TData="string" Title="Description" Width="34%">@context.ShortServiceDesc</Column>
+            <Column TData="string" Title="Uom" DataIndex="@nameof(context.Uom)" Width="12%" />
+            <Column TData="decimal" Title="Unit Rate" DataIndex="@nameof(context.UnitRate)" Width="12%" />
+            <Column TData="float" Title="Quantity" DataIndex="@nameof(context.PoQuantity)" Width="12%" />
+            <Column TData="float" Title="Measured Qty" Width="12%">@context.MeasuredQty</Column> 
+            <Column TData="float" Title="Till Last RA" Width="12%">@context.TillLastRaQty></Column>
+            <Column TData="float" Title="Current RA Qty" Width="12%">@context.CurrentRaQty></Column>
+            <Column TData="decimal" Title="RA Amount" >@context.RaAmount></Column>
+            <Column TData="string" Title="Remarks" >@context.Remarks></Column>
+        </Table>
+    </ExpandTemplate>
+</Table>
+@code {
+    [Parameter]
+     public List<RaItemView>  Items { get; set; }
+}

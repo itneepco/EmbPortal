@@ -27,6 +27,7 @@
 @using EmbPortal.Shared.Requests
 @using EmbPortal.Shared.Requests.MeasurementBooks
 @using EmbPortal.Shared.Responses
+@using EmbPortal.Shared.Responses.RA
 @using EmbPortal.Shared.Extensions
 @using EmbPortal.Shared.Enums
 @using EmbPortal.Shared.Validations
@@ -49,5 +50,6 @@
 @inject IMBookService mBookService
 @inject IMBSheetService mbSheetService
 @inject IRABillService raBillService
+@inject IRAService raService
 @inject IAuthService authService
 @inject EMBStateProvider stateProvider

@@ -1,0 +1,25 @@
+﻿using Domain.Common;
+namespace Domain.Entities.RAAggregate;
+public class RAItem : AuditableEntity
+{
+    public int Id { get; private set; }
+    public int RABillId { get; set; }
+    public string Uom { get; set; }
+    public decimal UnitRate { get; set; }
+    public float PoQuantity { get; set; }
+    public float MeasuredQty { get;  set; }
+    public float TillLastRAQty { get;  set; }
+    public float CurrentRAQty { get;  set; }
+    public string Remarks { get;  set; } // character 100 max limit
+    public int WorkOrderItemId { get;  set; }
+    public int ItemNo { get; set; }
+    public string ItemDescription { get; set; }
+    public string PackageNo { get; set; }
+    public int SubItemNo { get; set; }
+    public string SubItemPackageNo { get; set; }
+    public long ServiceNo { get; set; }
+    public string ShortServiceDesc { get; set; }    
+    public RAItem()
+    {
+    }
+}

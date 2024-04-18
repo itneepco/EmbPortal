@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -77,6 +77,8 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
+                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     MeasurementDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -89,8 +91,6 @@ namespace Persistence.Migrations
                     EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    MeasurementBookId = table.Column<int>(type: "int", nullable: false),
-                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -114,6 +114,13 @@ namespace Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     BillDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ToDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CompletionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Remarks = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastBillDetail = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     ApprovalDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -129,6 +136,39 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RABills", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RAHeaders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    BillDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ToDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CompletionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Remarks = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastBillDetail = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EicEmpCode = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RAHeaders", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -369,6 +409,75 @@ namespace Persistence.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Deduction",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    RAHeaderId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deduction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Deduction_RAHeaders_RAHeaderId",
+                        column: x => x.RAHeaderId,
+                        principalTable: "RAHeaders",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RAItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RABillId = table.Column<int>(type: "int", nullable: false),
+                    Uom = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UnitRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    PoQuantity = table.Column<float>(type: "float", nullable: false),
+                    MeasuredQty = table.Column<float>(type: "float", nullable: false),
+                    TillLastRAQty = table.Column<float>(type: "float", nullable: false),
+                    CurrentRAQty = table.Column<float>(type: "float", nullable: false),
+                    Remarks = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    WorkOrderItemId = table.Column<int>(type: "int", nullable: false),
+                    ItemNo = table.Column<int>(type: "int", nullable: false),
+                    ItemDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PackageNo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SubItemNo = table.Column<int>(type: "int", nullable: false),
+                    SubItemPackageNo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ServiceNo = table.Column<long>(type: "bigint", nullable: false),
+                    ShortServiceDesc = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RAHeaderId = table.Column<int>(type: "int", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RAItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RAItem_RAHeaders_RAHeaderId",
+                        column: x => x.RAHeaderId,
+                        principalTable: "RAHeaders",
+                        principalColumn: "Id");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "MeasurementBooks",
                 columns: table => new
                 {
@@ -426,6 +535,9 @@ namespace Persistence.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     PoQuantity = table.Column<float>(type: "float", nullable: false),
+                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
+                    RAQuantityty = table.Column<float>(type: "float", nullable: false),
+                    RelasedQuantityty = table.Column<float>(type: "float", nullable: false),
                     WorkOrderId = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
@@ -576,6 +688,11 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Deduction_RAHeaderId",
+                table: "Deduction",
+                column: "RAHeaderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ItemAttachment_MBSheetItemId",
                 table: "ItemAttachment",
                 column: "MBSheetItemId");
@@ -611,6 +728,11 @@ namespace Persistence.Migrations
                 column: "RABillId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RAItem_RAHeaderId",
+                table: "RAItem",
+                column: "RAHeaderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkOrderItem_WorkOrderId",
                 table: "WorkOrderItem",
                 column: "WorkOrderId");
@@ -640,6 +762,9 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Deduction");
+
+            migrationBuilder.DropTable(
                 name: "ItemAttachment");
 
             migrationBuilder.DropTable(
@@ -653,6 +778,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "RADeduction");
+
+            migrationBuilder.DropTable(
+                name: "RAItem");
 
             migrationBuilder.DropTable(
                 name: "WorkOrderItem");
@@ -671,6 +799,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "RABills");
+
+            migrationBuilder.DropTable(
+                name: "RAHeaders");
 
             migrationBuilder.DropTable(
                 name: "MBSheets");

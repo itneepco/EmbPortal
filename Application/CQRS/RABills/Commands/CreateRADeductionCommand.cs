@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.RABills.Commands
 {
-    public record CreateRADeductionCommand(RADeductionRequest Data, int RABillId) : IRequest<int>
+    public record CreateRADeductionCommand(DeductionRequest Data, int RABillId) : IRequest<int>
     {
     }
 

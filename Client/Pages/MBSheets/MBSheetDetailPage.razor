@@ -12,8 +12,6 @@
 </Breadcrumb>
 @if (mbSheet != null)
 {
-    
-
     <Row Align="middle">
         <AntDesign.Col Sm="24" Md="16">
             <Form Model="@model" OnFinish="@OnFormSubmit" Layout="@FormLayout.Vertical" Loading="@loading">
@@ -151,23 +149,6 @@ else
         StateHasChanged();
     }
 
-    async Task ValidateMBSheet(int id)
-    {
-        loading = true;
-        var result = await mbSheetService.ValidateMBSheet(id);
-        loading = false;
-
-        if (result.Succeeded)
-        {
-            GoToMBookDetailPage();
-            await messageService.Success(result.Message);
-        }
-        else
-        {
-            await messageService.Error(result.Message);
-        }
-    }
-
     async Task PublishMBSheet(int id)
     {
         loading = true;
@@ -185,6 +166,23 @@ else
         }
     }
 
+    async Task ValidateMBSheet(int id)
+    {
+        loading = true;
+        var result = await mbSheetService.ValidateMBSheet(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo("/");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+
     async Task AcceptMBSheet(int id)
     {
         loading = true;
@@ -193,7 +191,7 @@ else
 
         if (result.Succeeded)
         {
-            GoToMBookDetailPage();
+            navManager.NavigateTo("/");
             await messageService.Success(result.Message);
         }
         else

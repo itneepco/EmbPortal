@@ -19,7 +19,7 @@ namespace Client.Services.Interfaces
         Task<IResult> DeleteRABill(int id);
         Task<string> GeneratePdf(int id);
         Task<string> CreateReport(int id, RABillHeaderRequest request);
-        Task<IResult<int>> CreateRADeduction(int raBillId, RADeductionRequest request);
+        Task<IResult<int>> CreateRADeduction(int raBillId, DeductionRequest request);
         Task<IResult> DeleteRADeduction(int raBillId, int deductionId);
     }
 }

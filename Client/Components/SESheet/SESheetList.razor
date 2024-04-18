@@ -1,0 +1,138 @@
+﻿<Row Style="margin-bottom: 0.75rem">
+    <Space>
+        <SpaceItem>
+            <Button OnClick="() => GoToAddPage()"
+                    Icon="@IconType.Outline.Plus"
+                    Type="@ButtonType.Primary"
+                    Disabled="@raBills.Any(p => p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)">
+                Create Service Entry Sheet
+            </Button>
+        </SpaceItem>
+        @if (selectedRows != null && selectedRows.Count() > 0)
+        {
+            
+            <SpaceItem>
+                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
+            </SpaceItem>
+
+           @*  @if (selectedRows.First()?.Status == RABillStatus.APPROVED &&
+                 selectedRows.First()?.Id == latestRaBillId && employeeCode == selectedRows.First().EicEmpCode)
+            {
+                <SpaceItem>
+                    <Popconfirm Title="Sure to Revoke RA Bill Status?"
+                                OnConfirm="()=> RevokeRABill(selectedRows.First().Id)"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Icon="@IconType.Outline.CarryOut" Loading="@loading">Revoke</Button>
+                    </Popconfirm>
+                </SpaceItem>
+            } *@
+        }
+    </Space>
+</Row>
+
+<Table Loading="@loading"
+       TItem="RABillResponse"
+       Size="@TableSize.Small"
+       @bind-SelectedRows="selectedRows"
+       DataSource="@raBills">
+
+    <RowTemplate>
+        <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
+        <Column Title="SES Title" TData="string" DataIndex="@nameof(context.Title)" />        
+        <Column Title="SES Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />        
+        <Column @bind-Field="@context.Status" Width="10%">
+            @if (context.Status == RABillStatus.APPROVED)
+            {
+                <Tag Color="gold">@context.Status</Tag>
+            }
+            else if (context.Status == RABillStatus.REVOKED)
+            {
+                <Tag Color="blue">@context.Status</Tag>
+            }
+            else
+            {
+                <Tag Color="green">@context.Status</Tag>
+            }
+        </Column>
+    </RowTemplate>
+</Table>
+
+@code {
+    [Parameter]
+    public int MBookId { get; set; }
+
+    List<RABillResponse> raBills = new();
+    bool loading = false;
+    int latestRaBillId => raBills.Select(p => p.Id).Max();
+
+    IEnumerable<RABillResponse> selectedRows;
+    string employeeCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await stateProvider.GetAuthenticationStateAsync();
+        employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
+
+        await LoadRABills();
+    }
+
+    async Task LoadRABills()
+    {
+        loading = true;
+        raBills = await raBillService.GetRABillsByMBookId(MBookId);
+        raBills = raBills.OrderByDescending(p => p.BillDate).ToList();
+        loading = false;
+    }
+
+    async Task DeleteRABill(int id)
+    {
+        loading = true;
+        var result = await raBillService.DeleteRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            raBills = raBills.Where(item => item.Id != id).ToList();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+        StateHasChanged();
+    }
+
+    async Task RevokeRABill(int id)
+    {
+        loading = true;
+        var result = await raBillService.RevokeRABill(id);
+        loading = false;
+
+        if (result.Succeeded)
+        {
+            await LoadRABills();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+        StateHasChanged();
+    }
+
+    void GoToAddPage()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill");
+    }
+
+    void GoToEditPage(int raBillId)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill/{raBillId}");
+    }
+
+    void ViewDetail(int id)
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/rabill/{id}/details");
+    }
+}
