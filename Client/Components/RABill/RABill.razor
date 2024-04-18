@@ -1,4 +1,5 @@
 ﻿@using EmbPortal.Shared.Responses.RA
+
 <Row Style="margin-bottom: 0.75rem">
     <Space>
         <SpaceItem>
@@ -30,8 +31,9 @@
                 </SpaceItem>
             }
             <SpaceItem>
-                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().Id)">Details</Button>
+                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().WorkOrderId, selectedRows.First().Id)">Details</Button>
             </SpaceItem>
+
             @if (selectedRows.First()?.Status == RAStatus.Published)
             {
                 <SpaceItem>
@@ -49,6 +51,7 @@
             }
     </Space>
 </Row>
+
 <Table Loading="@_loading"
        TItem="RAResponse"
        Size="@TableSize.Small"
@@ -99,10 +102,12 @@
         raBills = await raService.GetRAsByWOrder(WorkOrderId);
         _loading = false;
     }
-    void ViewDetail(int id)
+
+    void ViewDetail(int orderId, int id)
     {
-        navManager.NavigateTo($"/radetail/{id}");
+        navManager.NavigateTo($"/workorder/{orderId}/radetail/{id}");
     }
+
     async Task Publish(int id)
     {
 

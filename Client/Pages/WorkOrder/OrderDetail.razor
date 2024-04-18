@@ -19,7 +19,7 @@
     <CascadingValue Value="@data.Id" TValue="int">
 
         <Tabs Animated @bind-ActiveKey="@activeKey">
-            <TabPane Tab="Work Order Details" Key="tab1">
+            <TabPane Tab="Work Order Details" Key="wo">
                 <WorkOrderHeader WorkOrder="@data" />
 
                 <Divider Plain Style="border-color:#888">Order Items</Divider>
@@ -27,10 +27,10 @@
                 <WorkOrderItems Items="@data.Items" />`
             </TabPane>
 
-            <TabPane Tab="Measurement Books" Key="tab2">
+            <TabPane Tab="Measurement Books" Key="mb">
                 <MeasurementBooks />
             </TabPane>
-            <TabPane Tab="RA Bills" Key="tab3">
+            <TabPane Tab="RA Bills" Key="ra">
                 <RABill/>
             </TabPane>
         </Tabs>
@@ -49,7 +49,8 @@ else
     public string Tab { get; set; }
     [Parameter]
     public string Id { get; set; }
-    string activeKey = "tab1";
+
+    string activeKey = "wo";
     public WorkOrderDetailResponse data { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -57,13 +58,13 @@ else
         await LoadWorkOrderDetailsAsync();
         if (string.IsNullOrWhiteSpace(Tab)) return;
 
-        if (Tab == "tab2")
+        if (Tab == "mb")
         {
-            activeKey = "tab2";
+            activeKey = "mb";
         }
-        if (Tab == "tab3")
+        if (Tab == "ra")
         {
-            activeKey = "tab3";
+            activeKey = "ra";
         }
     }
 

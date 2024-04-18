@@ -73,7 +73,7 @@
 @code {
     [CascadingParameter]
     public RaPage Stepper { get; set; }
-    private bool _enabled = true;
+    
     void Next()
     {
         if (Stepper.Model.Items.Where(p => p.CurrentRAQty > p.AvailableQty).ToList().Count > 0)

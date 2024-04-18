@@ -55,17 +55,6 @@
           Model="@model"
           OnFinish="@OnSubmit">
 
-           <!-- <FormItem Label="Engineer In Charge" WrapperColSpan="16">
-                <Select DataSource="@users"
-                    Style="width: 100%"
-                    @bind-Value="@context.EngineerInCharge"
-                    ValueName="@nameof(UserResponse.EmployeeCode)"
-                    LabelName="@nameof(UserResponse.LongName)"
-                    Placeholder="Select Engineer In Charge"
-                    AllowClear>
-                </Select>
-            </FormItem>
-             -->
             <FormItem WrapperColSpan="6">
                 <Button Type="@ButtonType.Default" OnClick="@Close">Cancel</Button>
                 <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
@@ -86,9 +75,6 @@
 </style>
 
 @code {
-    List<string> _items;
-    IEnumerable<string> _selectedValues;
-
     [Parameter]
     public WorkOrderResponse WorkOrder { get; set; }
 

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EmbPortal.Shared.Responses.RABills;
+namespace EmbPortal.Shared.Responses.RA;
 
-public class RABillReportResponse
+public class RAReportResponse
 {
     public string RABillTitle { get; set; }
     public DateTime BillDate { get; set; }
@@ -19,7 +19,7 @@ public class RABillReportResponse
     public DateTime? ActualCompletionDate { get; set;}
     public string LastBill { get; set; }
     public string Remarks { get; set;}
-    public List<RABillItemResponse> RABillItems { get; set; } 
+    public List<RAItemResponse> RABillItems { get; set; } 
     public IReadOnlyList<RADeductionResponse> Deductions { get; set; }
     public decimal TotalAmount => RABillItems.Aggregate((decimal)0, (curr, item) => curr + item.CurrentRAAmount);
     public decimal TotalDeduction => Deductions.Aggregate((decimal)0, (curr, item) => curr + item.Amount);

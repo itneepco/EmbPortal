@@ -1,5 +1,6 @@
 ﻿using Client.Extensions;
 using Client.Services.Interfaces;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests.RA;
 using EmbPortal.Shared.Responses;
 using EmbPortal.Shared.Responses.RA;
@@ -63,5 +64,10 @@ public class RAService : IRAService
     {
         var response = await _httpClient.PutAsJsonAsync($"/api/RA/{raBillId}/PostToSAP", "");
         return await response.ToResult();
+    }
+
+    public async Task<List<RAResponse>> GetUserPendingRAs()
+    {
+        return await _httpClient.GetFromJsonAsync<List<RAResponse>>("/api/RA/pending");
     }
 }

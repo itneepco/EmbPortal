@@ -9,10 +9,6 @@ namespace Persistence
 {
     public class AppDbContextSeed
     {
-        public static async Task SeedAsync(AppDbContext context, ILoggerFactory loggerFactory)
-        {
-            
-        }
         public static async Task SeedUsersAsync(UserManager<AppUser> userManager,
            RoleManager<IdentityRole> roleManager)
         {

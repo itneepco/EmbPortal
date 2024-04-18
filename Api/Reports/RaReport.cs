@@ -1,6 +1,5 @@
 ﻿using EmbPortal.Shared.Constants;
 using EmbPortal.Shared.Responses.RA;
-using EmbPortal.Shared.Responses.RABills;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.VisualBasic;
 using QuestPDF.Drawing;

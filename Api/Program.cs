@@ -35,9 +35,6 @@ public class Program
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
-
-                // seeding entities
-                await AppDbContextSeed.SeedAsync(context, loggerFactory);
             }   
             catch (Exception ex)
             {

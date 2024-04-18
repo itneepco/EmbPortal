@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Responses.RA;
+using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -9,23 +11,27 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.RA.Queries;
 
-public record GetRAByWorkOrder(int WorkOrderId) : IRequest<List<RAResponse>>
-{
-}
+public record GetUserPendingRAs() : IRequest<List<RAResponse>>;
 
-public class GetRAByWorkOrderQueryHandler : IRequestHandler<GetRAByWorkOrder, List<RAResponse>> {
-    private readonly IAppDbContext _db;
-    public GetRAByWorkOrderQueryHandler(IAppDbContext db)
+public class GetUserPendingRAsHandler : IRequestHandler<GetUserPendingRAs, List<RAResponse>>
+{
+    private readonly IAppDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
+
+    public GetUserPendingRAsHandler(IAppDbContext context, ICurrentUserService currentUserService)
     {
-        _db = db;
+        _context = context;
+        _currentUserService = currentUserService;
     }
 
-    public async Task<List<RAResponse>> Handle(GetRAByWorkOrder request, CancellationToken cancellationToken)
+    public async Task<List<RAResponse>> Handle(GetUserPendingRAs request, CancellationToken cancellationToken)
     {
-        var raBills = await _db.RAHeaders
+        var empCode = _currentUserService.EmployeeCode;
+
+        var raResponses = await _context.RAHeaders
                             .Include(x => x.Items)
                             .Include(y => y.Deductions)
-                            .Where(p => p.WorkOrderId == request.WorkOrderId)
+                            .Where(p => p.EicEmpCode == empCode && p.Status != RAStatus.Posted)
                             .Select(q => new RAResponse
                             {
                                 Id = q.Id,
@@ -37,6 +43,7 @@ public class GetRAByWorkOrderQueryHandler : IRequestHandler<GetRAByWorkOrder, Li
                                 Deduction = q.Deductions.Sum(d => d.Amount)
                             }).
                             ToListAsync(cancellationToken);
-        return raBills;
+
+        return raResponses;
     }
 }

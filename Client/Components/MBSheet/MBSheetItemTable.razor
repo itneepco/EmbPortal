@@ -81,9 +81,10 @@
     public EventCallback ReloadPage { get; set; }
 
     MBSheetItemResponse currentMBSheetItem;
-    bool drawerVisible = false;
+
     bool loading = false;
     bool modalVisible = false;
+    bool drawerVisible = false;
 
     async Task OnDeleteItem(MBSheetItemResponse item)
     {

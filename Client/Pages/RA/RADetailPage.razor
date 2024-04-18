@@ -1,11 +1,11 @@
-﻿@page "/radetail/{Id}"
+﻿@page "/workorder/{orderId}/radetail/{Id}"
 <Breadcrumb Style="margin-bottom: 0.5rem">
     <BreadcrumbItem Href="/">
         <Icon Type="home" />
         <span>DASHBOARD</span>
     </BreadcrumbItem>
-    <BreadcrumbItem Href="/workorder">
-        WORK ORDERS
+    <BreadcrumbItem Href="@($"/orderdetail/{OrderId}/ra")">
+        RAs
     </BreadcrumbItem>
     <BreadcrumbItem>
         DETAIL
@@ -81,8 +81,10 @@
     <Column TData="decimal" Title="Amount">@context.Amount.ToString("0.00")</Column>
 </Table>
 @code {
-    [Parameter]
-    public string Id { get; set; }
+    [Parameter] public string OrderId { get; set; }
+
+    [Parameter] public string Id { get; set; }
+
     public RADetailResponse data { get; set; }
     private Dictionary<string, int> _column = new Dictionary<string, int> {
         { "xxl", 3 },

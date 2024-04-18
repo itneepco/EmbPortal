@@ -1,6 +1,6 @@
 ﻿<Row>
     <GridCol Xs="24" Md="10">
-        <Form Model="@Stepper.Model" OnFinish="@Submit" Layout="@FormLayout.Vertical" Loading="@_loading" Style=" margin-top: 1rem">
+        <Form Model="@Stepper.Model" OnFinish="@Submit" Layout="@FormLayout.Vertical" Style=" margin-top: 1rem">
             <FormItem Label="RA Bill Date">
                 <DatePicker TValue="DateTime"  Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
             </FormItem>
@@ -31,7 +31,7 @@
 @code {
     [CascadingParameter]
     public EditRaPage Stepper { get; set; }
-    private bool _loading;
+
     private void Submit()
     {
         Stepper.Next();

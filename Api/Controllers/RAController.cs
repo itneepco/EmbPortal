@@ -2,8 +2,8 @@
 using Api.Reports;
 using Application.CQRS.RA.Commands;
 using Application.CQRS.RA.Queries;
+using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests.RA;
-using EmbPortal.Shared.Responses;
 using EmbPortal.Shared.Responses.RA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -28,14 +28,16 @@ public class RAController : ApiController
         _config = config;
         _env = env;
     }
+
     [HttpGet("{raId}")]
-    [ProducesResponseType(typeof(RABillDetailResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RADetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RADetailResponse>> GetRAById(int raId)
     {
         var query = new GetRAById(raId);
         return Ok(await Mediator.Send(query));
     }
+
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -116,4 +118,10 @@ public class RAController : ApiController
         return NoContent();
     }
 
+    [HttpGet("pending")]
+    public async Task<ActionResult<List<RAResponse>>> GetUserPendingRAs()
+    {
+        var query = new GetUserPendingRAs();
+        return Ok(await Mediator.Send(query));
+    }
 }

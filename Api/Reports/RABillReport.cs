@@ -1,6 +1,6 @@
 ﻿
 using EmbPortal.Shared.Constants;
-using EmbPortal.Shared.Responses.RABills;
+using EmbPortal.Shared.Responses.RA;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.VisualBasic;
 using QuestPDF.Drawing;
@@ -16,9 +16,9 @@ public class RABillReport : IDocument
 {
     Bill01_data_source o = new();
     private readonly IWebHostEnvironment env;
-    private readonly RABillReportResponse raBill;
+    private readonly RAReportResponse raBill;
 
-    public RABillReport(IWebHostEnvironment env, RABillReportResponse raBill)
+    public RABillReport(IWebHostEnvironment env, RAReportResponse raBill)
     {
         this.env = env;
         this.raBill = raBill;

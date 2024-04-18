@@ -1,6 +1,6 @@
-﻿namespace EmbPortal.Shared.Responses
+﻿namespace EmbPortal.Shared.Responses.RA
 {
-    public class RABillItemResponse
+    public class RAItemResponse
     {
         public int Id { get; set; }
         public int WorkOrderItemId { get; set; }

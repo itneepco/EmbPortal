@@ -1,5 +1,5 @@
 ﻿<Row Gutter="(16, 16)" Align="center">
-    <AntDesign.Col Xs="24" Sm="24" Md="6" Lg="7">
+    <AntDesign.Col Xs="24" Sm="24" Md="7">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" />  Work Orders
@@ -26,7 +26,8 @@
             </Body>
         </Card>
     </AntDesign.Col>
-    <AntDesign.Col Xs="24" Sm="24" Md="12" Lg="10">
+
+    <AntDesign.Col Xs="24" Sm="24" Md="10">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" /> Measurement Books
@@ -51,7 +52,7 @@
                     </AntDesign.Col>
                    
                     <AntDesign.Col Span="8">
-                        <Statistic Title="Validation" Value="@stats.MBSheetValidation" ValueStyle="color: #3f8600;">
+                        <Statistic Title="Validation" Value="@stats.MBSheetValidation" ValueStyle="color: #4793AF;">
                             <PrefixTemplate>
                                 <span><Icon Type="Check" /></span>
                             </PrefixTemplate>
@@ -76,7 +77,8 @@
             </Body>
         </Card>
     </AntDesign.Col>
-    <AntDesign.Col Xs="24" Sm="24" Md="7" Lg="7">
+
+    <AntDesign.Col Xs="24" Sm="24" Md="7">
         <Card Class="shadow">
             <TitleTemplate>
                 <Icon Type="credit-card" Theme="outline" /> RA Bills
@@ -88,23 +90,30 @@
             <Body>
                 <p>RA Bill Summary</p>
                 <Row Gutter="16">
-                    <AntDesign.Col>
-                        <Statistic Title="Approval Pending" Value="@stats.RABillApproval">
+                    <AntDesign.Col Xs="12">
+                        <Statistic Title="Pending" Value="@stats.RAPending">
                             <PrefixTemplate>
                                 <span><Icon Type="arrow-up" /></span>
                             </PrefixTemplate>
                         </Statistic>
-                        <Button OnClick="@LoadPendingRABills"
-                                Style="margin-top: 16px;" 
-                                Type="@ButtonType.Primary">
-                            VIEW
+                        <Button OnClick="@LoadPendingRAs" Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                            VIEW PENDING RA
                         </Button>
+                    </AntDesign.Col>
+                    <AntDesign.Col Xs="12">
+                        <Statistic Title="Posted" Value="@stats.RAPosted">
+                            <PrefixTemplate>
+                                <span><Icon Type="check" /></span>
+                            </PrefixTemplate>
+                        </Statistic>
+                        @* <Button Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                            VIEW
+                        </Button> *@
                     </AntDesign.Col>
                 </Row>
             </Body>
         </Card>
     </AntDesign.Col>
-   
 </Row>
 
 <style>
@@ -140,11 +149,6 @@
         navManager.NavigateTo($"/mbooks/");
     }
 
-    void LoadPendingRABills()
-    {
-        navManager.NavigateTo($"/rabills/pending");
-    }
-
     void LoadPendingMBValidations()
     {
         navManager.NavigateTo($"/mbsheets/pending/validation");
@@ -153,5 +157,10 @@
     void LoadPendingMBApprovals()
     {
         navManager.NavigateTo($"/mbsheets/pending/approval");
+    }
+
+    void LoadPendingRAs()
+    {
+        navManager.NavigateTo($"/ra/pending");
     }
 }

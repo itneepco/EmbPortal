@@ -1,7 +1,9 @@
 ﻿@page "/workorder/{workOrderId}/Ra"
 @page "/workorder/{workOrderId}/Ra/{RaId:int}"
+
 @using Client.Pages.RA.Stepper
 @using EmbPortal.Shared.Requests.RA
+
 <Breadcrumb Style="margin-bottom: 0.5rem">
     <BreadcrumbItem Href="/">
         <Icon Type="home" />
@@ -14,6 +16,7 @@
         New RA Bill
     </BreadcrumbItem>
 </Breadcrumb>
+
 <Row >
     <GridCol Xs="24">
         <Steps Current="@_currentStep">
