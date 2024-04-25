@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240418064226_InitialCreate")]
+    [Migration("20240425113531_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -372,10 +372,13 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
 
                     b.Property<int?>("RAHeaderId")
                         .HasColumnType("int");
@@ -406,13 +409,17 @@ namespace Persistence.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("EicEmpCode")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
 
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastBillDetail")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime(6)");
@@ -421,13 +428,17 @@ namespace Persistence.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Remarks")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("ToDate")
                         .HasColumnType("datetime(6)");
@@ -450,13 +461,17 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
 
-                    b.Property<float>("CurrentRAQty")
-                        .HasColumnType("float");
+                    b.Property<decimal>("CurrentRAQty")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ItemDescription")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("ItemNo")
                         .HasColumnType("int");
@@ -465,19 +480,21 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(6)
+                        .HasColumnType("varchar(6)");
 
-                    b.Property<float>("MeasuredQty")
-                        .HasColumnType("float");
+                    b.Property<decimal>("MeasuredQty")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PackageNo")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<float>("PoQuantity")
-                        .HasColumnType("float");
-
-                    b.Property<int>("RABillId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("PoQuantity")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("RAHeaderId")
                         .HasColumnType("int");
@@ -489,21 +506,28 @@ namespace Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ShortServiceDesc")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("SubItemNo")
                         .HasColumnType("int");
 
                     b.Property<string>("SubItemPackageNo")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<float>("TillLastRAQty")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TillLastRAQty")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UnitRate")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Uom")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("WorkOrderItemId")
@@ -593,22 +617,22 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
 
-                    b.Property<float>("MeasuredQuantity")
-                        .HasColumnType("float");
+                    b.Property<decimal>("MeasuredQuantity")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PackageNo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<float>("PoQuantity")
-                        .HasColumnType("float");
+                    b.Property<decimal>("PoQuantity")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<float>("RAQuantityty")
-                        .HasColumnType("float");
-
-                    b.Property<float>("RelasedQuantityty")
-                        .HasColumnType("float");
+                    b.Property<decimal>("RAQuantity")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ServiceNo")
                         .HasColumnType("bigint");

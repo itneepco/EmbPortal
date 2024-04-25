@@ -30,10 +30,10 @@ public class RaItemView
     public int WorkOrderItemId { get; set; }
     public string Uom { get; set; }
     public decimal UnitRate { get; set; }
-    public float PoQuantity { get; set; }
-    public float MeasuredQty { get; set; }
-    public float TillLastRaQty { get; set; }
-    public float CurrentRaQty { get; set; }
+    public decimal PoQuantity { get; set; }
+    public decimal MeasuredQty { get; set; }
+    public decimal TillLastRaQty { get; set; }
+    public decimal CurrentRaQty { get; set; }
     public string Remarks { get; set; }
     public int ItemNo { get; set; }
     public string ItemDescription { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EmbPortal.Shared.Responses.RA;
 
-public class RaReportView
+public class RAReportResponse
 {
     public string RaTitle { get; set; }
     public DateTime BillDate { get; set; }
@@ -34,11 +34,11 @@ public class SubItem
     public string ShortServiceDesc { get; set; }
     public string Uom { get; set; }
     public decimal UnitRate { get; set; }
-    public float PoQuantity { get; set; }
-    public float MeasuredQty { get; set; }
-    public float TillLastRaQty { get; set; }
-    public float CurrentRaQty { get; set; }
-    public decimal RaAmount => (decimal)CurrentRaQty * UnitRate;
+    public decimal PoQuantity { get; set; }
+    public decimal MeasuredQty { get; set; }
+    public decimal TillLastRaQty { get; set; }
+    public decimal CurrentRaQty { get; set; }
+    public decimal RaAmount => CurrentRaQty * UnitRate;
     public string Remarks { get; set; }
 }
 public class DeductionView

@@ -23,15 +23,19 @@ public class PublishRaCommandHandler : IRequestHandler<PublishRaCommand>
 
     public async Task<Unit> Handle(PublishRaCommand request, CancellationToken cancellationToken)
     {
-        var ra = await _db.RAHeaders.FindAsync(request.raId);
+        var ra = await _db.RAHeaders.Include(r => r.Items).FirstOrDefaultAsync(p => p.Id == request.raId);
         if (ra == null)
         {
             throw new NotFoundException(nameof(ra), request.raId);
         }
         ra.Status = RAStatus.Published;
         var worder = await _db.WorkOrders.Include(w => w.Items)
-                          .SingleAsync(p => p.Id == ra.WorkOrderId);
-        foreach(var item in ra.Items)
+                          .SingleOrDefaultAsync(p => p.Id == ra.WorkOrderId);
+        if (worder == null)
+        {
+            throw new NotFoundException(nameof(worder), ra.WorkOrderId);
+        }
+        foreach (var item in ra.Items)
         {
             worder.AddRAQuantity(item.CurrentRAQty, item.WorkOrderItemId);
         }

@@ -33,7 +33,7 @@ public class WorkOrderItemStatusQueryHandler : IRequestHandler<WorkOrderItemStat
         List<WOItemStatusResponse> itemStatusResponses = new();
         foreach (var item in workorder.Items)
         {
-            if ((item.MeasuredQuantity - item.RAQuantityty) > 0)
+            if ((item.MeasuredQuantity - item.RAQuantity) > 0)
             {
                 itemStatusResponses.Add(new WOItemStatusResponse
                 {
@@ -49,7 +49,7 @@ public class WorkOrderItemStatusQueryHandler : IRequestHandler<WorkOrderItemStat
                     Uom = item.Uom,
                     PoQuantity = item.PoQuantity,
                     MeasuredQty = item.MeasuredQuantity,
-                    TillLastRAQty = item.RAQuantityty
+                    TillLastRAQty = item.RAQuantity
                 });
             }
             

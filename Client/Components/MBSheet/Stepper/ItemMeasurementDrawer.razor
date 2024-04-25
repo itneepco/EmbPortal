@@ -52,7 +52,7 @@
     public bool Visible { get; set; }
 
     [Parameter]
-    public float AccumulatedQty { get; set; }
+    public decimal AccumulatedQty { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
@@ -82,7 +82,7 @@
         OnClose.InvokeAsync();
     }
 
-    float GetAvaliableQty()
+    decimal GetAvaliableQty()
     {
         if (AccumulatedQty > 0)
             return StepperModel.AvailableMeasurementQty - AccumulatedQty;

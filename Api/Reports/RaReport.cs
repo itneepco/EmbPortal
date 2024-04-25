@@ -1,23 +1,20 @@
 ﻿using EmbPortal.Shared.Constants;
 using EmbPortal.Shared.Responses.RA;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.VisualBasic;
 using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Api.Reports;
 
 public class RaReport : IDocument
 {
-    Bill01_data_source o = new();
     private readonly IWebHostEnvironment env;
-    private readonly RaReportView raBill;
+    private readonly RAReportResponse raBill;
 
-    public RaReport(IWebHostEnvironment env, RaReportView raBill)
+    public RaReport(IWebHostEnvironment env, RAReportResponse raBill)
     {
         this.env = env;
         this.raBill = raBill;
@@ -415,50 +412,4 @@ public class RaReport : IDocument
     }
 }
 
-class BillHeaderData_source
-{
-    public List<List<string>> get_bill_details_data()
-    {
-        List<List<string>> bill_details = new();
-
-        for (int i = 1; i <= 20; i++)
-        {
-            List<string> temp = new();
-            temp.Add((i * 80).ToString());
-            temp.Add(Placeholders.Paragraph());
-            temp.Add(Placeholders.Label());
-            temp.Add((i + 80).ToString());
-            temp.Add((i * 800000).ToString());
-            temp.Add(Placeholders.Label());
-            temp.Add(Placeholders.Label());
-            temp.Add(Placeholders.Label());
-            temp.Add((i * 800000).ToString());
-            bill_details.Add(temp);
-        }
-
-        return bill_details;
-    }
-
-    public List<List<string>> get_deduction_details_data()
-    {
-        List<List<string>> deduction_details = new();
-
-        for (int i = 1; i <= 8; i++)
-        {
-            List<string> temp = new();
-            temp.Add((i * 80).ToString());
-            temp.Add(Placeholders.Paragraph());
-            temp.Add(Placeholders.Label());
-            temp.Add(Placeholders.Paragraph());
-            deduction_details.Add(temp);
-        }
-
-        return deduction_details;
-    }
-
-    public string GetReportGenerationDate()
-    {
-        return DateAndTime.Now.ToString();
-    }
-}
 

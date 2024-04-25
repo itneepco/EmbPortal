@@ -14,8 +14,9 @@ public class RARequest
     [Required]
     public DateTime? ToDate { get; set; }
     public DateTime? CompletionDate { get; set; }
+    [Required, MaxLength(250)]
     public string Remarks { get; set; } = string.Empty;
-    [Required]
+    [Required, MaxLength(250)]
     public string LastBillDetail { get; set; } = string.Empty;
     public int WorkOrderId { get; set; }
     public List<RAItemRequest> Items { get; set; } = new();

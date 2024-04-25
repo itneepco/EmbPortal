@@ -14,10 +14,9 @@ public class WorkOrderItem : AuditableEntity
     public string LongServiceDesc { get;  set; }       
     public string Uom { get;  set; }
     public decimal UnitRate { get;  set; }
-    public float PoQuantity { get;  set; }
-    public float MeasuredQuantity { get;  set; }
-    public float RAQuantityty { get;  set; }
-    public float RelasedQuantityty { get; set; }
+    public decimal PoQuantity { get;  set; }
+    public decimal MeasuredQuantity { get;  set; }
+    public decimal RAQuantity { get;  set; }    
     public WorkOrderItem()
     {
     }
@@ -33,7 +32,7 @@ public class WorkOrderItem : AuditableEntity
         string longServiceDesc,
         string uom,
         decimal unitRate,
-        float poQuantity
+        decimal poQuantity
     )
     {
         ItemNo = itemNo;
@@ -48,12 +47,12 @@ public class WorkOrderItem : AuditableEntity
         UnitRate = unitRate;
         PoQuantity = poQuantity;      
     }           
-    public  void AddMeasuredQuantity(float quantity)
+    public  void AddMeasuredQuantity(decimal quantity)
     {
         MeasuredQuantity += quantity;
     }   
-    public void AddRAQuantity(float quantity)
+    public void AddRAQuantity(decimal quantity)
     {
-        RAQuantityty += quantity;
+        RAQuantity += quantity;
     }
 }

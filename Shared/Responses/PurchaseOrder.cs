@@ -32,7 +32,7 @@ namespace EmbPortal.Shared.Responses
         public string LongDesc { get; set; }
         public decimal UnitRate { get; set; }
         public string Uom { get; set; }
-        public float Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string IsDeleted { get; set; }
     }
 }

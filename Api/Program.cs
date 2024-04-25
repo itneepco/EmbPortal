@@ -39,7 +39,7 @@ public class Program
             catch (Exception ex)
             {
                 var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError("An error occured during migration", ex.Message);
+                logger.LogError("An error occured during migration: {}", ex.Message);
             }
         }
 

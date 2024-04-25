@@ -4,7 +4,7 @@ namespace EmbPortal.Shared.Requests;
 
 public class DeductionRequest
 {
-    [Required, MaxLength(255)]
+    [Required, MaxLength(250)]
     public string Description { get; set; }
     public decimal Amount { get; set; }
 }

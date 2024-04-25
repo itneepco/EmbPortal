@@ -24,7 +24,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
     private readonly List<MeasurementBook> _measurementBooks = new List<MeasurementBook>();
     public IReadOnlyList<MeasurementBook> MeasurementBooks => _measurementBooks.AsReadOnly();
 
-    public void AddMeasuredQuantity(float measuredQty, int itemId)
+    public void AddMeasuredQuantity(decimal measuredQty, int itemId)
     {
         var item = _items.FirstOrDefault(p => p.Id == itemId);
         if (item !=null)
@@ -33,21 +33,21 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
         }
     }
 
-    public void AddRAQuantity(float raQty, int itemId)
+    public void AddRAQuantity(decimal raQty, int itemId)
     {
         var item = _items.FirstOrDefault(p => p.Id == itemId);
         if (item != null)
         {
-            item.RAQuantityty += raQty;
+            item.RAQuantity += raQty;
         }
     }
 
-    public void UpdateRaQuantity(float oldQty, float newQty, int itemId)
+    public void UpdateRaQuantity(decimal oldQty, decimal newQty, int itemId)
     {
         var item = _items.FirstOrDefault(p => p.Id == itemId);
         if (item != null)
         {
-            item.RAQuantityty = item.RAQuantityty + newQty - oldQty;
+            item.RAQuantity += (newQty - oldQty);
         }
     }
 
@@ -62,7 +62,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
         string longServiceDesc,
         string uom, 
         decimal unitRate, 
-        float poQuantity, 
+        decimal poQuantity, 
         int id=0)
     {
         // for item update

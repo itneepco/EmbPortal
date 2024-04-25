@@ -11,15 +11,14 @@ public class WOItemStatusResponse
     public string ShortServiceDesc { get; set; }
     public string Uom { get; set; }
     public decimal UnitRate { get; set; }
-    public float PoQuantity { get; set; }
-    public float MeasuredQty { get; set; }   
-    public float TillLastRAQty { get; set; }
-    public float AvailableQty
+    public decimal PoQuantity { get; set; }
+    public decimal MeasuredQty { get; set; }   
+    public decimal TillLastRAQty { get; set; }
+    public decimal AvailableQty
     {
         get
         {
-            var available = (MeasuredQty - TillLastRAQty).ToString("0.00");
-            return float.Parse(available);
+            return MeasuredQty - TillLastRAQty;
         }
     }
 }

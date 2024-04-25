@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.RA.Queries;
 
-public record RaReportQuery(int id) : IRequest<RaReportView>
+public record RaReportQuery(int id) : IRequest<RAReportResponse>
 {
 }
 
-public class RaReportQueryHandler : IRequestHandler<RaReportQuery, RaReportView>
+public class RaReportQueryHandler : IRequestHandler<RaReportQuery, RAReportResponse>
 {
     private readonly IAppDbContext _db;
 
@@ -23,7 +23,7 @@ public class RaReportQueryHandler : IRequestHandler<RaReportQuery, RaReportView>
         _db = db;
     }
 
-    public async Task<RaReportView> Handle(RaReportQuery request, CancellationToken cancellationToken)
+    public async Task<RAReportResponse> Handle(RaReportQuery request, CancellationToken cancellationToken)
     {
         var raQuery = _db.RAHeaders
             .Include(i => i.Items)
@@ -44,7 +44,7 @@ public class RaReportQueryHandler : IRequestHandler<RaReportQuery, RaReportView>
             throw new NotFoundException(nameof(result), request.id);
         }
 
-        var report = new RaReportView
+        var report = new RAReportResponse
         {
             RaTitle = result.ra.Title,
             PoNo = result.worder.OrderNo,

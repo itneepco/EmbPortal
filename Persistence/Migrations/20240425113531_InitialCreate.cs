@@ -110,18 +110,18 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "longtext", nullable: true)
+                    Title = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     BillDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     FromDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ToDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CompletionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Remarks = table.Column<string>(type: "longtext", nullable: true)
+                    Remarks = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastBillDetail = table.Column<string>(type: "longtext", nullable: true)
+                    LastBillDetail = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EicEmpCode = table.Column<string>(type: "longtext", nullable: true)
+                    EicEmpCode = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     WorkOrderId = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -324,9 +324,9 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
+                    Description = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     RAHeaderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -346,34 +346,33 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RABillId = table.Column<int>(type: "int", nullable: false),
-                    Uom = table.Column<string>(type: "longtext", nullable: true)
+                    Uom = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UnitRate = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    PoQuantity = table.Column<float>(type: "float", nullable: false),
-                    MeasuredQty = table.Column<float>(type: "float", nullable: false),
-                    TillLastRAQty = table.Column<float>(type: "float", nullable: false),
-                    CurrentRAQty = table.Column<float>(type: "float", nullable: false),
+                    UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    PoQuantity = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    MeasuredQty = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    TillLastRAQty = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    CurrentRAQty = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Remarks = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     WorkOrderItemId = table.Column<int>(type: "int", nullable: false),
                     ItemNo = table.Column<int>(type: "int", nullable: false),
-                    ItemDescription = table.Column<string>(type: "longtext", nullable: true)
+                    ItemDescription = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PackageNo = table.Column<string>(type: "longtext", nullable: true)
+                    PackageNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SubItemNo = table.Column<int>(type: "int", nullable: false),
-                    SubItemPackageNo = table.Column<string>(type: "longtext", nullable: true)
+                    SubItemPackageNo = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ServiceNo = table.Column<long>(type: "bigint", nullable: false),
-                    ShortServiceDesc = table.Column<string>(type: "longtext", nullable: true)
+                    ShortServiceDesc = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RAHeaderId = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CreatedBy = table.Column<string>(type: "longtext", nullable: true)
+                    CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastModified = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "longtext", nullable: true)
+                    LastModifiedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -444,10 +443,9 @@ namespace Persistence.Migrations
                     Uom = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UnitRate = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    PoQuantity = table.Column<float>(type: "float", nullable: false),
-                    MeasuredQuantity = table.Column<float>(type: "float", nullable: false),
-                    RAQuantityty = table.Column<float>(type: "float", nullable: false),
-                    RelasedQuantityty = table.Column<float>(type: "float", nullable: false),
+                    PoQuantity = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    MeasuredQuantity = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    RAQuantity = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     WorkOrderId = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     CreatedBy = table.Column<string>(type: "varchar(6)", maxLength: 6, nullable: true)

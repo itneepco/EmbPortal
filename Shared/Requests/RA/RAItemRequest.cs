@@ -15,17 +15,17 @@ public class RAItemRequest
     public string ShortServiceDesc { get; set; }
     public string Uom { get; set; }
     public decimal UnitRate { get; set; }
-    public float PoQuantity { get; set; }
-    public float MeasuredQty { get; set; }
-    public float TillLastRAQty { get; set; }
+    public decimal PoQuantity { get; set; }
+    public decimal MeasuredQty { get; set; }
+    public decimal TillLastRAQty { get; set; }
 
     [Range(0, float.MaxValue)]
-    public float CurrentRAQty { get; set; }
+    public decimal CurrentRAQty { get; set; }
 
-    [MaxLength(100)]
+    [MaxLength(250)]
     public string Remarks { get; set; }
 
-    public float AvailableQty => MeasuredQty - TillLastRAQty;
+    public decimal AvailableQty => MeasuredQty - TillLastRAQty;
 
     public decimal AvailableAmount => UnitRate * (decimal)AvailableQty;
 

@@ -124,7 +124,7 @@ class SapSESubItem
     public long ServiceNo { get; set; }
     public string ShortDesc { get; set; }
     public string SubItemPackageNo { get; set; }
-    public float Quantity { get; set; }
+    public decimal Quantity { get; set; }
 }
 
 class SapResponse
