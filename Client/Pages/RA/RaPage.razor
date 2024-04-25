@@ -1,0 +1,170 @@
+﻿@page "/workorder/{workOrderId}/Ra"
+@page "/workorder/{workOrderId}/Ra/{RaId:int}"
+
+@using Client.Pages.RA.Stepper
+@using EmbPortal.Shared.Requests.RA
+
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>DASHBOARD</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="/workorder">
+        WORK ORDERS
+    </BreadcrumbItem>   
+    <BreadcrumbItem >
+        New RA Bill
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Row >
+    <GridCol Xs="24">
+        <Steps Current="@_currentStep">
+            <Step Title="RA Bill Header" />
+            <Step Title="RA Bill Items" />
+            <Step Title="Deductions" />
+        </Steps>
+        <CascadingValue Value="this">
+            @switch (_currentStep)
+            {
+                case 0:               
+                 <RAHeaderStep/>               
+                  break;
+                case 1:
+                    <RAItemStep/>              
+                  break;
+                case 2:
+                    <DeductionStep OnSubmit="OnFormSubmit" />
+                    break;
+            }
+        </CascadingValue>
+    </GridCol>
+</Row>
+@code {
+    [Parameter]
+    public string workOrderId { get; set; }
+    [Parameter]
+    public int RaId { get; set; }
+    private int _currentStep;
+    bool loading;
+    public bool submitting;
+    public RARequest Model = new RARequest();
+    protected override async Task OnInitializedAsync()
+    { 
+        if(RaId ==0)
+        {
+            await LoadWOItemStatusAsync();           
+        }
+        else
+        {
+            await LoadRaAsync();
+        }
+        Model.WorkOrderId = int.Parse(workOrderId);
+    }
+    public void Next()
+    {
+        _currentStep += 1;
+        StateHasChanged();
+    }
+    public void Prev()
+    {
+        if (_currentStep <= 0) return;
+        _currentStep -= 1;
+        StateHasChanged();
+    }
+    async Task OnFormSubmit()
+    {
+        submitting = true;
+        IResult result;
+        if (RaId > 0)
+        {
+            result = await raService.EditRa(Model,RaId);
+        }
+        else
+        {
+            result = await raService.CreateRABill(Model);
+        }
+        submitting = false;
+        if (result.Succeeded)
+        {
+            navManager.NavigateTo($"/orderdetail/{workOrderId}/tab3");
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            if (result.Errors.Count == 0)
+            {
+                await messageService.Error(result.Message);
+                return;
+            }
+            foreach (var error in result.Errors)
+            {
+                await messageService.Error(error);
+            }
+        }
+    }
+    async Task LoadRaAsync()
+    {
+        loading = true;
+        var result = await raService.GetRAById(RaId);
+        loading = false;
+        Model = new RARequest
+        {
+         BillDate = result.Data.BillDate,
+         FromDate = result.Data.FromDate,
+         ToDate = result.Data.ToDate,
+         CompletionDate = result.Data.CompletionDate,
+         Remarks = result.Data.Remarks,
+         LastBillDetail = result.Data.LastBillDetail,
+         Items = result.Data.Items.Select(i => new RAItemRequest
+         {
+             WorkOrderItemId = i.WorkOrderItemId,
+             ItemDescription = i.ItemDescription,
+             ItemNo = i.ItemNo,
+             SubItemNo = i.SubItemNo,
+             ServiceNo = i.ServiceNo,
+             ShortServiceDesc = i.ShortServiceDesc,
+             Uom = i.Uom,
+             UnitRate = i.UnitRate,
+             PoQuantity = i.PoQuantity,
+             MeasuredQty = i.MeasuredQty,
+             TillLastRAQty = i.TillLastRaQty,
+             CurrentRAQty = i.CurrentRaQty,
+             Remarks = i.Remarks
+         }).ToList(),
+         Deductions = result.Data.Deductions.Select(d => new DeductionRequest
+         {
+             Description = d.Description,
+             Amount = d.Amount
+         }).ToList()
+        };
+        
+    }
+    async Task LoadWOItemStatusAsync()
+    {
+        loading = true;
+        var items = await workOrderService.GetWorkOrderItemStatus(int.Parse(workOrderId));
+        loading = false;
+        foreach (var item in items)
+        {
+            Model.Items.Add(new RAItemRequest
+                {
+                    WorkOrderItemId = item.WorkOrderItemId,
+                    ItemDescription = item.ItemDescription,
+                    ItemNo = item.ItemNo,
+                    PackageNo = item.PackageNo,
+                    SubItemNo = item.SubItemNo,
+                    SubItemPackageNo = item.SubItemPackageNo,
+                    ServiceNo = item.ServiceNo,
+                    ShortServiceDesc = item.ShortServiceDesc,
+                    Uom = item.Uom,
+                    PoQuantity = item.PoQuantity,
+                    UnitRate = item.UnitRate,
+                    MeasuredQty = item.MeasuredQty,
+                    TillLastRAQty = item.TillLastRAQty
+                });
+        }
+    }
+
+}
+

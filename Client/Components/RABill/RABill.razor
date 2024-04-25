@@ -1,0 +1,187 @@
+﻿@using EmbPortal.Shared.Responses.RA
+
+<Row Style="margin-bottom: 0.75rem">
+    <Space>
+        <SpaceItem>
+            <Button Icon="@(IconType.Outline.Plus)"
+                    Type="@(ButtonType.Primary)"
+                    Disabled="@_loading"
+                    OnClick="_=> LoadNewRABillPage()">                  
+                Add RA Bill
+            </Button>
+        </SpaceItem>
+        @if (selectedRows != null && selectedRows.Count() > 0)
+        {
+            @if (selectedRows.First()?.Status == RAStatus.Draft)
+            {
+                <SpaceItem>
+                    <Button Icon="@(IconType.Outline.Edit)" OnClick="() => GoToEditPage(selectedRows.First().Id)">Edit</Button>
+                </SpaceItem>
+                <SpaceItem>
+                    <Popconfirm Title="Are you sure delete this order?"
+                        Placement="@Placement.Bottom"
+                        OnConfirm="@(() => DeleteRABill(selectedRows.First().Id))"
+                        OkText="Yes"
+                        CancelText="No">
+                            <Button Danger Icon="@IconType.Outline.Delete" Loading="@_loading">Delete</Button>
+                    </Popconfirm>
+                </SpaceItem>
+                <SpaceItem>
+                    <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Check" Loading="@_loading" OnClick="() => Publish(selectedRows.First().Id)">Publish</Button>
+                </SpaceItem>
+            }
+            <SpaceItem>
+                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().WorkOrderId, selectedRows.First().Id)">Details</Button>
+            </SpaceItem>
+
+            @if (selectedRows.First()?.Status == RAStatus.Published)
+            {
+                <SpaceItem>
+                    <Button Type="@ButtonType.Default" Icon="@IconType.Outline.UpSquare" Disabled="@_processing" OnClick="() => PostToSAP(selectedRows.First().Id)">Post To SAP</Button>
+                </SpaceItem>
+            }
+            <SpaceItem>
+                <Button Type="@ButtonType.Default"
+                    Icon="@IconType.Outline.Printer"
+                    Disabled="@_downloading"
+                    OnClick="() => PrintRa(selectedRows.First().Id)">
+                    Print
+                </Button>
+            </SpaceItem>
+            }
+    </Space>
+</Row>
+
+<Table Loading="@_loading"
+       TItem="RAResponse"
+       Size="@TableSize.Small"
+       @bind-SelectedRows="selectedRows"
+       DataSource="@raBills">
+    <RowTemplate>
+        <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
+        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
+        <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />
+        <Column Title="Bill Amount"  TData="decimal">
+            @context.RAAmount.ToString("0.00")
+        </Column>
+        <Column Title="Deduction" TData="decimal" >
+            @context.Deduction.ToString("0.00")         
+        </Column>
+        <Column Title="Net Amount" TData="decimal">
+            @context.NetAmount.ToString("0.00")
+        </Column>
+        <Column @bind-Field="@context.Status" Width="10%">
+            @if (context.Status == RAStatus.Published)
+            {
+                <Tag Color="green">@context.Status</Tag>
+            }           
+            else
+            {
+                <Tag Color="blue">@context.Status</Tag>
+            }
+        </Column>
+    </RowTemplate>
+</Table>
+
+@code {
+    [CascadingParameter]
+    public int WorkOrderId { get; set; }
+    private bool _loading = false;
+    private bool _processing = false;
+    private bool _downloading = false;
+    List<RAResponse> raBills = new();
+    IEnumerable<RAResponse> selectedRows;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRAByWorkOrder();
+    }
+
+    async Task LoadRAByWorkOrder()
+    {
+        _loading = true;
+        raBills = await raService.GetRAsByWOrder(WorkOrderId);
+        _loading = false;
+    }
+
+    void ViewDetail(int orderId, int id)
+    {
+        navManager.NavigateTo($"/workorder/{orderId}/radetail/{id}");
+    }
+
+    async Task Publish(int id)
+    {
+
+        _loading = true;
+        var result = await raService.PublishRa(id);
+        _loading = false;
+        if (result.Succeeded)
+        {
+            raBills = await raService.GetRAsByWOrder(WorkOrderId);
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+    }
+    async Task PrintRa(int id)
+    {
+        _downloading = true;
+        var base64 = await raService.GenrateRaReport(id);
+        _downloading = false;
+
+        string mimeType = "application/pdf";
+        string name = Guid.NewGuid().ToString();
+
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = name,
+            MimeType = mimeType
+        });
+    }
+    void LoadNewRABillPage()
+    {
+        navManager.NavigateTo($"/workorder/{WorkOrderId}/Ra");
+        
+    }
+    async Task DeleteRABill(int id)
+    {
+        _loading = true;
+        var result = await raService.DeleteRa(id);
+        _loading = false;
+        if (result.Succeeded)
+        {
+            raBills = await raService.GetRAsByWOrder(WorkOrderId);
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+       
+    }
+    void GoToEditPage(int raId)
+    {
+        navManager.NavigateTo($"/workorder/{WorkOrderId}/Ra/{raId}");
+    }
+    async Task PostToSAP(int raId)
+    {
+        _processing = true;
+        var result = await raService.PostRaToSAP(raId);
+        _processing = false;
+        if (result.Succeeded)
+        {
+            raBills = await raService.GetRAsByWOrder(WorkOrderId);
+            StateHasChanged();
+            await messageService.Success(result.Message);
+        }
+        else
+        {
+            await messageService.Error(result.Message);
+        }
+
+    }
+}

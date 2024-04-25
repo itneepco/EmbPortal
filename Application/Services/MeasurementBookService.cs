@@ -50,11 +50,11 @@ public class MeasurementBookService : IMeasurementBookService
 
         foreach (var workOrderItemId in workOrderItemIds)
         {
-            float totalMeasuredQty = mbSheetItems.Where(i => i.WorkOrderItemId == workOrderItemId)
-                .Aggregate((float)0, (acc, curr) => acc + curr.MeasuredQuantity);
+            decimal totalMeasuredQty = mbSheetItems.Where(i => i.WorkOrderItemId == workOrderItemId)
+                .Aggregate((decimal)0, (acc, curr) => acc + curr.MeasuredQuantity);
 
-            float acceptedMeasuredQty = acceptedMBSheetItems.Where(i => i.WorkOrderItemId == workOrderItemId)
-                .Aggregate((float)0, (acc, curr) => acc + curr.MeasuredQuantity);
+            decimal acceptedMeasuredQty = acceptedMBSheetItems.Where(i => i.WorkOrderItemId == workOrderItemId)
+                .Aggregate((decimal)0, (acc, curr) => acc + curr.MeasuredQuantity);
 
             var approvedQty = new MBookItemQtyStatus
             {
@@ -73,6 +73,6 @@ public class MeasurementBookService : IMeasurementBookService
 public class MBookItemQtyStatus
 {
     public int WorkOrderItemId { get; set; }
-    public float TotalMeasuredQty { get; set; }
-    public float AcceptedMeasuredQty { get; set; }
+    public decimal TotalMeasuredQty { get; set; }
+    public decimal AcceptedMeasuredQty { get; set; }
 }

@@ -39,25 +39,30 @@ namespace Application.CQRS.Dashboard.Queries
                                                  && p.Status == MBSheetStatus.PUBLISHED)
                                     .CountAsync();
 
-            var raApproval = await _context.RABills
-                                    .Where(p => (p.Status == RABillStatus.CREATED || p.Status == RABillStatus.REVOKED)
-                                                  && p.EicEmpCode == empCode)
-                                    .CountAsync();
-
             var workOrderCount = await _context.WorkOrders
                                      .Where(p => (p.CreatedBy == empCode || p.EngineerInCharge == empCode))
                                      .CountAsync();
+
             var mBookCount = await _context.MeasurementBooks
                                      .Where(p => (p.MeasurerEmpCode == empCode || p.ValidatorEmpCode == empCode || p.EicEmpCode == empCode))
+                                     .CountAsync();
+
+            var raPending = await _context.RAHeaders
+                                     .Where(p => (p.EicEmpCode == empCode && p.Status != RAStatus.Posted))
+                                     .CountAsync();
+
+            var raPosted = await _context.RAHeaders
+                                     .Where(p => (p.EicEmpCode == empCode && p.Status == RAStatus.Posted))
                                      .CountAsync();
 
             return new DashboardStatsResponse
             {
                 MBSheetValidation = mbValidation,
                 MBSheetApproval = mbApproval,
-                RABillApproval = raApproval,
                 WorkOrderCount = workOrderCount,
-                MBookCount = mBookCount
+                MBookCount = mBookCount,
+                RAPending = raPending,
+                RAPosted = raPosted
             };
         }
     }

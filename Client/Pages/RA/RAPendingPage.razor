@@ -1,0 +1,62 @@
+﻿@page "/ra/pending"
+
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="dashboard" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        Pending RAs
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<h3>Pending RA Bills</h3>
+
+<Table Loading="@loading"
+       TItem="RAResponse"
+       Size="@TableSize.Small"
+       DataSource="@raResponses">
+
+    <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
+    <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />
+    <Column Title="Bill Amount" TData="decimal">
+        @context.RAAmount.ToString("0.00")
+    </Column>
+    <Column Title="Deduction" TData="decimal">
+        @context.Deduction.ToString("0.00")
+    </Column>
+    <Column Title="Net Amount" TData="decimal">
+        @context.NetAmount.ToString("0.00")
+    </Column>
+
+    <ActionColumn Title="Action" Width="20%">
+        <Button OnClick="() => GoToRaOnOrderDetailPage(context.WorkOrderId)"
+                Icon="@IconType.Outline.Api"
+                Type="@ButtonType.Primary"
+                Size="@ButtonSize.Small" />
+    </ActionColumn>
+
+</Table>
+
+@code {
+    bool loading;
+    List<RAResponse> raResponses = new();
+
+    async Task LoadPendingRAsAsync()
+    {
+        loading = true;
+        raResponses = await raService.GetUserPendingRAs();
+        loading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPendingRAsAsync();
+    }
+
+    void GoToRaOnOrderDetailPage(int workderId)
+    {
+        navManager.NavigateTo($"/orderdetail/{workderId}/ra");
+    }
+}

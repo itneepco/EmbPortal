@@ -1,0 +1,106 @@
+﻿@page "/workorder/{orderId}/radetail/{Id}"
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>DASHBOARD</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem Href="@($"/orderdetail/{OrderId}/ra")">
+        RAs
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        DETAIL
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<Descriptions Bordered Size="@DescriptionsSize.Middle" Column="@_column">
+    <DescriptionsItem Title="RA Bill No." Span="2">
+        @data.Title
+    </DescriptionsItem>
+    <DescriptionsItem Title="Bill Date" Span="2">
+        @data.BillDate.ToString("dd/MM/yyyy")
+    </DescriptionsItem>
+    <DescriptionsItem Title="Bill Period" Span="2">
+        @data.FromDate.ToString("dd/MM/yyyy") To  @data.ToDate.ToString("dd/MM/yyyy")
+    </DescriptionsItem>
+    <DescriptionsItem Title="Last RA Bill Detail" Span="2">
+        @data.LastBillDetail
+    </DescriptionsItem>
+    <DescriptionsItem Title="Total RA Amount" Span="1">
+        @data.TotalRaAmount.ToString("0.00")
+    </DescriptionsItem>
+    <DescriptionsItem Title="Total Deduction" Span="1">
+        @data.TotalDeduction.ToString("0.00")
+    </DescriptionsItem>
+    <DescriptionsItem Title="Net RA Amount" Span="1">
+        @data.NetRaAmount.ToString("0.00")
+    </DescriptionsItem>
+</Descriptions>
+<Divider Plain Style="border-color:#888">Bill Line Items</Divider>
+
+<Table TItem="RaItemView"       
+       Size="@TableSize.Small"       
+       DataSource="@data.Items.GroupBy(p => p.ItemNo).Select(p => p.First()).ToList()"
+       PageSize="@data.Items.GroupBy(p => p.ItemNo).Select(p => p.First()).Count()"
+       Responsive="false"
+       ScrollX="1500"
+       HidePagination>
+
+    <RowTemplate>
+        <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+        <Column Title="Description" @bind-Field="@context.ItemDescription" Width="80%" />
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table TItem="RaItemView"
+               DataSource="@data.Items.Where(p => p.ItemNo == rowData.Data.ItemNo)"
+               PageSize="@data.Items.Where(p => p.ItemNo == rowData.Data.ItemNo).Count()"
+               Bordered
+               Size="@TableSize.Small"               
+               HidePagination="true">
+            <Column TData="int" Title="SubItem No" Width="5%">@context.SubItemNo</Column>           
+            <Column TData="string" Title="Description" Width="20%">@context.ShortServiceDesc</Column>
+            <Column TData="string" Title="Uom" Width="5%">@context.Uom</Column> 
+            <Column TData="decimal" Title="Unit Rate" Width="5%">@context.UnitRate.ToString("0.00")</Column>
+            <Column TData="float" Title="PO Quantity" DataIndex="@nameof(context.PoQuantity)" Width="8%" />
+            <Column TData="float" Title="Measured Qty" Width="8%">@context.MeasuredQty</Column>
+            <Column TData="float" Title="Till Last RA" Width="8%">@context.TillLastRaQty</Column>
+            <Column TData="float" Title="Current RA Qty" Width="8 %">@context.CurrentRaQty</Column>
+            <Column TData="decimal" Title="RA Amount" Width="10%">@context.RaAmount.ToString("0.00")</Column>
+            <Column TData="string" Title="Remarks" >@context.Remarks</Column>
+        </Table>
+    </ExpandTemplate>
+</Table>
+<Divider Plain Style="border-color:#888">Deductions</Divider>
+<Table TItem="RaDeductionView"       
+       Size="@TableSize.Small"       
+       DataSource="@data.Deductions"
+       PageSize="@data.Deductions.Count()"    
+       Responsive="false"       
+       HidePagination>
+    <Column TData="string" Title="Decription" >@context.Description</Column>
+    <Column TData="decimal" Title="Amount">@context.Amount.ToString("0.00")</Column>
+</Table>
+@code {
+    [Parameter] public string OrderId { get; set; }
+
+    [Parameter] public string Id { get; set; }
+
+    public RADetailResponse data { get; set; }
+    private Dictionary<string, int> _column = new Dictionary<string, int> {
+        { "xxl", 3 },
+        { "xl", 3},
+        { "lg", 2},
+        { "md", 2},
+        { "sm", 1},
+        { "xs", 1}
+    };
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRADetailsAsync();
+    }
+    async Task LoadRADetailsAsync()
+    {
+        var result = await raService.GetRAById(int.Parse(Id));
+        data = result.Data;
+    }
+}

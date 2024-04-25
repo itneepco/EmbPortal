@@ -1,0 +1,95 @@
+﻿@using EmbPortal.Shared.Requests.RA
+
+<div style="margin-top:14px">
+</div>
+
+<Table TItem="RAItemRequest"
+       DataSource="@Stepper.Model.Items.GroupBy(p => p.ItemNo).Select(p => p.First()).ToList()"
+       Size="@TableSize.Small"
+       ScrollX="800"
+       PageSize="@Stepper.Model.Items.GroupBy(p => p.ItemNo).Select(p => p.First()).Count()"
+       Responsive="false"
+       Bordered
+       HidePagination>
+    <RowTemplate>
+        <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
+        <Column Title="Description" @bind-Field="@context.ItemDescription" Width="80%" />
+    </RowTemplate>
+
+    <ExpandTemplate Context="rowData">
+        <Table TItem="RAItemRequest"
+               DataSource="@Stepper.Model.Items.Where(p => p.ItemNo == rowData.Data.ItemNo)"
+               PageSize="@Stepper.Model.Items.Where(p => p.ItemNo == rowData.Data.ItemNo).Count()"
+               RowClassName="@(x => x.Data.CurrentRAQty > x.Data.AvailableQty ? "danger":null)"
+               Bordered HidePagination>
+          
+            <Column Title="Description" @bind-Field="@context.ShortServiceDesc"></Column>
+            <Column Title="PO Qty" TData="float"> @context.PoQuantity.ToString("0.00")</Column>
+            <Column Title="Rate" TData="decimal">@context.UnitRate.ToString("0.00")</Column>
+            <Column Title="MB Qty" TData="float">
+                @context.MeasuredQty.ToString("0.00")
+            </Column>
+            <Column Title="Cum RA Qty" TData="float">
+                @context.TillLastRAQty.ToString("0.00")
+            </Column>
+            <Column Title="Avail Qty" TData="float">
+                @context.AvailableQty.ToString("0.00")
+            </Column>
+            <Column Title="Curr Qty" TData="float" Width="8%">
+                <Input Type="text" @bind-Value="context.CurrentRAQty" On/>
+            </Column>
+            <Column Title="Amount" TData="decimal">
+                @context.CurrentRAAmount.ToString("0.00")
+            </Column>
+            <Column Title="Remarks" TData="float" Width="18%">
+                <Input Type="text" @bind-Value="context.Remarks" />
+            </Column>
+        </Table>
+    </ExpandTemplate>
+  
+</Table>
+<Row Style="margin-top: 2rem"> 
+    <GridCol Flex="1"></GridCol>
+    <GridCol>
+        <Text Strong>Total RA Amount: </Text>
+        <Text Mark>Rs. @Stepper.Model.GetTotalRAAmount().ToString("0.00")</Text>
+    </GridCol>
+   
+</Row>
+<Row Style="margin-top: 2rem">
+    <GridCol>
+        <Button Type="@ButtonType.Default" OnClick="Previous" >Previous</Button>
+        <Button HtmlType="submit" Type="@ButtonType.Primary" OnClick="Next" >Next</Button>
+    </GridCol>
+</Row>
+
+
+<style>
+    .danger {
+        background-color: red;
+    }
+</style>
+
+@code {
+    [CascadingParameter]
+    public RaPage Stepper { get; set; }
+    
+    void Next()
+    {
+        if (Stepper.Model.Items.Where(p => p.CurrentRAQty > p.AvailableQty).ToList().Count > 0)
+        {
+            messageService.Error("Current RA Quantity should not be greater than Available Quantity");
+            return;
+        }
+        if (Stepper.Model.Items.Where(p => p.CurrentRAQty > 0).ToList().Count < 1)
+        {
+            messageService.Error("Atleast one line item should have value greater than 0");
+            return;
+        }
+        Stepper.Next();
+    }
+    void Previous()
+    {
+        Stepper.Prev();
+    }
+}

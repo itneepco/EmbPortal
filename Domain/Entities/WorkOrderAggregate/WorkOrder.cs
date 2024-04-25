@@ -3,6 +3,7 @@ using Domain.Entities.MeasurementBookAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Domain.Entities.WorkOrderAggregate;
 
@@ -23,7 +24,33 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
     private readonly List<MeasurementBook> _measurementBooks = new List<MeasurementBook>();
     public IReadOnlyList<MeasurementBook> MeasurementBooks => _measurementBooks.AsReadOnly();
 
-      
+    public void AddMeasuredQuantity(decimal measuredQty, int itemId)
+    {
+        var item = _items.FirstOrDefault(p => p.Id == itemId);
+        if (item !=null)
+        {
+            item.MeasuredQuantity += measuredQty;
+        }
+    }
+
+    public void AddRAQuantity(decimal raQty, int itemId)
+    {
+        var item = _items.FirstOrDefault(p => p.Id == itemId);
+        if (item != null)
+        {
+            item.RAQuantity += raQty;
+        }
+    }
+
+    public void UpdateRaQuantity(decimal oldQty, decimal newQty, int itemId)
+    {
+        var item = _items.FirstOrDefault(p => p.Id == itemId);
+        if (item != null)
+        {
+            item.RAQuantity += (newQty - oldQty);
+        }
+    }
+
     public void AddUpdateLineItem(
         int itemNo,
         string pacakageNo,
@@ -35,7 +62,7 @@ public class WorkOrder : AuditableEntity, IAggregateRoot
         string longServiceDesc,
         string uom, 
         decimal unitRate, 
-        float poQuantity, 
+        decimal poQuantity, 
         int id=0)
     {
         // for item update

@@ -129,7 +129,7 @@ public class ExcelService : IExcelService
                 try
                 {
                     DataRow datarow = dt.Rows.Add();
-                    var item = (TEntity)Activator.CreateInstance(typeof(TEntity));
+                    var item = (TEntity)Activator.CreateInstance(typeof(TEntity))!;
                     foreach (IXLCell cell in row.Cells())
                     {
                         if (cell.DataType == XLDataType.DateTime)

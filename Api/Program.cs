@@ -35,14 +35,11 @@ public class Program
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
-
-                // seeding entities
-                await AppDbContextSeed.SeedAsync(context, loggerFactory);
             }   
             catch (Exception ex)
             {
                 var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError("An error occured during migration", ex.Message);
+                logger.LogError("An error occured during migration: {}", ex.Message);
             }
         }
 

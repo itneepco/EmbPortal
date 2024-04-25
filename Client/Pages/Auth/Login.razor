@@ -14,15 +14,15 @@
                   WrapperColSpan="18">
 
                 <FormItem Label="Email">
-                    <Input @bind-Value="@context.Email" />
+                    <Input @bind-Value="@context.Email"  />
                 </FormItem>
 
                 <FormItem Label="Password">
-                    <InputPassword @bind-Value="@context.Password" />
+                    <InputPassword @bind-Value="@context.Password"  />
                 </FormItem>
 
                 <FormItem WrapperColOffset="6" WrapperColSpan="18">
-                    <Button Type="@ButtonType.Primary" HtmlType="submit">Submit</Button>
+                    <Button Class="ant-btn-primary1" HtmlType="submit">Submit</Button>
                     <Button OnClick="@ResetForm">Clear</Button>
                 </FormItem>
 
