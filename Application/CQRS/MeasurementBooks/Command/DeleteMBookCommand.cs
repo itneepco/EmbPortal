@@ -20,7 +20,7 @@ namespace Application.CQRS.MeasurementBooks.Command
             _context = dbContext;
         }
 
-        public async Task<Unit> Handle(DeleteMBookCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteMBookCommand request, CancellationToken cancellationToken)
         {
             var measurementBook = await _context.MeasurementBooks
                 .FirstOrDefaultAsync(p => p.Id == request.id);
@@ -38,7 +38,6 @@ namespace Application.CQRS.MeasurementBooks.Command
             _context.MeasurementBooks.Remove(measurementBook);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
         }
     }
 }

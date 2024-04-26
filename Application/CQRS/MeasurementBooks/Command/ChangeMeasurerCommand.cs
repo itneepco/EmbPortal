@@ -23,7 +23,7 @@ public class ChangeMeasurerCommandHnadler : IRequestHandler<ChangeMeasurerComman
         _currentUserService = currentUserService;
     }
 
-    public async Task<Unit> Handle(ChangeMeasurerCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeMeasurerCommand request, CancellationToken cancellationToken)
     {
         var mBook = await _context.MeasurementBooks.FirstOrDefaultAsync(p => p.Id == request.id);
 
@@ -41,6 +41,5 @@ public class ChangeMeasurerCommandHnadler : IRequestHandler<ChangeMeasurerComman
 
         mBook.SetMeasurementOfficer(request.data.Officer);
         await _context.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

@@ -18,15 +18,15 @@ public class TokenService : ITokenService
     {
         _config = config;
         _userManager = userManager;
-        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
+        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
     }
 
     public async Task<string> CreateToken(AppUser user)
     {
         var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new Claim(JwtRegisteredClaimNames.NameId, user.UserName!),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.DisplayName),
                 new Claim("designation", user.Designation)
             };

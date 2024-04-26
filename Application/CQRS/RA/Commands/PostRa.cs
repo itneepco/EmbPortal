@@ -28,7 +28,7 @@ public class PostRaCommandHandler : IRequestHandler<PostRaCommand>
         _db = db;
         _logger = logger;
     }
-    public async Task<Unit> Handle(PostRaCommand request, CancellationToken cancellationToken)
+    public async Task Handle(PostRaCommand request, CancellationToken cancellationToken)
     {
         var wOrderQuery = _db.WorkOrders.Include(p => p.Items).AsQueryable();
 
@@ -99,8 +99,6 @@ public class PostRaCommandHandler : IRequestHandler<PostRaCommand>
 
             throw new BadRequestException("Not able to post RA Bill to SAP");
         }
-
-        return Unit.Value;
     }
 }
 

@@ -1,120 +1,124 @@
-﻿<Row Gutter="(16, 16)" Align="center">
-    <AntDesign.Col Xs="24" Sm="24" Md="7">
-        <Card Class="shadow">
-            <TitleTemplate>
-                <Icon Type="credit-card" Theme="outline" />  Work Orders
-            </TitleTemplate>
-            <Extra>
-                <Icon Type="double-right" Theme="outline" />
-            </Extra>
-            <Body>
-                <p>Work orders summary</p>
-                <Row Gutter="16">
-                    <AntDesign.Col Span="12">
-                        <Statistic Title="Work Orders" Value="@stats.WorkOrderCount" ValueStyle="color: #3f8600;">
-                            <PrefixTemplate>
-                                <span><Icon Type="Check" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadOrders"
-                                Type="@ButtonType.Primary"
-                                Style="margin-top: 16px;">
-                            VIEW ORDERS
-                        </Button>                       
-                    </AntDesign.Col>
-                </Row>
-            </Body>
-        </Card>
-    </AntDesign.Col>
+﻿<Spin Spinning="loading">
 
-    <AntDesign.Col Xs="24" Sm="24" Md="10">
-        <Card Class="shadow">
-            <TitleTemplate>
-                <Icon Type="credit-card" Theme="outline" /> Measurement Books
-            </TitleTemplate>
-            <Extra>
-                <Icon Type="double-right" Theme="outline" />
-            </Extra>
+    <Row Gutter="(16, 16)" Align="center">
+        <AntDesign.Col Xs="24" Sm="24" Md="7">
+            <Card Class="shadow">
+                <TitleTemplate>
+                    <Icon Type="credit-card" Theme="outline" />  Work Orders
+                </TitleTemplate>
+                <Extra>
+                    <Icon Type="double-right" Theme="outline" />
+                </Extra>
+                <Body>
+                    <p>Work orders summary</p>
+                    <Row Gutter="16">
+                        <AntDesign.Col Span="12">
+                            <Statistic Title="Work Orders" Value="@stats.WorkOrderCount" ValueStyle="color: #3f8600;">
+                                <PrefixTemplate>
+                                    <span><Icon Type="Check" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            <Button OnClick="@LoadOrders"
+                                    Type="@ButtonType.Primary"
+                                    Style="margin-top: 16px;">
+                                VIEW ORDERS
+                            </Button>
+                        </AntDesign.Col>
+                    </Row>
+                </Body>
+            </Card>
+        </AntDesign.Col>
 
-            <Body>
-                <p>Measurement Books Summary</p>
-                <Row Gutter="16">
-                    <AntDesign.Col Span="8">
-                        <Statistic Title="My MBs" Value="@stats.MBookCount" ValueStyle="color: #3f8600;">
-                            <PrefixTemplate>
-                                <span><Icon Type="edit" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadMBs"
-                                Style="margin-top: 16px;" Type="@ButtonType.Primary">
-                            VIEW
-                        </Button>
-                    </AntDesign.Col>
-                   
-                    <AntDesign.Col Span="8">
-                        <Statistic Title="Validation" Value="@stats.MBSheetValidation" ValueStyle="color: #4793AF;">
-                            <PrefixTemplate>
-                                <span><Icon Type="Check" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadPendingMBValidations"
-                                Style="margin-top: 16px;">
-                            VIEW
-                        </Button>
-                    </AntDesign.Col>
-                    <AntDesign.Col Span="8">
-                        <Statistic Title="Approval" Value="@stats.MBSheetApproval">
-                            <PrefixTemplate>
-                                <span><Icon Type="arrow-up" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadPendingMBApprovals"
-                                Style="margin-top: 16px;" Type="@ButtonType.Primary">
-                            VIEW
-                        </Button>
-                    </AntDesign.Col>
-                </Row>
-            </Body>
-        </Card>
-    </AntDesign.Col>
+        <AntDesign.Col Xs="24" Sm="24" Md="10">
+            <Card Class="shadow">
+                <TitleTemplate>
+                    <Icon Type="credit-card" Theme="outline" /> Measurement Books
+                </TitleTemplate>
+                <Extra>
+                    <Icon Type="double-right" Theme="outline" />
+                </Extra>
 
-    <AntDesign.Col Xs="24" Sm="24" Md="7">
-        <Card Class="shadow">
-            <TitleTemplate>
-                <Icon Type="credit-card" Theme="outline" /> RA Bills
-            </TitleTemplate>
-            <Extra>
-                <Icon Type="double-right" Theme="outline" />
-            </Extra>
+                <Body>
+                    <p>Measurement Books Summary</p>
+                    <Row Gutter="16">
+                        <AntDesign.Col Span="8">
+                            <Statistic Title="My MBs" Value="@stats.MBookCount" ValueStyle="color: #3f8600;">
+                                <PrefixTemplate>
+                                    <span><Icon Type="edit" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            <Button OnClick="@LoadMBs"
+                                    Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                                VIEW
+                            </Button>
+                        </AntDesign.Col>
 
-            <Body>
-                <p>RA Bill Summary</p>
-                <Row Gutter="16">
-                    <AntDesign.Col Xs="12">
-                        <Statistic Title="Pending" Value="@stats.RAPending">
-                            <PrefixTemplate>
-                                <span><Icon Type="arrow-up" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        <Button OnClick="@LoadPendingRAs" Style="margin-top: 16px;" Type="@ButtonType.Primary">
-                            VIEW PENDING RA
-                        </Button>
-                    </AntDesign.Col>
-                    <AntDesign.Col Xs="12">
-                        <Statistic Title="Posted" Value="@stats.RAPosted">
-                            <PrefixTemplate>
-                                <span><Icon Type="check" /></span>
-                            </PrefixTemplate>
-                        </Statistic>
-                        @* <Button Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                        <AntDesign.Col Span="8">
+                            <Statistic Title="Validation" Value="@stats.MBSheetValidation" ValueStyle="color: #4793AF;">
+                                <PrefixTemplate>
+                                    <span><Icon Type="Check" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            <Button OnClick="@LoadPendingMBValidations"
+                                    Style="margin-top: 16px;">
+                                VIEW
+                            </Button>
+                        </AntDesign.Col>
+                        <AntDesign.Col Span="8">
+                            <Statistic Title="Approval" Value="@stats.MBSheetApproval">
+                                <PrefixTemplate>
+                                    <span><Icon Type="arrow-up" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            <Button OnClick="@LoadPendingMBApprovals"
+                                    Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                                VIEW
+                            </Button>
+                        </AntDesign.Col>
+                    </Row>
+                </Body>
+            </Card>
+        </AntDesign.Col>
+
+        <AntDesign.Col Xs="24" Sm="24" Md="7">
+            <Card Class="shadow">
+                <TitleTemplate>
+                    <Icon Type="credit-card" Theme="outline" /> RA Bills
+                </TitleTemplate>
+                <Extra>
+                    <Icon Type="double-right" Theme="outline" />
+                </Extra>
+
+                <Body>
+                    <p>RA Bill Summary</p>
+                    <Row Gutter="16">
+                        <AntDesign.Col Xs="12">
+                            <Statistic Title="Pending" Value="@stats.RAPending">
+                                <PrefixTemplate>
+                                    <span><Icon Type="arrow-up" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            <Button OnClick="@LoadPendingRAs" Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                                VIEW PENDING RA
+                            </Button>
+                        </AntDesign.Col>
+                        <AntDesign.Col Xs="12">
+                            <Statistic Title="Posted" Value="@stats.RAPosted">
+                                <PrefixTemplate>
+                                    <span><Icon Type="check" /></span>
+                                </PrefixTemplate>
+                            </Statistic>
+                            @* <Button Style="margin-top: 16px;" Type="@ButtonType.Primary">
                             VIEW
-                        </Button> *@
-                    </AntDesign.Col>
-                </Row>
-            </Body>
-        </Card>
-    </AntDesign.Col>
-</Row>
+                            </Button> *@
+                        </AntDesign.Col>
+                    </Row>
+                </Body>
+            </Card>
+        </AntDesign.Col>
+    </Row>
+
+</Spin>
 
 <style>
     .shadow {

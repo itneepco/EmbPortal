@@ -2,7 +2,6 @@
 using Application.Behaviors;
 using Application.Interfaces;
 using Application.Services;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application
@@ -11,14 +10,18 @@ namespace Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {            
-            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddScoped<IMeasurementBookService, MeasurementBookService>();
             services.AddScoped<IWorkOrderService, WorkOrderService>();
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
+            services.AddMediatR(options =>
+            {
+                options.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+
+                options.AddOpenBehavior(typeof(PerformanceBehavior<,>));
+                options.AddOpenBehavior(typeof(UnhandledExceptionBehavior<,>));
+            });
 
             return services;
         }

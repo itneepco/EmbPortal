@@ -11,10 +11,11 @@
        Responsive="false"
        Bordered
        HidePagination>
-    <RowTemplate>
+
+    <ColumnDefinitions>
         <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
         <Column Title="Description" @bind-Field="@context.ItemDescription" Width="80%" />
-    </RowTemplate>
+    </ColumnDefinitions>
 
     <ExpandTemplate Context="rowData">
         <Table TItem="RAItemRequest"

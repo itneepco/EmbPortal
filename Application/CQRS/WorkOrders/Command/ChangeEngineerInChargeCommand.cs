@@ -22,7 +22,7 @@ public class ChangeEngineerInChargeCommandHandler : IRequestHandler<ChangeEngine
         _currentUserService = currentUserService;
     }
 
-	public async Task<Unit> Handle(ChangeEngineerInChargeCommand request, CancellationToken cancellationToken)
+	public async Task Handle(ChangeEngineerInChargeCommand request, CancellationToken cancellationToken)
 	{
 		
         var workOrder = await _context.WorkOrders.FirstOrDefaultAsync(p => p.Id == request.id);
@@ -41,6 +41,5 @@ public class ChangeEngineerInChargeCommandHandler : IRequestHandler<ChangeEngine
 
         workOrder.SetEngineerInCharge(request.data.Officer);
         await _context.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

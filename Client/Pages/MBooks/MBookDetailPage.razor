@@ -18,7 +18,7 @@
 @if (data != null)
 {
 <Tabs @bind-ActiveKey="@activeKey" Animated>
-    <TabPane Tab="Measurement Book Detail" Key="tab1">
+    <TabPane Tab="Measurement Book" Key="tab1">
         <Descriptions Bordered Size="@DescriptionsSize.Middle" Column="@column">
             <DescriptionsItem Title="Measurement Book" Span="2">@data.Title</DescriptionsItem>
             <DescriptionsItem Title="Measurement Officer">@data.MeasurerName </DescriptionsItem>
@@ -56,7 +56,7 @@
         </Table>
     </TabPane>
 
-    <TabPane Tab="Measurement Book Sheet" Key="tab2">
+    <TabPane Tab="Measurement Sheets" Key="tab2">
         <MBSheetLists MBookId="int.Parse(Id)" MBItems="@data.Items" />
     </TabPane>
 

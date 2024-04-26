@@ -10,7 +10,7 @@
         Responsive="false"
         ScrollX="650">
 
-    <RowTemplate>
+    <ColumnDefinitions>
         <Column Title="Title" @bind-Field="@context.Title" Width="40%" />
         <Column Title="Measurer" Width="16%" TData="string">
             @context.MeasurerName
@@ -74,7 +74,7 @@
                 }
             </Row>
         </ActionColumn>
-    </RowTemplate>
+    </ColumnDefinitions>
 
     <ExpandTemplate Context="rowData">
         <Table DataSource="rowData.Data.Items" Responsive="false">

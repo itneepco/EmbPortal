@@ -6,7 +6,7 @@
             <Button Icon="@(IconType.Outline.Plus)"
                     Type="@(ButtonType.Primary)"
                     Disabled="@_loading"
-                    OnClick="_=> LoadNewRABillPage()">                  
+                    OnClick="_=> LoadNewRABillPage()">
                 Add RA Bill
             </Button>
         </SpaceItem>
@@ -19,11 +19,11 @@
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Are you sure delete this order?"
-                        Placement="@Placement.Bottom"
-                        OnConfirm="@(() => DeleteRABill(selectedRows.First().Id))"
-                        OkText="Yes"
-                        CancelText="No">
-                            <Button Danger Icon="@IconType.Outline.Delete" Loading="@_loading">Delete</Button>
+                                Placement="@Placement.Bottom"
+                                OnConfirm="@(() => DeleteRABill(selectedRows.First().Id))"
+                                OkText="Yes"
+                                CancelText="No">
+                        <Button Danger Icon="@IconType.Outline.Delete" Loading="@_loading">Delete</Button>
                     </Popconfirm>
                 </SpaceItem>
                 <SpaceItem>
@@ -42,13 +42,13 @@
             }
             <SpaceItem>
                 <Button Type="@ButtonType.Default"
-                    Icon="@IconType.Outline.Printer"
-                    Disabled="@_downloading"
-                    OnClick="() => PrintRa(selectedRows.First().Id)">
+                        Icon="@IconType.Outline.Printer"
+                        Disabled="@_downloading"
+                        OnClick="() => PrintRa(selectedRows.First().Id)">
                     Print
                 </Button>
             </SpaceItem>
-            }
+        }
     </Space>
 </Row>
 
@@ -57,30 +57,29 @@
        Size="@TableSize.Small"
        @bind-SelectedRows="selectedRows"
        DataSource="@raBills">
-    <RowTemplate>
-        <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
-        <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
-        <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />
-        <Column Title="Bill Amount"  TData="decimal">
-            @context.RAAmount.ToString("0.00")
-        </Column>
-        <Column Title="Deduction" TData="decimal" >
-            @context.Deduction.ToString("0.00")         
-        </Column>
-        <Column Title="Net Amount" TData="decimal">
-            @context.NetAmount.ToString("0.00")
-        </Column>
-        <Column @bind-Field="@context.Status" Width="10%">
-            @if (context.Status == RAStatus.Published)
-            {
-                <Tag Color="green">@context.Status</Tag>
-            }           
-            else
-            {
-                <Tag Color="blue">@context.Status</Tag>
-            }
-        </Column>
-    </RowTemplate>
+
+    <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
+    <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
+    <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />
+    <Column Title="Bill Amount" TData="decimal">
+        @context.RAAmount.ToString("0.00")
+    </Column>
+    <Column Title="Deduction" TData="decimal">
+        @context.Deduction.ToString("0.00")
+    </Column>
+    <Column Title="Net Amount" TData="decimal">
+        @context.NetAmount.ToString("0.00")
+    </Column>
+    <Column @bind-Field="@context.Status" Width="10%">
+        @if (context.Status == RAStatus.Published)
+        {
+            <Tag Color="green">@context.Status</Tag>
+        }
+        else
+        {
+            <Tag Color="blue">@context.Status</Tag>
+        }
+    </Column>
 </Table>
 
 @code {
@@ -144,7 +143,7 @@
     void LoadNewRABillPage()
     {
         navManager.NavigateTo($"/workorder/{WorkOrderId}/Ra");
-        
+
     }
     async Task DeleteRABill(int id)
     {
@@ -161,7 +160,7 @@
         {
             await messageService.Error(result.Message);
         }
-       
+
     }
     void GoToEditPage(int raId)
     {

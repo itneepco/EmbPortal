@@ -18,15 +18,6 @@
     </Row>
 </Form>
 
-@if (mbSheet != null)
-{
-    <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
-        <CascadingValue Value="@mbSheet.Id" Name="MBSheetId">
-            <MBSheetItemTable MBSheetItems="mbSheet.Items" />
-        </CascadingValue>
-    </CascadingValue>
-}
-
 <Row Justify="start" Style="margin-top: 2rem;">
     <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
 </Row>
@@ -34,8 +25,6 @@
 @code {
     [Parameter]
     public string MBookId { get; set; }
-
-    MBSheetResponse mbSheet;
 
     bool loading = false;
 

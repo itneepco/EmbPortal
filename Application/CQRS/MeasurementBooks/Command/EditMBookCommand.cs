@@ -27,7 +27,7 @@ public class EditMBCommandHandler : IRequestHandler<EditMBookCommand>
         _orderService = orderService;
     }
 
-    public async Task<Unit> Handle(EditMBookCommand req, CancellationToken cancellationToken)
+    public async Task Handle(EditMBookCommand req, CancellationToken cancellationToken)
     {
         var mBook = await _context.MeasurementBooks
             .Include(p => p.Items)
@@ -90,7 +90,5 @@ public class EditMBCommandHandler : IRequestHandler<EditMBookCommand>
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

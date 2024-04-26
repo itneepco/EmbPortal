@@ -23,7 +23,7 @@ namespace Application.CQRS.Identity.Commands
             this.userManager = userManager;
         }
 
-        public async Task<Unit> Handle(ResetUserPasswordCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ResetUserPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByIdAsync(request.UserId);
 
@@ -34,8 +34,6 @@ namespace Application.CQRS.Identity.Commands
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             await userManager.ResetPasswordAsync(user, token, "Pass@123");
-
-            return Unit.Value;
         }
     }
 }

@@ -29,10 +29,10 @@
            Size="@TableSize.Small"
            DataSource="@purchaseOrder.Items"
            HidePagination>
-            <RowTemplate>
+            <ColumnDefinitions>
                 <Column Title="Item No" @bind-Field="@context.ItemNo" Width="20%" />
                 <Column Title="Description" @bind-Field="@context.Description" Width="80%" />
-            </RowTemplate>
+            </ColumnDefinitions>
 
             <ExpandTemplate Context="rowData">
                 <Table TItem="ServiceItem"
@@ -85,17 +85,10 @@
     public bool Visible { get; set; }
 
     PurchaseOrder purchaseOrder;
-    //List<UserResponse> users = new();
     WorkOrderRequest model { get; set; } = new();
 
     bool loading;
     string poNumber;
-    string empCode;
-
-    protected override async Task OnInitializedAsync()
-    {
-       //users = await userService.GetAllUsers();
-    }
 
     async Task SearchPO()
     {

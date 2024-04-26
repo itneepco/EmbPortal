@@ -20,7 +20,7 @@ public class PublishMBookCommandHandler : IRequestHandler<PublishMBookCommand>
         _context = context;
     }
 
-    public async Task<Unit> Handle(PublishMBookCommand request, CancellationToken cancellationToken)
+    public async Task Handle(PublishMBookCommand request, CancellationToken cancellationToken)
     {
         var mBook = await _context.MeasurementBooks.FindAsync(request.Id);
 
@@ -36,7 +36,5 @@ public class PublishMBookCommandHandler : IRequestHandler<PublishMBookCommand>
 
         mBook.MarkPublished();
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 }

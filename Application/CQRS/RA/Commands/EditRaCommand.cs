@@ -24,15 +24,12 @@ public class EditRaHandler : IRequestHandler<EditRaCommand>
         _db = db;
     }
 
-    public async Task<Unit> Handle(EditRaCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditRaCommand request, CancellationToken cancellationToken)
     {
         var ra = await _db.RAHeaders
                     .Include(p => p.Items)
                     .Include(p => p.Deductions)
                     .SingleOrDefaultAsync(i => i.Id == request.id);
-
-        //var worder = await _db.WorkOrders.Include(w => w.Items)
-        //               .SingleAsync(p => p.Id == request.data.WorkOrderId);
 
         ra.BillDate = (DateTime)request.data.BillDate;
         ra.FromDate = (DateTime)request.data.FromDate;
@@ -57,6 +54,5 @@ public class EditRaHandler : IRequestHandler<EditRaCommand>
             });
         }
         await _db.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

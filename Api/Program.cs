@@ -16,7 +16,8 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        QuestPDF.Settings.DocumentLayoutExceptionThreshold = 10000;
+        //QuestPDF.Settings.DocumentLayoutExceptionThreshold = 10000;
+
         QuestPDF.Settings.License = LicenseType.Community;
 
         var host = CreateHostBuilder(args).Build();

@@ -23,7 +23,7 @@ namespace Application.CQRS.MBSheets.Command
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteMBSheetCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteMBSheetCommand request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets
                 .Include(p => p.Items)
@@ -59,7 +59,6 @@ namespace Application.CQRS.MBSheets.Command
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
         }
     }
 }

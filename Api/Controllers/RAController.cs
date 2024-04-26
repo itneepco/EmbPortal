@@ -2,7 +2,6 @@
 using Api.Reports;
 using Application.CQRS.RA.Commands;
 using Application.CQRS.RA.Queries;
-using EmbPortal.Shared.Enums;
 using EmbPortal.Shared.Requests.RA;
 using EmbPortal.Shared.Responses.RA;
 using Microsoft.AspNetCore.Authorization;

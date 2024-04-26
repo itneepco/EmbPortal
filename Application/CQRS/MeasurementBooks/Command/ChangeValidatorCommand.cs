@@ -23,7 +23,7 @@ public class ChangeValidatorCommandHnadler : IRequestHandler<ChangeValidatorComm
         _currentUserService = currentUserService;
     }
 
-    public async Task<Unit> Handle(ChangeValidatorCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeValidatorCommand request, CancellationToken cancellationToken)
     {
         var mBook = await _context.MeasurementBooks.FirstOrDefaultAsync(p => p.Id == request.id);
 
@@ -41,6 +41,5 @@ public class ChangeValidatorCommandHnadler : IRequestHandler<ChangeValidatorComm
 
         mBook.SetValidatingOfficer(request.data.Officer);
         await _context.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

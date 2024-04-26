@@ -8,7 +8,7 @@
        Loading="@loading"
        HidePagination Bordered>
 
-    <RowTemplate>
+    <ColumnDefinitions>
         <Column Title="Item" TData="string" DataIndex="@nameof(context.ShortServiceDesc)" Width="35%" />
         <Column Title="Service No" TData="int" DataIndex="@nameof(context.ServiceNo)" Width="15%" />
         <Column Title="Uom" TData="string" DataIndex="@nameof(context.Uom)" Width="15%" />
@@ -44,7 +44,7 @@
                 </AntDesign.Col>
             </Row>
         </ActionColumn>
-    </RowTemplate>
+    </ColumnDefinitions>
 
     <ExpandTemplate Context="rowData">
         <Table DataSource="rowData.Data.Measurements"
@@ -84,7 +84,6 @@
 
     bool loading = false;
     bool modalVisible = false;
-    bool drawerVisible = false;
 
     async Task OnDeleteItem(MBSheetItemResponse item)
     {
@@ -101,18 +100,6 @@
         {
             await messageService.Error(result.Message);
         }
-    }
-
-    void OpenSideDrawer(MBSheetItemResponse item)
-    {
-        currentMBSheetItem = item;
-        drawerVisible = true;
-    }
-
-    void CloseSideBar()
-    {
-        currentMBSheetItem = new();
-        drawerVisible = false;
     }
 
     async Task OnItemSubmit()

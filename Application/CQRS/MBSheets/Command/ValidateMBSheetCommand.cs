@@ -23,7 +23,7 @@ namespace Application.CQRS.MBSheets.Command
             _currentUserService = currentUserService;
         }
 
-        public async Task<Unit> Handle(ValidateMBSheetCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ValidateMBSheetCommand request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets.FindAsync(request.Id);
 
@@ -44,8 +44,6 @@ namespace Application.CQRS.MBSheets.Command
 
             mbSheet.MarkAsValidated();
             await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

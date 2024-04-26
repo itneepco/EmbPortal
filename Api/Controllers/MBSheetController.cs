@@ -162,7 +162,9 @@ namespace Api.Controllers
         {
             var command = new RemoveMBSheetAttachmentCommand(mbSheetId, itemId, attachmentId, env.ContentRootPath);
 
-            return Ok(await Mediator.Send(command));
+            await Mediator.Send(command);
+
+            return NoContent();
         }
 
         [HttpGet("{mbSheetId}/Item/{itemId}/Attachment/{attachmentId}/Download")]

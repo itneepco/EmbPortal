@@ -1,6 +1,5 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using EmbPortal.Shared.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
@@ -20,7 +19,7 @@ public class DeleteWorkOrderCommandHandler : IRequestHandler<DeleteWorkOrderComm
         _context = context;
     }
 
-    public async Task<Unit> Handle(DeleteWorkOrderCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteWorkOrderCommand request, CancellationToken cancellationToken)
     {
         var workOrder = await _context.WorkOrders.FindAsync(request.id);
         
@@ -37,8 +36,6 @@ public class DeleteWorkOrderCommandHandler : IRequestHandler<DeleteWorkOrderComm
         }
         _context.WorkOrders.Remove(workOrder);
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
         
     }
 }

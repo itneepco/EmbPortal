@@ -45,9 +45,6 @@
     </ActionColumn>
 </Table>
 
-<FileUploadComponent @bind-Visible="modalVisible"
-                     CurrentMBSheetItem="@currentMBSheetItem" />
-
 @code {
     [Parameter]
     public int MBookId { get; set; }
@@ -57,9 +54,6 @@
 
     List<MBSheetInfoResponse> mbSheets = new();
     bool loading = false;
-
-    MBSheetItemResponse currentMBSheetItem;
-    bool modalVisible = false;
 
     protected override async Task OnInitializedAsync()
     {

@@ -3,7 +3,7 @@
         <Form Model="@Stepper.Model" OnFinish="@Submit" Layout="@FormLayout.Vertical" Style=" margin-top: 1rem">
 
             <FormItem Label="RA Bill Date">
-                <DatePicker TValue="DateTime?"  Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
+                <DatePicker TValue="DateTime?" Picker="@DatePickerType.Date" @bind-Value="@context.BillDate" Format="dd-MM-yyyy" Style="width: 100%" />
             </FormItem>
 
             <FormItem Label="Bill Period From:">
@@ -43,6 +43,6 @@
     private void Submit()
     {
         Stepper.Next();
-    }    
-    
+    }
+
 }

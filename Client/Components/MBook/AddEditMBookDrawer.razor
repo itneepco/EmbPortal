@@ -208,6 +208,8 @@
         form.ValidationReset();
         pendingItems.Clear();
         lineItems.Clear();
+        selectedItemNo = 0;
+        selectedRows = new List<PendingOrderItemResponse>();
     }
 
     private class LineItem

@@ -23,7 +23,7 @@ namespace Application.CQRS.MBSheets.Command
             _context = context;
         }
 
-        public async Task<Unit> Handle(EditMBSheetItemCommand request, CancellationToken cancellationToken)
+        public async Task Handle(EditMBSheetItemCommand request, CancellationToken cancellationToken)
         {
             var mbSheet = await _context.MBSheets
                 .Include(p => p.Items).ThenInclude(p => p.Measurements)
@@ -56,8 +56,6 @@ namespace Application.CQRS.MBSheets.Command
             }
 
             await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

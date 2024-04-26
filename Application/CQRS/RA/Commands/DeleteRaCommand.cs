@@ -1,9 +1,7 @@
 ﻿using Application.Exceptions;
 using Application.Interfaces;
-using Domain.Entities.MeasurementBookAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Ocsp;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +19,7 @@ public class Handler: IRequestHandler<DeleteRa>
         _db = db;
     }
 
-    public  async Task<Unit> Handle(DeleteRa request, CancellationToken cancellationToken)
+    public  async Task Handle(DeleteRa request, CancellationToken cancellationToken)
     {
         var ra = await _db.RAHeaders
                 .Include(p => p.Items)
@@ -31,16 +29,9 @@ public class Handler: IRequestHandler<DeleteRa>
         {
             throw new NotFoundException(nameof(ra), request.Id);
         }
-        //var worder = await _db.WorkOrders.Include(w => w.Items)
-        //               .SingleAsync(p => p.Id == ra.WorkOrderId);
 
-        //foreach (var item in ra.Items)
-        //{
-        //    worder.UpdateRaQuantity(item.CurrentRAQty, 0, item.WorkOrderItemId);
-        //}
 
         _db.RAHeaders.Remove(ra);
         await _db.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

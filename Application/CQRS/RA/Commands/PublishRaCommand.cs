@@ -21,7 +21,7 @@ public class PublishRaCommandHandler : IRequestHandler<PublishRaCommand>
         _db = db;
     }
 
-    public async Task<Unit> Handle(PublishRaCommand request, CancellationToken cancellationToken)
+    public async Task Handle(PublishRaCommand request, CancellationToken cancellationToken)
     {
         var ra = await _db.RAHeaders.Include(r => r.Items).FirstOrDefaultAsync(p => p.Id == request.raId);
         if (ra == null)
@@ -40,6 +40,5 @@ public class PublishRaCommandHandler : IRequestHandler<PublishRaCommand>
             worder.AddRAQuantity(item.CurrentRAQty, item.WorkOrderItemId);
         }
         await _db.SaveChangesAsync(cancellationToken);
-        return Unit.Value;
     }
 }

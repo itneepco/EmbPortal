@@ -1,6 +1,5 @@
 ﻿<CascadingAuthenticationState>
-    <CascadingBreadcrumbService>
-    <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+    <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
@@ -20,5 +19,4 @@
         </NotFound>
     </Router>
     <AntContainer />
-    </CascadingBreadcrumbService>
 </CascadingAuthenticationState>

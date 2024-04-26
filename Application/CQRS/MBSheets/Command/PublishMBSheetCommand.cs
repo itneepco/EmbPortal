@@ -18,7 +18,7 @@ namespace Application.CQRS.MBSheets.Command
         {
             _context = context;
         }
-        public async Task<Unit> Handle(PublishMBSheetCommand request, CancellationToken cancellationToken)
+        public async Task Handle(PublishMBSheetCommand request, CancellationToken cancellationToken)
         {
             var mBSheet = await _context.MBSheets.FindAsync(request.Id);
             if (mBSheet == null)
@@ -33,7 +33,6 @@ namespace Application.CQRS.MBSheets.Command
 
             mBSheet.MarkPublished();
             await _context.SaveChangesAsync(cancellationToken);
-            return Unit.Value;
         }
     }
 
