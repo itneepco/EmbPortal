@@ -1,4 +1,5 @@
-﻿using EmbPortal.Shared.Responses.MBSheets;
+﻿using EmbPortal.Shared.Enums;
+using EmbPortal.Shared.Responses.MBSheets;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +10,11 @@ namespace EmbPortal.Shared.Responses
         public int Id { get; set; }
         public int MBSheetId { get; set; }
         public int WorkOrderItemId { get; set; }
-
         public long ServiceNo { get; set; }
         public string ShortServiceDesc { get; set; }
         public string Uom { get; set; }
         public decimal UnitRate { get; set; }
-
+        public MBSheetStatus Status { get; set; }
         public List<ItemAttachmentResponse> Attachments { get; set; }
         public List<MBSheetItemMeasurementResponse> Measurements { get; set; }
 

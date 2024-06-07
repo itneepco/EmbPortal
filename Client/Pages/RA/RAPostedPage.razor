@@ -1,0 +1,98 @@
+﻿@page "/ra/posted"
+
+<Breadcrumb Style="margin-bottom: 0.5rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="dashboard" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+    <BreadcrumbItem>
+        Posted RAs
+    </BreadcrumbItem>
+</Breadcrumb>
+
+<h3>Posted RA Bills</h3>
+<Row Style="margin-bottom: 0.75rem">
+    <Space>
+       
+        @if (selectedRows != null && selectedRows.Count() > 0)
+        {           
+            <SpaceItem>
+                <Button Type="@ButtonType.Default" Icon="@IconType.Outline.Read" OnClick="() => ViewDetail(selectedRows.First().WorkOrderId, selectedRows.First().Id)">Details</Button>
+            </SpaceItem>           
+            <SpaceItem>
+                <Button Type="@ButtonType.Default"
+                        Icon="@IconType.Outline.Printer"
+                        Disabled="@_downloading"
+                        OnClick="() => PrintRa(selectedRows.First().Id)">
+                    Print
+                </Button>
+            </SpaceItem>
+        }
+    </Space>
+</Row>
+<Table Loading="@loading"
+       TItem="RAResponse"
+       @bind-SelectedRows="selectedRows"
+       Size="@TableSize.Small"
+       DataSource="@raResponses">
+    <Selection Key="@context.Id.ToString()" Type="radio" Width="5%" />
+    <Column Title="RA Bill Title" TData="string" DataIndex="@nameof(context.Title)" />
+    <Column Title="Bill Date" Format="dd-MM-yyyy" @bind-Field="@context.BillDate" Width="15%" />
+    <Column Title="Bill Amount" TData="decimal">
+        @context.RAAmount.ToString("0.00")
+    </Column>
+    <Column Title="Deduction" TData="decimal">
+        @context.Deduction.ToString("0.00")
+    </Column>
+    <Column Title="Net Amount" TData="decimal">
+        @context.NetAmount.ToString("0.00")
+    </Column>
+
+   
+
+</Table>
+
+@code {
+    bool loading;
+    private bool _downloading = false;
+    List<RAResponse> raResponses = new();
+    IEnumerable<RAResponse> selectedRows;
+    async Task LoadPostedRAsAsync()
+    {
+        loading = true;
+        raResponses = await raService.GetUserPostedRAs();
+        loading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPostedRAsAsync();
+    }
+
+    void GoToRaOnOrderDetailPage(int workderId)
+    {
+        navManager.NavigateTo($"/orderdetail/{workderId}/ra");
+    }
+    void ViewDetail(int orderId, int id)
+    {
+        navManager.NavigateTo($"/workorder/{orderId}/radetail/{id}");
+    }
+
+    async Task PrintRa(int id)
+    {
+        _downloading = true;
+        var base64 = await raService.GenrateRaReport(id);
+        _downloading = false;
+
+        string mimeType = "application/pdf";
+        string name = Guid.NewGuid().ToString();
+
+        await _jsRuntime.InvokeVoidAsync("Download", new
+        {
+            ByteArray = base64,
+            FileName = name,
+            MimeType = mimeType
+        });
+    }
+}

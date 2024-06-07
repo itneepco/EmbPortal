@@ -99,7 +99,7 @@
                                 </PrefixTemplate>
                             </Statistic>
                             <Button OnClick="@LoadPendingRAs" Style="margin-top: 16px;" Type="@ButtonType.Primary">
-                                VIEW PENDING RA
+                                VIEW 
                             </Button>
                         </AntDesign.Col>
                         <AntDesign.Col Xs="12">
@@ -108,9 +108,9 @@
                                     <span><Icon Type="check" /></span>
                                 </PrefixTemplate>
                             </Statistic>
-                            @* <Button Style="margin-top: 16px;" Type="@ButtonType.Primary">
+                            <Button OnClick="@LoadPostedRAs" Style="margin-top: 16px;" Type="@ButtonType.Primary">
                             VIEW
-                            </Button> *@
+                            </Button> 
                         </AntDesign.Col>
                     </Row>
                 </Body>
@@ -166,5 +166,10 @@
     void LoadPendingRAs()
     {
         navManager.NavigateTo($"/ra/pending");
+    }
+
+    void LoadPostedRAs()
+    {
+        navManager.NavigateTo($"/ra/posted");
     }
 }

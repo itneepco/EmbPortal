@@ -96,11 +96,10 @@ public class GetMBookByIdQueryHandler : IRequestHandler<GetMBookByIdQuery, MBook
             item.PoQuantity = wOrderItem.PoQuantity;
             item.Uom = wOrderItem.Uom;
             item.UnitRate = wOrderItem.UnitRate;
-            item.ShortServiceDesc = wOrderItem.ShortServiceDesc;
-    
+            item.ShortServiceDesc = wOrderItem.ShortServiceDesc;    
 
             var mbItemQtyStatus = mbItemQtyStatuses.Find(i => i.WorkOrderItemId == item.WorkOrderItemId);
-            
+            item.TillLastRAQty = wOrderItem.RAQuantity;
             item.AcceptedMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.AcceptedMeasuredQty : 0;
             item.CumulativeMeasuredQty = mbItemQtyStatus != null ? mbItemQtyStatus.TotalMeasuredQty : 0;
         }
