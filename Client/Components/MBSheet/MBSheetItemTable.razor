@@ -15,6 +15,7 @@
         <Column Title="Measured Quantity" TData="string" Width="15%">@context.MeasuredQuantity.ToString("0.00")</Column>
         <ActionColumn Title="Action" Width="20%">
             <Row Justify="center" Gutter="6">
+
                 <AntDesign.Col>
                     <Button Icon="@(IconType.Outline.Upload)"
                             Size="@ButtonSize.Small"
@@ -23,25 +24,29 @@
                             OnClick="_=> OpenFileUploadModal(context)">
                     </Button>
                 </AntDesign.Col>
-                <AntDesign.Col>
-                    <Button Icon="@(IconType.Outline.Edit)"
-                            Size="@ButtonSize.Small"
-                            Shape="@ButtonShape.CircleOutline"
-                            OnClick="_=> GoToEditMeasurementPage(context)">
-                    </Button>
-                </AntDesign.Col>
-                <AntDesign.Col>
-                    <Popconfirm Title="Sure to delete?"
-                                OnConfirm="()=> OnDeleteItem(context)"
-                                OkText="Yes"
-                                CancelText="No">
-                        <Button Icon="@(IconType.Outline.Delete)"
+
+                @if (context.Status == MBSheetStatus.CREATED)
+                {
+                    <AntDesign.Col>
+                        <Button Icon="@(IconType.Outline.Edit)"
+                                Size="@ButtonSize.Small"
                                 Shape="@ButtonShape.CircleOutline"
-                                Danger
-                                Size="@ButtonSize.Small">
+                                OnClick="_=> GoToEditMeasurementPage(context)">
                         </Button>
-                    </Popconfirm>
-                </AntDesign.Col>
+                    </AntDesign.Col>
+                    <AntDesign.Col>
+                        <Popconfirm Title="Sure to delete?"
+                                    OnConfirm="()=> OnDeleteItem(context)"
+                                    OkText="Yes"
+                                    CancelText="No">
+                            <Button Icon="@(IconType.Outline.Delete)"
+                                    Shape="@ButtonShape.CircleOutline"
+                                    Danger
+                                    Size="@ButtonSize.Small">
+                            </Button>
+                        </Popconfirm>
+                    </AntDesign.Col>
+                }
             </Row>
         </ActionColumn>
     </ColumnDefinitions>

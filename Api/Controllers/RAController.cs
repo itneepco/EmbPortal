@@ -123,4 +123,11 @@ public class RAController : ApiController
         var query = new GetUserPendingRAs();
         return Ok(await Mediator.Send(query));
     }
+
+    [HttpGet("posted")]
+    public async Task<ActionResult<List<RAResponse>>> GetUserPostedRAs()
+    {
+        var query = new GetUserPostedRAs();
+        return Ok(await Mediator.Send(query));
+    }
 }

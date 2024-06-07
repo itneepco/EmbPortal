@@ -3,7 +3,7 @@
 <div style="margin-top:14px">
 </div>
 
-<Table TItem="RAItemRequest"
+<Table TItem="RAItemRequest"     
        DataSource="@Stepper.Model.Items.GroupBy(p => p.ItemNo).Select(p => p.First()).ToList()"
        Size="@TableSize.Small"
        ScrollX="800"
@@ -17,11 +17,12 @@
         <Column Title="Description" @bind-Field="@context.ItemDescription" Width="80%" />
     </ColumnDefinitions>
 
-    <ExpandTemplate Context="rowData">
+    <ExpandTemplate Context="rowData" >
         <Table TItem="RAItemRequest"
                DataSource="@Stepper.Model.Items.Where(p => p.ItemNo == rowData.Data.ItemNo)"
                PageSize="@Stepper.Model.Items.Where(p => p.ItemNo == rowData.Data.ItemNo).Count()"
                RowClassName="@(x => x.Data.CurrentRAQty > x.Data.AvailableQty ? "danger":null)"
+               
                Bordered HidePagination>
           
             <Column Title="Description" @bind-Field="@context.ShortServiceDesc"></Column>
@@ -37,7 +38,7 @@
                 @context.AvailableQty.ToString("0.00")
             </Column>
             <Column Title="Curr Qty" TData="float" Width="8%">
-                <Input Type="text" @bind-Value="context.CurrentRAQty" On/>
+                <Input Type="number" @bind-Value="context.CurrentRAQty"/>
             </Column>
             <Column Title="Amount" TData="decimal">
                 @context.CurrentRAAmount.ToString("0.00")
@@ -74,7 +75,8 @@
 @code {
     [CascadingParameter]
     public RaPage Stepper { get; set; }
-    
+
+   
     void Next()
     {
         if (Stepper.Model.Items.Where(p => p.CurrentRAQty > p.AvailableQty).ToList().Count > 0)

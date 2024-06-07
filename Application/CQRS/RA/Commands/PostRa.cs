@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http.Json;
+using EmbPortal.Shared.Responses.RA;
 
 namespace Application.CQRS.RA.Commands;
 
@@ -32,13 +33,13 @@ public class PostRaCommandHandler : IRequestHandler<PostRaCommand>
     {
         var wOrderQuery = _db.WorkOrders.Include(p => p.Items).AsQueryable();
 
-        var raQuery = _db.RAHeaders
+        var raQuery = _db.RAHeaders                               
                                 .Include(i => i.Items)
                                 .Include(i => i.Deductions)
                                 .AsQueryable();
 
         var query = from order in wOrderQuery
-                    join ra in raQuery
+                    join ra in raQuery  
                     on order.Id equals ra.WorkOrderId
                     select new { order, ra };
 
@@ -58,7 +59,7 @@ public class PostRaCommandHandler : IRequestHandler<PostRaCommand>
                 PackageNo = item.Key.PackageNo,
                 Remarks = result.ra.Remarks,
                 Details = item.Select(subItem => new SapSESubItem
-                {
+                {                   
                     SubItemNo = subItem.SubItemNo,
                     SubItemPackageNo = subItem.SubItemPackageNo,
                     ServiceNo = subItem.ServiceNo,
@@ -67,38 +68,39 @@ public class PostRaCommandHandler : IRequestHandler<PostRaCommand>
                 }).ToList()
             }).ToList()            
         };
+       
         //--- post to RA Bill to sap ---
-
         using var httpClient = new HttpClient();
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
             Convert.ToBase64String(request.authToken));
 
         var response = await httpClient.PostAsJsonAsync(request.url, sapSEHeader);
-
         var responseAsString = await response.Content.ReadAsStringAsync();
 
-        if (response.IsSuccessStatusCode)
-        {
-            result.ra.MarkAsPosted();
-            await _db.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation("Successfully posted the RA Bill to SAP");
-        }
-        else
-        {
-            var json = JsonSerializer.Deserialize<SapResponse>(responseAsString, new JsonSerializerOptions
+            if (response.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true
-            });
+                result.ra.MarkAsPosted();
+                await _db.SaveChangesAsync(cancellationToken);
 
-            foreach (var item in json.Response)
-            {
-                _logger.LogError(responseAsString);
-                _logger.LogError($"Code: {item.Code}, Message: {item.Message}");
+                _logger.LogInformation("Successfully posted the RA Bill to SAP");
             }
+            else
+            {
+                var json = JsonSerializer.Deserialize<SapResponse>(responseAsString, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
-            throw new BadRequestException("Not able to post RA Bill to SAP");
-        }
+                foreach (var item in json.Response)
+                {
+                    _logger.LogError(responseAsString);
+                    _logger.LogError($"Code: {item.Code}, Message: {item.Message}");
+                }
+
+                throw new BadRequestException("Not able to post RA Bill to SAP");
+            }
+        
+        
     }
 }
 

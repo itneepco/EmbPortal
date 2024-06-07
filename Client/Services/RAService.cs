@@ -70,4 +70,9 @@ public class RAService : IRAService
     {
         return await _httpClient.GetFromJsonAsync<List<RAResponse>>("/api/RA/pending");
     }
+
+    public async Task<List<RAResponse>> GetUserPostedRAs()
+    {
+        return await _httpClient.GetFromJsonAsync<List<RAResponse>>("/api/RA/posted");
+    }
 }

@@ -46,25 +46,29 @@ public class CreateRACommandHandler : IRequestHandler<CreateRACommand, int>
         };
         foreach (var item in request.data.Items)
         {
-            raBill.AddItem(
-                new RAItem
-                    {
-                        WorkOrderItemId = item.WorkOrderItemId,
-                        ItemNo = item.ItemNo,
-                        ItemDescription = item.ItemDescription,
-                        PackageNo = item.PackageNo,
-                        SubItemNo = item.SubItemNo, 
-                        SubItemPackageNo = item.SubItemPackageNo,
-                        ServiceNo = item.ServiceNo,
-                        ShortServiceDesc = item.ShortServiceDesc,                        
-                        UnitRate = item.UnitRate,
-                        Uom = item.Uom,
-                        PoQuantity = item.PoQuantity,
-                        MeasuredQty = item.MeasuredQty,
-                        TillLastRAQty = item.TillLastRAQty,                    
-                        CurrentRAQty = item.CurrentRAQty
+            if(item.CurrentRAQty > 0)
+            {
+                raBill.AddItem(
+                     new RAItem
+                     {
+                         WorkOrderItemId = item.WorkOrderItemId,
+                         ItemNo = item.ItemNo,
+                         ItemDescription = item.ItemDescription,
+                         PackageNo = item.PackageNo,
+                         SubItemNo = item.SubItemNo,
+                         SubItemPackageNo = item.SubItemPackageNo,
+                         ServiceNo = item.ServiceNo,
+                         ShortServiceDesc = item.ShortServiceDesc,
+                         UnitRate = item.UnitRate,
+                         Uom = item.Uom,
+                         PoQuantity = item.PoQuantity,
+                         MeasuredQty = item.MeasuredQty,
+                         TillLastRAQty = item.TillLastRAQty,
+                         CurrentRAQty = item.CurrentRAQty
                      }
-                );           
+                 );
+            }
+                     
         }
         foreach (var item in request.data.Deductions)
         {

@@ -13,6 +13,7 @@ public interface IRAService
     Task<IResult<RADetailResponse>> GetRAById(int raId);
     Task<List<RAResponse>> GetRAsByWOrder(int wOrderId);
     Task<List<RAResponse>> GetUserPendingRAs();
+    Task<List<RAResponse>> GetUserPostedRAs();
     Task<IResult> DeleteRa(int raId);
     Task<IResult> EditRa(RARequest request,int raId);
     Task<IResult> PublishRa( int raId);
