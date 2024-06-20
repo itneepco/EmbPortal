@@ -1,9 +1,5 @@
-﻿<Button OnClick="GoToAddMeasurementPage" Icon="@IconType.Outline.Plus" Style="margin-bottom: 0.5rem">
-    Add Measurement
-</Button>
-
-<Table DataSource="@MBSheetItems"
-       PageSize="@MBSheetItems.Count"
+﻿<Table DataSource="@MBSheet.Items"
+       PageSize="@MBSheet.Items.Count"
        Size="TableSize.Small"
        Loading="@loading"
        HidePagination Bordered>
@@ -25,7 +21,7 @@
                     </Button>
                 </AntDesign.Col>
 
-                @if (context.Status == MBSheetStatus.CREATED)
+                @if (MBSheet.Status == MBSheetStatus.CREATED || MBSheet.Status == MBSheetStatus.PUBLISHED)
                 {
                     <AntDesign.Col>
                         <Button Icon="@(IconType.Outline.Edit)"
@@ -34,6 +30,7 @@
                                 OnClick="_=> GoToEditMeasurementPage(context)">
                         </Button>
                     </AntDesign.Col>
+
                     <AntDesign.Col>
                         <Popconfirm Title="Sure to delete?"
                                     OnConfirm="()=> OnDeleteItem(context)"
@@ -69,18 +66,12 @@
 
 <FileUploadComponent @bind-Visible="modalVisible"
                      @bind-CurrentMBSheetItem="@currentMBSheetItem"
-                     IsUpload="true"
+                     IsUpload="isUpload"
                      OnItemSubmit="@OnItemSubmit" />
 
 @code {
-    [CascadingParameter(Name = "MBookId")]
-    public int MBookId { get; set; }
-
-    [CascadingParameter(Name = "MBSheetId")]
-    public int MBSheetId { get; set; }
-
     [Parameter]
-    public List<MBSheetItemResponse> MBSheetItems { get; set; }
+    public MBSheetResponse MBSheet { get; set; }
 
     [Parameter]
     public EventCallback ReloadPage { get; set; }
@@ -89,11 +80,12 @@
 
     bool loading = false;
     bool modalVisible = false;
+    bool isUpload = true;
 
     async Task OnDeleteItem(MBSheetItemResponse item)
     {
         loading = true;
-        var result = await mbSheetService.DeleteMBSheetItem(MBSheetId, item.Id);
+        var result = await mbSheetService.DeleteMBSheetItem(MBSheet.Id, item.Id);
         loading = false;
 
         if (result.Succeeded)
@@ -116,14 +108,12 @@
     {
         currentMBSheetItem = item;
         modalVisible = true;
+        isUpload = (MBSheet.Status == MBSheetStatus.CREATED || MBSheet.Status == MBSheetStatus.PUBLISHED) ? true : false;
     }
-    void GoToAddMeasurementPage()
-    {
-        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items");
-    }
+    
 
     void GoToEditMeasurementPage(MBSheetItemResponse item)
     {
-        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items/{item.Id}");
+        navManager.NavigateTo($"/mbook/{MBSheet.MeasurementBookId}/mbsheet/{MBSheet.Id}/items/{item.Id}");
     }
 }

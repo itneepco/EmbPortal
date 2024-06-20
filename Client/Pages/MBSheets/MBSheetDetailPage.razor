@@ -8,7 +8,7 @@
     </BreadcrumbItem>
     
     <BreadcrumbItem>
-        MB Sheets
+        MB Sheet
     </BreadcrumbItem>
 </Breadcrumb>
 
@@ -25,7 +25,9 @@
                     </AntDesign.Col Sm="8">
                     <AntDesign.Col>
                         <FormItem Label="Action">
-                            <Button HtmlType="submit" Type="@ButtonType.Primary">Save</Button>
+                            <Button HtmlType="submit" 
+                                    Type="@ButtonType.Primary" 
+                                    Disabled="mbSheet.Status != MBSheetStatus.CREATED">Save</Button>
                         </FormItem>
                     </AntDesign.Col>
                 </Row>
@@ -39,14 +41,14 @@
                     OnConfirm="DeleteMBSheet"
                     OkText="Yes"
                     CancelText="No">
-                    <Button Icon="@(IconType.Outline.Delete)" Size="@ButtonSize.Small" Loading="@loading" Danger Style="margin-right: 0.2rem">Delete</Button>
+                    <Button Icon="@(IconType.Outline.Delete)" Loading="@loading" Danger Style="margin-right: 0.2rem">Delete</Button>
                 </Popconfirm>
 
                 <Popconfirm Title="Sure to publish?"
                     OnConfirm="()=> PublishMBSheet(mbSheet.Id)"
                     OkText="Yes"
                     CancelText="No">
-                    <Button Icon="@(IconType.Outline.CarryOut)" Size="@ButtonSize.Small" Type="@ButtonType.Primary">Publish</Button>
+                    <Button Icon="@(IconType.Outline.CarryOut)" Type="@ButtonType.Primary">Publish</Button>
                 </Popconfirm>
             }
 
@@ -72,11 +74,15 @@
         </AntDesign.Col>
     </Row>
 
-    <CascadingValue Value="@int.Parse(MBookId)" Name="MBookId">
-        <CascadingValue Value="MBSheetId" Name="MBSheetId">
-            <MBSheetItemTable MBSheetItems="mbSheet.Items" ReloadPage="@ReloadPage" />
-        </CascadingValue>
-    </CascadingValue>
+    <Button OnClick="GoToAddMeasurementPage" 
+            Icon="@IconType.Outline.Plus" 
+            Disabled="!(mbSheet.Status == MBSheetStatus.CREATED || mbSheet.Status == MBSheetStatus.PUBLISHED)"
+            Style="margin-bottom: 0.5rem">
+
+        Add Measurement
+    </Button>
+
+    <MBSheetItemTable MBSheet="mbSheet" ReloadPage="@ReloadPage" />
 
     <Row Justify="start" Style="margin-top: 2rem;">
         <Button OnClick="@GoToMBookDetailPage" Style="margin-right: 0.25rem;">Go Back</Button>
@@ -88,6 +94,7 @@ else
         <Empty />
     </Spin>
 }
+
 
 @code {
     [Parameter]
@@ -125,18 +132,13 @@ else
         employeeCode = state.User.GetEmployeeCodeFromClaimsPrincipal();
 
         await LoadMBookDetailsAsync();
-
-        if (mbSheet != null) // initialize the model with data from db
-        {
-            model.MeasurementDate = mbSheet.MeasurementDate;
-            model.MeasurementBookId = mbSheet.MeasurementBookId;
-        }
     }
 
     async Task LoadMBookDetailsAsync()
     {
         loading = true;
         var result = await mbSheetService.GetMBSheetById(MBSheetId);
+        loading = false;
 
         if (!result.Succeeded)
         {
@@ -146,7 +148,8 @@ else
         }
 
         mbSheet = result.Data;
-        loading = false;
+        model.MeasurementDate = mbSheet.MeasurementDate;
+        model.MeasurementBookId = mbSheet.MeasurementBookId;
 
         StateHasChanged();
     }
@@ -227,5 +230,10 @@ else
     void GoToMBookDetailPage()
     {
         navManager.NavigateTo($"/mbooks/{MBookId}/tab2");
+    }
+
+    void GoToAddMeasurementPage()
+    {
+        navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}/items");
     }
 }

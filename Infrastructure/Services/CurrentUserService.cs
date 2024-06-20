@@ -12,9 +12,9 @@ public class CurrentUserService : ICurrentUserService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string Email => _httpContextAccessor.HttpContext?.User?.GetEmailFromClaimsPrincipal();
+    public string? Email => _httpContextAccessor.HttpContext?.User?.GetEmailFromClaimsPrincipal();
 
-    public string EmployeeCode => _httpContextAccessor.HttpContext?.User?.GetEmployeeCodeFromClaimsPrincipal();
+    public string? EmployeeCode => _httpContextAccessor.HttpContext?.User?.GetEmployeeCodeFromClaimsPrincipal();
 
-    public string DisplayName => _httpContextAccessor.HttpContext?.User?.GetUserNameFromClaimsPrincipal();
+    public string? DisplayName => _httpContextAccessor.HttpContext?.User?.GetUserNameFromClaimsPrincipal();
 }

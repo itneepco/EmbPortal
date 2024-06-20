@@ -3,6 +3,21 @@
 
 <h3>Edit Measurements</h3>
 
+<Breadcrumb Style="margin-bottom: 0.75rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+
+    <BreadcrumbItem Href="@($"mbook/{MBookId}/mbsheet/{MBSheetId}")">
+        MB Sheet
+    </BreadcrumbItem>
+
+    <BreadcrumbItem>
+        Edit Measurement
+    </BreadcrumbItem>
+</Breadcrumb>
+
 <Spin Spinning="loading">
     <CascadingValue Value="MBookId" Name="MBookId">
         <CascadingValue Value="MBSheetId" Name="MBSheetId">
@@ -46,15 +61,25 @@
     {
         loading = true;
 
-        var result = await mbSheetService.GetMBSheetItemById(MBSheetId, MBSheetItemId);
-        if (!result.Succeeded)
+        var mbSheetResult = await mbSheetService.GetMBSheetById(MBSheetId);
+        var mbItemResult = await mbSheetService.GetMBSheetItemById(MBSheetId, MBSheetItemId);
+
+        if (!mbItemResult.Succeeded || !mbSheetResult.Succeeded)
         {
             navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}");
-            await messageService.Warning(result.Message);
+            await messageService.Warning(mbItemResult.Message);
             return;
         }
-        mbSheetItem = result.Data;
 
+        var mbSheet = mbSheetResult.Data;
+        
+        // Redirect from edit page if the mbsheet is already validated or accepted
+        if (mbSheet.Status == MBSheetStatus.VALIDATED || mbSheet.Status == MBSheetStatus.ACCEPTED)
+        {
+            navManager.NavigateTo($"/mbook/{MBookId}/mbsheet/{MBSheetId}");
+        }
+
+        mbSheetItem = mbItemResult.Data;
         mbItemsStatuses = await mBookService.GetCurrentMBItemsStatus(MBookId);
 
         loading = false;

@@ -3,6 +3,21 @@
 
 <h3>Add Measurements</h3>
 
+<Breadcrumb Style="margin-bottom: 0.75rem">
+    <BreadcrumbItem Href="/">
+        <Icon Type="home" />
+        <span>Dashboard</span>
+    </BreadcrumbItem>
+
+    <BreadcrumbItem Href="@($"mbook/{MBookId}/mbsheet/{MBSheetId}")">
+        MB Sheet
+    </BreadcrumbItem>
+
+    <BreadcrumbItem>
+        Add Measurement
+    </BreadcrumbItem>
+</Breadcrumb>
+
 <Spin Spinning="loading">
     <CascadingValue Value="MBookId" Name="MBookId">
         <CascadingValue Value="MBSheetId" Name="MBSheetId">

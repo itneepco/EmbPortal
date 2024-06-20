@@ -2,8 +2,8 @@
 
 public interface ICurrentUserService
 {
-    string Email { get; }
-    string DisplayName { get; }
-    string EmployeeCode { get; }
+    string? Email { get; }
+    string? DisplayName { get; }
+    string? EmployeeCode { get; }
 }
 
