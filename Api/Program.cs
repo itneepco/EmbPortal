@@ -1,6 +1,5 @@
 using System;
-using System.Threading.Tasks;
-using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,49 +7,80 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence;
-using QuestPDF.Infrastructure;
+using Application;
+using Infrastructure;
+using Api.Extensions;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Routing;
 
-namespace Api;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add services to the container.
+var configuration = builder.Configuration;
+var services = builder.Services;
+
+services.AddApplication();
+services.AddInfrastructure();
+services.AddPersistence(configuration);
+
+services.AddControllers(options => options.Filters.Add(new Api.Filters.ApiExceptionFilter()));
+
+services.AddModelValidation();
+services.AddIdentityServices(configuration);
+services.AddSwaggerDocumentation();
+
+// For Blazor
+services.AddControllersWithViews();
+services.AddRazorPages();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    public static async Task Main(string[] args)
+    var scopedServices = scope.ServiceProvider;
+    var loggerFactory = scopedServices.GetRequiredService<ILoggerFactory>();
+
+    try
     {
-        //QuestPDF.Settings.DocumentLayoutExceptionThreshold = 10000;
+        var context = scopedServices.GetRequiredService<AppDbContext>();
+        await context.Database.MigrateAsync();
 
-        QuestPDF.Settings.License = LicenseType.Community;
-
-        var host = CreateHostBuilder(args).Build();
-
-        using (var scope = host.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-
-            try
-            {
-                var context = services.GetRequiredService<AppDbContext>();
-                await context.Database.MigrateAsync();
-
-                // seeding users
-                var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
-            }   
-            catch (Exception ex)
-            {
-                var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError("An error occured during migration: {}", ex.Message);
-            }
-        }
-
-        host.Run();
+        // Seeding users
+        var userManager = scopedServices.GetRequiredService<UserManager<AppUser>>();
+        var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
+        await AppDbContextSeed.SeedUsersAsync(userManager, roleManager);
     }
-
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "An error occurred during migration");
+    }
 }
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseWebAssemblyDebugging();
+    app.UseHttpsRedirection();
+    app.UseSwaggerDocumention();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+app.MapControllers();
+app.MapFallbackToFile("index.html");
+
+app.Run();

@@ -33,16 +33,11 @@
 
   <ItemGroup>
     <None Remove="Files\neepcologo.png" />
-    <None Remove="Metropolis-Regular.ttf" />
     <None Remove="Reports\logo90.gif" />
     <None Remove="Reports\Metropolis-Regular.ttf" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Metropolis-Regular.ttf">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
     <Content Include="Reports\Metropolis-Regular.ttf">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

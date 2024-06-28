@@ -11,7 +11,7 @@
                 </SpaceItem>
                 <SpaceItem>
                     <Popconfirm Title="Sure to Reset Password?"
-                                OnConfirm="() => ResetPassword(selectedRows.First().Id)"
+                                OnConfirm="() => ResetPassword(selectedRows.First().EmployeeCode)"
                                 OkText="Yes"
                                 CancelText="No">
                         <Button Icon="@(IconType.Outline.Rocket)" Loading="@loading" Danger>Reset Password</Button>
@@ -35,7 +35,7 @@
     </AntDesign.Col>
 </Row>
 
-<AddEditUserDrawer CurrentUser="@selectedRows?.First()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@LoadUsersAsync" />
+<AddEditUserDrawer CurrentUser="@selectedRows?.FirstOrDefault()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@OnItemUpdate" />
 
 <Table TItem="UserResponse"
        DataSource="@users"
@@ -67,27 +67,27 @@
     bool drawerVisible = false;
     string search;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadUsersAsync();
-    }
-
     async Task LoadUsersAsync()
     {
         loading = true;
-        selectedRows = null;
         var response = await userService.GetUsersPagination(pageIndex, pageSize, search);
+        loading = false;
+
         users = response.Items;
         total = response.TotalCount;
-        loading = false;
     }
 
-    async Task ResetPassword(string userId)
+    async Task OnItemUpdate()
+    {
+        await LoadUsersAsync();
+        selectedRows = null;
+    }
+
+    async Task ResetPassword(string userName)
     {
         loading = true;
-        var result = await userService.ResetPassword(userId);
+        var result = await userService.ResetPassword(userName);
         loading = false;
-        StateHasChanged();
 
         if (result.Succeeded)
         {

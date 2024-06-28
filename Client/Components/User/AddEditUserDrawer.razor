@@ -15,7 +15,7 @@
     </FormItem>
 
     <FormItem Label="Email">
-        <Input Placeholder="Enail" @bind-Value="@context.Email" TValue="string" />
+        <Input Placeholder="Email" @bind-Value="@context.Email" TValue="string" />
     </FormItem>
 
     <FormItem Label="Employee Code">
@@ -136,7 +136,10 @@
         }
         else
         {
-            await messageService.Error(result.Message);
+            foreach (var error in result.Errors)
+            {
+                await messageService.Error(error);
+            }
         }
     }
 

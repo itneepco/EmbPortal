@@ -11,97 +11,113 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EmbPortal.Shared.Requests;
 using Application.CQRS.Identity.Queries;
+using Application.CQRS.Identity.Commands;
 
-namespace Api.Controllers
+namespace Api.Controllers;
+
+public class IdentityController : ApiController
 {
-    public class IdentityController : ApiController
+    [HttpGet("Emailexists")]
+    public async Task<ActionResult<bool>> CheckEmailExistsAsync(string email)
     {
-        [HttpGet("Emailexists")]
-        public async Task<ActionResult<bool>> CheckEmailExistsAsync(string email)
-        {
-            return Ok(await Mediator.Send(new CheckEmailExistsQuery { Email = email }));
-        }
+        var result = await Mediator.Send(new CheckEmailExistsQuery { Email = email });
+        return Ok(result);
+    }
 
-        [HttpPost("Login")]
-        public async Task<ActionResult<AuthUserResponse>> Login(LoginRequest request)
-        {
-            var command = new LoginUserCommand(request);
-            return Ok(await Mediator.Send(command));
-        }
+    [HttpPost("Login")]
+    public async Task<ActionResult<AuthUserResponse>> Login(LoginRequest request)
+    {
+        var command = new LoginUserCommand(request);
+        return Ok(await Mediator.Send(command));
+    }
 
-        [Authorize]
-        [HttpGet("Currentuser")]
-        public async Task<ActionResult<AuthUserResponse>> GetCurrentUser()
-        {
-            var email = HttpContext.User.GetEmailFromClaimsPrincipal();
+    [Authorize]
+    [HttpGet("Currentuser")]
+    public async Task<ActionResult<AuthUserResponse>> GetCurrentUser()
+    {
+        var email = HttpContext.User.GetEmailFromClaimsPrincipal();
 
-            return Ok(await Mediator.Send(new GetCurrentUserQuery(email)));
-        }
+        return Ok(await Mediator.Send(new GetCurrentUserQuery(email)));
+    }
 
-        [Authorize]
-        [HttpGet("all")]
-        public async Task<ActionResult<PaginatedList<UserResponse>>> GetAllUsers()
-        {
-            var query = new GetAllUsersQuery();
-            return Ok(await Mediator.Send(query));
-        }
+    [Authorize]
+    [HttpGet("all")]
+    public async Task<ActionResult<PaginatedList<UserResponse>>> GetAllUsers()
+    {
+        var query = new GetAllUsersQuery();
+        return Ok(await Mediator.Send(query));
+    }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)
-        {
-            var query = new GetUsersWithPaginationQuery(request);
-            return Ok(await Mediator.Send(query));
-        }
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<ActionResult<PaginatedList<UserResponse>>> GetUsers([FromQuery] PagedRequest request)
+    {
+        var query = new GetUsersWithPaginationQuery(request);
+        return Ok(await Mediator.Send(query));
+    }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("{userId}/Roles")]
-        public async Task<ActionResult<IReadOnlyList<string>>> GetUserRoles(string userId)
-        {
-            return Ok(await Mediator.Send(new GetUserRolesQuery(userId)));
-        }
+    [Authorize(Roles = "Admin")]
+    [HttpGet("{userId}/Roles")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetUserRoles(string userId)
+    {
+        return Ok(await Mediator.Send(new GetUserRolesQuery(userId)));
+    }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("{userId}/Reset")]
-        public async Task<ActionResult> ResetUserPassword(string userId)
-        {
-            return Ok(await Mediator.Send(new GetUserRolesQuery(userId)));
-        }
+    [Authorize(Roles = "Admin")]
+    [HttpGet("{userId}/Reset")]
+    public async Task<ActionResult> ResetUserPassword(string userId)
+    {
+        var command = new ResetUserPasswordCommand(userId);
+        await Mediator.Send(command);
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("Roles")]
-        public async Task<ActionResult<IReadOnlyList<string>>> GetAllRoles()
-        {
-            return Ok(await Mediator.Send(new GetRolesQuery()));
-        }
+        return NoContent();
+    }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Register")]
-        public async Task<ActionResult<string>> Register(UserRequest request)
+    [HttpPost("{userId}/Reset")]
+    public async Task<ActionResult> ResetUserPassword(string userId, ChangePasswordRequest request)
+    {
+        var command = new ResetUserPasswordCommand(userId, request);
+        await Mediator.Send(command);
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("Roles")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetAllRoles()
+    {
+        return Ok(await Mediator.Send(new GetRolesQuery()));
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("Register")]
+    public async Task<ActionResult<string>> Register(UserRequest request)
+    {
+        var result = await Mediator.Send(new CheckEmailExistsQuery { Email = request.Email });
+        if (result)
         {
-            if (CheckEmailExistsAsync(request.Email).Result.Value)
+            var errors = new List<string>
             {
-                var errors = new List<string>();
-                errors.Add("Email address is in use");
+                "Email address is in use"
+            };
 
-                var response = new ApiValidationErrorResponse
-                {
-                    Errors = errors
-                };
+            var response = new ApiValidationErrorResponse
+            {
+                Errors = errors
+            };
 
-                return new BadRequestObjectResult(response);
-            }
-
-            var command = new RegisterUserCommand(request);
-            return Ok(await Mediator.Send(command));
+            return new BadRequestObjectResult(response);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{userId}")]
-        public async Task<ActionResult<string>> UpdateUser(string userId, UserRequest request)
-        {
-            var command = new UpdateUserCommand(userId, request);
-            return Ok(await Mediator.Send(command));
-        }
+        var command = new RegisterUserCommand(request);
+        return Ok(await Mediator.Send(command));
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{userId}")]
+    public async Task<ActionResult<string>> UpdateUser(string userId, UserRequest request)
+    {
+        var command = new UpdateUserCommand(userId, request);
+        return Ok(await Mediator.Send(command));
     }
 }

@@ -22,7 +22,7 @@
                     <Dropdown Trigger="@(new Trigger[] { Trigger.Click })">
                         <Overlay>
                             <Menu>
-                                <MenuItem>Profile</MenuItem>
+                                <MenuItem OnClick="@ShowChangePasswordModal">Change Password</MenuItem>
                                 <MenuItem OnClick="@LogoutUser">Logout</MenuItem>
                             </Menu>
                         </Overlay>
@@ -46,6 +46,8 @@
         </Layout>
     </Authorized>
 </AuthorizeView>
+
+<ChangePasswordModal Visible="@modalVisible" OnClose="CloseModal" />
 
 <style>
     #main {
@@ -120,6 +122,8 @@
     private List<SiteBreadcrumbItem> breadcumbList = new();
     private string displayName;
     private ClaimsPrincipal currentUser;
+    private bool modalVisible;
+
     List<MenuDataItem> _menuData = new()
     {
         new MenuDataItem
@@ -170,4 +174,13 @@
         StateHasChanged();
     }
 
+    private void ShowChangePasswordModal()
+    {
+        modalVisible = true;
+    }
+
+    void CloseModal()
+    {
+        modalVisible = false;
+    }
 }
