@@ -35,7 +35,10 @@
     </AntDesign.Col>
 </Row>
 
-<AddEditUserDrawer CurrentUser="@selectedRows?.FirstOrDefault()" Visible="@drawerVisible" OnClose="@CloseSideBar" OnItemUpdate="@OnItemUpdate" />
+<AddEditUserDrawer CurrentUser="@selectedRows?.FirstOrDefault()" 
+                   Visible="@drawerVisible" 
+                   OnClose="@CloseSideBar" 
+                   OnItemUpdate="@OnItemUpdate" />
 
 <Table TItem="UserResponse"
        DataSource="@users"
