@@ -11,7 +11,9 @@ using Application;
 using Infrastructure;
 using Api.Extensions;
 using Domain.Entities.Identity;
-using Microsoft.AspNetCore.Routing;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
