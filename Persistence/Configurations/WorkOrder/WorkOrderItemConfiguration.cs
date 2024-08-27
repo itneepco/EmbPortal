@@ -36,17 +36,17 @@ public class WorkOrderItemConfiguration : IEntityTypeConfiguration<WorkOrderItem
 
         builder.Property(p => p.UnitRate)
                .IsRequired()
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.PoQuantity)
                .IsRequired()
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.MeasuredQuantity)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.RAQuantity)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.CreatedBy)
             .HasMaxLength(PersistenceConsts.EmpCodeLength);

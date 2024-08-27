@@ -10,13 +10,13 @@ public class MBItemMeasurementRequest
     [Required, MaxLength(100)]
     public string Description { get; set; }
 
-    [Required, RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Please enter a numeric number up to 2 decimal places")]
+    [Required, RegularExpression(@"^\d+(\.\d{1,3})?$", ErrorMessage = "Please enter a numeric number up to 3 decimal places")]
     public string Val1 { get; set; }
 
-    [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Please enter a numeric number up to 2 decimal places")]
+    [RegularExpression(@"^\d+(\.\d{1,3})?$", ErrorMessage = "Please enter a numeric number up to 3 decimal places")]
     public string Val2 { get; set; }
 
-    [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Please enter a numeric number up to 2 decimal places")]
+    [RegularExpression(@"^\d+(\.\d{1,3})?$", ErrorMessage = "Please enter a numeric number up to 3 decimal places")]
     public string Val3 { get; set; }
 
     public decimal Total
