@@ -50,10 +50,10 @@ public class CreateMBSheetCommandHandler : IRequestHandler<CreateMBSheetCommand,
             throw new BadRequestException("Please publish Measurement Book before creating any MB Sheets");
         }
 
-        if(result.order.OrderDate >= (DateTime)request.Data.MeasurementDate)
-        {
-            throw new BadRequestException("Measurement date cannot be earlier then PO Date");
-        }
+        //if(result.order.OrderDate >= (DateTime)request.Data.MeasurementDate)
+        //{
+        //    throw new BadRequestException("Measurement date cannot be earlier then PO Date");
+        //}
 
         if(request.Data.MeasurementDate > (DateTime.Now))
         {
