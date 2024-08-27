@@ -31,19 +31,19 @@ public class RAItemConfiguration : IEntityTypeConfiguration<RAItem>
         builder.Property(p => p.Uom).IsRequired();
 
         builder.Property(p => p.UnitRate)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.PoQuantity)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.MeasuredQty)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.TillLastRAQty)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.CurrentRAQty)
-               .HasPrecision(18, 2);
+               .HasPrecision(18, 3);
 
         builder.Property(p => p.CreatedBy)
             .HasMaxLength(PersistenceConsts.EmpCodeLength);
