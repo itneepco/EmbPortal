@@ -26,18 +26,18 @@
                Bordered HidePagination>
           
             <Column Title="Description" @bind-Field="@context.ShortServiceDesc"></Column>
-            <Column Title="PO Qty" TData="float"> @context.PoQuantity.ToString("0.00")</Column>
+            <Column Title="PO Qty" TData="decimal"> @context.PoQuantity.ToString("0.000")</Column>
             <Column Title="Rate" TData="decimal">@context.UnitRate.ToString("0.00")</Column>
-            <Column Title="MB Qty" TData="float">
-                @context.MeasuredQty.ToString("0.00")
+            <Column Title="MB Qty" TData="decimal">
+                @context.MeasuredQty.ToString("0.000")
             </Column>
-            <Column Title="Cum RA Qty" TData="float">
-                @context.TillLastRAQty.ToString("0.00")
+            <Column Title="Cum RA Qty" TData="decimal">
+                @context.TillLastRAQty.ToString("0.000")
             </Column>
-            <Column Title="Avail Qty" TData="float">
-                @context.AvailableQty.ToString("0.00")
+            <Column Title="Avail Qty" TData="decimal">
+                @context.AvailableQty.ToString("0.000")
             </Column>
-            <Column Title="Curr Qty" TData="float" Width="8%">
+            <Column Title="Curr Qty" TData="decimal" Width="8%">
                 <Input Type="number" @bind-Value="context.CurrentRAQty"/>
             </Column>
             <Column Title="Amount" TData="decimal">
